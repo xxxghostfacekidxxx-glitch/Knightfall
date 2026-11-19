@@ -3,7 +3,7 @@
   if (document.getElementById("miss-chaos-presence")) return;
   const API = "https://api.ash-fall.com";
   const AVATAR = "/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";
-  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261119-private-switch1"; document.head.append(css);
+  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261119-dock-fixed4"; document.head.append(css);
   const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261115-mc-scope2"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
   root.innerHTML=`
@@ -20,7 +20,8 @@
       <label class="sr-only" for="mc-mood">Miss Chaos mood</label><select id="mc-mood"><option value="default">Mood: Default</option><option value="playful">Playful</option><option value="dark">Dark humor</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option></select>
       <button type="button" id="mc-game-tips" hidden>🎮 Ask for game tips</button>
       <div id="mc-messages" aria-live="polite"><div class="mc-bubble system">I'm here. Ask me something, throw me an idea, or let me help untangle the mess. 🖤</div></div><div id="mc-error" role="status" aria-live="polite"></div>
-      <form id="mc-form"><label class="sr-only" for="mc-input">Message Miss Chaos</label><textarea id="mc-input" rows="1" maxlength="4000" placeholder="Tell me what's going on…" required></textarea><button id="mc-send" type="submit">Send ↗</button></form>
+      <p id="mc-attachment-status" class="mc-attachment-status" aria-live="polite" role="status" hidden></p>
+      <form id="mc-form"><label class="sr-only" for="mc-input">Message Miss Chaos</label><textarea id="mc-input" rows="1" maxlength="4000" placeholder="Message or photo question…" ></textarea><button id="mc-send" type="submit">Send ↗</button></form>
       <div class="mc-footer">Account chat · Saved to your Miss Chaos conversations. AI can make mistakes.</div>
     </section>
     <section id="mc-memo-panel" aria-label="Private Memo Pad" aria-hidden="true" hidden>
@@ -29,6 +30,7 @@
     </section>
     <div id="mc-dock" role="group" aria-label="Miss Chaos floating tools">
       <button id="miss-chaos-launcher" type="button" aria-label="Chat with Miss Chaos" title="Chat with Miss Chaos" aria-expanded="false" aria-controls="miss-chaos-window"><span style="position:relative"><img src="${AVATAR}" alt=""><i class="mc-status-dot" aria-hidden="true"></i></span><span class="mc-launch-copy"><strong>Miss Chaos</strong><small>Need me? I'm right here.</small></span></button>
+      <button id="mc-private-switch" type="button" aria-label="Switch Miss Chaos between standard and private workspace" title="Switch private assistant" hidden>𓂀 Private</button>
       <button id="mc-memo-toggle" type="button" aria-label="Open Memo Pad" aria-expanded="false" aria-controls="mc-memo-panel" title="Open Memo Pad">📝</button>
       <button id="mc-move" type="button" aria-label="Move floating tools to another corner" title="Move floating tools">⠿</button>
       <button id="mc-minimize" type="button" aria-label="Minimize floating tools" title="Minimize floating tools">−</button>
@@ -85,7 +87,12 @@
 
   let userId=null, conversationId=null, busy=false, voiceEnabled=false;
   let assistantMode="standard",verifiedPermissions=null,availableModes=[{id:"standard",label:"Miss Chaos",full_chat:"/miss-chaos.html"}];
-  const modeSelect=$("#mc-companion-mode"),modeLabel=$("#mc-companion-label"),fullChat=$("#mc-full-chat");
+  const modeSelect=$("#mc-companion-mode"),modeLabel=$("#mc-companion-label"),fullChat=$("#mc-full-chat"),privateToggle=$("#mc-private-switch");
+  let chatPhoto=null;
+  import("/chaos-chat-image-picker.mjs?v=20261119-photo-chat1").then(({mountChaosChatImage})=>{
+    chatPhoto=mountChaosChatImage({form:$("#mc-form"),composer:$("#mc-form"),
+      status:$("#mc-attachment-status")});
+  }).catch(()=>{error.textContent="The picture attachment tool could not load. Text chat remains available.";});
   const modeStorage=id=>"missChaosPresenceMode:"+String(id);
   const key=(id,mode="standard")=>"missChaosPresenceConversation:"+String(id)+(mode==="standard"?"":":"+mode);
   const draftKey=()=>assistantMode==="standard"?"missChaosPresenceDraft":"missChaosPresenceDraft:"+String(userId)+":"+assistantMode;
@@ -105,6 +112,15 @@
     $("#mc-private-eye").hidden=assistantMode!=="partner"||
       verifiedPermissions?.can_admin!==true||verifiedPermissions?.can_eye_of_chaos!==true;
     modeSelect.value=assistantMode;
+    const privateMode=availableModes.find(m=>m.id==="owner"||m.id==="partner");
+    privateToggle.hidden=!privateMode;
+    privateToggle.disabled=!privateMode||busy;
+    privateToggle.textContent=assistantMode==="standard"?
+      (privateMode?.id==="owner"?"𓂀 Osiris":"𓂀 Isis"):"↩ Standard";
+    privateToggle.title=assistantMode==="standard"?
+      "Switch to "+(privateMode?.label||"private assistant"):"Return to standard Miss Chaos";
+    privateToggle.setAttribute("aria-label",privateToggle.title);
+    privateToggle.setAttribute("aria-pressed",String(assistantMode!=="standard"));
   }
   async function swapMode(next,{restoreSaved=true}={}){
     if(busy||!availableModes.some(m=>m.id===next)){modeSelect.value=assistantMode;return;}
@@ -138,6 +154,18 @@
     }
   }
   modeSelect.addEventListener("change",()=>{void swapMode(modeSelect.value);});
+  privateToggle.addEventListener("click",async()=>{
+    if(busy)return;
+    privateToggle.disabled=true;
+    try{
+      const ok=await ensureAccount(true);
+      const privateMode=availableModes.find(m=>m.id==="owner"||m.id==="partner");
+      if(!ok||!privateMode){error.textContent="A verified Osiris/Isis account is required for private mode.";return;}
+      await swapMode(assistantMode==="standard"?privateMode.id:"standard");
+      if(panel.hidden)open();
+    }catch(err){error.textContent=err.message||"Private workspace could not be verified.";}
+    finally{showModeLabel();}
+  });
   const status=$("#mc-presence-status"), voiceButton=$("#mc-voice"), mood=$("#mc-mood");
   function setExpression(expression){root.dataset.expression=expression;const labels={default:"Your chaos, one tap away",playful:"Up to something",dark:"Professionally unhinged",supportive:"Here with you",philosophical:"Questioning reality",thinking:"Thinking up trouble…",speaking:"Speaking"};status.textContent="● "+(labels[expression]||labels.default);}
   function speak(text){if(!voiceEnabled||!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined")return;window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(String(text||""));utterance.rate=1.02;utterance.pitch=1.1;utterance.onstart=()=>setExpression("speaking");utterance.onend=()=>setExpression(mood.value);utterance.onerror=()=>setExpression(mood.value);window.speechSynthesis.speak(utterance);}
@@ -160,6 +188,7 @@
     catch(e){if(e.status!==401&&!/unauth|sign in|401/i.test(e.message))throw e;d={user:null};}
     if(!d.user){
       userId=null;conversationId=null;assistantMode="standard";verifiedPermissions=null;
+      privateToggle.hidden=true;privateToggle.disabled=true;
       modeLabel.hidden=true;modeSelect.disabled=true;
       if(!messages.querySelector("[data-mc-signin]")){
         add("system","Sign in to save your conversations and unlock any private workspaces you can access.");
@@ -211,13 +240,13 @@
   document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!memoPanel.hidden){closeMemo();memoToggle.focus({preventScroll:true})}else if(!panel.hidden)close();});
   input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();$("#mc-form").requestSubmit();}});
   input.addEventListener("input",()=>{try{sessionStorage.setItem(draftKey(),input.value);}catch(_){} input.style.height="auto";input.style.height=Math.min(input.scrollHeight,110)+"px";});
-  $("#mc-form").addEventListener("submit",async e=>{e.preventDefault();const message=input.value.trim();if(!message||busy)return;error.textContent="";busy=true;send.disabled=true;modeSelect.disabled=true;input.value="";try{sessionStorage.removeItem(draftKey());}catch(_){} input.style.height="auto";add("user",message);const typing=add("mc-typing","Miss Chaos is thinking…");typing.className="mc-typing";setExpression("thinking");
-    try{if(!(await ensureAccount())){typing.remove();return;}const id=await ensureConversation();let result;try{result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:id,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode})});}catch(first){if(/conversation|not found|invalid/i.test(first.message)){conversationId="";sessionStorage.removeItem(key(userId,assistantMode));const fresh=await ensureConversation();result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:fresh,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode})});}else throw first;}typing.remove();const reply=result.reply||"I got a response-shaped mystery. Try me again.";add("assistant",reply);setExpression(mood.value);speak(reply);}
+  $("#mc-form").addEventListener("submit",async e=>{e.preventDefault();const sendingPhoto=chatPhoto?.hasImage()===true;const message=input.value.trim()||(sendingPhoto?"Describe this image and explain what you can see.":"");if(!message||busy)return;error.textContent="";busy=true;send.disabled=true;modeSelect.disabled=true;privateToggle.disabled=true;chatPhoto?.setBusy(true);input.value="";try{sessionStorage.removeItem(draftKey());}catch(_){} input.style.height="auto";add("user",message+(sendingPhoto?"\n📷 Image attached (original not stored)":""));const typing=add("mc-typing","Miss Chaos is thinking…");typing.className="mc-typing";setExpression("thinking");
+    try{if(!(await ensureAccount())){typing.remove();return;}const id=await ensureConversation();const imageData=sendingPhoto?await chatPhoto.prepare():null;let result;try{result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:id,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode,image:imageData||undefined})});}catch(first){if(/conversation|not found|invalid/i.test(first.message)){conversationId="";sessionStorage.removeItem(key(userId,assistantMode));const fresh=await ensureConversation();result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:fresh,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode,image:imageData||undefined})});}else throw first;}typing.remove();chatPhoto?.clear();const reply=result.reply||"I got a response-shaped mystery. Try me again.";add("assistant",reply);setExpression(mood.value);speak(reply);}
     catch(err){typing.remove();error.textContent=err.message||"I couldn't reach the backend. Try again in a moment.";input.value=message;try{sessionStorage.setItem(draftKey(),message);}catch(_){} }
-    finally{busy=false;send.disabled=false;modeSelect.disabled=availableModes.length<2;input.focus({preventScroll:true});}
+    finally{busy=false;send.disabled=false;modeSelect.disabled=availableModes.length<2;chatPhoto?.setBusy(false);showModeLabel();input.focus({preventScroll:true});}
   });
   // Overlay placement and minimize controls are isolated from chat logic.
   const dockScript=document.createElement("script");
-  dockScript.src="/miss-chaos-dock.js?v=20261116-hero-dock2";
+  dockScript.src="/miss-chaos-dock.js?v=20261119-dock-fixed4";
   document.head.append(dockScript);
 })();
