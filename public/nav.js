@@ -469,6 +469,14 @@
       const role = String(user.role || "").trim().toLowerCase();
       const admin = role === "admin" || role === "god";
       const rights = user.staff_access || {};
+      // Only trusted auth/me rank metadata changes these visible ceremonial titles.
+      const royalRank=rights.rank_code==="osiris"?"Osiris":rights.rank_code==="isis"?"Isis":null;
+      const staffHeading=nav.querySelector(".kf-staff-group > summary");
+      if(staffHeading?.firstChild)staffHeading.firstChild.textContent=royalRank?"𓂀 "+royalRank+" Command ":"Staff ";
+      const accountHeading=nav.querySelector(".kf-profile-group > summary");
+      if(accountHeading?.firstChild)accountHeading.firstChild.textContent=royalRank?"My Account · "+royalRank+" ":"My Account ";
+      const quickAdmin=header.querySelector(".kf-admin-quick-link");
+      if(quickAdmin)quickAdmin.textContent=royalRank||"Admin";
       const canModerate = admin || role === "moderator";
       const canCreate = admin || (role === "member" && String(user.public_title || "").trim() === "Digital Creator");
       const staff = canModerate || canCreate;
