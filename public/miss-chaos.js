@@ -367,11 +367,12 @@
   async function openConversation(id) {
     if (busy) { showError("Wait for Miss Chaos to finish before switching chats."); return; }
     saveDraft();
+    chatPhoto?.clear();
     const version = ++conversationLoadVersion;
     showError("");
     const data = await request("/api/chaos/conversations/" + encodeURIComponent(id) + "/messages");
     if (version !== conversationLoadVersion) return;
-    adminViewing=false;input.disabled=false;sendButton.disabled=busy;
+    adminViewing=false;input.disabled=false;sendButton.disabled=busy;chatPhoto?.setBusy(false);
     activeConversation = id;
     messagesEl.replaceChildren();
     if (!(data.messages || []).length) showWelcome();
@@ -406,8 +407,9 @@
   async function newConversation() {
     if (busy) { showError("Wait for the current reply before starting another chat."); return; }
     saveDraft();
+    chatPhoto?.clear();
     ++conversationLoadVersion;
-    adminViewing=false;input.disabled=false;sendButton.disabled=busy;showError("");
+    adminViewing=false;input.disabled=false;sendButton.disabled=busy;chatPhoto?.setBusy(false);showError("");
     const data = await request("/api/chaos/conversations", {method:"POST",body:"{}"});
     activeConversation = data.conversation.id;
     showWelcome();
@@ -444,7 +446,8 @@
   }
   async function adminOpenConversation(id){
     if (busy) { showError("Wait for the current reply before opening the archive."); return; }
-    saveDraft(); ++conversationLoadVersion;
+    saveDraft(); chatPhoto?.clear(); ++conversationLoadVersion;
+    chatPhoto?.setBusy(true);
     showError("");adminViewing=true;activeConversation=null;input.disabled=true;sendButton.disabled=true;
     try{
       const data=await request("/api/admin/chaos/conversations/"+encodeURIComponent(id)+"/messages");
