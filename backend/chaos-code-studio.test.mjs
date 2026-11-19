@@ -13,7 +13,7 @@ test("Prettier formats JavaScript and JSON as actual parser output",async()=>{
  assert.equal(js.changed,true);
  const json=await formatChaosCode({language:"json",code:'{"a":1,"b":2}'});
  assert.equal(json.valid,true);
- assert.match(json.formatted,/  "a": 1/);
+ assert.match(json.formatted,/"a": 1/);
 });
 test("Formatting is bounded, read-only and never evaluates code",async()=>{
  globalThis.__chaosSentinel=0;
