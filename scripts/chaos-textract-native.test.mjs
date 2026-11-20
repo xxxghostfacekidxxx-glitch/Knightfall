@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {deflateRawSync} from "node:zlib";
 import {listKnightfallZipEntries,openKnightfallZip} from "../public/chaos-textract-native-zip.mjs";
 import {extractKnightfallPdfOperators,readKnightfallPdf} from "../public/chaos-textract-native-pdf.mjs";
-import {otsuThreshold,normalizeGlyph,classifyGlyph,decodeGlyphMask} from "../public/chaos-textract-native-ocr.mjs";
+import {otsuThreshold,adaptiveInkMask,normalizeGlyph,classifyGlyph,decodeGlyphMask} from "../public/chaos-textract-native-ocr.mjs";
 import {extractTextract,TEXTRACT_ENGINE} from "../public/chaos-textract-core.mjs";
 import {readFileSync} from "node:fs";
 
@@ -109,4 +109,23 @@ test("offline OCR separates three touching letters without removing the real spa
  const result=decodeGlyphMask(joined,width,height,templates);
  assert.equal(result.text,"WWW MMM");
  assert.ok(result.confidence>.9);
+});
+
+test("local adaptive OCR threshold keeps printed strokes across uneven photo lighting",()=>{
+ const width=64,height=40,grey=new Uint8Array(width*height);
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+  const background=95+Math.round(2*x);
+  const stroke=y>=10&&y<30&&((x>=16&&x<=18)||(x>=44&&x<=46));
+  grey[y*width+x]=background-(stroke?72:0);
+ }
+ const mask=adaptiveInkMask(grey,width,height,{radius:9});
+ assert.equal(mask[15*width+17],1,"dark stroke in the shadowed half");
+ assert.equal(mask[15*width+45],1,"dark stroke in the bright half");
+ assert.equal(mask[5*width+17],0,"shadow background stays clean");
+ assert.equal(mask[5*width+45],0,"bright background stays clean");
+ const inverted=Uint8Array.from(grey,value=>255-value);
+ const light=adaptiveInkMask(inverted,width,height,{radius:9,lightText:true});
+ assert.equal(light[15*width+17],1,"light lettering on a dark image");
+ assert.equal(light[5*width+17],0,"dark image background is not text");
+ assert.throws(()=>adaptiveInkMask(new Uint8Array(8),width,height),/Invalid image dimensions/);
 });
