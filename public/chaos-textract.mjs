@@ -8,12 +8,17 @@ const nameLabel=$("textract-filename"),stats=$("textract-stats"),task=$("textrac
 let currentFile=null,active=0,busy=false;
 function report(message,isError=false){status.textContent=message;status.dataset.error=String(isError);}
 function choose(file){
+ // Clear the previous document before validating a new selection: failed image
+ // or unsupported file changes must never expose stale text as the new result.
+ active++;currentFile=null;output.value="";stats.textContent="";
+ copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;
+ nameLabel.textContent="No valid file selected";renderInsights();
  try{
   validateTextractFile(file);
-  currentFile=file;active++;output.value="";stats.textContent="";renderInsights();nameLabel.textContent=file.name+" · "+(file.size/1024/1024).toFixed(2)+" MB";
-  extractButton.disabled=false;copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;
+  currentFile=file;nameLabel.textContent=file.name+" · "+(file.size/1024/1024).toFixed(2)+" MB";
+  extractButton.disabled=false;
   report("Ready. Press Extract text. The original stays on your device.");
- }catch(error){currentFile=null;extractButton.disabled=true;report(error.message,true);}
+ }catch(error){extractButton.disabled=true;report(error.message,true);}
 }
 function setBusy(on){busy=on;extractButton.disabled=on||!currentFile;stopButton.hidden=!on;input.disabled=on;}
 input.addEventListener("change",()=>{if(input.files?.[0])choose(input.files[0]);});
@@ -31,10 +36,18 @@ extractButton.addEventListener("click",async()=>{
   const data=await extractTextract(file,{notify:message=>{if(run===active)report(message);},
    cancelled:()=>run!==active});
   if(run!==active)return;
-  output.value=data.text;renderInsights();stats.textContent=data.characters.toLocaleString()+" characters · "+data.extension.toUpperCase()+(data.truncated?" · capped at "+TEXTRACT_LIMITS.chars.toLocaleString()+" characters":"");
+  output.value=data.text;renderInsights();
+  stats.textContent=data.characters.toLocaleString()+" characters · "+data.extension.toUpperCase()+
+   " · "+(data.mode==="device-ocr"?"device OCR":data.mode==="original-ocr"?"experimental OCR":data.mode.replaceAll("-"," "))+
+   (typeof data.confidence==="number"?" · rough glyph match "+Math.round(data.confidence*100)+"%":"")+
+   (data.truncated?" · capped at "+TEXTRACT_LIMITS.chars.toLocaleString()+" characters":"");
   copyButton.disabled=false;downloadButton.disabled=false;handoffButton.disabled=false;
   report(data.warning||"Extracted by Knightfall original code on your device. Review accuracy before sharing.");
- }catch(error){if(run===active)report(error?.message||"Extraction failed.",true);}
+ }catch(error){if(run===active){
+   output.value="";renderInsights();
+   copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;
+   report(error?.message||"Extraction failed. Try a clearer file or a different text-layer format.",true);
+  }}
  finally{if(run===active)setBusy(false);}
 });
 stopButton.addEventListener("click",()=>{active++;setBusy(false);report("Stopped. No text was sent.");});
@@ -82,6 +95,7 @@ handoffButton.addEventListener("click",()=>{
 $("textract-clear").addEventListener("click",()=>{
  if(busy){active++;setBusy(false);}
  currentFile=null;input.value="";output.value="";renderInsights();nameLabel.textContent="No file selected";
+ secondFile=null;compareFile.value="";compareOutput.value="";compareToken++;compareBusy=false;updateCompareControls();
  stats.textContent="";copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;extractButton.disabled=true;
  report("Cleared. The browser has not uploaded your original file.");
 });
