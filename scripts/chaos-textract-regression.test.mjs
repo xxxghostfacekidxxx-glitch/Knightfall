@@ -98,6 +98,15 @@ test("PPTX text runs are read in slide order",async()=>{
  const result=await extractTextract(file("deck.pptx",data));
  assert.match(result.text,/Slide 1\nFirst slide/);assert.match(result.text,/Slide 2\nSecond slide/);
 });
+test("Office files with many embedded photos do not spend extraction memory on unused images",async()=>{
+ const image="X".repeat(3*1024*1024);
+ const entries=[["word/document.xml",'<w:document><w:p><w:t>Text still readable</w:t></w:p></w:document>']];
+ for(let i=0;i<9;i++)entries.push(["word/media/photo"+i+".png",image]);
+ const bytes=zipPack(entries);
+ assert.ok(bytes.length<18*1024*1024,"Compressed test document fits input cap");
+ const result=await extractTextract(file("photo-heavy.docx",bytes));
+ assert.match(result.text,/Text still readable/);
+});
 test("Unsafe OOXML DTD and entities are rejected",()=>{
  assert.throws(()=>parseKnightfallXml('<!DOCTYPE a [<!ENTITY x "boom">]><a>&x;</a>'),/Unsafe XML/);
 });
