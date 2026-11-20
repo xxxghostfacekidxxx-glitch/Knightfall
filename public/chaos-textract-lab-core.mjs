@@ -65,6 +65,26 @@ function quoteCsvCell(value){
  if(/^[\s]*[=+\-@]/.test(text))text="'"+text;
  return '"'+text.replaceAll('"','""')+'"';
 }
+export function extractPossibleTableRows(text,limit=1500){
+ const lines=extractTextLines(text,limit*4),rows=[];
+ for(const line of lines){
+  let cells=[];
+  if(line.text.includes("|"))cells=line.text.split(/\\s*\\|\\s*/);
+  else if(line.text.includes("\\t"))cells=line.text.split(/\\t+/);
+  else if(/\\s{3,}/.test(line.text))cells=line.text.split(/\\s{3,}/);
+  cells=cells.map(cell=>cell.trim().replace(/^[A-Z]{1,3}\\d+=/,"")).filter(Boolean);
+  if(cells.length<2)continue;
+  rows.push({section:line.section,line:line.line,cells});
+  if(rows.length>=limit)break;
+ }
+ return rows;
+}
+export function makeTextractTableCsv(text){
+ const rows=extractPossibleTableRows(text);
+ const maxCols=Math.min(30,Math.max(0,...rows.map(r=>r.cells.length)));
+ const header=["section","source_line",...Array.from({length:maxCols},(_,i)=>"column_"+(i+1))];
+ return [header.map(quoteCsvCell).join(","),...rows.map(row=>[row.section,row.line,...row.cells.slice(0,maxCols)].map(quoteCsvCell).join(","))].join("\\r\\n")+"\\r\\n";
+}
 export function makeTextractCsv(text,mode="lines"){
  const fields=mode==="fields"?["section","line","key","value"]:["section","line","text"];
  const rows=mode==="fields"?extractKeyValues(text):extractTextLines(text);
