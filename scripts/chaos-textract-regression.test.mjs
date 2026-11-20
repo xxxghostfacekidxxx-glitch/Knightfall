@@ -40,8 +40,9 @@ test("PDF tokenizer preserves escaped parentheses, Unicode, TJ spaces and line b
 test("PDF header may follow a short transport preface without losing document text",async()=>{
  const base=pdf(["1 0 obj << /Type /Page /Contents 2 0 R >> endobj",
   "2 0 obj << /Length 16 >>\nstream\nBT (READY) Tj ET\nendstream\nendobj"]);
- const padded=new Uint8Array(7+base.length);
- padded.set(enc.encode("\n\n  \n\n  "),0);padded.set(base,7);
+ const prefix=enc.encode("\n\n  \n\n  ");
+ const padded=new Uint8Array(prefix.length+base.length);
+ padded.set(prefix,0);padded.set(base,prefix.length);
  assert.match(await readKnightfallPdf(padded),/READY/);
 });
 test("PDF honors logical page tree order rather than raw object IDs",async()=>{
