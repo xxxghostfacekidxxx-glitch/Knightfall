@@ -31,6 +31,40 @@ export function otsuThreshold(grey){
  }
  return best;
 }
+/**
+ * Bounded local-mean threshold for phone photos with uneven illumination.
+ * The integral image makes each neighborhood lookup constant-time.
+ * This prepares pixels only: the glyph engine still rejects uncertain text.
+ */
+export function adaptiveInkMask(grey,width,height,{radius=0,lightText=false}={}){
+ if(!(grey instanceof Uint8Array)||!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||
+  width<1||height<1||width*height!==grey.length||grey.length>MAX_IMAGE_PIXELS)
+  throw Error("Invalid image dimensions for adaptive OCR.");
+ const r=radius>0?Math.min(48,Math.max(2,Math.round(radius))):
+  Math.max(8,Math.min(32,Math.round(Math.min(width,height)/30)));
+ const stride=width+1,integral=new Float64Array(stride*(height+1));
+ for(let y=1;y<=height;y++){
+  let rowTotal=0;
+  for(let x=1;x<=width;x++){
+   rowTotal+=grey[(y-1)*width+x-1];
+   integral[y*stride+x]=integral[(y-1)*stride+x]+rowTotal;
+  }
+ }
+ const mask=new Uint8Array(grey.length);
+ for(let y=0;y<height;y++){
+  const top=Math.max(0,y-r),bottom=Math.min(height-1,y+r);
+  for(let x=0;x<width;x++){
+   const left=Math.max(0,x-r),right=Math.min(width-1,x+r);
+   const sum=integral[(bottom+1)*stride+right+1]-integral[top*stride+right+1]-
+    integral[(bottom+1)*stride+left]+integral[top*stride+left];
+   const mean=sum/((bottom-top+1)*(right-left+1));
+   const bias=Math.max(6,Math.min(14,mean*.055));
+   const value=grey[y*width+x];
+   mask[y*width+x]=lightText?(value>mean+bias?1:0):(value<mean-bias?1:0);
+  }
+ }
+ return mask;
+}
 export function normalizeGlyph(mask,width,height){
  const grid=new Float32Array(SAMPLE_X*SAMPLE_Y);
  if(!width||!height)return grid;
@@ -231,8 +265,26 @@ export async function readKnightfallImageOcr(file,{notify=()=>{},cancelled=()=>f
   const mask=new Uint8Array(w*h);let count=0;
   for(let i=0;i<mask.length;i++){mask[i]=greys[i]<=threshold?1:0;count+=mask[i];}
   // Images with dark backgrounds and light text are inverted.
-  if(count>mask.length*.55)for(let i=0;i<mask.length;i++)mask[i]=1-mask[i];
-  const result=decodeGlyphMask(mask,w,h,fontTemplates(),{notify,cancelled});
+  const lightText=count>mask.length*.55;
+  if(lightText)for(let i=0;i<mask.length;i++)mask[i]=1-mask[i];
+  const templates=fontTemplates();
+  let result=decodeGlyphMask(mask,w,h,templates,{notify,cancelled});
+  const quality=value=>{
+   const letters=(value.text.match(/[A-Za-z0-9]/g)||[]).length;
+   const unknown=(value.text.match(/\?/g)||[]).length;
+   return value.confidence-Math.min(.6,unknown/Math.max(1,letters+unknown))+
+    Math.min(.04,letters*.003);
+  };
+  // Retry only uncertain readings: noisy images do not deserve a doubled
+  // workload when global thresholding already yields a clean result.
+  if(cancelled())throw Error("OCR cancelled.");
+  if(result.confidence<.75||result.text.includes("?")||!result.text.trim()){
+   notify("Trying local contrast for uneven lighting…");
+   const adaptive=adaptiveInkMask(greys,w,h,{lightText});
+   const improved=decodeGlyphMask(adaptive,w,h,templates,{notify,cancelled});
+   if(quality(improved)>quality(result)+.055&&improved.text.replace(/[^A-Za-z0-9]/g,"").length>=2)
+    result=improved;
+  }
   canvas.width=0;canvas.height=0;
   if(!result.text.trim())throw Error("No high-contrast printed text detected. Try a sharper, straight-on photo with dark text on a bright background.");
   const unknowns=(result.text.match(/\?/g)||[]).length;
