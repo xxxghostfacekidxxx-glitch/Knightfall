@@ -1,0 +1,70 @@
+name: Miss Chaos · Isolated Candidate Check
+
+# Manual only. No model or Worker can trigger this workflow.
+# Inputs may be visible to GitHub collaborators; never include secrets or private member data.
+on:
+  workflow_dispatch:
+    inputs:
+      base_sha:
+        description: 'Exact 40-character main SHA from Code Studio'
+        type: string
+        required: true
+      path:
+        description: 'Allowlisted public/ or backend/ source file'
+        type: string
+        required: true
+      candidate_base64:
+        description: 'Base64 of complete replacement file (max 5 KB decoded)'
+        type: string
+        required: true
+      candidate_sha256:
+        description: 'SHA-256 hex digest of decoded candidate'
+        type: string
+        required: true
+      run_targeted_tests:
+        description: 'Explicitly run a pinned suite for supported files in this disposable runner'
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: miss-chaos-manual-candidate-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out exact main commit without persisting credentials
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Use pinned Node for candidate validation
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned parser dependencies without install scripts
+        run: npm install --prefix backend --ignore-scripts --no-audit --no-fund
+      - name: Verify exact source SHA, candidate digest and optional isolated test recipe
+        env:
+          KF_REVIEW_BASE_SHA: ${{ inputs.base_sha }}
+          KF_REVIEW_PATH: ${{ inputs.path }}
+          KF_REVIEW_CANDIDATE_BASE64: ${{ inputs.candidate_base64 }}
+          KF_REVIEW_CANDIDATE_SHA256: ${{ inputs.candidate_sha256 }}
+          KF_REVIEW_RUN_TESTS: ${{ inputs.run_targeted_tests }}
+        run: node scripts/chaos-review-sandbox.mjs
+      - name: Publish candidate evidence, never an integration approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: miss-chaos-candidate-evidence-${{ github.run_id }}
+          path: artifacts/chaos-review-sandbox.json
+          if-no-files-found: warn
+          retention-days: 7
