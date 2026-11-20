@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Knightfall Eye of Chaos Egyptian scarab crest">
+<defs><linearGradient id="gold" x2="1" y2="1"><stop stop-color="#70401e"/><stop offset=".45" stop-color="#f1cc7f"/><stop offset="1" stop-color="#a66b2d"/></linearGradient></defs>
+<circle cx="64" cy="64" r="60" fill="#0b0c0c" stroke="url(#gold)" stroke-width="5"/>
+<circle cx="64" cy="64" r="49" fill="none" stroke="#a35c30" stroke-dasharray="36 8" stroke-width="2"/>
+<path d="M19 56Q64 17 109 56Q64 96 19 56Z" stroke="url(#gold)" stroke-width="7" fill="#171715"/>
+<circle cx="64" cy="56" r="23" stroke="#e7bb70" stroke-width="6" fill="#743918"/>
+<circle cx="64" cy="56" r="10" fill="#1f7666" stroke="#d4ab58" stroke-width="3"/>
+<path d="M64 16v15M29 90l19-15M99 90 80 75M64 89v23" stroke="#e6bc72" stroke-width="4" stroke-linecap="round"/>
+</svg>
