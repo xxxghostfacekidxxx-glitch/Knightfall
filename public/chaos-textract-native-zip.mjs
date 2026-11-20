@@ -176,11 +176,46 @@ function sharedStrings(raw){
  }
  return entries;
 }
-function worksheetRows(raw,strings){
+function excelDateStyles(raw){
+ const custom=new Map(),styles=[];let inCellXfs=false;
+ for(const token of parseKnightfallXml(raw)){
+  if(token.type==="start"&&token.name==="numFmt"){
+   const id=Number(token.attrs.numFmtId);
+   if(Number.isInteger(id))custom.set(id,token.attrs.formatCode||"");
+  }
+  if(token.type==="start"&&token.name==="cellXfs")inCellXfs=true;
+  else if(token.type==="end"&&token.name==="cellXfs")inCellXfs=false;
+  else if(inCellXfs&&token.type==="start"&&token.name==="xf"){
+   const id=Number(token.attrs.numFmtId||0);
+   const customCode=(custom.get(id)||"").replace(/"[^"]*"|\\.|_\S|\*\S|\[[^\]]*\]/g,"");
+   const dateCode=/[yd]/i.test(customCode)&&/[ymd]/i.test(customCode);
+   styles.push(([14,15,16,17,22].includes(id)||dateCode)&&!["General","@"].includes(customCode));
+  }
+ }
+ return styles;
+}
+function excelDateValue(raw,date1904){
+ const numeric=Number(raw);
+ if(!Number.isFinite(numeric)||numeric<0||numeric>3000000)return null;
+ // Excel's 1900 calendar includes fictitious 1900-02-29 (serial 60).
+ if(!date1904&&Math.floor(numeric)===60)return null;
+ const base=date1904?Date.UTC(1904,0,1):Date.UTC(1899,11,numeric<60?31:30);
+ const epoch=base+Math.round(numeric*86400000);
+ const date=new Date(epoch);
+ if(!Number.isFinite(date.getTime()))return null;
+ const iso=date.toISOString();
+ return iso.slice(0,10)+(numeric%1?(" "+iso.slice(11,19)):"");
+}
+function worksheetRows(raw,strings,styles=[],date1904=false){
  const rows=[];let row=null,cell=null,field="",used=0,truncated=false;
  const finishCell=()=>{
   if(!cell||!row)return;
   let value=cell.type==="s"?strings[Number(cell.value)]??"":cell.type==="inlineStr"?cell.inline:cell.value;
+  if(cell.type==="b"&&/^[01]$/.test(value))value=value==="1"?"TRUE":"FALSE";
+  else if((cell.type===""||cell.type==="n")&&styles[cell.style]&&value){
+   const date=excelDateValue(value,date1904);
+   if(date)value=date+" [Excel serial "+value+"]";
+  }
   if(!value&&cell.formula)value="[Formula value not cached: "+cell.formula.slice(0,100)+"]";
   if(value)row.push((cell.ref||"cell")+"="+value);
   cell=null;
@@ -197,7 +232,7 @@ function worksheetRows(raw,strings){
  for(const t of parseKnightfallXml(raw)){
   if(t.type==="start"){
    if(t.name==="row"){finishRow();row=[];}
-   else if(t.name==="c"&&row){finishCell();cell={ref:t.attrs.r||"",type:t.attrs.t||"",value:"",inline:"",formula:""};}
+   else if(t.name==="c"&&row){finishCell();cell={ref:t.attrs.r||"",type:t.attrs.t||"",style:Number(t.attrs.s||0),value:"",inline:"",formula:""};}
    else if(["v","t","f"].includes(t.name)&&cell)field=t.name;
   }else if(t.type==="text"){
    if(cell&&field==="v")cell.value+=t.value;
@@ -306,7 +341,10 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
  if(extension!=="xlsx")throw Error("Unsupported Office format.");
  notify("Reading Excel shared strings and cell values…");
  const strings=sharedStrings(await read("xl/sharedStrings.xml"));
- const definitions=workbookSheetDefinitions(await read("xl/workbook.xml"));
+ const workbookXml=await read("xl/workbook.xml");
+ const definitions=workbookSheetDefinitions(workbookXml);
+ const date1904=parseKnightfallXml(workbookXml).some(x=>x.type==="start"&&x.name==="workbookPr"&&["1","true"].includes(x.attrs.date1904));
+ const styles=excelDateStyles(await read("xl/styles.xml"));
  const rels=worksheetRelationships(await read("xl/_rels/workbook.xml.rels"));
  const available=names.filter(s=>/^xl\/worksheets\/sheet\d+\.xml$/.test(s))
   .sort((a,b)=>Number(a.match(/sheet(\d+)/)[1])-Number(b.match(/sheet(\d+)/)[1]));
@@ -318,7 +356,7 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
  const out=[];
  for(let i=0;i<sheets.length;i++){
   check();notify("Reading worksheet "+(i+1)+" of "+sheets.length+"…");
-  const {rows,truncated}=worksheetRows(await read(sheets[i].path),strings);
+  const {rows,truncated}=worksheetRows(await read(sheets[i].path),strings,styles,date1904);
   out.push("Sheet "+(i+1)+(sheets[i].label?" · "+sheets[i].label:"")+"\n"+
    (rows.join("\n")||"[No cached cell values]")+
    (truncated?"\n[Notice: Worksheet text exceeded the local 10,000-row or 170,000-character limit; remaining cells were not extracted.]":""));
