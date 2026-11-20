@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Black Sun temple with eclipse, Anubis guardians, golden Eye of Chaos, pyramids and flame">
+<defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#060912"/><stop offset=".52" stop-color="#31141b"/><stop offset="1" stop-color="#8d4627"/></linearGradient>
+  <radialGradient id="corona"><stop offset=".38" stop-color="#fb9b33"/><stop offset=".53" stop-color="#f5bc54"/><stop offset=".61" stop-color="#e55627"/><stop offset=".78" stop-color="#88302c" stop-opacity=".65"/><stop offset="1" stop-color="#17121d" stop-opacity="0"/></radialGradient>
+  <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#64421d"/><stop offset=".27" stop-color="#f5d48a"/><stop offset=".5" stop-color="#a66a2d"/><stop offset=".73" stop-color="#fff1be"/><stop offset="1" stop-color="#745021"/></linearGradient>
+  <linearGradient id="stone" x2="1" y2="1"><stop stop-color="#18191e"/><stop offset=".5" stop-color="#05070b"/><stop offset="1" stop-color="#2c2022"/></linearGradient>
+  <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#a16c3f"/><stop offset="1" stop-color="#07080c"/></linearGradient>
+  <pattern id="glyphs" width="44" height="92" patternUnits="userSpaceOnUse"><g fill="none" stroke="#bd985e" stroke-width="1.8" opacity=".63"><path d="M9 10h24m-12 0v30M12 24h18M7 52c16-15 29 14 14 18-8 2-10-7-4-11m12-7v24M11 82h22"/></g></pattern>
+  <filter id="soft"><feGaussianBlur stdDeviation="22"/></filter>
+  <g id="anubis"><path d="M0 0 16-104 42-45 57-170 83-48 104-11 98 11 130 31 126 44 105 55 86 49 84 79 102 95 117 216 40 240 6 191 4 95-16 48-39 31Z" fill="url(#stone)" stroke="url(#gold)" stroke-width="5"/><path d="M12 25q44-10 83 17l31-1-26 10-18-2-36 8-33-9" fill="#141011" stroke="#ad824a" stroke-width="3"/><path d="M39 30q17-7 31 0l-17 7Z" fill="#f0a64f"/><path d="M7 98q43 25 83-1M7 120q44 22 88-1M5 142q50 25 93-2" fill="none" stroke="url(#gold)" stroke-width="6"/><path d="M18 182 77 189 87 215 12 208Z" fill="url(#gold)" opacity=".45"/></g>
+</defs>
+<rect width="1600" height="900" fill="url(#sky)"/>
+<ellipse cx="1118" cy="290" rx="450" ry="250" fill="#ac292c" opacity=".22" filter="url(#soft)"/>
+<circle cx="1095" cy="289" r="280" fill="url(#corona)"/>
+<circle cx="1095" cy="289" r="154" fill="#06070b" stroke="#ed9543" stroke-width="9"/>
+<circle cx="1095" cy="289" r="174" fill="none" stroke="#a76a38" stroke-width="2" stroke-dasharray="250 20 90 18"/>
+<g opacity=".62"><path d="M280 647 544 330 812 647Z" fill="#171315"/><path d="M503 647 748 387 966 647Z" fill="#251b1b"/><path d="M1194 647 1433 392 1674 647Z" fill="#161517"/></g>
+<path d="M0 635q300-98 596-20t502-8q292-100 502 32v261H0Z" fill="#180f12" opacity=".83"/>
+<g stroke="url(#gold)" stroke-width="5"><path d="M0 0h235l-30 650H0Z" fill="url(#stone)"/><path d="M1360 0h240v650h-209Z" fill="url(#stone)"/><path d="M0 0h1600v74H0Z" fill="url(#stone)"/></g>
+<rect x="47" y="92" width="107" height="500" fill="url(#glyphs)"/><rect x="1444" y="92" width="108" height="500" fill="url(#glyphs)"/>
+<path d="M0 74h1600M0 86h1600" stroke="url(#gold)" stroke-width="4" opacity=".7"/>
+<g transform="translate(166 376) scale(1.35)"><use href="#anubis"/></g>
+<g transform="translate(1434 376) scale(-1.35 1.35)"><use href="#anubis"/></g>
+<path d="M1100 73v80M1100 491v74M870 292h83M1238 292h80" stroke="url(#gold)" stroke-width="3" opacity=".8"/>
+<g transform="translate(1095 290)" fill="none" stroke="url(#gold)" stroke-width="9">
+ <path d="M-122 3Q0-119 122 3Q0 122-122 3Z"/>
+ <circle r="51" fill="#351710" stroke-width="7"/><circle r="25" fill="#e58b39" stroke-width="5"/><circle r="9" fill="#09080c" stroke-width="3"/>
+ <path d="M-147-24 0-90 147-24M-117 31-66 95M117 31 66 95M0-122v-39M0 120v35" stroke-width="6"/>
+</g>
+<g transform="translate(1100 678)" stroke="url(#gold)" stroke-width="3">
+<path d="M-230 0h460M-204 18h408M-180 38h360" opacity=".55"/>
+<path d="M0-98q-70-28-93 24 65 4 93 41Q28-70 93-74 63-126 0-98Z" fill="#865122"/><ellipse cx="0" cy="-56" rx="38" ry="60" fill="#37221b"/><circle cy="-88" r="19" fill="#17685c"/><path d="M-44-48-101 0M44-48 101 0M-28-23-71 28M28-23 71 28" fill="none"/>
+</g>
+<path d="M0 725Q750 640 1600 745v155H0Z" fill="url(#floor)"/>
+<g fill="none" stroke="#e9b167" stroke-width="2" opacity=".3"><path d="M600 900 1060 710M1400 900 1100 710M850 900 1080 710"/><path d="M0 755h1600M0 790h1600M0 830h1600"/></g>
+<path d="M0 0h870v900H0Z" fill="#05080b" opacity=".15"/>
+</svg>
