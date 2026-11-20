@@ -57,6 +57,20 @@ test("PDF honors logical page tree order rather than raw object IDs",async()=>{
  const result=await readKnightfallPdf(bytes);
  assert.match(result,/Page 1\nFIRST/);assert.match(result,/Page 2\nSECOND/);
 });
+test("PDF compressed object streams expose page dictionaries to text extraction",async()=>{
+ const pages="<< /Type /Pages /Kids [3 0 R] /Count 1 >>";
+ const page="<< /Type /Page /Parent 2 0 R /Contents 4 0 R >>";
+ const head="2 0 3 "+(pages.length+1)+" ";
+ const compressed=deflateSync(enc.encode(head+pages+" "+page));
+ const stream="BT (Compressed objects work) Tj ET";
+ const doc=Buffer.concat([
+  Buffer.from("%PDF-1.7\n1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n"+
+   "10 0 obj << /Type /ObjStm /N 2 /First "+head.length+" /Length "+compressed.length+" /Filter /FlateDecode >>\nstream\n"),
+  compressed,
+  Buffer.from("\nendstream\nendobj\n4 0 obj << /Length "+stream.length+" >>\nstream\n"+stream+"\nendstream\nendobj\n%%EOF")
+ ]);
+ assert.match(await readKnightfallPdf(new Uint8Array(doc)),/Compressed objects work/);
+});
 test("PDF direct stream lengths preserve literal endstream words inside extracted text",async()=>{
  const text="BT (The word endstream belongs to the document) Tj ET";
  const bytes=pdf([
