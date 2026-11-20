@@ -309,16 +309,17 @@ function unicodeMaps(cmapText){
    map.set(pair[1].toUpperCase(),utf16(hexBytes(pair[2])));
  }
  for(const match of cmapText.matchAll(/beginbfrange([\s\S]*?)endbfrange/g)){
-  const lines=match[1].split(/[\r\n]+/);
-  for(const line of lines){
-   const m=line.match(/<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>/);
-   if(!m)continue;
-   const start=parseInt(m[1],16),end=parseInt(m[2],16),base=parseInt(m[3],16);
-   if(!Number.isSafeInteger(start)||end-start>512||end<start)continue;
-   for(let i=start;i<=end;i++){
-    const src=i.toString(16).padStart(m[1].length,"0").toUpperCase();
-    const dst=(base+i-start).toString(16).padStart(m[3].length,"0");
-    map.set(src,utf16(hexBytes(dst)));
+  const re=/<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>\s*(?:<([0-9a-fA-F]+)>|\[([^\]]*)\])/g;
+  for(const m of match[1].matchAll(re)){
+   const first=parseInt(m[1],16),last=parseInt(m[2],16);
+   if(!Number.isSafeInteger(first)||!Number.isSafeInteger(last)||last<first||last-first>512)continue;
+   const codes=m[4]?[...m[4].matchAll(/<([0-9a-fA-F]+)>/g)].map(x=>x[1]):null;
+   const base=m[3]?parseInt(m[3],16):0;
+   if(m[3]&&!Number.isSafeInteger(base))continue;
+   for(let n=first;n<=last;n++){
+    const key=n.toString(16).padStart(m[1].length,"0").toUpperCase();
+    const value=codes?codes[n-first]:m[3]?(base+n-first).toString(16).padStart(m[3].length,"0"):null;
+    if(value&&value.length%4===0&&/^[0-9a-fA-F]+$/.test(value))map.set(key,utf16(hexBytes(value)));
    }
   }
  }
