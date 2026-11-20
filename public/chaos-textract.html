@@ -73,7 +73,7 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 <p>Feed the little demon a document. She'll turn its readable words into text you can inspect, copy, save, or explicitly hand to Miss Chaos for analysis.</p>
 <p class="notice"><strong>Private and free:</strong> files are processed in your browser. Text-layer PDFs and Office documents are supported. Pictures use on-device text detection where available, otherwise experimental OCR. Always verify important numbers.</p>
 <details><summary>Which documents can Textract read?</summary>
-<p>Selectable-text PDFs, DOCX, XLSX, PPTX and plain text work locally. Scanned PDF pages cannot yet be rendered or OCRed automatically; export them as individual images. No cloud upload, paid OCR API, Tesseract, PDF.js or third-party runtime is used.</p>
+<p>Selectable-text PDFs, DOCX, XLSX, PPTX and plain text work locally. JPEG-backed scanned PDF pages can now be recognized locally. Other scan encodings still require exporting pages as images. No cloud upload, paid OCR API, Tesseract, PDF.js or third-party runtime is used.</p>
 </details>
 </header>
 <div class="grid">
@@ -86,8 +86,8 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 <div class="filename" id="textract-filename">No file selected</div>
 <div class="controls"><button type="button" id="textract-self-test">Run reader self-test</button></div>
 <p id="textract-ocr-availability" class="help" role="status">Checking on-device image recognition…</p>
-<p class="help">18 MB maximum. The original PDF engine reads supported selectable text streams on up to 24 pages, but cannot render or OCR scanned PDF pages. Image OCR is experimental and intended for simple, high-contrast printed Latin text. Google Photos cloud-only images may need saving to Files.</p>
-<p class="help">𓂀 Original Glyph Forge OCR runs only on image files. It does not yet handle handwriting, arbitrary fonts, or PDF page rendering. Verify extracted names, numbers, and dates.</p>
+<p class="help">18 MB maximum. The original PDF engine reads supported selectable text streams on up to 24 pages, and can attempt OCR on drawn JPEG page images; other scans remain unsupported. Image OCR is experimental and intended for simple, high-contrast printed Latin text. Google Photos cloud-only images may need saving to Files.</p>
+<p class="help">𓂀 Original Glyph Forge OCR works on image files and JPEG-backed PDF pages. It does not render arbitrary PDF images, recognize handwriting reliably, or support every font. Verify extracted names, numbers, and dates.</p>
 <div class="controls"><button id="textract-extract" class="primary" disabled type="button">𓂀 Extract text</button><button id="textract-stop" type="button" hidden>Stop</button><button id="textract-clear" type="button">Clear</button></div>
 <div id="textract-status" role="status" aria-live="polite">Choose a file to begin.</div>
 </section>

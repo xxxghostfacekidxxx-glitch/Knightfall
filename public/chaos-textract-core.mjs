@@ -6,7 +6,7 @@
 import {readKnightfallOffice} from "./chaos-textract-native-zip.mjs";
 import {readKnightfallPdf} from "./chaos-textract-native-pdf.mjs";
 import {readKnightfallImageOcr} from "./chaos-textract-native-ocr.mjs";
-export const TEXTRACT_LIMITS=Object.freeze({bytes:18*1024*1024,chars:180000,pdfPages:24,ocrPages:0});
+export const TEXTRACT_LIMITS=Object.freeze({bytes:18*1024*1024,chars:180000,pdfPages:24,ocrPages:0,jpegPdfOcrPages:24});
 export const TEXTRACT_ENGINE="knightfall-native-v2";
 const supported=new Set(["txt","md","csv","tsv","json","xml","html","htm","log","css","js","mjs","ts","svg","pdf","docx","xlsx","pptx","png","jpg","jpeg","webp","gif","bmp","avif"]);
 const TEXT_EXT=new Set(["txt","md","csv","tsv","json","xml","html","htm","log","css","js","mjs","ts","svg"]);
