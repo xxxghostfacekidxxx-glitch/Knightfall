@@ -66,3 +66,18 @@
 @media(max-width:850px){.chaos-grid{grid-template-columns:1fr}.chaos-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.chaos-shell{width:calc(100% - 1rem);margin:1rem auto 4rem}.chaos-hero{padding:1rem}.chaos-form-grid{grid-template-columns:1fr}.chaos-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.chaos-tabs button{width:100%;padding:.7rem .4rem}.chaos-shield{border-radius:10px}.chaos-card{padding:.9rem}}
 @media(prefers-reduced-motion:reduce){.chaos-shell *, .chaos-shell *::before,.chaos-shell *::after{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* The supervised code docket is staff-only and never renders raw code as HTML. */
+#chaos-dev-review-panel{margin:18px 0;border-color:#5aaf8b}
+.chaos-dev-review-item{border:1px solid #666077;border-radius:12px;padding:13px;margin:10px 0}
+.chaos-dev-review-item h4{margin:0 0 9px;color:#ffd8ea;overflow-wrap:anywhere}
+.chaos-dev-review-details{min-width:0;display:grid;gap:10px;margin-top:10px}
+.chaos-dev-review-code{white-space:pre-wrap;overflow-wrap:anywhere;max-height:370px;overflow:auto;background:#080d13;color:#d5fce9;padding:12px;border:1px solid #486c60;border-radius:9px;font:400 .77rem/1.55 ui-monospace,Consolas,monospace}
+.chaos-dev-review-details details{min-width:0}
+.chaos-dev-review-details summary{cursor:pointer;font-weight:800;color:#b4ffd8}
+.chaos-dev-review-decision{border:1px solid #784c77;background:#201423;padding:12px;border-radius:10px}
+.chaos-dev-review-decision label{display:grid;gap:9px;color:#f6d9ed;font-size:.82rem}
+.chaos-dev-review-decision textarea{box-sizing:border-box;width:100%;max-width:100%;background:#0a0d14;color:#f9f3fb;border:1px solid #89618b;border-radius:8px;padding:10px;font:inherit}
+.chaos-dev-review-decision button{min-height:40px}
+#chaos-dev-review-status[data-error="true"]{color:#ffb3ce}
