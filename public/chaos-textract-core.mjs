@@ -54,8 +54,16 @@ export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={
  if(TEXT_EXT.has(ext)){notify("Reading text locally…");output=await readTextractPlainText(file);}
  else if(["docx","xlsx","pptx"].includes(ext)){
   mode="native-office";output=await readKnightfallOffice(file,ext,{notify,cancelled});
-  if(output.includes("[Notice: "))
-   warning="This Office extraction is incomplete. Some slides, worksheets, or cells exceeded safe processing limits. Split the document to recover omitted content.";
+  if(output.includes("[Notice: ")){
+   const reasons=[];
+   if(output.includes("workbook tab(s) could not be read"))
+    reasons.push("One or more Excel tabs have unresolved or unsupported workbook relationships and were omitted. Repair or re-export the workbook to recover them.");
+   if(output.includes("no worksheet relationship metadata"))
+    reasons.push("Excel tab names and order are unverified because worksheet relationship metadata is missing.");
+   if(output.includes("Worksheet text exceeded")||output.includes("[Notice: Only "))
+    reasons.push("Some worksheet rows, sheets, or slides exceeded the local safety limit; split the document to extract the remainder.");
+   warning="This Office extraction is incomplete or unverified. "+reasons.join(" ");
+  }
  }else if(ext==="pdf"){
   mode="native-pdf";output=await readKnightfallPdf(file,{notify,cancelled});
   if(output.includes("[No selectable text detected"))
