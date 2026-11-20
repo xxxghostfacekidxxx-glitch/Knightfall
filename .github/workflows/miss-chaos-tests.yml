@@ -26,6 +26,9 @@ on:
       - 'scripts/chaos-crucible.test.mjs'
       - 'scripts/chaos-crucible-progress.test.mjs'
       - 'scripts/chaos-crucible-shelf.test.mjs'
+      - 'public/chaos-dev-review-ui.mjs'
+      - 'backend/src/chaos-dev-reviews*'
+      - 'scripts/chaos-dev-review-ui.test.mjs'
       - 'scripts/miss-chaos-field-kit.test.mjs'
       - 'public/creator-art-studio*'
       - 'public/devil-tools.html'
@@ -80,6 +83,12 @@ jobs:
           node --check public/miss-chaos-guide.mjs
           node --check backend/chaos-public-tools.mjs
           node --test scripts/miss-chaos-guide.test.mjs scripts/miss-chaos-site-index.test.mjs
+      - name: Verify supervised developer reviews, source verification and human approval gates
+        run: |
+          node --check backend/src/chaos-dev-reviews.js
+          node --check public/chaos-dev-review-ui.mjs
+          node --test backend/src/chaos-dev-reviews.test.mjs scripts/chaos-dev-review-ui.test.mjs
+          python3 scripts/test_chaos_dev_reviews_sql.py
       - name: Verify Miss Chaos floating dock, private modes and memo publishing
         run: |
           node --check public/nav.js
