@@ -1,55 +1,55 @@
 /*
- * KNIGHTFALL / CATHEDRAL REQUIEM
- * Final, canonical visual layer. No script, remote font, or additional runtime.
+ * KNIGHTFALL / BLACK SUN TEMPLE
+ * Canonical Egyptian-inspired visual layer. No script, remote font, or additional runtime.
  * Artwork exists in /assets/knightfall; member profiles and gameplay stay owned
  * by their own themes. Alternate GOD presets stay owned by theme-crew.css.
  */
-:root{--kf-requiem-version:1}
+:root{--kf-requiem-version:2}
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
  --kf-relic-gold:#efcf9d;--kf-relic-gold-dim:#a78364;--kf-relic-ivory:#f5e9dd;
- --kf-relic-crimson:#bd557b;--kf-relic-violet:#9273b2;
- --kf-relic-halo:0 0 26px #c477bd26,0 0 74px #e19d9b16;
+ --kf-relic-crimson:#c45a37;--kf-relic-emerald:#67aa95;
+ --kf-relic-halo:0 0 26px #ed9c3626,0 0 74px #c75a2816;
  --kf-relic-line:rgba(221,169,128,.54);
  color:var(--kf-relic-ivory);
- background-color:#090a11!important;
+ background-color:#090a0b!important;
  background-image:
- radial-gradient(ellipse at 55% -12%,#b866a84a,transparent 60%),
- radial-gradient(ellipse at 5% 75%,#896bc332,transparent 48%),
- linear-gradient(180deg,#0a0c14a6 0%,#0c0d17b5 55%,#0a0912db 100%),
- url('/assets/knightfall/vaulted-cathedral.svg')!important;
+ radial-gradient(ellipse at 55% -12%,#b65a2a4a,transparent 60%),
+ radial-gradient(ellipse at 5% 75%,#216d5d32,transparent 48%),
+ linear-gradient(180deg,#090b0ca6 0%,#10100eb5 55%,#090909db 100%),
+ url('/assets/knightfall/royal-cartouche.svg')!important;
  background-position:center top,left bottom,center,center top!important;
- background-size:auto,auto,cover,cover!important;
+ background-size:auto,auto,cover,100% 110px!important;
  background-repeat:no-repeat!important;
 }
 /* Architectural chrome: ribbed vault, metallic underline and illuminated crest. */
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header{
  min-height:76px;
- background-image:linear-gradient(90deg,#0b0d16d9,#181321bd 50%,#0b0d17df),url('/assets/knightfall/vaulted-cathedral.svg')!important;
- background-position:center,center 43%!important;
- background-size:cover,cover!important;
+ background-image:linear-gradient(90deg,#110f0dd9,#241916bd 50%,#0b100ddf),url('/assets/knightfall/royal-cartouche.svg')!important;
+ background-position:center,center!important;
+ background-size:cover,100% 100%!important;
  border-bottom:1px solid #d8a77a80!important;
- box-shadow:0 2px 0 #100e19,0 16px 46px #000b,0 0 28px #b95a8640!important;
+ box-shadow:0 2px 0 #100e19,0 16px 46px #000b,0 0 28px #b95a3840!important;
 }
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-brand{
  color:#f7e4c9!important;
  font-family:Georgia,'Times New Roman',serif!important;
  font-size:clamp(1.08rem,2vw,1.5rem)!important;
  letter-spacing:.13em!important;
- text-shadow:0 2px 4px #000,0 0 24px #e8ad8870!important;
+ text-shadow:0 2px 4px #000,0 0 24px #edbd7570!important;
 }
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header :is(.kf-nav a,.kf-nav-group>summary,.kf-nav-primary,.kf-nav-toggle){
  border:1px solid #c49b762b!important;
- background:linear-gradient(170deg,#30243999,#12101b77)!important;
+ background:linear-gradient(170deg,#29221a99,#11120e77)!important;
  color:#f1d9c8!important;
  box-shadow:inset 0 1px #e4bca31e!important;
 }
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header :is(.kf-nav a:hover,.kf-nav-group>summary:hover,.kf-nav-group[open]>summary,.kf-nav a[aria-current="page"]){
  border-color:#e4b78c8c!important;
- background:linear-gradient(130deg,#573047e8,#291f39e8)!important;
+ background:linear-gradient(130deg,#67351de8,#202316e8)!important;
  color:#ffe8c4!important;
  box-shadow:inset 0 1px #f0cda447,0 0 24px #b4588c44!important;
 }
-/* The opening vista is a cathedral, not a generic rectangular banner. */
+/* The hero is a Black Sun temple; copy stays readable over the dark left side. */
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme) .home-intro{
  position:relative;isolation:isolate;
  min-height:clamp(570px,64vw,785px)!important;
@@ -59,34 +59,31 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.p
  overflow:hidden;
  border:2px solid #d6a876c7!important;
  border-radius:clamp(18px,3vw,32px)!important;
- background-color:#090a11!important;
+ background-color:#090a0b!important;
  background-image:
  url('/assets/knightfall/gothic-chrome-frame.svg'),
- linear-gradient(90deg,#0a0917eb 0%,#110f1fb5 41%,#110e222a 70%,#0d0b1c14 100%),
- url('/assets/knightfall/obsidian-cathedral.svg')!important;
+ linear-gradient(90deg,#0a0b0aeb 0%,#17120fb5 41%,#17281d2a 70%,#0f121014 100%),
+ url('/assets/knightfall/black-sun-temple.svg')!important;
  background-size:100% 100%,cover,cover!important;
- background-position:center,center,center 43%!important;
+ background-position:center,center,center 38%!important;
  background-repeat:no-repeat!important;
- box-shadow:inset 0 0 0 4px #110f1bdc,inset 0 0 0 6px #b68d674c,0 35px 90px #000c,0 0 75px #b55d7833!important;
+ box-shadow:inset 0 0 0 4px #17110ddc,inset 0 0 0 6px #b68d674c,0 35px 90px #000c,0 0 75px #bc703733!important;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::before{
  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
- background:linear-gradient(0deg,#080914fa 0%,#0b0a17c6 28%,#0a0b1720 76%),radial-gradient(ellipse at 80% 28%,#c67eab36,transparent 48%);
+ background:linear-gradient(0deg,#090b09fa 0%,#130f0bc6 28%,#10110d20 76%),radial-gradient(ellipse at 80% 28%,#dc823536,transparent 48%);
 }
-/* One authoritative stained-glass window, no footer divider workaround. */
+/* Single decorative cartouche at the base, not an image obstructing the hero. */
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
- content:"";display:block;position:absolute;inset:auto;left:auto;bottom:auto;
- z-index:1;pointer-events:none;right:-1.5%;top:-2%;
- width:min(53%,590px);height:clamp(440px,51vw,690px);aspect-ratio:auto;
- background:url('/assets/knightfall/sanctum-stained-glass.svg') center top/contain no-repeat;
- opacity:.96;mix-blend-mode:screen;
- -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 65%,transparent 100%);
- mask-image:linear-gradient(180deg,#000 0%,#000 65%,transparent 100%);
- filter:drop-shadow(0 0 48px #dc6fc49a);
+ content:"";display:block;position:absolute;z-index:1;pointer-events:none;
+ inset:auto 8% 10px;width:84%;height:55px;
+ background:url('/assets/knightfall/royal-cartouche.svg') center/100% 100% no-repeat;
+ opacity:.74;filter:drop-shadow(0 0 15px #ab743977);
 }
+
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
- max-width:850px!important;
+ max-width:850px!important;overflow-wrap:anywhere;
  margin:0 0 .6rem!important;
  color:#fff1db!important;
  font:700 clamp(2.6rem,6.8vw,6.5rem)/.99 Georgia,'Times New Roman',serif!important;
@@ -94,8 +91,8 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-
  text-shadow:0 3px 2px #08070be6,0 13px 34px #000,0 0 22px #a76b9240!important;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1 span{
- color:#f2b7be!important;
- background:linear-gradient(100deg,#ffe8c5 0%,#f0a8b9 52%,#d797e1 100%);
+ color:#f2c985!important;
+ background:linear-gradient(100deg,#ffe8c5 0%,#df9e53 52%,#79b9a0 100%);
  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro>p{
@@ -119,15 +116,15 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.k
  padding:clamp(1.1rem,3vw,2.5rem)!important;
  border:1px solid #d2a47f91!important;
  border-radius:22px!important;
- background:linear-gradient(135deg,#241729c9,#111421d9 52%,#25182bcb),url('/assets/knightfall/vaulted-cathedral.svg') center/cover!important;
- box-shadow:inset 0 1px #ead3b04d,inset 0 0 0 4px #120e19,0 20px 54px #0009,0 0 45px #b64d8430!important;
+ background:linear-gradient(135deg,#241a12f0,#121510ed 52%,#281a14ef),url('/assets/knightfall/royal-cartouche.svg') center top/100% 95px no-repeat!important;
+ box-shadow:inset 0 1px #ead3b04d,inset 0 0 0 4px #120e19,0 20px 54px #0009,0 0 45px #b66f3230!important;
  margin-block:1.6rem 2.5rem!important;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-start-here::after{
  content:"";position:absolute;z-index:-1;pointer-events:none;
  right:-9%;top:-110px;width:min(55%,450px);aspect-ratio:1;
- background:url('/assets/knightfall/rose-window.svg') center/contain no-repeat;
- opacity:.2;mix-blend-mode:screen;mask-image:radial-gradient(circle,#000 33%,transparent 70%);
+ background:url('/assets/knightfall/royal-cartouche.svg') center/contain no-repeat;
+ opacity:.2;mix-blend-mode:screen;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-heading h2,.kf-atlas-heading h2,.activity-heading h2,.section-heading h2){
  font-family:Georgia,'Times New Roman',serif!important;
@@ -142,7 +139,7 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.k
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group){
  border:1px solid #ce9c7d84!important;
  border-radius:17px!important;
- background-image:linear-gradient(105deg,#251b2ef0 0%,#171826df 53%,#1414204d 100%),var(--kf-start-art,url('/assets/knightfall/rose-window.svg'))!important;
+ background-image:linear-gradient(105deg,#291b16f0 0%,#151816df 53%,#1521184d 100%),var(--kf-start-art,url('/assets/knightfall/rose-window.svg'))!important;
  background-position:center,60% center!important;background-size:cover,cover!important;
  box-shadow:inset 0 1px #f5d3b52f,0 12px 26px #0008,0 0 24px #a4507c19!important;
  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
@@ -177,7 +174,7 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.k
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .manifesto{
  border-block:1px solid #d0a47788;
- background:linear-gradient(90deg,transparent,#4c2d447c,transparent);
+ background:linear-gradient(90deg,transparent,#5b38277c,transparent);
  padding:2.5rem 1rem;text-align:center;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .manifesto p{
@@ -188,11 +185,11 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .manif
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) [data-kf-art-hero]{
  border:1px solid #d6a778b5!important;
  border-radius:20px!important;
- background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0c0e1ae8 0%,#12111dca 43%,#17111b33 100%),url('/assets/knightfall/rose-window.svg'),var(--kf-art-image)!important;
- background-size:100% 100%,cover,clamp(170px,25vw,340px) auto,cover!important;
- background-position:center,center,right 3% center,center!important;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0c0f0de8 0%,#17120eca 43%,#17271b33 100%),url('/assets/knightfall/royal-cartouche.svg'),var(--kf-art-image)!important;
+ background-size:100% 100%,cover,clamp(170px,25vw,340px) 80px,cover!important;
+ background-position:center,center,right 3% bottom 12%,center!important;
  background-repeat:no-repeat!important;
- box-shadow:inset 0 0 0 4px #15101cd6,0 25px 65px #000a,0 0 35px #a9558230!important;
+ box-shadow:inset 0 0 0 4px #15101cd6,0 25px 65px #000a,0 0 35px #a9753430!important;
 }
 /* Accessibility and practical mobile spacing matter more than visual theatrics. */
 @media(max-width:780px){
@@ -201,7 +198,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
   padding:1.5rem!important;background-position:center,center,54% center!important;
  }
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
-  top:-24px;right:-9%;width:100%;opacity:.75;mask-image:linear-gradient(180deg,#000 0%,#000 51%,transparent 94%);
+  inset:auto 5% 8px;width:90%;height:35px;opacity:.7;
  }
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
   font-size:clamp(2.25rem,10vw,3.8rem)!important;
@@ -233,10 +230,10 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
 }
 
 
-/* Compact screen refinement, using the same single glass owner. */
+/* Compact screen refinement for the single cartouche owner. */
 @media(max-width:420px){
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
-  height:385px;right:-7%;opacity:.8
+  height:28px;right:5%;left:5%;width:90%;opacity:.65
  }
 }
 @media(forced-colors:active){
