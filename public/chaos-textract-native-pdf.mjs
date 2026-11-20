@@ -536,9 +536,9 @@ export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false,
     }
    }
   }
-  if(chunks.some(x=>!/^\[Embedded JPEG OCR unsuccessful:/.test(x))){valid++;totalChars+=chunks.join("").length;}
+  if(chunks.some(x=>!/^\[Embedded (?:JPEG|Flate) OCR unsuccessful:/.test(x))){valid++;totalChars+=chunks.join("").length;}
   if(totalChars>MAX_TOTAL)throw Error("PDF extracted text exceeds memory safety limits.");
-  parts.push("Page "+(i+1)+"\n"+(chunks.join("\n")||"[No selectable text detected; JPEG image OCR may not be supported for this page]"));
+  parts.push("Page "+(i+1)+"\n"+(chunks.join("\n")||"[No selectable text detected; this page may use an unsupported scanned-image encoding]"));
  }
  if(!valid)throw Error("No selectable text could be recovered. Embedded JPEG and Flate image OCR were attempted where supported. Other scanned PDFs may use unsupported image encodings; export their pages as individual images.");
  if(pages.length>visible.length)
