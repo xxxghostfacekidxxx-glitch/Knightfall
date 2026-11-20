@@ -47,8 +47,16 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ffe5
 #textract-stats{font-size:.8rem;color:#d9bd94}
 footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.hero{padding:1.3rem}.panel{padding:.9rem}main{margin-top:1rem}textarea{min-height:240px}}
+
+.tools-grid{margin-top:1rem}
+#textract-search-results{max-height:225px;overflow:auto;padding-left:1.6rem;line-height:1.5}
+#textract-search-results li{margin:.5rem 0;overflow-wrap:anywhere}
+#textract-fields{white-space:pre-wrap;overflow-wrap:anywhere;max-height:225px;overflow:auto;background:#100e14;border-radius:10px;border:1px solid #725f59;padding:.9rem;line-height:1.55;font-size:.84rem}
+#textract-compare-output{min-height:220px}
+.tool-stats{color:#e3bf91;font-weight:650}
+.tools-grid .panel p{line-height:1.5}
 </style>
-<script type="module" src="/chaos-textract.mjs?v=20261120-a"></script>
+<script type="module" src="/chaos-textract.mjs?v=20261120-lab2"></script>
 </head>
 <body>
 <header class="kf-header"></header>
@@ -58,7 +66,7 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 <div class="eyebrow">𓂀 MISS CHAOS · THE SCRIBE'S CHAMBER</div>
 <h1>TEX<span>TRACT</span></h1>
 <p>Feed the little demon a document. She'll turn its readable words into text you can inspect, copy, save, or explicitly hand to Miss Chaos for analysis.</p>
-<p class="notice"><strong>Free and local first:</strong> your original files stay in this browser. PDF, Word, spreadsheet, slide, and image processing uses open-source libraries loaded on demand. The first OCR run downloads language data and needs an internet connection. No Amazon Textract account or paid API is used.</p>
+<p class="notice"><strong>Free and local first:</strong> your original files stay in this browser. PDF, Word, spreadsheet, slide, and image processing uses open-source libraries loaded on demand. The extraction engines, workers, WASM, and English OCR language file are served directly by Knightfall. No AWS account, paid API, or third-party runtime CDN.</p>
 </header>
 <div class="grid">
 <section class="panel" aria-labelledby="source-title">
@@ -91,6 +99,43 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 <p class="help">This stages a short excerpt in the chat composer. You must review it and press Send before Miss Chaos receives anything. Long documents can be downloaded and broken into excerpts.</p>
 </section>
 </div>
-<footer>⚠ OCR can misread handwriting, low-resolution images, columns, and numbers. Do not rely on it without checking against the original. Third-party libraries are downloaded from public CDNs, but your selected file is processed locally. No extracted text is stored in Knightfall until you choose to send it in chat.</footer>
+<div class="grid tools-grid" aria-label="Advanced Textract document tools">
+<section class="panel" aria-labelledby="inspect-title">
+<h2 id="inspect-title">04 · Document intelligence</h2>
+<p>Explore readable text and export structured results. All inspection happens on your device.</p>
+<p class="tool-stats" id="textract-intelligence-stats">Extract a document to unlock statistics.</p>
+<div class="field">
+<label for="textract-search">Find a phrase in the extracted text</label>
+<input id="textract-search" type="search" placeholder="Search names, dates, amounts, or keywords" autocomplete="off">
+</div>
+<p class="help" id="textract-search-count" aria-live="polite"></p>
+<ol id="textract-search-results" aria-label="Text search matches"></ol>
+<h3>Detected key-value pairs</h3>
+<pre id="textract-fields" aria-label="Key value extraction preview">No document loaded.</pre>
+<p class="help">Tables and key-value pairs are best-effort, not guaranteed. Scan errors can affect labels, numbers, and columns.</p>
+<div class="controls">
+<button id="textract-export-json" type="button" disabled>Download structured JSON</button>
+<button id="textract-export-csv" type="button" disabled>Download lines CSV</button>
+<button id="textract-export-fields" type="button" disabled>Download fields CSV</button>
+<button id="textract-export-tables" type="button" disabled>Download tables CSV</button>
+</div>
+</section>
+<section class="panel" aria-labelledby="compare-title">
+<h2 id="compare-title">05 · Compare two documents</h2>
+<p>Extract the original above, then choose a second version to find added or removed text. Neither file is uploaded.</p>
+<div class="field"><label for="textract-compare-file">Second document or revision</label>
+<input id="textract-compare-file" type="file" accept=".pdf,.docx,.xlsx,.pptx,.txt,.md,.csv,.tsv,.json,.xml,.html,.htm,.log,.css,.js,.mjs,.ts,.svg,image/*"></div>
+<div class="controls">
+<button id="textract-compare" class="primary" type="button" disabled>Compare with original</button>
+<button id="textract-compare-stop" type="button" hidden>Stop comparison</button>
+<button id="textract-export-diff" type="button" disabled>Download changes</button>
+</div>
+<p id="textract-compare-status" class="help" role="status" aria-live="polite">Choose and extract the first file, then select another.</p>
+<label class="field" for="textract-compare-output">Detected text differences (editable for copying)</label>
+<textarea id="textract-compare-output" spellcheck="false" readonly placeholder="Differences between two extracted documents appear here."></textarea>
+<p class="help">This compares extracted lines, not visual layout. It may show an edited line as one removed line and one added line; rearranged or unreadable content requires manual checking.</p>
+</section>
+</div>
+<footer>⚠ OCR can misread handwriting, low-resolution images, columns, and numbers. Do not rely on it without checking against the original. Open-source engines are hosted by Knightfall with upstream licenses; your selected files are processed locally. No extracted text is stored in Knightfall until you choose to send it in chat.</footer>
 </main>
 </body></html>
