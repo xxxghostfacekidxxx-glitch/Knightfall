@@ -110,7 +110,7 @@ export function parseKnightfallXml(raw){
  if(raw.length>MAX_SECTION)throw Error("Document XML exceeds 4 MB.");
  if(/<!DOCTYPE|<!ENTITY/i.test(raw))throw Error("Unsafe XML document type or custom entity.");
  const tokens=[];
- const pattern=/<!--[\s\S]*?-->|<!\[CDATA\[([\s\S]*?)\]\]>|<([^>]+)>|([^<]+)/g;
+ const pattern=/<!--[\s\S]*?-->|<!\[CDATA\[([\s\S]*?)\]\]>|<((?:[^"'<>]|"[^"]*"|'[^']*')+)>|([^<]+)/g;
  let match;
  while((match=pattern.exec(raw))){
   if(tokens.length>450000)throw Error("Document XML has too many elements.");
@@ -141,11 +141,11 @@ function xmlText(raw,{paragraph="p",textTag="t",includeRows=false}={}){
    if(token.name==="tr"&&includeRows){space();lastCell=false;}
    if(token.name==="tc"&&includeRows){if(lastCell)pieces.push("\t");lastCell=true;}
    if(token.name==="tab")pieces.push("\t");
-   if(token.name===textTag||token.name==="instrText")textDepth++;
+   if(token.name===textTag)textDepth++;
    if(token.self&&token.name===textTag)textDepth=Math.max(0,textDepth-1);
   }else{
    if(token.name==="del"||token.name==="delText"){skip=Math.max(0,skip-1);continue;}
-   if(token.name===textTag||token.name==="instrText")textDepth=Math.max(0,textDepth-1);
+   if(token.name===textTag)textDepth=Math.max(0,textDepth-1);
   }
  }
  return pieces.join("").replace(/[\t ]+\n/g,"\n").replace(/^\s+|\s+$/g,"").replace(/\n{4,}/g,"\n\n\n");
@@ -198,9 +198,31 @@ function worksheetRows(raw,strings){
  finishCell();finishRow();
  return rows;
 }
-function sheetLabels(raw){
- if(!raw)return [];
- return [...raw.matchAll(/<(?:(?:\w+):)?sheet\b([^>]*)\/?>/g)].map(m=>attrsFrom(m[1]).name||"");
+function workbookSheetDefinitions(raw){
+ const definitions=[];
+ for(const token of parseKnightfallXml(raw))
+  if(token.type==="start"&&token.name==="sheet")
+   definitions.push({name:token.attrs.name||"",id:token.attrs["r:id"]||""});
+ return definitions;
+}
+function worksheetRelationships(raw){
+ const relationships=new Map();
+ for(const token of parseKnightfallXml(raw)){
+  if(token.type!=="start"||token.name!=="Relationship")continue;
+  const {Id,Target,Type,TargetMode}=token.attrs;
+  if(!Id||!Target||TargetMode==="External"||!/\/worksheet$/.test(Type||""))continue;
+  const stack=Target.startsWith("/")?[]:["xl"];
+  let unsafe=false;
+  for(const segment of Target.split("/")){
+   if(!segment||segment===".")continue;
+   if(segment===".."){if(!stack.length){unsafe=true;break;}stack.pop();}
+   else if(/^[A-Za-z0-9_.-]+$/.test(segment))stack.push(segment);
+   else {unsafe=true;break;}
+  }
+  const path=stack.join("/");
+  if(!unsafe&&/^xl\/worksheets\/sheet\d+\.xml$/.test(path))relationships.set(Id,path);
+ }
+ return relationships;
 }
 export async function readKnightfallOffice(file,extension,{notify=()=>{},cancelled=()=>false}={}){
  const zip=await openKnightfallZip(file);
@@ -234,16 +256,19 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
  if(extension!=="xlsx")throw Error("Unsupported Office format.");
  notify("Reading Excel shared strings and cell values…");
  const strings=sharedStrings(await read("xl/sharedStrings.xml"));
- const labels=sheetLabels(await read("xl/workbook.xml"));
- const sheets=names.filter(s=>/^xl\/worksheets\/sheet\d+\.xml$/.test(s))
-  .sort((a,b)=>Number(a.match(/sheet(\d+)/)[1])-Number(b.match(/sheet(\d+)/)[1])).slice(0,25);
+ const definitions=workbookSheetDefinitions(await read("xl/workbook.xml"));
+ const rels=worksheetRelationships(await read("xl/_rels/workbook.xml.rels"));
+ const available=names.filter(s=>/^xl\/worksheets\/sheet\d+\.xml$/.test(s))
+  .sort((a,b)=>Number(a.match(/sheet(\d+)/)[1])-Number(b.match(/sheet(\d+)/)[1]));
+ const linked=definitions.map((def,i)=>({path:rels.get(def.id)||available[i]||"",label:def.name||"Sheet "+(i+1)}))
+  .filter(def=>available.includes(def.path));
+ const sheets=(linked.length?linked:available.map((path,i)=>({path,label:definitions[i]?.name||"Sheet "+(i+1)}))).slice(0,25);
  if(!sheets.length)throw Error("No Excel worksheets found.");
  const out=[];
  for(let i=0;i<sheets.length;i++){
   check();notify("Reading worksheet "+(i+1)+" of "+sheets.length+"…");
-  const index=Number(sheets[i].match(/sheet(\d+)/)[1]);
-  const rows=worksheetRows(await read(sheets[i]),strings);
-  out.push("Sheet "+index+(labels[index-1]?" · "+labels[index-1]:"")+"\n"+(rows.join("\n")||"[No cached cell values]"));
+  const rows=worksheetRows(await read(sheets[i].path),strings);
+  out.push("Sheet "+(i+1)+(sheets[i].label?" · "+sheets[i].label:"")+"\n"+(rows.join("\n")||"[No cached cell values]"));
  }
  if(!out.some(x=>!/^\s*Sheet[^\n]*\n\[No cached cell values\]$/.test(x)))
   throw Error("Spreadsheet contains no readable cached text or values.");
