@@ -34,6 +34,13 @@ function decodePdfString(token){
   for(let i=2;i+1<bytes.length;i+=2)output+=String.fromCharCode((bytes[i]<<8)|bytes[i+1]);
   return output;
  }
+ // Some PDF text streams store basic Latin glyphs as big-endian two-byte
+ // sequences without a BOM. Recognize only the unambiguous zero-high-byte case.
+ if(bytes.length>=4&&bytes.length%2===0&&bytes.every((value,index)=>index%2===1||value===0)){
+  let text="";
+  for(let i=1;i<bytes.length;i+=2)text+=String.fromCharCode(bytes[i]);
+  return text;
+ }
  if(bytes.length>2&&bytes[0]===239&&bytes[1]===187&&bytes[2]===191)
   return UTF8.decode(new Uint8Array(bytes.slice(3)));
  return LATIN.decode(new Uint8Array(bytes));
