@@ -89,12 +89,20 @@ try {
           assert.equal(crewCascade.activeTheme,"cathedral",label + " must default to the approved Egyptian Black Sun identity");
 
           if (realmArtwork[route]) {
-            const expected = realmArtwork[route];
+            const expected = route === "/" && viewport.isMobile ? "black-sun-mobile.svg" : realmArtwork[route];
             const selector = route === "/" ? ".home-intro" : "[data-kf-art-hero]";
             await page.waitForSelector(selector, {timeout: 10000});
             const background = await page.locator(selector).evaluate(node => getComputedStyle(node).backgroundImage);
             assert.ok(background.includes(expected),
-              label + " must render original artwork " + expected + "; found " + background);
+              label + " must render fallback artwork " + expected + "; found " + background);
+            if (route === "/") {
+              const poster = await page.locator(".kf-black-sun-art img").evaluate(img => ({
+                src: img.currentSrc, width: img.naturalWidth, alt: img.alt
+              }));
+              assert.match(poster.src,/black-sun-hero-illustration\.webp/,label+" must use the original self-hosted Egyptian illustration");
+              assert.equal(poster.width,1200,label+" must load the optimized Egyptian poster");
+              assert.match(poster.alt,/Anubis guardians/,label+" must describe the scene accessibly");
+            }
             assert.ok(state.stylesheets.some(sheet => sheet.includes("/theme.css")),
               label + " must mount the canonical artwork layer");
           }
