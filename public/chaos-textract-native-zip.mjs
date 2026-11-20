@@ -5,6 +5,17 @@
  */
 const MAX_ENTRIES=2048,MAX_SECTION=4*1024*1024,MAX_TOTAL=24*1024*1024;
 const dec=new TextDecoder("utf-8",{fatal:false});
+const CRC32_TABLE=(()=>{const table=new Uint32Array(256);
+ for(let i=0;i<256;i++){let value=i;
+  for(let n=0;n<8;n++)value=(value&1)?(0xEDB88320^(value>>>1)):(value>>>1);
+  table[i]=value>>>0;
+ }
+ return table;
+})();
+function crc32(data){let crc=0xFFFFFFFF;
+ for(const value of data)crc=CRC32_TABLE[(crc^value)&255]^(crc>>>8);
+ return (crc^0xFFFFFFFF)>>>0;
+}
 function uint16(view,i){return view.getUint16(i,true);}
 function uint32(view,i){return view.getUint32(i,true);}
 function requireRange(bytes,offset,length,label){
@@ -28,7 +39,7 @@ export function listKnightfallZipEntries(bytes){
   requireRange(bytes,cursor,46,"central directory header");
   if(uint32(v,cursor)!==0x02014b50)throw Error("Malformed ZIP central directory.");
   const flags=uint16(v,cursor+8),method=uint16(v,cursor+10);
-  const compressed=uint32(v,cursor+20),size=uint32(v,cursor+24);
+  const compressed=uint32(v,cursor+20),size=uint32(v,cursor+24),checksum=uint32(v,cursor+16);
   const nameLength=uint16(v,cursor+28),extraLength=uint16(v,cursor+30),commentLength=uint16(v,cursor+32);
   const localOffset=uint32(v,cursor+42);
   requireRange(bytes,cursor+46,nameLength+extraLength+commentLength,"directory entry");
@@ -41,7 +52,7 @@ export function listKnightfallZipEntries(bytes){
   // Do not count images, thumbnails and embedded media against a text
   // extraction budget when we never decompress them. Count actual reads below.
   if(entries.has(name))throw Error("ZIP has duplicate document entries: "+name);
-  entries.set(name,{name,method,compressed,size,localOffset});
+  entries.set(name,{name,method,compressed,size,localOffset,checksum});
  }
  return entries;
 }
@@ -89,6 +100,8 @@ export async function openKnightfallZip(file){
    const packed=bytes.subarray(start,start+item.compressed);
    const plain=item.method===0?packed:await inflateDeflate(packed);
    if(plain.length!==item.size)throw Error("ZIP section length failed verification.");
+   if(item.checksum!==0&&crc32(plain)!==item.checksum)
+    throw Error("ZIP section failed CRC integrity verification: "+item.name);
    expandedRead+=plain.length;
    if(expandedRead>MAX_TOTAL)throw Error("Extracted Office XML exceeds memory safety limits.");
    return dec.decode(plain);
