@@ -1,4 +1,5 @@
 import {extractTextract,validateTextractFile,buildTextractDraft,TEXTRACT_LIMITS} from "./chaos-textract-core.mjs";
+import {textStats,findTextMatches,extractKeyValues,extractPossibleTableRows,makeTextractCsv,makeTextractTableCsv,makeTextractJson,compareTextractTexts,formatTextractComparison} from "./chaos-textract-lab-core.mjs";
 const $=id=>document.getElementById(id);
 const input=$("textract-file"),drop=$("textract-drop"),output=$("textract-output"),status=$("textract-status");
 const extractButton=$("textract-extract"),stopButton=$("textract-stop"),copyButton=$("textract-copy");
@@ -9,7 +10,7 @@ function report(message,isError=false){status.textContent=message;status.dataset
 function choose(file){
  try{
   validateTextractFile(file);
-  currentFile=file;active++;output.value="";stats.textContent="";nameLabel.textContent=file.name+" · "+(file.size/1024/1024).toFixed(2)+" MB";
+  currentFile=file;active++;output.value="";stats.textContent="";renderInsights();nameLabel.textContent=file.name+" · "+(file.size/1024/1024).toFixed(2)+" MB";
   extractButton.disabled=false;copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;
   report("Ready. Press Extract text. The original stays on your device.");
  }catch(error){currentFile=null;extractButton.disabled=true;report(error.message,true);}
@@ -30,7 +31,7 @@ extractButton.addEventListener("click",async()=>{
   const data=await extractTextract(file,{notify:message=>{if(run===active)report(message);},
    cancelled:()=>run!==active,ocrScans:$("textract-ocr-pdf").checked});
   if(run!==active)return;
-  output.value=data.text;stats.textContent=data.characters.toLocaleString()+" characters · "+data.extension.toUpperCase()+(data.truncated?" · capped at "+TEXTRACT_LIMITS.chars.toLocaleString()+" characters":"");
+  output.value=data.text;renderInsights();stats.textContent=data.characters.toLocaleString()+" characters · "+data.extension.toUpperCase()+(data.truncated?" · capped at "+TEXTRACT_LIMITS.chars.toLocaleString()+" characters":"");
   copyButton.disabled=false;downloadButton.disabled=false;handoffButton.disabled=false;
   report("Extracted on your device. Edit or verify the text, then copy, download, or stage a draft for Miss Chaos.");
  }catch(error){if(run===active)report(error?.message||"Extraction failed.",true);}
@@ -41,6 +42,7 @@ output.addEventListener("input",()=>{
  const hasText=Boolean(output.value.trim());
  copyButton.disabled=!hasText;downloadButton.disabled=!hasText;handoffButton.disabled=!hasText;
  stats.textContent=output.value.length.toLocaleString()+" characters · edited preview";
+ renderInsights();
 });
 copyButton.addEventListener("click",async()=>{
  if(!output.value.trim())return;
@@ -79,7 +81,94 @@ handoffButton.addEventListener("click",()=>{
 });
 $("textract-clear").addEventListener("click",()=>{
  if(busy){active++;setBusy(false);}
- currentFile=null;input.value="";output.value="";nameLabel.textContent="No file selected";
+ currentFile=null;input.value="";output.value="";renderInsights();nameLabel.textContent="No file selected";
  stats.textContent="";copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;extractButton.disabled=true;
  report("Cleared. The browser has not uploaded your original file.");
 });
+
+const labButtons=["textract-export-json","textract-export-csv","textract-export-fields","textract-export-tables"];
+const search=$("textract-search"),results=$("textract-search-results"),found=$("textract-search-count"),
+ fieldsPreview=$("textract-fields"),intelligenceStats=$("textract-intelligence-stats");
+const compareFile=$("textract-compare-file"),compareButton=$("textract-compare"),
+ compareStop=$("textract-compare-stop"),compareOutput=$("textract-compare-output"),
+ compareStatus=$("textract-compare-status"),diffButton=$("textract-export-diff");
+let secondFile=null,compareBusy=false,compareToken=0;
+function downloadLocal(suffix,text,type="text/plain;charset=utf-8"){
+ if(!String(text||"").trim())return;
+ const filename=(currentFile?.name||"document").replace(/\\.[^.]+$/,"").replace(/[^\\w.-]/g,"_").slice(0,75);
+ const blob=new Blob([text],{type});
+ const href=URL.createObjectURL(blob);
+ const a=document.createElement("a");a.href=href;a.download=filename+suffix;
+ document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),15000);
+}
+function updateSearch(){
+ results.replaceChildren();
+ const matches=findTextMatches(output.value,search.value,80);
+ found.textContent=search.value.trim()?matches.length+(matches.length===80?"+":"")+" matches shown":"";
+ for(const match of matches){
+  const li=document.createElement("li");li.textContent="Character "+(match.index+1)+" · "+match.snippet;
+  const jump=document.createElement("button");jump.type="button";jump.textContent="Go";
+  jump.style.cssText="margin-left:.5rem;padding:.15rem .45rem;font-size:.78rem";
+  jump.addEventListener("click",()=>{output.focus();output.setSelectionRange(match.index,match.index+search.value.trim().length);});
+  li.append(jump);results.append(li);
+ }
+}
+function renderInsights(){
+ const value=output.value;
+ const hasText=Boolean(value.trim());
+ const details=textStats(value);
+ const fields=hasText?extractKeyValues(value,60):[];
+ const tables=hasText?extractPossibleTableRows(value,500):[];
+ intelligenceStats.textContent=hasText?
+  details.words.toLocaleString()+" words · "+details.lines.toLocaleString()+" lines · "+
+  details.sections+" sections · "+fields.length+(fields.length===60?"+":"")+" fields · "+
+  tables.length+(tables.length===500?"+":"")+" table-like rows":
+  "Extract a document to unlock statistics.";
+ fieldsPreview.textContent=hasText?
+  (fields.length?fields.slice(0,40).map(x=>x.key+": "+x.value).join("\\n"):"No key-value pairs confidently detected."):
+  "No document loaded.";
+ for(const id of labButtons)$(id).disabled=!hasText;
+ if(compareButton)compareButton.disabled=!hasText||!secondFile||busy||compareBusy;
+ updateSearch();
+}
+search.addEventListener("input",updateSearch);
+$("textract-export-json").addEventListener("click",()=>downloadLocal("-textract.json",makeTextractJson(currentFile?.name,output.value),"application/json;charset=utf-8"));
+$("textract-export-csv").addEventListener("click",()=>downloadLocal("-lines.csv",makeTextractCsv(output.value),"text/csv;charset=utf-8"));
+$("textract-export-fields").addEventListener("click",()=>downloadLocal("-fields.csv",makeTextractCsv(output.value,"fields"),"text/csv;charset=utf-8"));
+$("textract-export-tables").addEventListener("click",()=>downloadLocal("-tables.csv",makeTextractTableCsv(output.value),"text/csv;charset=utf-8"));
+function updateCompareControls(){
+ compareButton.disabled=!secondFile||!output.value.trim()||busy||compareBusy;
+ compareStop.hidden=!compareBusy;
+ compareFile.disabled=compareBusy;
+ diffButton.disabled=!compareOutput.value.trim();
+}
+compareFile.addEventListener("change",()=>{
+ const chosen=compareFile.files?.[0];
+ try{
+  validateTextractFile(chosen);secondFile=chosen;
+  compareStatus.textContent="Ready to compare with "+chosen.name+". Your original files stay local.";
+ }catch(error){secondFile=null;compareStatus.textContent=error.message;}
+ updateCompareControls();
+});
+compareButton.addEventListener("click",async()=>{
+ if(!secondFile||!output.value.trim()||compareBusy||busy)return;
+ const id=++compareToken,file=secondFile,original=output.value;
+ compareBusy=true;compareOutput.value="";diffButton.disabled=true;updateCompareControls();
+ compareStatus.textContent="Extracting second document locally…";
+ try{
+  const second=await extractTextract(file,{notify:message=>{if(id===compareToken)compareStatus.textContent=message;},
+   cancelled:()=>id!==compareToken,ocrScans:$("textract-ocr-pdf").checked});
+  if(id!==compareToken)return;
+  const report=compareTextractTexts(original,second.text);
+  compareOutput.value=formatTextractComparison(report);
+  compareStatus.textContent=(report.identical?"No text changes.":report.reordered?"Text was rearranged.":"Changes detected.")+
+   " Added: "+report.added.length+"; removed: "+report.removed.length+". Review against both originals.";
+ }catch(error){if(id===compareToken)compareStatus.textContent=error?.message||"Comparison failed.";}
+ finally{if(id===compareToken){compareBusy=false;updateCompareControls();}}
+});
+compareStop.addEventListener("click",()=>{
+ compareToken++;compareBusy=false;updateCompareControls();
+ compareStatus.textContent="Comparison stopped. Neither document was uploaded.";
+});
+diffButton.addEventListener("click",()=>downloadLocal("-comparison.txt",compareOutput.value));
+renderInsights();
