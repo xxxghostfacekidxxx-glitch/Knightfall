@@ -81,3 +81,11 @@
 .chaos-dev-review-decision textarea{box-sizing:border-box;width:100%;max-width:100%;background:#0a0d14;color:#f9f3fb;border:1px solid #89618b;border-radius:8px;padding:10px;font:inherit}
 .chaos-dev-review-decision button{min-height:40px}
 #chaos-dev-review-status[data-error="true"]{color:#ffb3ce}
+
+/* Signed-in Eye of Chaos reviewer: opt-in CI input package with no auto-run. */
+.chaos-dev-sandbox{min-width:0;margin:13px 0;padding:12px;border:1px solid #5d8a9d;border-radius:11px;background:#101824}
+.chaos-dev-sandbox h4{margin:0 0 9px;color:#b2fee7}
+.chaos-dev-sandbox-fields{display:grid;gap:10px;min-width:0;margin-top:12px}
+.chaos-dev-sandbox-fields select,.chaos-dev-sandbox-fields textarea{box-sizing:border-box;width:100%;max-width:100%;min-width:0;border:1px solid #618fa2;border-radius:9px;background:#0b1019;color:#ecf6fa;padding:10px;font:400 .78rem/1.5 ui-monospace,Consolas,monospace}
+.chaos-dev-sandbox-fields textarea{min-height:90px;resize:vertical;word-break:break-all;overflow-wrap:anywhere}
+.chaos-dev-sandbox-fields button:focus-visible,.chaos-dev-sandbox-fields select:focus-visible,.chaos-dev-sandbox-fields textarea:focus-visible{outline:2px solid #ffadd8;outline-offset:2px}
