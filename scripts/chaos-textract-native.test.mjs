@@ -154,5 +154,8 @@ test("photo orientation selector is exposed only to image extraction and rejects
  assert.match(ui,/imageRotation:rotationControl\.value/);
  assert.match(ui,/rotationControl\.addEventListener\("change"/);
  assert.match(ui,/rotationSection\.hidden/);
+ assert.match(ui,/rotationSection\.hidden=true;rotationControl\.value="auto"/);
+ assert.match(ui,/compareStatus\.textContent="The photo orientation changed/);
+ assert.match(ui,/compareToken\+\+;compareBusy=false;secondFile=null/);
  assert.match(core,/rotation:imageRotation/);
 });
