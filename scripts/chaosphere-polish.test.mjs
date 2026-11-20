@@ -134,3 +134,11 @@ test("Message bubbles show safe sender avatars or readable initials",()=>{
  assert.match(css,/\.messages-shell \.message\.mine \.cs-message-avatar/);
  assert.match(css,/\.cs-message-avatar \.cs-message-initial:not\(\[hidden\]\)/);
 });
+
+
+test("Broken sender pictures hide correctly despite explicit image display styling",()=>{
+ assert.match(css,/\.cs-message-avatar \.message-avatar-img\[hidden\]/);
+ assert.match(css,/\.cs-message-avatar \.cs-message-initial\[hidden\]\{display:none!important\}/);
+ assert.match(html,/let composerEpoch=0,sendingConversation=null,sendingAttachmentIds=new Set\(\),lastOwnMessageId=null;/);
+ assert.match(html,/onerror="this.hidden=true;this.nextElementSibling.hidden=false"/);
+});
