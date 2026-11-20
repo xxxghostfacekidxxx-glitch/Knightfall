@@ -135,7 +135,12 @@ async function recognizeImage(image,notify,cancelled,session=null){
  if(!worker){
   const Tesseract=await getOcr();shouldCancel(cancelled);
   notify("Loading local OCR language data…");
-  worker=await Tesseract.createWorker("eng",1,{\n   workerPath:TEXTRACT_LOCAL_ASSETS.ocrWorker,\n   corePath:TEXTRACT_LOCAL_ASSETS.ocrCore,\n   langPath:TEXTRACT_LOCAL_ASSETS.ocrLanguages,\n   workerBlobURL:false,\n   logger:event=>{
+  worker=await Tesseract.createWorker("eng",1,{
+   workerPath:TEXTRACT_LOCAL_ASSETS.ocrWorker,
+   corePath:TEXTRACT_LOCAL_ASSETS.ocrCore,
+   langPath:TEXTRACT_LOCAL_ASSETS.ocrLanguages,
+   workerBlobURL:false,
+   logger:event=>{
    if(event?.status==="recognizing text")notify("Reading image: "+Math.round((event.progress||0)*100)+"%");
   }});
   if(session)session.worker=worker;
