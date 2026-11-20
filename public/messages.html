@@ -117,7 +117,7 @@ function rememberConversationDraft(id,body){
  else conversationDrafts.delete(number);
  persistConversationDrafts();
 }
-let composerEpoch=0,sendingConversation=null,sendingAttachmentIds=new Set();
+let composerEpoch=0,sendingConversation=null,sendingAttachmentIds=new Set(),lastOwnMessageId=null;
 const messageSendQueues=new Map();
 let historyPinnedConversationId=null;
  let latestRenderedFingerprint=null,latestRenderedConversation=null;
