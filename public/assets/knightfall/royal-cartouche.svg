@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" role="img" aria-label="Egyptian gold cartouche ornament">
+<defs><linearGradient id="g"><stop stop-color="#674422"/><stop offset=".5" stop-color="#edc478"/><stop offset="1" stop-color="#674422"/></linearGradient></defs>
+<g fill="none" stroke="url(#g)" stroke-width="3" opacity=".93">
+<path d="M0 19H1200M0 101H1200M26 32H1174M26 88H1174"/>
+<path d="M480 60h-370l26-18-26-18m0 72 26-18-26-18M720 60h370l-26-18 26-18m0 72-26-18 26-18"/>
+<ellipse cx="600" cy="60" rx="80" ry="38"/><path d="M600 27v66M556 60h88M600 27c-30 20-30 46 0 66 30-20 30-46 0-66Z"/>
+<path d="M520 60h-65m225 0h65"/>
+</g>
+<g fill="#d1a55e" opacity=".8"><circle cx="600" cy="60" r="9"/><circle cx="110" cy="60" r="6"/><circle cx="1090" cy="60" r="6"/></g>
+</svg>
