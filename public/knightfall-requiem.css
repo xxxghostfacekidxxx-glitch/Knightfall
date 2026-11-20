@@ -39,7 +39,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
  outline-color:#ecc17a;
 }
 /* Architectural chrome: carved stone, metallic underline and illuminated crest. */
-html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header{
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])):not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header{
  min-height:76px;
  background-image:linear-gradient(90deg,#110f0dd9,#241916bd 50%,#0b100ddf),url('/assets/knightfall/royal-cartouche.svg')!important;
  background-position:center,center!important;
@@ -54,20 +54,20 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
  letter-spacing:.13em!important;
  text-shadow:0 2px 4px #000,0 0 24px #edbd7570!important;
 }
-html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header :is(.kf-nav a,.kf-nav-group>summary,.kf-nav-primary,.kf-nav-toggle){
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme]))>.kf-header :is(.kf-nav a,.kf-nav-group>summary,.kf-nav-primary,.kf-nav-toggle){
  border:1px solid #c49b762b!important;
  background:linear-gradient(170deg,#29221a99,#11120e77)!important;
  color:#f1d9c8!important;
  box-shadow:inset 0 1px #e4bca31e!important;
 }
-html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header :is(.kf-nav a:hover,.kf-nav-group>summary:hover,.kf-nav-group[open]>summary,.kf-nav a[aria-current="page"]){
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme]))>.kf-header :is(.kf-nav a:hover,.kf-nav-group>summary:hover,.kf-nav-group[open]>summary,.kf-nav a[aria-current="page"]){
  border-color:#e4b78c8c!important;
  background:linear-gradient(130deg,#67351de8,#202316e8)!important;
  color:#ffe8c4!important;
  box-shadow:inset 0 1px #f0cda447,0 0 24px #b4588c44!important;
 }
 /* The hero is a Black Sun temple; copy stays readable over the dark left side. */
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme) .home-intro{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])):not(.profile-custom-theme) .home-intro{
  position:relative;isolation:isolate;
  min-height:clamp(570px,64vw,785px)!important;
  margin:1.4rem auto 2.25rem!important;
@@ -86,7 +86,7 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.p
  background-repeat:no-repeat!important;
  box-shadow:inset 0 0 0 4px #17110ddc,inset 0 0 0 6px #b68d674c,0 35px 90px #000c,0 0 75px #bc703733!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::before{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro::before{
  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
  background:linear-gradient(0deg,#090b09fa 0%,#130f0bc6 28%,#10110d20 76%),radial-gradient(ellipse at 80% 28%,#dc823536,transparent 48%);
 }
@@ -98,8 +98,8 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.p
  opacity:.74;filter:drop-shadow(0 0 15px #ab743977);
 }
 
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro h1{
  max-width:850px!important;overflow-wrap:anywhere;
  margin:0 0 .6rem!important;
  color:#fff1db!important;
@@ -107,28 +107,28 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-
  letter-spacing:-.055em!important;
  text-shadow:0 3px 2px #08070be6,0 13px 34px #000,0 0 22px #a76b9240!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1 span{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro h1 span{
  color:#f2c985!important;
  background:linear-gradient(100deg,#ffe8c5 0%,#df9e53 52%,#79b9a0 100%);
  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro>p{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro>p{
  color:#f7e9db!important;
  max-width:600px;font-size:clamp(1rem,1.65vw,1.18rem)!important;
  line-height:1.65!important;text-shadow:0 2px 11px #000!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.home-sign-in,.home-explore-link){
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.home-sign-in,.home-explore-link){
  border:1px solid #edc99e!important;border-radius:10px!important;
  padding:.86rem 1.35rem!important;min-height:48px;
  color:#fff1dc!important;font-weight:850!important;letter-spacing:.025em;
  background:linear-gradient(145deg,#80415f,#38273f 75%)!important;
  box-shadow:inset 0 1px #ffdfba55,0 8px 24px #0009,0 0 16px #ba638344!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.home-sign-in,.home-explore-link):hover{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.home-sign-in,.home-explore-link):hover{
  filter:brightness(1.17)!important;transform:translateY(-1px)
 }
 /* The middle of the page is a guild hall: carved bronze, glass and stone. */
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section){
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section){
  position:relative;isolation:isolate;overflow:hidden;
  padding:clamp(1.1rem,3vw,2.5rem)!important;
  border:1px solid #d2a47f91!important;
@@ -137,23 +137,23 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.k
  box-shadow:inset 0 1px #ead3b04d,inset 0 0 0 4px #120e19,0 20px 54px #0009,0 0 45px #b66f3230!important;
  margin-block:1.6rem 2.5rem!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-start-here::after{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-start-here::after{
  content:"";position:absolute;z-index:-1;pointer-events:none;
  right:-9%;top:-110px;width:min(55%,450px);aspect-ratio:1;
  background:url('/assets/knightfall/royal-cartouche.svg') center/contain no-repeat;
  opacity:.2;mix-blend-mode:screen;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-heading h2,.kf-atlas-heading h2,.activity-heading h2,.section-heading h2){
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-heading h2,.kf-atlas-heading h2,.activity-heading h2,.section-heading h2){
  font-family:Georgia,'Times New Roman',serif!important;
  color:#ffe2bd!important;
  font-size:clamp(1.6rem,3.2vw,2.65rem)!important;
  line-height:1.13;letter-spacing:-.032em;
  text-shadow:0 2px 15px #000,0 0 22px #d69d8428!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-eyebrow,.kf-atlas-eyebrow,.activity-eyebrow){
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-eyebrow,.kf-atlas-eyebrow,.activity-eyebrow){
  color:#eec49e!important;letter-spacing:.19em!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group){
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group){
  border:1px solid #ce9c7d84!important;
  border-radius:17px!important;
  background-image:linear-gradient(105deg,#291b16f0 0%,#151816df 53%,#1521184d 100%),var(--kf-start-art,url('/assets/knightfall/rose-window.svg'))!important;
@@ -161,40 +161,40 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.k
  box-shadow:inset 0 1px #f5d3b52f,0 12px 26px #0008,0 0 24px #a4507c19!important;
  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group):hover{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group):hover{
  transform:translateY(-3px);border-color:#edc599bd!important;
  box-shadow:inset 0 1px #f5d3b545,0 18px 42px #000b,0 0 32px #d67aa142!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-start-card{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-start-card{
  min-height:230px!important;padding:clamp(1.2rem,2.2vw,1.65rem)!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-start-card h3{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-start-card h3{
  font:700 clamp(1.24rem,2vw,1.65rem)/1.15 Georgia,serif!important;color:#ffe3cb!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-start-card>span{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-start-card>span{
  font:800 .74rem/1.2 ui-sans-serif,system-ui,sans-serif!important;color:#f1bba8!important;letter-spacing:.19em!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-atlas-card{
  overflow:hidden;min-height:290px!important;isolation:isolate;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card>img{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-atlas-card>img{
  width:100%;height:100%;object-fit:cover;filter:saturate(1.2) contrast(1.08);
  transition:transform .35s ease,filter .35s ease;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card:hover>img{transform:scale(1.035);filter:saturate(1.28) contrast(1.1)}
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card .kf-atlas-copy h3{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-atlas-card:hover>img{transform:scale(1.035);filter:saturate(1.28) contrast(1.1)}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-atlas-card .kf-atlas-copy h3{
  font-family:Georgia,serif!important;color:#ffe7c9!important;
  text-shadow:0 3px 16px #000!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card a,.kf-atlas-copy a,.directory-group a){
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-card a,.kf-atlas-copy a,.directory-group a){
  color:#ffe0ac!important;text-decoration-thickness:1px;text-underline-offset:4px;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .manifesto{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .manifesto{
  border-block:1px solid #d0a47788;
  background:linear-gradient(90deg,transparent,#5b38277c,transparent);
  padding:2.5rem 1rem;text-align:center;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .manifesto p{
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .manifesto p{
  font:italic 700 clamp(1.5rem,3vw,2.8rem)/1.2 Georgia,serif!important;
  color:#eed6ba!important;
 }
@@ -210,40 +210,40 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
 }
 /* Accessibility and practical mobile spacing matter more than visual theatrics. */
 @media(max-width:780px){
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro{
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro{
   min-height:590px!important;margin-top:.6rem!important;
   padding:1.5rem!important;background-position:center,center,54% center!important;
  }
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
   inset:auto 5% 8px;width:90%;height:35px;opacity:.7;
  }
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro h1{
   font-size:clamp(2.25rem,10vw,3.8rem)!important;
  }
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section){
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section){
   padding:1.1rem!important;margin-block:1.1rem!important;
  }
- html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header{
+ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme]))>.kf-header{
   min-height:62px;
  }
 }
 @media(max-width:520px){
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro{
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro{
   min-height:535px!important;
  }
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card{min-height:250px!important}
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.home-sign-in,.home-explore-link){
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-atlas-card{min-height:250px!important}
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.home-sign-in,.home-explore-link){
   width:100%;justify-content:center;
  }
 }
 @media(prefers-reduced-motion:reduce){
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group,.kf-atlas-card>img,.home-sign-in,.home-explore-link){
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group,.kf-atlas-card>img,.home-sign-in,.home-explore-link){
   transition:none!important;transform:none!important;
  }
 }
 @media(forced-colors:active){
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.home-intro,.kf-start-here,.kf-realm-atlas,.kf-atlas-card,.kf-start-card){border:1px solid CanvasText!important}
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1 span{-webkit-text-fill-color:CanvasText!important}
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.home-intro,.kf-start-here,.kf-realm-atlas,.kf-atlas-card,.kf-start-card){border:1px solid CanvasText!important}
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro h1 span{-webkit-text-fill-color:CanvasText!important}
 }
 
 
@@ -254,5 +254,5 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
  }
 }
 @media(forced-colors:active){
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{display:none!important}
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro::after{display:none!important}
 }
