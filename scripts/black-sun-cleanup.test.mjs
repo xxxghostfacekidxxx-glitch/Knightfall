@@ -81,3 +81,15 @@ test("Black Sun default chrome no longer falls back to inherited magenta or stai
  assert.match(final, /0 0 24px #b95d3544!important/);
  assert.match(root, /knightfall-requiem\.css\?v=20261120-black-sun4/);
 });
+
+test("profile foundation selectors keep their guard with lower specificity",()=>{
+ const shared=read("knightfall-unified-theme.css");
+ const foundation=shared.slice(0,shared.indexOf("@media(max-width:800px){"));
+ assert.ok(foundation.includes("body:where(:not(.profile-custom-theme)) .profile-shell .card"));
+ const lowered=[...foundation.matchAll(/body:where\(:not\(\.profile-custom-theme\)\) \.profile-shell/g)];
+ assert.equal(lowered.length,4,"only the reviewed four base profile rules are softened");
+ assert.doesNotMatch(foundation,/body:not\(\.profile-custom-theme\) \.profile-shell/);
+ // Leave member-created custom palettes and game-specific styling exclusions intact.
+ assert.match(shared,/:not\(\.profile-custom-theme\)/);
+ assert.match(shared,/:not\(:has\(#profile\[data-theme\]\)\)/);
+});
