@@ -25,23 +25,9 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew.html
   Cache-Control: no-cache, max-age=0, must-revalidate
-# Keep Black Sun theme artwork and legacy fallback art fresh in installed web apps.
-/assets/knightfall/black-sun-temple.svg
+# One shared art rule: Egyptian originals and older realm illustrations revalidate together.
+/assets/knightfall/*
   Cache-Control: no-cache, max-age=0, must-revalidate
-/assets/knightfall/royal-cartouche.svg
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/assets/knightfall/obsidian-cathedral.svg
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/assets/knightfall/vaulted-cathedral.svg
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/assets/knightfall/rose-window.svg
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/assets/knightfall/gothic-chrome-frame.svg
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/assets/knightfall/winged-skull-crest.svg
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/assets/knightfall/ceremonial-divider.svg
-  Cache-Control: public, max-age=300
 /visual-refresh.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 /nav.js
@@ -168,8 +154,6 @@
 /arcade-save.js
   Cache-Control: no-cache, max-age=0, must-revalidate
 
-/assets/knightfall/sanctum-stained-glass.svg
-  Cache-Control: no-cache, max-age=0, must-revalidate
 
 # Revalidate the three affected game documents and their shared first-paint guard.
 /arcade/hosted/ash-veil/index.html
