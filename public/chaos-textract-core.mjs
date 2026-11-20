@@ -1,5 +1,4 @@
-/* Knightfall Textract. Browser-only extraction; no document is sent to a Knightfall API.
-   Dependencies load from pinned public CDNs on demand. No AWS credentials or paid service. */
+/* Knightfall Textract. Browser-only extraction. All engines, workers, WASM and OCR data are self-hosted. */
 export const TEXTRACT_LIMITS=Object.freeze({bytes:18*1024*1024,chars:180000,pdfPages:24,ocrPages:8});
 const supported=new Set(["txt","md","csv","tsv","json","xml","html","htm","log","css","js","mjs","ts","svg","pdf","docx","xlsx","pptx","png","jpg","jpeg","webp","gif","bmp","avif"]);
 const TEXT_EXT=new Set(["txt","md","csv","tsv","json","xml","html","htm","log","css","js","mjs","ts","svg"]);
@@ -28,11 +27,14 @@ export function buildTextractDraft(name,text,task="Summarize this document, dist
  const body=source.slice(0,cap);
  return preface+body+(clipped?warning:"")+suffix;
 }
-const cdn=Object.freeze({
- pdf:"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs",
- worker:"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs",
- zip:"https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js",
- ocr:"https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js"
+export const TEXTRACT_LOCAL_ASSETS=Object.freeze({
+ pdf:"/vendor/textract/pdf.min.mjs",
+ worker:"/vendor/textract/pdf.worker.min.mjs",
+ zip:"/vendor/textract/jszip.min.js",
+ ocr:"/vendor/textract/tesseract.min.js",
+ ocrWorker:"/vendor/textract/worker.min.js",
+ ocrCore:"/vendor/textract/core",
+ ocrLanguages:"/vendor/textract/lang"
 });
 const pending=new Map();
 function loadScript(url,globalName){
@@ -42,20 +44,20 @@ function loadScript(url,globalName){
   const script=document.createElement("script");
   script.src=url;script.async=true;script.crossOrigin="anonymous";script.referrerPolicy="no-referrer";
   script.onload=()=>globalThis[globalName]?resolve(globalThis[globalName]):reject(Error("Extraction library did not initialize."));
-  script.onerror=()=>reject(Error("Could not load the free extraction library. Check your connection or content blocker."));
+  script.onerror=()=>reject(Error("Could not load the locally hosted extraction engine. Refresh Knightfall and try again."));
   document.head.append(script);
  });
  pending.set(url,promise);return promise;
 }
 async function getZip(){
- return loadScript(cdn.zip,"JSZip");
+ return loadScript(TEXTRACT_LOCAL_ASSETS.zip,"JSZip");
 }
 async function getPdf(){
- const lib=await import(cdn.pdf);
- lib.GlobalWorkerOptions.workerSrc=cdn.worker;return lib;
+ const lib=await import(TEXTRACT_LOCAL_ASSETS.pdf);
+ lib.GlobalWorkerOptions.workerSrc=TEXTRACT_LOCAL_ASSETS.worker;return lib;
 }
 async function getOcr(){
- return loadScript(cdn.ocr,"Tesseract");
+ return loadScript(TEXTRACT_LOCAL_ASSETS.ocr,"Tesseract");
 }
 function shouldCancel(cancelled){if(cancelled?.())throw Error("Extraction cancelled.");}
 async function readZipDocument(file,ext,notify,cancelled){
@@ -133,7 +135,7 @@ async function recognizeImage(image,notify,cancelled,session=null){
  if(!worker){
   const Tesseract=await getOcr();shouldCancel(cancelled);
   notify("Loading local OCR language data…");
-  worker=await Tesseract.createWorker("eng",1,{logger:event=>{
+  worker=await Tesseract.createWorker("eng",1,{\n   workerPath:TEXTRACT_LOCAL_ASSETS.ocrWorker,\n   corePath:TEXTRACT_LOCAL_ASSETS.ocrCore,\n   langPath:TEXTRACT_LOCAL_ASSETS.ocrLanguages,\n   workerBlobURL:false,\n   logger:event=>{
    if(event?.status==="recognizing text")notify("Reading image: "+Math.round((event.progress||0)*100)+"%");
   }});
   if(session)session.worker=worker;
