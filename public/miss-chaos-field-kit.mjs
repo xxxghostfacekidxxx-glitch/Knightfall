@@ -70,6 +70,14 @@ export function mountMissChaosFieldKit({panel,messages,input,api,onOpenMemo,getM
    guide.textContent="✦ What can I do?";
    guide.title="Learn Miss Chaos member capabilities and verify private workspace access";
    list.append(guide);
+   const textract=doc.createElement("a");
+   textract.className="mc-field-kit-chip";
+   const mode=getMode?.()||"standard";
+   const returnPath=mode==="owner"?"/miss-chaos.html?companion=owner":mode==="partner"?"/samantha-chaos.html":"/miss-chaos.html";
+   textract.href="/chaos-textract.html?return="+encodeURIComponent(returnPath);
+   textract.textContent="𓂀 Textract OCR";
+   textract.title="Extract document and photo text locally, then stage it into your own Miss Chaos chat";
+   list.append(textract);
    for(const prompt of promptsForMode(getMode?.()||"standard")){
      const button=doc.createElement("button");button.type="button";
      button.className="mc-field-kit-chip";button.textContent=prompt.label;
