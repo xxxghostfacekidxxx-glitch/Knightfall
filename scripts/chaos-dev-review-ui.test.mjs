@@ -1,0 +1,53 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
+test("Code Studio collects an explicit, full-file-only review submission",()=>{
+ const html=read("public/chaos-code-studio.html");
+ const js=read("public/chaos-code-studio.js");
+ const css=read("public/chaos-code-studio.css");
+ for(const id of ["studio-dev-review-summary","studio-dev-review-submit","studio-dev-review-status"])
+  assert.match(html,new RegExp('id="'+id+'"'));
+ assert.match(html,/id="studio-dev-review-submit" disabled/);
+ assert.match(js,/reviewSubmission=fullFile\?/);
+ assert.match(js,/if\(code\.value!==proposal\.candidate\)/);
+ assert.match(js,/window\.confirm\("Submit this full-file source change/);
+ assert.match(js,/method:"POST",credentials:"include",cache:"no-store"/);
+ assert.match(js,/api\/chaos\/dev-reviews/);
+ assert.match(js,/reviewSubmission=null;devSubmit\.disabled=true/);
+ assert.match(css,/\.studio-dev-submit/);
+ assert.doesNotMatch(js,/\.innerHTML\s*=/);
+ assert.doesNotMatch(js,/localStorage|sessionStorage/);
+});
+test("Eye of Chaos displays only backend-authenticated approvals and raw text",()=>{
+ const html=read("public/eye-of-chaos.html");
+ const js=read("public/chaos-dev-review-ui.mjs");
+ const css=read("public/eye-of-chaos.css");
+ assert.match(html,/data-panel="approvals"/);
+ assert.match(html,/id="chaos-dev-review-panel"/);
+ assert.match(html,/id="chaos-dev-review-list"/);
+ assert.match(html,/src="\/chaos-dev-review-ui\.mjs\?v=/);
+ assert.match(js,/response\.can_approve===true/);
+ assert.match(js,/detail\.source_sha!==row\.source_sha/);
+ assert.match(js,/detail\.revision!==row\.revision/);
+ assert.match(js,/window\.confirm\(/);
+ assert.match(js,/credentials:"include",cache:"no-store"/);
+ assert.match(js,/method==="GET"/);
+ assert.match(js,/integration/);
+ assert.match(css,/#chaos-dev-review-panel/);
+ assert.doesNotMatch(js,/\.innerHTML\s*=|\beval\s*\(/);
+ assert.doesNotMatch(js,/github\.com\/repos\/.*method:\s*["']PUT["']/);
+ assert.doesNotMatch(js,/\/api\/god\/chaos\/control/);
+});
+test("Owner and partner authority is verified by the Worker, not client-side mode flags",()=>{
+ const worker=read("backend/src/chaos-dev-reviews.js");
+ assert.match(worker,/canAccessEyeOfChaos\(user\)/);
+ assert.match(worker,/canAccessEyeOfHorus\(user\)\|\|await acceptedAdminPartner\(env,user\)/);
+ assert.match(worker,/!ORIGINS\.has\(request\.headers\.get\("Origin"\)\)/);
+ assert.match(worker,/validateKnightfallFileArgs/);
+ assert.match(worker,/source_sha!==p\.source_sha/);
+ assert.match(worker,/status='pending'/);
+ assert.match(worker,/env\.DB\.batch\(\[update,audit\]\)/);
+ assert.doesNotMatch(worker,/\bfetch\(\s*["']https:\/\/api\.github\.com/);
+ assert.doesNotMatch(worker,/wrangler\s+deploy|git\s+push|method:\s*["']PUT["']|workflow_dispatch/);
+});
