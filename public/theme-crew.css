@@ -80,29 +80,35 @@ html body[data-kf-theme="blood_moon"]{--kf-crew-hue:320deg}
 @media(prefers-reduced-motion:reduce){html body[data-kf-realm][data-kf-theme] :is(.kf-atlas-card,.foundry-card){transition:none!important}}
 @media(forced-colors:active){html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]) :is(.kf-atlas-card,.home-intro,[data-kf-art-hero]){border-color:CanvasText!important}}
 /* GOD command interface, styled independently of current live recipe. */
-body.theme-crew-page{background:#0c0d14;color:#f4e7df}
+body.theme-crew-page{background:#0b0d0c;color:#f4e5d0}
 .theme-crew-shell{max-width:1320px;margin:0 auto;padding:clamp(1rem,3vw,2.75rem)}
-.theme-crew-header{position:relative;isolation:isolate;overflow:hidden;min-height:260px;padding:clamp(1.5rem,4vw,3rem);display:flex;flex-direction:column;justify-content:flex-end;border:1px solid #c79aaf8c;border-radius:24px;background:linear-gradient(95deg,#0c0e18fa,#1c1426d0 62%,#22152b5f),url('/assets/knightfall/vaulted-cathedral.svg') center/cover no-repeat;box-shadow:0 26px 70px #000a}
-.theme-crew-header::after{content:"";pointer-events:none;position:absolute;inset:0;background:url('/assets/knightfall/gothic-chrome-frame.svg') center/100% 100% no-repeat;z-index:-1;opacity:.8}
-.theme-crew-header .eyebrow{color:#e2b4c7;font-size:.76rem;letter-spacing:.2em;font-weight:900}
+.theme-crew-header{position:relative;isolation:isolate;overflow:hidden;min-height:260px;padding:clamp(1.5rem,4vw,3rem);display:flex;flex-direction:column;justify-content:flex-end;border:1px solid #c6984d;border-radius:24px;background:linear-gradient(95deg,#090b0cf8,#15120ec9 54%,#29171080),url('/assets/knightfall/black-sun-hero-illustration.webp') center/cover no-repeat;box-shadow:0 26px 70px #000b,0 0 42px #a35b2930}
+.theme-crew-header::after{content:"";pointer-events:none;position:absolute;inset:auto 7% 0;height:36px;background:url('/assets/knightfall/royal-cartouche.svg') center/contain no-repeat;opacity:.65}
+.theme-crew-header>div{position:relative;z-index:1}
+.theme-crew-header .eyebrow{color:#e9bd78;font-size:.76rem;letter-spacing:.2em;font-weight:900}
 .theme-crew-header h1{font:700 clamp(2.5rem,6vw,5rem)/1 Georgia,serif;letter-spacing:-.05em;margin:.45rem 0;color:#f4dfd0}
 .theme-crew-header p{max-width:65ch;color:#e1cbd6;line-height:1.65}
 .theme-crew-breadcrumb{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.25rem;font-size:.85rem}
-.theme-crew-breadcrumb a{color:#e4baca}
-.theme-crew-status{margin:1rem 0;padding:1rem;border:1px solid #aa83957d;border-radius:12px;background:#241a29;color:#e9d6df}
+.theme-crew-breadcrumb a{color:#eac47f}
+.theme-crew-status{margin:1rem 0;padding:1rem;border:1px solid #b78e5780;border-radius:12px;background:#211810;color:#f0dfc4}
 .theme-crew-workspace[hidden],.theme-crew-denied[hidden]{display:none!important}
 .theme-crew-workspace{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,.95fr);gap:1.15rem;align-items:start}
-.theme-crew-panel{border:1px solid #ac8c9d85;border-radius:19px;padding:clamp(1rem,2.5vw,1.7rem);background:linear-gradient(140deg,#28202df5,#14141df4);box-shadow:0 16px 42px #0009,inset 0 1px #efc1ca27;min-width:0}
+.theme-crew-panel{border:1px solid #b58a5585;border-radius:19px;padding:clamp(1rem,2.5vw,1.7rem);background:linear-gradient(140deg,#292018f5,#111615f4);box-shadow:0 16px 42px #0009,inset 0 1px #efc1ca27;min-width:0}
 .theme-crew-panel h2{font:700 clamp(1.4rem,3vw,2rem)/1.2 Georgia,serif;margin:0 0 .75rem;color:#f3dfcf}
 .theme-crew-panel p{color:#dfcdd3;line-height:1.55}
 .theme-crew-presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
-.theme-crew-choice{display:flex;flex-direction:column;text-align:left;gap:.45rem;min-height:140px;padding:1.2rem;border:1px solid #b18f9d96;border-radius:13px;background:radial-gradient(circle at 100% 0%,var(--kf-choice-accent,#986c88) 0%,transparent 60%),linear-gradient(140deg,#322333,#141724);color:#eee0d6;cursor:pointer}
+.theme-crew-choice{display:flex;flex-direction:column;text-align:left;gap:.45rem;min-height:160px;padding:.75rem;border:1px solid #b58c5988;border-radius:13px;background:linear-gradient(140deg,#271a14,#121916);color:#f1e1c9;cursor:pointer}
+.theme-crew-scene{display:block;width:100%;height:clamp(90px,11vw,142px);border:1px solid #a8784570;border-radius:9px;background-image:linear-gradient(180deg,#080b0b0a,#080b0b45),var(--kf-choice-art);background-position:center;background-size:cover;background-repeat:no-repeat;pointer-events:none}
+.theme-crew-live-label{color:#e7bd74!important;font-weight:800;letter-spacing:.09em}
+.theme-crew-selected{margin:.85rem 0 .25rem;padding:.55rem .8rem;border-left:3px solid #e3af60;background:#2b2018;color:#f1d8a4;font-weight:900}
+.theme-crew-hint{font-size:.85rem}
+.theme-crew-choice:focus-visible{outline:3px solid #f0c777;outline-offset:2px}
 .theme-crew-choice[data-current="true"]{outline:2px solid #dfc09c;outline-offset:2px}
-.theme-crew-choice[aria-pressed="true"]{border-color:#f1c6b7;box-shadow:0 0 25px #c96d9950,inset 0 1px #e9c1cd3d}
+.theme-crew-choice[aria-pressed="true"]{border-color:#f2c977;box-shadow:0 0 24px #b67a3c50,inset 0 1px #eed5a03d}
 .theme-crew-choice strong{font:700 1.2rem Georgia,serif}.theme-crew-choice small{color:#ddc5d0}
 .theme-crew-choice .theme-crew-chip{width:28px;height:28px;border-radius:50%;background:var(--kf-choice-accent,#a77a97);border:2px solid #eed8c4;box-shadow:0 0 15px var(--kf-choice-accent,#a77a97)}
 .theme-crew-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin:1.2rem 0 .4rem}
-.theme-crew-actions button,.theme-crew-action{min-height:44px;border:1px solid #ceafad;border-radius:10px;padding:.7rem 1rem;background:#6c3755;color:#fef1e1;font-weight:800;cursor:pointer}
+.theme-crew-actions button,.theme-crew-action{min-height:44px;border:1px solid #d7ac6b;border-radius:10px;padding:.7rem 1rem;background:linear-gradient(145deg,#684122,#342216);color:#fff1d5;font-weight:800;cursor:pointer}
 .theme-crew-actions button:nth-child(2){background:#29323b}
 .theme-crew-actions button:disabled{opacity:.45;cursor:not-allowed}
 .theme-crew-actions button:is(:hover,:focus-visible){filter:brightness(1.18)}
