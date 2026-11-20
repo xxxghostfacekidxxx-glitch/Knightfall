@@ -145,9 +145,10 @@ async function readPdf(file,notify,cancelled,ocrScans){
  const lib=await getPdf();shouldCancel(cancelled);
  const task=lib.getDocument({data:new Uint8Array(await file.arrayBuffer()),useSystemFonts:true});
  const pdfDocument=await task.promise;
+ const ocrSession={worker:null};
  try{
   const length=Math.min(pdfDocument.numPages,TEXTRACT_LIMITS.pdfPages);
-  const parts=[];let scanned=0;const ocrSession={worker:null};
+  const parts=[];let scanned=0;
   for(let p=1;p<=length;p++){
    shouldCancel(cancelled);notify("Reading PDF page "+p+" of "+length+"…");
    const page=await pdfDocument.getPage(p);
