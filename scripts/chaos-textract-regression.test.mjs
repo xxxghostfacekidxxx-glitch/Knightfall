@@ -306,3 +306,51 @@ test("PDF horizontal positioning retains spaces without incorrectly starting new
  const matrix="BT 1 0 0 1 72 700 Tm (ONE) Tj 1 0 0 1 150 700 Tm (TWO) Tj ET";
  assert.equal(extractKnightfallPdfOperators(matrix),"ONE TWO");
 });
+
+
+function jpegPdfFixture({draw=true,selectable=false,inheritResources=false}={}){
+ const jpeg=new Uint8Array(160).fill(71);jpeg.set([255,216,255,224],0);jpeg.set([255,217],158);
+ const content=selectable?"BT (SELECTABLE CONTENT) Tj ET /ScanImage Do":"q 700 0 0 900 0 0 cm "+(draw?"/ScanImage Do":"")+" Q";
+ const resources="/Resources << /XObject << /ScanImage 8 0 R >> >>";
+ const page="3 0 obj << /Type /Page /Parent 2 0 R /Contents 4 0 R "+(inheritResources?"":resources)+" >> endobj";
+ const pageTree="2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 "+(inheritResources?resources:"")+" >> endobj";
+ const prefix=Buffer.from("%PDF-1.5\n"+
+  "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n"+
+  pageTree+"\n"+page+"\n"+
+  "4 0 obj << /Length "+content.length+" >>\nstream\n"+content+"\nendstream\nendobj\n"+
+  "8 0 obj << /Type /XObject /Subtype /Image /Width 700 /Height 900 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpeg.length+" >>\nstream\n");
+ return {jpeg,bytes:new Uint8Array(Buffer.concat([prefix,Buffer.from(jpeg),Buffer.from("\nendstream\nendobj\n%%EOF")]))};
+}
+test("PDF OCR processes drawn embedded JPEG pages locally and exposes source warnings",async()=>{
+ const {bytes,jpeg}=jpegPdfFixture();
+ let invoked=0;
+ const reader=async blob=>{
+  invoked++;
+  assert.equal(blob.type,"image/jpeg");
+  assert.deepEqual(new Uint8Array(await blob.arrayBuffer()),jpeg);
+  return {text:"KNIGHTFALL SCANNED PAGE 123",method:"original-template-ocr",confidence:.89};
+ };
+ const result=await readKnightfallPdf(bytes,{ocrImage:reader});
+ assert.equal(invoked,1);
+ assert.match(result,/Page 1\n\[OCR from embedded JPEG image; verify text and numbers\]/);
+ assert.match(result,/KNIGHTFALL SCANNED PAGE 123/);
+});
+test("JPEG PDF OCR supports inherited page resources and does not read unused images",async()=>{
+ const inherited=jpegPdfFixture({inheritResources:true});
+ let calls=0;
+ assert.match(await readKnightfallPdf(inherited.bytes,{ocrImage:async()=>{calls++;return{text:"INHERITED RESOURCES WORK"};}}),/INHERITED RESOURCES WORK/);
+ assert.equal(calls,1);
+ const hidden=jpegPdfFixture({draw:false});
+ await assert.rejects(()=>readKnightfallPdf(hidden.bytes,{ocrImage:async()=>{throw Error("Unreferenced image should never be OCRed");}}),/No selectable text/);
+});
+test("PDF already containing selectable text never OCRs unrelated scanned image resources",async()=>{
+ const example=jpegPdfFixture({selectable:true});
+ let calls=0;
+ const output=await readKnightfallPdf(example.bytes,{ocrImage:async()=>{calls++;throw Error("Should not OCR");}});
+ assert.match(output,/SELECTABLE CONTENT/);
+ assert.equal(calls,0);
+});
+test("PDF JPEG OCR failure reports inability to recover source text rather than fabricating it",async()=>{
+ const {bytes}=jpegPdfFixture();
+ await assert.rejects(()=>readKnightfallPdf(bytes,{ocrImage:async()=>{throw Error("JPEG unable to be recognized");}}),/No selectable text could be recovered/);
+});
