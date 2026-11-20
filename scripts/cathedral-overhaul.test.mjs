@@ -21,7 +21,7 @@ test('Egyptian Black Sun art has one owner and realm artwork remains in the casc
 });
 test('Black Sun and cartouche are scalable, descriptive and installed offline',()=>{
  const visual=read('knightfall-requiem.css');
- for(const asset of ['black-sun-temple.svg','royal-cartouche.svg']){
+ for(const asset of ['black-sun-temple.svg','black-sun-mobile.svg','eye-of-chaos-crest.svg','royal-cartouche.svg']){
   const art=read('assets/knightfall/'+asset);
   assert.match(art,/<svg[^>]*viewBox=/,asset+' has a scalable viewBox');
   assert.match(art,/aria-label=/,asset+' has an accessible description');
