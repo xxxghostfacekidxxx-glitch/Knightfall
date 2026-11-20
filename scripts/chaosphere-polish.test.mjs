@@ -97,7 +97,9 @@ test("Quote and emoji actions update the existing draft without sending or stori
 test("Pasted image attachments reuse the existing private upload picker and never auto-send",()=>{
  assert.match(extras,/body\.addEventListener\("paste"/);
  assert.match(extras,/attachmentInput\.dispatchEvent\(new Event\("change",\{bubbles:true\}\)\)/);
- assert.match(extras,/^image\\\/\\\(\\?:png\\\|jpeg\\\|gif\\\|webp\\\)/);
+ assert.match(extras,/clipboardData\?\.files/);
+ assert.match(extras,/new DataTransfer\(\)/);
+ assert.match(extras,/\^image/);
  assert.doesNotMatch(extras,/requestSubmit\(|\/api\/messages\/conversations|fetch\s*\(/);
  assert.match(html,/Paste a picture to attach/);
 });
