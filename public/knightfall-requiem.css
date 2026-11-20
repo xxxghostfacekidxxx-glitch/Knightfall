@@ -76,7 +76,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
  border-color:#e4b78c8c!important;
  background:linear-gradient(130deg,#67351de8,#202316e8)!important;
  color:#ffe8c4!important;
- box-shadow:inset 0 1px #f0cda447,0 0 24px #b4588c44!important;
+ box-shadow:inset 0 1px #f0cda447,0 0 24px #b95d3544!important;
 }
 /* Actual generated illustration is first-party content. No baked wordmark collides with live text. */
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme) .kf-black-sun-art{
@@ -196,14 +196,14 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:h
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group){
  border:1px solid #ce9c7d84!important;
  border-radius:17px!important;
- background-image:linear-gradient(105deg,#291b16f0 0%,#151816df 53%,#1521184d 100%),var(--kf-start-art,url('/assets/knightfall/rose-window.svg'))!important;
+ background-image:linear-gradient(105deg,#291b16f0 0%,#151816df 53%,#1521184d 100%),var(--kf-start-art,url('/assets/knightfall/black-sun-temple.svg'))!important;
  background-position:center,60% center!important;background-size:cover,cover!important;
- box-shadow:inset 0 1px #f5d3b52f,0 12px 26px #0008,0 0 24px #a4507c19!important;
+ box-shadow:inset 0 1px #f5d3b52f,0 12px 26px #0008,0 0 24px #b95d3519!important;
  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group):hover{
  transform:translateY(-3px);border-color:#edc599bd!important;
- box-shadow:inset 0 1px #f5d3b545,0 18px 42px #000b,0 0 32px #d67aa142!important;
+ box-shadow:inset 0 1px #f5d3b545,0 18px 42px #000b,0 0 32px #d48b4e42!important;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .kf-start-card{
  min-height:230px!important;padding:clamp(1.2rem,2.2vw,1.65rem)!important;

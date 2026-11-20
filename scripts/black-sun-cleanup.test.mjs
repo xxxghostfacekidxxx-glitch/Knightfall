@@ -73,3 +73,11 @@ test("core theme CSS growth is bounded until scope and specificity are simplifie
  assert.ok(final.length<=22000,"Black Sun finishing layer grew too large; consolidate rather than append");
  assert.ok(countImportant(final)<=145,"Black Sun important-rule budget exceeded");
 });
+
+
+test("Black Sun default chrome no longer falls back to inherited magenta or stained-glass artwork",()=>{
+ assert.doesNotMatch(final, /rose-window\.svg|#b4588c44|#a4507c19|#d67aa142/);
+ assert.match(final, /--kf-start-art,url\('\/assets\/knightfall\/black-sun-temple\.svg'\)/);
+ assert.match(final, /0 0 24px #b95d3544!important/);
+ assert.match(root, /knightfall-requiem\.css\?v=20261120-black-sun4/);
+});
