@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {deflateRawSync} from "node:zlib";
 import {listKnightfallZipEntries,openKnightfallZip} from "../public/chaos-textract-native-zip.mjs";
 import {extractKnightfallPdfOperators,readKnightfallPdf} from "../public/chaos-textract-native-pdf.mjs";
-import {otsuThreshold,adaptiveInkMask,normalizeGlyph,classifyGlyph,decodeGlyphMask} from "../public/chaos-textract-native-ocr.mjs";
+import {otsuThreshold,adaptiveInkMask,normalizeGlyph,classifyGlyph,decodeGlyphMask,rotateKnightfallGrey} from "../public/chaos-textract-native-ocr.mjs";
 import {extractTextract,TEXTRACT_ENGINE} from "../public/chaos-textract-core.mjs";
 import {readFileSync} from "node:fs";
 
@@ -128,4 +128,31 @@ test("local adaptive OCR threshold keeps printed strokes across uneven photo lig
  assert.equal(light[15*width+17],1,"light lettering on a dark image");
  assert.equal(light[5*width+17],0,"dark image background is not text");
  assert.throws(()=>adaptiveInkMask(new Uint8Array(8),width,height),/Invalid image dimensions/);
+});
+
+
+test("local OCR rotates sideways and upside-down photo pixels without losing characters",()=>{
+ const src=Uint8Array.of(1,2,3,4,5,6);
+ const ninety=rotateKnightfallGrey(src,3,2,90);
+ assert.equal(ninety.width,2);assert.equal(ninety.height,3);
+ assert.deepEqual([...ninety.grey],[4,1,5,2,6,3]);
+ const oneEighty=rotateKnightfallGrey(src,3,2,180);
+ assert.deepEqual([...oneEighty.grey],[6,5,4,3,2,1]);
+ const twoSeventy=rotateKnightfallGrey(src,3,2,270);
+ assert.deepEqual([...twoSeventy.grey],[3,6,2,5,1,4]);
+ assert.deepEqual([...rotateKnightfallGrey(ninety.grey,2,3,270).grey],[...src]);
+ assert.equal(rotateKnightfallGrey(src,3,2,0).grey,src);
+ assert.throws(()=>rotateKnightfallGrey(src,3,2,45),/Invalid local OCR rotation/);
+ assert.throws(()=>rotateKnightfallGrey(src,3,3,90),/Invalid local OCR rotation/);
+});
+test("photo orientation selector is exposed only to image extraction and rejects stale previews",()=>{
+ const html=readFileSync(new URL("../public/chaos-textract.html",import.meta.url),"utf8");
+ const ui=readFileSync(new URL("../public/chaos-textract.mjs",import.meta.url),"utf8");
+ const core=readFileSync(new URL("../public/chaos-textract-core.mjs",import.meta.url),"utf8");
+ assert.match(html,/id="textract-photo-rotation"/);
+ assert.match(html,/value="auto"/);assert.match(html,/value="270"/);
+ assert.match(ui,/imageRotation:rotationControl\.value/);
+ assert.match(ui,/rotationControl\.addEventListener\("change"/);
+ assert.match(ui,/rotationSection\.hidden/);
+ assert.match(core,/rotation:imageRotation/);
 });
