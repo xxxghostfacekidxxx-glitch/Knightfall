@@ -144,12 +144,14 @@ test("local OCR rotates sideways and upside-down photo pixels without losing cha
  assert.equal(rotateKnightfallGrey(src,3,2,0).grey,src);
  assert.throws(()=>rotateKnightfallGrey(src,3,2,45),/Invalid local OCR rotation/);
  assert.throws(()=>rotateKnightfallGrey(src,3,3,90),/Invalid local OCR rotation/);
+ assert.throws(()=>rotateKnightfallGrey(src,1.5,4,90),/Invalid local OCR rotation/);
 });
 test("photo orientation selector is exposed only to image extraction and rejects stale previews",()=>{
  const html=readFileSync(new URL("../public/chaos-textract.html",import.meta.url),"utf8");
  const ui=readFileSync(new URL("../public/chaos-textract.mjs",import.meta.url),"utf8");
  const core=readFileSync(new URL("../public/chaos-textract-core.mjs",import.meta.url),"utf8");
  assert.match(html,/id="textract-photo-rotation"/);
+ assert.match(html,/id="textract-photo-orientation" hidden/);
  assert.match(html,/value="auto"/);assert.match(html,/value="270"/);
  assert.match(ui,/imageRotation:rotationControl\.value/);
  assert.match(ui,/rotationControl\.addEventListener\("change"/);
