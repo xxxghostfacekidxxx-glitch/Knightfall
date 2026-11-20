@@ -48,11 +48,13 @@ export function listKnightfallZipEntries(bytes){
   if(!name||name.endsWith("/")||name.includes("..")||name.startsWith("/"))continue;
   if(flags&1)throw Error("Encrypted ZIP archives are unsupported.");
   if(method!==0&&method!==8)throw Error("ZIP compression method "+method+" is unsupported.");
-  if(size>MAX_SECTION||compressed>MAX_SECTION)continue;
+  // Preserve oversized entry metadata so a referenced document section can
+  // fail explicitly instead of appearing to be a missing or empty worksheet.
+  const oversized=size>MAX_SECTION||compressed>MAX_SECTION;
   // Do not count images, thumbnails and embedded media against a text
   // extraction budget when we never decompress them. Count actual reads below.
   if(entries.has(name))throw Error("ZIP has duplicate document entries: "+name);
-  entries.set(name,{name,method,compressed,size,localOffset,checksum});
+  entries.set(name,{name,method,compressed,size,localOffset,checksum,oversized});
  }
  return entries;
 }
@@ -87,6 +89,7 @@ export async function openKnightfallZip(file){
   async read(path){
    const item=entries.get(path);
    if(!item)return "";
+   if(item.oversized)throw Error("Office document section "+item.name+" exceeds the 4 MB per-section safety limit.");
    const i=item.localOffset;
    requireRange(bytes,i,30,"local header");
    if(uint32(view,i)!==0x04034b50)throw Error("Invalid local ZIP header.");
