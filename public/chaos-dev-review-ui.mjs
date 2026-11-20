@@ -1,3 +1,4 @@
+import {makeChaosCandidateTestKit} from "./chaos-review-test-kit.mjs?v=20261119-candidate1";
 /* Eye of Chaos: human-supervised full-file developer review queue.
  * This UI is NOT authorization; the Worker enforces staff + delegated review.
  * It never executes candidate source or calls a GitHub write/deploy endpoint.
@@ -44,6 +45,54 @@ if(panel){
      note(String(error.message||"Review decision unavailable."),true);
    }
  }
+ async function prepareManualTests(detail,host,button){
+   button.disabled=true;
+   try{
+     // Backend authenticated this exact review revision; packaging stays local.
+     const kit=await makeChaosCandidateTestKit({
+       path:detail.path,source_sha:detail.source_sha,candidate:detail.candidate
+     });
+     host.replaceChildren();
+     const instructions=make("p",
+       "Nothing was sent or tested. Copy each field into the manual GitHub Actions workflow. Source must still match main. Inputs may be visible to repository collaborators; NEVER paste secrets or member data.","chaos-note");
+     const workflow=make("a","Open manual candidate-check workflow");
+     workflow.href=kit.workflow;workflow.target="_blank";workflow.rel="noopener noreferrer";
+     const chooser=make("select");
+     chooser.setAttribute("aria-label","Choose GitHub Actions input to copy");
+     for(const key of ["base_sha","path","candidate_base64","candidate_sha256"])
+       chooser.append(new Option(key,key));
+     const source=make("textarea");
+     source.rows=3;source.readOnly=true;source.spellcheck=false;
+     source.setAttribute("aria-label","Selected GitHub Actions input value");
+     const update=()=>{source.value=String(kit.inputs[chooser.value]||"");};
+     chooser.addEventListener("change",update);update();
+     const actions=make("div",undefined,"chaos-actions");
+     const copy=make("button","Copy selected input","chaos-quiet");copy.type="button";
+     copy.addEventListener("click",async()=>{
+       try{
+         if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(source.value);
+         else{source.select();if(!document.execCommand("copy"))throw Error("Clipboard unavailable");}
+         note("Copied "+chooser.value+" for the optional manual check.");
+       }catch{source.focus();source.select();note("Clipboard blocked. The selected text can be copied manually.");}
+     });
+     const download=make("button","Export candidate test JSON","chaos-quiet");
+     download.type="button";
+     download.addEventListener("click",()=>{
+       const file=new Blob([JSON.stringify(kit,null,2)+"\n"],{type:"application/json;charset=utf-8"});
+       const url=URL.createObjectURL(file),a=document.createElement("a");
+       a.href=url;a.download="knightfall-candidate-review-"+detail.id+".json";
+       document.body.append(a);a.click();a.remove();
+       setTimeout(()=>URL.revokeObjectURL(url),1500);
+       note("Candidate test kit exported locally. No test run, approval or deployment was performed.");
+     });
+     actions.append(copy,download);
+     host.append(instructions,workflow,chooser,source,actions,
+       make("p","Static checks are the default. Targeted tests require explicit opt-in in GitHub Actions. A green check is evidence only, never approval or integration.","chaos-note"));
+     host.hidden=false;
+     note("Manual test inputs prepared for "+detail.path+" at "+detail.source_sha.slice(0,12)+". No workflow started.");
+   }catch(error){note(String(error.message||"Cannot prepare these candidate inputs."),true);}
+   finally{button.disabled=false;}
+ }
  async function expandReview(row,slot,button,canApprove){
    if(slot.dataset.loaded==="true"){slot.hidden=!slot.hidden;return;}
    button.disabled=true;
@@ -70,6 +119,15 @@ if(panel){
        "Recorded decisions: "+detail.events.map(e=>e.action+" by account "+e.actor_id+" ("+e.occurred_at+")").join("; "):
        "No audit record available","chaos-note");
      slot.append(audit);
+     if(detail.status==="pending"||detail.status==="approved"){
+       const testArea=make("section",undefined,"chaos-dev-sandbox");
+       testArea.append(make("h4","Manual candidate testing · no deployment"));
+       const trigger=make("button","Prepare isolated GitHub Actions test inputs","chaos-quiet");
+       trigger.type="button";testArea.append(trigger);
+       const contents=make("div",undefined,"chaos-dev-sandbox-fields");contents.hidden=true;
+       trigger.addEventListener("click",()=>void prepareManualTests(detail,contents,trigger));
+       testArea.append(contents);slot.append(testArea);
+     }
      if(detail.status==="pending"&&canApprove){
        const area=make("div",undefined,"chaos-dev-review-decision");
        const label=make("label","Required review note (12–600 characters)");
