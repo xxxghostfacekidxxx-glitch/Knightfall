@@ -9,7 +9,8 @@ test("every cataloged original has a locally hosted entry point",()=>{
   assert.ok(!ids.has(g.id),"duplicate cartridge: "+g.id);ids.add(g.id);
   assert.ok(g.engine.startsWith("/arcade/hosted/"),g.id+" must be hosted locally");
   assert.ok(existsSync("public"+g.engine),g.id+" entry point missing");
-  assert.ok(shelf.includes('href="'+g.engine+'"'),g.id+" is missing from arcade shelf");
+  const directory=g.id==='cinder-slots'?readFileSync('public/casino/index.html','utf8'):shelf;
+  assert.ok(directory.includes('href="'+g.engine+'"'),g.id+" is missing from its directory");
  }
 });
 test("rewritten engines do not embed imported remote game scripts",()=>{

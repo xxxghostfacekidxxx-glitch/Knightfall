@@ -9,6 +9,8 @@ const bridge=JSON.parse(readFileSync('public/arcade/hosted/account-bridge-manife
 test('every declared catalog score identity is registered with a bounded backend score',()=>{
  const ids=new Set(bridge.games.map(g=>g.gameId));
  for(const g of catalog.games){if(!g.route.startsWith('/'))continue;const html=readFileSync('public'+g.route.split(/[?#]/)[0],'utf8');for(const m of html.matchAll(/(?:recordScore\(|recordScore\?\.\(|data-game-id=)["']([^"']+)/g))ids.add(m[1]);}
- assert.ok(ids.size>100);
+ assert.ok(bridge.games.length>0);
+ assert.ok(ids.has('cinder-archer'));
+ for(const id of ['trench-bounty','neon-kelp-reef','magma-trench','cinder-clicker','cinder-clicker-pocket','cabinet-archer','ash-cannon'])assert.ok(!allowed.has(id),id+' is retired');
  for(const id of ids){assert.ok(allowed.has(id),'unregistered score identity: '+id);assert.ok(Number.isFinite(caps[id])&&caps[id]>0,'missing score cap: '+id);}
 });

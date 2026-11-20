@@ -10,7 +10,7 @@ test('only Chaos Cartridge is generated from the single source catalog',()=>{
  assert.equal(new Set(routes).size,routes.length,'duplicate launch targets');
  assert.equal(new Set(ids).size,ids.length,'duplicate game identities');
  assert.ok(routes.length>100,'incomplete catalog');
- for(const g of catalog.games){assert.ok(['games','mini','experiments','external','unavailable'].includes(g.collection));assert.ok(['touch','desktop'].includes(g.device));assert.ok(g.description&&g.genre&&g.title);if(g.route.startsWith('https:'))assert.equal(g.collection,'external');else assert.ok(existsSync('public'+g.route.split(/[?#]/)[0]),g.route);}
+ for(const g of catalog.games){assert.ok(['games','mini','family','experiments','external','unavailable'].includes(g.collection));assert.ok(['touch','desktop'].includes(g.device));assert.ok(g.description&&g.genre&&g.title);if(g.route.startsWith('https:'))assert.equal(g.collection,'external');else assert.ok(existsSync('public'+g.route.split(/[?#]/)[0]),g.route);}
 });
 test('real imports replace misleading shared-cabinet substitutes',()=>{
  assert.ok(!catalog.games.some(g=>g.route.includes('arcade-cabinet.html?')||g.route.includes('ashfall-mini-games.html?')));
