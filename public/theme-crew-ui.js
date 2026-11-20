@@ -6,6 +6,14 @@ const status=$("theme-crew-status");
 const workspace=$("theme-crew-workspace");
 const denied=$("theme-crew-denied");
 let current=null,presets={},selected="cathedral",busy=false,initialized=false,canPublish=false;
+const PREVIEW_ART=Object.freeze({
+ cathedral:"/assets/knightfall/black-sun-hero-illustration.webp",
+ blood_moon:"/assets/knightfall/obsidian-cathedral.svg",
+ verdant_crypt:"/assets/knightfall/realm-pets.svg",
+ iron_eclipse:"/assets/knightfall/vaulted-cathedral.svg",
+ royal_abyss:"/assets/knightfall/black-sun-temple.svg"
+});
+const previewUrl=key=>new URL("/?kf_theme_preview="+encodeURIComponent(key),location.origin).href;
 const announce=text=>{status.textContent=String(text)};
 const textNode=(tag,text,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=String(text);return e};
 async function req(path,method="GET",payload){
@@ -23,7 +31,9 @@ function choose(preset){
   b.setAttribute("aria-pressed",String(b.dataset.preset===selected));
  }
  const p=presets[preset];
- announce("Selected "+p.name+". Preview is local. "+(canPublish?"Confirm your authorized sitewide change before publishing.":"Your theme proposal can be reviewed by GOD for publication."));
+ const local=window.KnightfallThemeCrew?.preview?.(preset)===true;
+ $("theme-crew-selected").textContent=(current?.preset===preset?"LIVE THEME":"PRIVATE PREVIEW")+" · "+p.name;
+ announce("Selected "+p.name+". "+(local?"Preview applied instantly. ":"")+(canPublish?"Publish to change Knightfall for everyone.":"Only authorized staff can publish."));
 }
 function drawPresets(){
  const place=$("theme-crew-presets");place.replaceChildren();
@@ -33,7 +43,11 @@ function drawPresets(){
   b.setAttribute("aria-pressed",String(selected===key));
   b.dataset.current=String(current?.preset===key);
   const chip=document.createElement("span");chip.className="theme-crew-chip";chip.setAttribute("aria-hidden","true");
-  b.append(chip,textNode("strong",preset.name),textNode("small",preset.tag),textNode("small",preset.mood));
+  const scene=document.createElement("span");scene.className="theme-crew-scene";scene.setAttribute("aria-hidden","true");
+  if(PREVIEW_ART[key])scene.style.setProperty("--kf-choice-art",'url("'+PREVIEW_ART[key]+'")');
+  b.append(scene,chip,textNode("strong",preset.name),
+    textNode("small",current?.preset===key?"● LIVE NOW":"Available preset","theme-crew-live-label"),
+    textNode("small",preset.tag),textNode("small",preset.mood));
   b.addEventListener("click",()=>choose(key));
   place.append(b);
  }
@@ -65,6 +79,7 @@ async function load(){
  lock(false);
  if(!initialized||!Object.hasOwn(presets,selected))selected=current.preset;
  initialized=true;
+ $("theme-crew-selected").textContent="SELECTED · "+(presets[selected]?.name||"Choose a look");
  $("theme-crew-current").textContent="LIVE: "+presets[current.preset]?.name+" · Revision "+current.revision+
    (current.updated_at?" · "+new Date(current.updated_at).toLocaleString():" · Default release");
  drawPresets();drawBots(data.bots||[],data.workflow);drawHistory(data.history||[]);
@@ -90,6 +105,7 @@ async function publish(undo=false){
   try{await load()}catch(error){announce("Theme published as "+presets[current.preset].name+", but dashboard refresh failed: "+error.message+". Reload to verify.");}
   // Local preview must not hide the new live state.
   window.KnightfallThemeCrew?.preview?.(null);
+  window.KnightfallThemeCrew?.announcePublished?.(current.revision);
   await window.KnightfallThemeCrew?.refresh?.();
   announce("Published "+presets[current.preset].name+" sitewide. Revision "+current.revision+". Existing tabs refresh automatically.");
  }catch(e){announce(published?"Theme change was accepted, but confirmation was interrupted: "+e.message+". Check the live status before trying again.":"Theme change was not confirmed: "+e.message+". Refresh live status before retrying.");}
@@ -97,13 +113,33 @@ async function publish(undo=false){
 }
 $("theme-crew-preview").addEventListener("click",()=>{
  if(!window.KnightfallThemeCrew?.preview?.(selected)){announce("Preview runtime not ready.");return}
- announce("Local preview active: "+presets[selected].name+". Other members still see the published theme.");
- const url="/?kf_theme_preview="+encodeURIComponent(selected);
- window.open(url,"_blank","noopener,noreferrer");
+ announce("Opening homepage preview for "+presets[selected].name+". This does not publish anything.");
+ window.open(previewUrl(selected),"_blank","noopener,noreferrer");
+});
+$("theme-crew-copy-preview").addEventListener("click",async()=>{
+ const url=previewUrl(selected);
+ try{await navigator.clipboard.writeText(url);announce("Preview-only link copied for "+presets[selected].name+".")}
+ catch{window.prompt("Copy the preview-only link:",url)}
+});
+$("theme-crew-presets").addEventListener("keydown",event=>{
+ const choice=event.target.closest(".theme-crew-choice");
+ if(!choice)return;
+ const keys=Object.keys(presets);let index=keys.indexOf(choice.dataset.preset);
+ if(event.key==="ArrowRight"||event.key==="ArrowDown")index=(index+1)%keys.length;
+ else if(event.key==="ArrowLeft"||event.key==="ArrowUp")index=(index+keys.length-1)%keys.length;
+ else if(event.key==="Home")index=0;
+ else if(event.key==="End")index=keys.length-1;
+ else return;
+ event.preventDefault();
+ const next=document.querySelector('.theme-crew-choice[data-preset="'+keys[index]+'"]');
+ next?.focus();choose(keys[index]);
 });
 $("theme-crew-revert-preview").addEventListener("click",()=>{
  window.KnightfallThemeCrew?.preview?.(null);
- announce("Local preview cleared; the published theme is restored on your device.");
+ selected=current?.preset||"cathedral";
+ drawPresets();
+ $("theme-crew-selected").textContent="LIVE THEME · "+(presets[selected]?.name||"Black Sun Temple");
+ announce("Preview cleared. The published theme is restored in this tab.");
 });
 $("theme-crew-publish").addEventListener("click",()=>publish(false));
 $("theme-crew-rollback").addEventListener("click",()=>publish(true));
