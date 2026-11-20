@@ -49,7 +49,8 @@ test("draft storage is bounded and keyed by conversation ID",()=>{
 });
 test("new-message creation no longer discards the previous active chat draft",()=>{
   assert.doesNotMatch(inline,/composeDialog\.close\(\);currentId=Number\(d\.id\)/);
-  assert.match(inline,/const newId=Number\(d\.id\);await loadConversations\(\{openSelected:false\}\);await openConversation\(newId\)/);
+  assert.match(inline,/async function startDirectMessage\(raw,trigger\)/);
+  assert.match(inline,/createdId=id;[\s\S]*?await loadConversations\(\{openSelected:false\}\);[\s\S]*?await openConversation\(id\)/);
   assert.match(inline,/rememberConversationDraft\(previousId,\$\("#body"\)\.value\)/);
   assert.match(inline,/!e\.isComposing/);
   assert.match(inline,/Draft · /);
