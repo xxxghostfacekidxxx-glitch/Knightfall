@@ -101,7 +101,7 @@ async function readZipDocument(file,ext,notify,cancelled){
    const doc=new DOMParser().parseFromString(shared,"application/xml");
    for(const si of doc.getElementsByTagName("si"))strings.push([...si.getElementsByTagName("t")].map(t=>t.textContent||"").join(""));
   }
-  const paths=Object.keys(zip.files).filter(path=>/^xl\/worksheets\/sheet\d+\.xml$/.test(path)).sort().slice(0,15);
+  const paths=Object.keys(zip.files).filter(path=>/^xl\/worksheets\/sheet\d+\.xml$/.test(path)).sort((a,b)=>Number(a.match(/sheet(\d+)/)[1])-Number(b.match(/sheet(\d+)/)[1])).slice(0,15);
   if(!paths.length)throw Error("No spreadsheet sheets found.");
   const sheets=[];
   for(const path of paths){
@@ -109,7 +109,7 @@ async function readZipDocument(file,ext,notify,cancelled){
    const raw=await read(path);
    const doc=new DOMParser().parseFromString(raw,"application/xml");
    if(doc.querySelector("parsererror"))throw Error("Spreadsheet XML could not be read.");
-   const rows=[];
+   const rows=[];let total=0;
    for(const row of doc.getElementsByTagName("row")){
     const values=[];
     for(const cell of row.getElementsByTagName("c")){
@@ -118,8 +118,8 @@ async function readZipDocument(file,ext,notify,cancelled){
      let value=type==="s"?strings[Number(v)]||"":type==="inlineStr"?cell.getElementsByTagName("is")[0]?.textContent||"":v;
      if(value)values.push((cell.getAttribute("r")||"")+"="+value);
     }
-    if(values.length)rows.push(values.join(" | "));
-    if(rows.join("\n").length>TEXTRACT_LIMITS.chars)break;
+    if(values.length){const line=values.join(" | ");rows.push(line);total+=line.length+1;}
+    if(total>TEXTRACT_LIMITS.chars)break;
    }
    sheets.push(path.split("/").pop().replace(".xml","")+"\n"+rows.join("\n"));
   }
