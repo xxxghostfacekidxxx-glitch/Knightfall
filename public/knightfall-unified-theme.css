@@ -6,8 +6,8 @@
 /* === CANONICAL KNIGHTFALL CHROME: SECTION FOUNDATIONS === */
 /* Ash-Fall section overhaul. Scoped by page roots to avoid legacy layout collisions. */
 :where(.community-directory,.messages-shell,.admin-shell,.profile-shell,.cartridge-shelf,.foundry,.members-page,.friends-page,.dt-workspace-nav){
- --section-surface:#19191e;--section-raised:#242128;--section-stroke:rgba(178,91,104,.34);
- --section-green:#c7a77c;--section-pink:#b25b68;--section-muted:#c4b9d3;
+ --section-surface:var(--af-v2-card);--section-raised:var(--kf-panel-2);--section-stroke:rgba(178,91,104,.34);
+ --section-green:var(--kf-antique-gold);--section-pink:var(--kf-oxblood);--section-muted:#c4b9d3;
 }
 .community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero,.foundry .foundry-hero{
  position:relative;isolation:isolate;border-radius:20px;padding:clamp(1.15rem,3vw,2.4rem);

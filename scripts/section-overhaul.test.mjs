@@ -16,3 +16,14 @@ test("section overhaul supports small screens, keyboard access and personal them
  assert.match(css,/prefers-reduced-motion:reduce/);
  assert.match(css,/body:not\(\.profile-custom-theme\) \.profile-shell/);
 });
+
+
+test("common section colors reuse canonical tokens instead of copying hardcoded palette values",async()=>{
+ const css=await read("knightfall-unified-theme.css");
+ assert.match(css,/--section-surface:var\(--af-v2-card\)/);
+ assert.match(css,/--section-raised:var\(--kf-panel-2\)/);
+ assert.match(css,/--section-green:var\(--kf-antique-gold\)/);
+ assert.match(css,/--section-pink:var\(--kf-oxblood\)/);
+ assert.match(css,/--kf-antique-gold:#c7a77c/);
+ assert.match(css,/--kf-oxblood:#b25b68/);
+});
