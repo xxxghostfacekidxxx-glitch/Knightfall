@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 960" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Eye of Chaos eclipsed above an ancient Egyptian temple, flanked by two Anubis guardians">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#07090a"/><stop offset=".43" stop-color="#2e1b19"/><stop offset=".78" stop-color="#151613"/><stop offset="1" stop-color="#080a0a"/></linearGradient>
+ <radialGradient id="flare"><stop stop-color="#ffc879"/><stop offset=".46" stop-color="#b75628"/><stop offset=".62" stop-color="#6e281c" stop-opacity=".68"/><stop offset="1" stop-color="#291813" stop-opacity="0"/></radialGradient>
+ <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#74441f"/><stop offset=".25" stop-color="#f0cc7a"/><stop offset=".57" stop-color="#a66f37"/><stop offset=".79" stop-color="#dfb46b"/><stop offset="1" stop-color="#61411f"/></linearGradient>
+ <linearGradient id="stone" x2="1" y2="1"><stop stop-color="#21201d"/><stop offset=".5" stop-color="#090b0d"/><stop offset="1" stop-color="#30281f"/></linearGradient>
+ <pattern id="hier" width="38" height="98" patternUnits="userSpaceOnUse"><path d="M7 9h22m-11 0v37M8 58q18-22 20 4t-18 4m-3 20h21" stroke="#e0af62" stroke-width="2" fill="none" opacity=".55"/></pattern>
+ <g id="guardian"><path d="M0 18 15-112 37-41 54-155 78-43 93-6 124 21 120 37 91 51 77 52 85 107 104 174 13 174 26 96 9 48-17 40-33 23Z" fill="url(#stone)" stroke="url(#gold)" stroke-width="4"/><path d="M23 24q18-11 39-2l-21 12Z" fill="#db9f50"/><path d="M13 86q40 17 68 0M15 112q42 19 74 0" stroke="url(#gold)" stroke-width="6" fill="none"/><path d="M28 154h53" stroke="#b77d3e" stroke-width="12"/></g>
+</defs>
+<rect width="640" height="960" fill="url(#sky)"/>
+<circle cx="320" cy="245" r="238" fill="url(#flare)"/>
+<circle cx="320" cy="245" r="132" fill="#070808" stroke="#f0aa60" stroke-width="7"/>
+<circle cx="320" cy="245" r="151" fill="none" stroke="#ae773f" stroke-width="3" stroke-dasharray="123 14 29 17"/>
+<g transform="translate(320 245)" fill="none" stroke="url(#gold)" stroke-width="8">
+ <path d="M-112 0Q0-118 112 0Q0 110-112 0Z"/><circle r="43" fill="#452319"/><circle r="21" fill="#e8ab55"/><circle r="7" fill="#10100e" stroke-width="3"/>
+ <path d="M-133-27 0-84 133-27M-99 33-61 91M99 33 61 91M0-157v-38M0 152v29" stroke-width="5"/>
+</g>
+<path d="M0 500 157 310 312 500ZM360 520 506 333 663 520Z" fill="#261d18" opacity=".68"/>
+<g fill="url(#stone)" stroke="url(#gold)" stroke-width="3">
+ <path d="M0 0h70v690H0Z"/><path d="M570 0h70v690h-70Z"/>
+ <path d="M0 0h640v31H0Z"/>
+</g>
+<rect x="15" y="49" width="37" height="610" fill="url(#hier)"/><rect x="588" y="49" width="37" height="610" fill="url(#hier)"/>
+<g transform="translate(128 540) scale(.98)"><use href="#guardian"/></g>
+<g transform="translate(512 540) scale(-.98 .98)"><use href="#guardian"/></g>
+<path d="M55 725q264-120 529 0v235H55Z" fill="#080b0c" opacity=".66"/>
+<g transform="translate(320 735)" fill="none" stroke="url(#gold)" stroke-width="4" opacity=".64"><ellipse rx="58" ry="35"/><path d="M0-52v104M-86 0H86M-39-22 0-54 39-22M-39 22 0 54 39 22"/></g>
+<path d="M0 796q320-82 640 0v164H0Z" fill="#060809" opacity=".68"/>
+<path d="M64 37h512M64 52h512M64 880h512" stroke="#e6b977" stroke-width="2" opacity=".3"/>
+</svg>
