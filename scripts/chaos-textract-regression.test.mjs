@@ -238,13 +238,13 @@ test("Large PowerPoint and Excel files report safely omitted slides and sheets",
  ]);
  const powerpoint=await extractTextract(file("deck.pptx",zipPack(slides)));
  assert.match(powerpoint.text,/Only 60 of 61 slides were processed/);
- assert.match(powerpoint.warning,/Only part/);
+ assert.match(powerpoint.warning,/extraction is incomplete/);
  const sheets=Array.from({length:26},(_,i)=>[
   "xl/worksheets/sheet"+(i+1)+".xml",'<worksheet><row><c r="A1" t="inlineStr"><is><t>SHEET_'+(i+1)+'</t></is></c></row></worksheet>'
  ]);
  const excel=await extractTextract(file("budget.xlsx",zipPack(sheets)));
  assert.match(excel.text,/Only 25 of 26 worksheets were processed/);
- assert.match(excel.warning,/Only part/);
+ assert.match(excel.warning,/extraction is incomplete/);
 });
 
 
