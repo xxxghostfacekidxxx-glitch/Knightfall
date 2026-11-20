@@ -81,6 +81,15 @@ if(!base.includes('@import url("/theme-crew.css?'))failures.push({type:"theme_cr
 if(!nav.includes('theme-crew-runtime.js'))failures.push({type:"theme_crew_runtime_not_loaded"});
 for(const name of ["theme-crew.css","theme-crew-runtime.js","theme-crew.html","theme-crew-ui.js"])
  if(!sw.includes('"/'+name+'"'))failures.push({type:"offline_shell_missing",file:name});
+// Preserve the new default-theme artwork without duplicating a stylesheet owner.
+const blackSun=read("knightfall-requiem.css");
+for(const asset of ["black-sun-temple.svg","royal-cartouche.svg"]){
+ const filepath="assets/knightfall/"+asset;
+ if(!existsSync(join(root,filepath)))failures.push({type:"missing_black_sun_art",file:filepath});
+ if(!blackSun.includes(asset))failures.push({type:"unused_black_sun_art",file:filepath});
+ if(!sw.includes('"/'+filepath+'"'))failures.push({type:"offline_black_sun_art_missing",file:filepath});
+}
+if(blackSun.includes("sanctum-stained-glass.svg"))failures.push({type:"legacy_hero_overlay_returned"});
 const crew=read("theme-crew.css");
 for(const text of ["profile-custom-theme",":has(#profile[data-theme])","kf-gameplay-page"])
  if(!crew.includes(text))failures.push({type:"scope_guard_missing",guard:text});
