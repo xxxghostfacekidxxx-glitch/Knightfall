@@ -32,8 +32,8 @@ Never make theme changes by editing generated HTML or pasting arbitrary CSS into
 3. Add that key to `KNOWN` in `public/theme-crew-runtime.js`, and the local thumbnail path to `PREVIEW_ART` in `public/theme-crew-ui.js`.
 4. Define the theme's colors in one scoped preset block in `public/theme-crew.css`, using existing `--kf-realm-*` and `--kf-crew-*` tokens instead of duplicating 100 selectors. Do not add independent stylesheets for every new preset.
 5. If the theme needs different homepage artwork, use the existing controlled artwork treatment and keep real text readable; do not layer permanent pseudo-elements over buttons, chat, or the editor.
-6. Add applicable local art to the service worker cache; version the changed JS/CSS and `CACHE_NAME`. Existing home and runtime URL caches must revalidate.
-7. Add a regression test for the new key and its accessibility properties. Run `node scripts/pages-release-guard.mjs` and browser smoke tests at 390px, 900px and 1366px before calling it production-ready. Verify the actual Cloudflare Pages deployment.
+6. Add applicable local art to the service worker cache and increment `CACHE_NAME`. Public pages reference stable `/theme.css`, `/nav.js`, and `/theme-crew-runtime.js` URLs, which revalidate at the edge and use network-first PWA caching. Only centralized CSS `@import` versions should change when a child stylesheet changes. Do not restore per-page query-string versions.
+7. Update the backend preset, browser `KNOWN` allowlist, preview thumbnail map, and scoped CSS together. The regression test checks that they remain synchronized. Add an accessibility test for the new artwork. Run `node scripts/pages-release-guard.mjs` and browser smoke tests at 390px, 900px and 1366px before calling it production-ready. Verify the actual Cloudflare Pages deployment.
 
 ## Limits and safe defaults
 
