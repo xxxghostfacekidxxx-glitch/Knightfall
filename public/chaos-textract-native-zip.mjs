@@ -23,7 +23,7 @@ export function listKnightfallZipEntries(bytes){
  const count=uint16(v,footer+10),directoryLength=uint32(v,footer+12),start=uint32(v,footer+16);
  if(count>MAX_ENTRIES)throw Error("ZIP has too many entries.");
  requireRange(bytes,start,directoryLength,"central directory");
- const entries=new Map();let cursor=start,total=0;
+ const entries=new Map();let cursor=start;
  for(let i=0;i<count;i++){
   requireRange(bytes,cursor,46,"central directory header");
   if(uint32(v,cursor)!==0x02014b50)throw Error("Malformed ZIP central directory.");
@@ -38,8 +38,8 @@ export function listKnightfallZipEntries(bytes){
   if(flags&1)throw Error("Encrypted ZIP archives are unsupported.");
   if(method!==0&&method!==8)throw Error("ZIP compression method "+method+" is unsupported.");
   if(size>MAX_SECTION||compressed>MAX_SECTION)continue;
-  total+=size;
-  if(total>MAX_TOTAL)throw Error("Expanded ZIP contents exceed memory safety limits.");
+  // Do not count images, thumbnails and embedded media against a text
+  // extraction budget when we never decompress them. Count actual reads below.
   entries.set(name,{name,method,compressed,size,localOffset});
  }
  return entries;
@@ -69,6 +69,7 @@ export async function openKnightfallZip(file){
  if(bytes.length>18*1024*1024)throw Error("Document exceeds the 18 MB limit.");
  const entries=listKnightfallZipEntries(bytes);
  const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
+ let expandedRead=0;
  return Object.freeze({
   names:()=>[...entries.keys()],
   async read(path){
@@ -82,6 +83,8 @@ export async function openKnightfallZip(file){
    const packed=bytes.subarray(start,start+item.compressed);
    const plain=item.method===0?packed:await inflateDeflate(packed);
    if(plain.length!==item.size)throw Error("ZIP section length failed verification.");
+   expandedRead+=plain.length;
+   if(expandedRead>MAX_TOTAL)throw Error("Extracted Office XML exceeds memory safety limits.");
    return dec.decode(plain);
   }
  });
