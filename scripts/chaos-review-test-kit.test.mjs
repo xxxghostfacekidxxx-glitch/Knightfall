@@ -44,6 +44,7 @@ test("Code Studio prepares candidate test inputs ONLY after staging verified ful
  const html=read("public/chaos-code-studio.html");
  const app=read("public/chaos-code-studio.js");
  const css=read("public/chaos-code-studio.css");
+ const eye=read("public/chaos-dev-review-ui.mjs");
  for(const id of ["studio-candidate-build","studio-candidate-download","studio-candidate-copy",
                    "studio-candidate-field","studio-candidate-value","studio-candidate-status"]){
    assert.ok(html.includes('id="'+id+'"'),id);
@@ -62,6 +63,11 @@ test("Code Studio prepares candidate test inputs ONLY after staging verified ful
  assert.match(app,/code\.addEventListener\("input"/);
  assert.match(app,/JSON\.stringify\(candidateKit,null,2\)/);
  assert.match(css,/\.studio-candidate-check/);
+ assert.match(eye,/makeChaosCandidateTestKit\(\{/);
+ assert.match(eye,/detail\.status==="pending"\|\|detail\.status==="approved"/);
+ assert.match(eye,/prepareManualTests/);
+ assert.match(eye,/Open manual candidate-check workflow/);
+ assert.match(eye,/navigator\.clipboard/);
  assert.doesNotMatch(app,/fetch\([^\n]*miss-chaos-candidate-check/);
  assert.doesNotMatch(app,/localStorage|sessionStorage/);
 });
