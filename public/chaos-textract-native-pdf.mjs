@@ -5,6 +5,13 @@
  * Source bytes never leave the browser.
  */
 const LATIN=new TextDecoder("windows-1252"),UTF8=new TextDecoder();
+/* PDF bytes must remain reversible: TextDecoder("latin1") aliases to Windows-1252
+   in browsers, corrupting binary deflate streams at bytes 0x80–0x9F. */
+function binaryString(bytes){
+ const chunks=[];
+ for(let i=0;i<bytes.length;i+=8192)chunks.push(String.fromCharCode(...bytes.subarray(i,i+8192)));
+ return chunks.join("");
+}
 const MAX_DOCUMENT=18*1024*1024,MAX_OBJECTS=3500,MAX_STREAM=5*1024*1024,MAX_TOTAL=30*1024*1024;
 const utf16=(bytes)=>{
  let output="";
@@ -253,7 +260,7 @@ export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false}
  const bytes=file instanceof Uint8Array?file:new Uint8Array(await file.arrayBuffer());
  if(bytes.length>MAX_DOCUMENT)throw Error("PDF exceeds 18 MB.");
  if(bytes.length<8||LATIN.decode(bytes.subarray(0,8)).slice(0,5)!=="%PDF-")throw Error("This is not a valid PDF header.");
- const text=LATIN.decode(bytes);
+ const text=binaryString(bytes);
  if(/\/Encrypt\s+\d+\s+\d+\s+R/.test(text))throw Error("This PDF is encrypted. Save an unlocked copy before extracting.");
  const objects=new Map();
  for(const item of text.matchAll(/(?:^|[\r\n])\s*(\d{1,9})\s+(\d{1,5})\s+obj\b([\s\S]*?)\bendobj\b/g)){
