@@ -53,8 +53,8 @@ test("single canonical home and arcade discovery routes", () => {
     "/games.html": "/chaos-cartridge.html",
     "/arcade-30-games": "/chaos-cartridge.html",
     "/arcade-30-games.html": "/chaos-cartridge.html",
-    "/arcade-card-board": "/chaos-cartridge.html",
-    "/arcade-card-board.html": "/chaos-cartridge.html",
+    "/arcade-card-board": "/chaos-cartridge.html?collection=family#game-shelf",
+    "/arcade-card-board.html": "/chaos-cartridge.html?collection=family#game-shelf",
     "/arcade-vault": "/arcade-vault.html"
   };
   for (const [source, destination] of Object.entries(expected)) {

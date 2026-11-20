@@ -20,8 +20,8 @@
 /games.html /chaos-cartridge.html 301
 /arcade-30-games /chaos-cartridge.html 301
 /arcade-30-games.html /chaos-cartridge.html 301
-/arcade-card-board /chaos-cartridge.html 301
-/arcade-card-board.html /chaos-cartridge.html 301
+/arcade-card-board /chaos-cartridge.html?collection=family#game-shelf 301
+/arcade-card-board.html /chaos-cartridge.html?collection=family#game-shelf 301
 
 # Extensionless Arcade Vault links still use the existing HTML bookmark mapper,
 # which supports #vault-mines, #vault-breakout and #vault-snake.
