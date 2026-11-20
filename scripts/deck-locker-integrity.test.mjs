@@ -7,7 +7,7 @@ const source=read("public/card-deck-skins.js");
 const css=read("public/card-deck-skins.css");
 const catalog=JSON.parse(read("public/arcade/catalog.json"));
 const shop=read("public/cinder-shop.html");
-const paths=catalog.games.filter(g=>g.genre==="Card").map(g=>g.route);
+const paths=[...new Set(catalog.games.filter(g=>g.genre==="Card").map(g=>g.route.split("#")[0]))];
 
 function startWardrobe(memory=new Map()){
  const root={dataset:{},style:{}};
@@ -87,7 +87,7 @@ test("every catalogued card-game entry imports the same asset pipeline",()=>{
   assert.match(html,/<script[^>]+card-deck-skins\.js\?v=/,route+" missing shared skin selector");
  }
  assert.match(read("public/arcade-card-room.html"),/recordDeal\('chaos-war'\)/);
- assert.match(read("public/arcade-card-expansion.html"),/recordDeal\('chaos-freecell'\)/);
+ assert.match(read("public/arcade-card-room.html"),/recordDeal\('chaos-freecell'\)/);
  assert.match(read("public/arcade/hosted/cinder-eights/game.js"),/className="af-deck-card "/);
  assert.match(read("public/arcade/hosted/cinder-eights/index.html"),/game\.js\?v=/);
  assert.match(read("public/arcade/hosted/cards-against-chaos/index.html"),/recordDeal\('cards-against-chaos'\)/);

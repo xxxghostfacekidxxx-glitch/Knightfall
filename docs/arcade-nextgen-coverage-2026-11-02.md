@@ -42,7 +42,6 @@ Updated: 2026-11-02
 | Void Target | `/arcade/hosted/void-target/index.html` |
 | Ash Dash | `/arcade/hosted/ash-dash/index.html` |
 | Void Pulse | `/arcade/hosted/void-pulse/index.html` |
-| Ash Cannon | `/arcade/hosted/ash-cannon/index.html` |
 | Cinder Lanes | `/arcade/hosted/cinder-lanes/index.html` |
 | Ash Siege | `/arcade/hosted/ash-siege/index.html` |
 | Ashfall Balancer | `/arcade/hosted/balance-stack/index.html` |
@@ -139,7 +138,6 @@ Updated: 2026-11-02
 
 | Game | Play route |
 |---|---|
-| Ash-Fall: Endless Run | `/arcade/hosted/endless-runner/index.html` |
 
 ### Shooter (4)
 
@@ -161,7 +159,6 @@ Updated: 2026-11-02
 | Game | Play route |
 |---|---|
 | Cinder Archer | `/arcade/hosted/cinder-archer/index.html` |
-| Cinder Kickoff | `/arcade/hosted/cinder-kickoff/index.html` |
 | Void Hockey | `/arcade/hosted/void-hockey/index.html` |
 | Inferno Hoops | `/arcade/hosted/basketball/index.html` |
 | Crypt Bowling | `/arcade/hosted/bowling/index.html` |
@@ -200,7 +197,6 @@ Updated: 2026-11-02
 | Goalmouth Mayhem | `/arcade/hosted/goalmouth-mayhem/index.html` |
 | Hex Puzzle | `/arcade/hosted/hex-puzzle/index.html` |
 | Line Trap | `/arcade/hosted/line-trap/index.html` |
-| Ludo | `/arcade/hosted/ludo/index.html` |
 | Swipe Assassin | `/arcade/hosted/swipe-assassin/index.html` |
 | Cinder Reversi | `/arcade/hosted/cinder-reversi/index.html` |
 | Cinder Eights | `/arcade/hosted/cinder-eights/index.html` |
@@ -223,7 +219,6 @@ Updated: 2026-11-02
 | Last Drop Lemonade | `/last-drop-lemonade.html` |
 | Not Dead Yet, Asshole! | `/not-dead-yet.html` |
 | Wagonbound | `/wagonbound.html` |
-| Trench Bounty | `/abyssal-arsenal.html` |
 
 ## Chaos Connect Four (1)
 
@@ -233,6 +228,6 @@ Updated: 2026-11-02
 
 ## Change scope reference
 
-Arcade hub pages refreshed: `/arcade-games.html`, `/arcade-originals.html`, `/arcade-card-board.html`, `/arcade-card-room.html`, `/arcade-fresh-meat.html`, `/arcade-card-expansion.html`, `/arcade-open-source.html`, `/arcade-after-dark.html`; plus the two generated catalog pages via the shared catalog loader.
+Arcade hub pages refreshed: `/arcade-games.html`, `/arcade-originals.html`, `/arcade-card-board.html`, `/arcade-card-room.html`, `/arcade-fresh-meat.html`, `/arcade-open-source.html`, `/arcade-after-dark.html`; plus the two generated catalog pages via the shared catalog loader.
 
 Source repository: `xxxghostfacekidxxx-glitch/Knightfall`. Do not use this coverage report as proof that every game has new sprites, new 3D assets, or full playthrough certification.

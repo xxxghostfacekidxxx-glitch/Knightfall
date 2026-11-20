@@ -5,7 +5,9 @@ on:
     paths:
       - 'public/arcade/catalog.json'
       - 'public/chaos-cartridge.html'
-      - 'public/arcade-card-expansion.html'
+      - 'public/casino/index.html'
+      - 'public/arcade-card-room.html'
+      - 'public/arcade-spades.html'
       - 'scripts/card-room-runtime.test.mjs'
       - 'scripts/cinder-eights-runtime.test.mjs'
       - 'scripts/cinder-reversi-runtime.test.mjs'
@@ -36,7 +38,9 @@ on:
     paths:
       - 'public/arcade/catalog.json'
       - 'public/chaos-cartridge.html'
-      - 'public/arcade-card-expansion.html'
+      - 'public/casino/index.html'
+      - 'public/arcade-card-room.html'
+      - 'public/arcade-spades.html'
       - 'scripts/card-room-runtime.test.mjs'
       - 'scripts/cinder-eights-runtime.test.mjs'
       - 'scripts/cinder-reversi-runtime.test.mjs'

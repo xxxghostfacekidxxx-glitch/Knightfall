@@ -32,9 +32,6 @@ The admin-facing launchpad is `public/dev-toolkit.html`. God account and adminis
 ## Current Knightfall asset areas
 
 - `public/assets/arcade/`: existing original SVG arcade assets.
-- `public/abyssal-arsenal.html`: Abyssal Arsenal fish table.
-- `public/neon-kelp-reef-rush.html`: Neon Kelp Reef Rush.
-- `public/magma-trench-relic-hunt.html`: Magma Trench Relic Hunt.
 
 ## Workflow
 

@@ -7,11 +7,11 @@ const errors=[],warnings=[],ids=new Set(),routes=new Map();
 for(const game of catalog.games){
  if(ids.has(game.id))errors.push(game.id+': duplicate game id');
  ids.add(game.id);
- if(!['games','mini','experiments','external','unavailable'].includes(game.collection))errors.push(game.id+': invalid collection');
+ if(!['games','mini','family','experiments','external','unavailable'].includes(game.collection))errors.push(game.id+': invalid collection');
  if(!['touch','desktop'].includes(game.device))errors.push(game.id+': invalid device');
  const paths=[game.route,...(game.links||[]).map(x=>x.route)];
  for(const route of paths){
-  if(/^https:\/\//.test(route)){if(game.collection!=='external')warnings.push(game.id+': external link outside external collection');continue}
+  if(/^https:\/\//.test(route)){if(route===game.route && game.collection!=='external')warnings.push(game.id+': external link outside external collection');continue}
   if(!route.startsWith('/')||route.includes('..')){errors.push(game.id+': unsafe route '+route);continue}
   const disk=resolve(root,'.'+route.split(/[?#]/)[0]);
   if(!disk.startsWith(root+'/')){errors.push(game.id+': route escapes public');continue}

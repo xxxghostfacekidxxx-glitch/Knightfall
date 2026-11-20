@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 
-const html=readFileSync(new URL('../public/arcade-card-expansion.html',import.meta.url),'utf8');
+const html=readFileSync(new URL('../public/arcade-card-room.html',import.meta.url),'utf8');
 const source=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(code=>code.includes('function solInit'));
 function table(){
  class Element {
@@ -25,9 +25,9 @@ function table(){
  return {game:context.game,element:id=>document.getElementById(id),saved};
 }
 const card=(r,s='♠')=>({r,s,v:r==='A'?14:r==='K'?13:r==='Q'?12:r==='J'?11:Number(r),up:true});
-test('all five tables initialize and record controls share the game scope',()=>{
+test('four integrated tables initialize and record controls share the game scope',()=>{
  const t=table();assert.equal(t.element('all-record').textContent,'0W · 0L · 0 games');
- for(const id of ['sol-new','fc-new','e8-new','gin-new','he-new'])assert.doesNotThrow(()=>t.element(id).click());
+ for(const id of ['sol-new','fc-new','gin-new','he-new'])assert.doesNotThrow(()=>t.element(id).click());
  t.game.persistCardStats('chaos-freecell',{result:'win'});assert.equal(t.element('all-record').textContent,'1W · 0L · 1 games');
  t.element('card-reset-stats').click();assert.equal(t.element('all-record').textContent,'0W · 0L · 0 games');
 });

@@ -64,8 +64,8 @@ try {
     const cardRoutes=[
       "/arcade/hosted/cards-against-chaos/index.html",
       "/arcade-card-room.html",
-      "/arcade-card-expansion.html",
-      "/arcade/hosted/cinder-eights/index.html"
+      "/arcade/hosted/cinder-eights/index.html",
+      "/arcade-spades.html"
     ];
     try{
       for(const [index,route] of cardRoutes.entries()){
@@ -83,7 +83,7 @@ try {
           }
           const state=await page.evaluate(()=>{
             const skin=window.AshFallDeckSkins;
-            const card=document.querySelector(".cac-shell .prompt-card,.cac-shell .answer-card,.playing-card:not(.back):not(.backside),#hand button.af-deck-card");
+            const card=document.querySelector(".cac-shell .prompt-card,.cac-shell .answer-card,.playing-card:not(.back):not(.backside),#hand button.af-deck-card,#sp-hand .playing-card");
             const style=card?getComputedStyle(card):null;
             return {
               chosen:skin?.current,
@@ -115,8 +115,8 @@ try {
     try{
       const response=await page.goto(base+"/arcade/hosted/cinder-eights/index.html",{waitUntil:"domcontentloaded",timeout:12000});
       if(!response?.ok())throw Error("Cinder Eights failed HTTP "+response?.status());
-      await page.locator("#hand button.af-deck-card").first().waitFor({timeout:7000});
-      if(await page.locator("#hand button.af-deck-card").count()!==7)throw Error("Cinder Eights failed to deal 7 human cards");
+      await page.locator("#hand button.af-deck-card,#sp-hand .playing-card").first().waitFor({timeout:7000});
+      if(await page.locator("#hand button.af-deck-card,#sp-hand .playing-card").count()!==7)throw Error("Cinder Eights failed to deal 7 human cards");
       if(await page.locator("#cpu-hand .playing-card.back").count()!==7)throw Error("Cinder Eights CPU hidden hand missing");
       if((await page.locator("#count-deck").textContent())!=="37")throw Error("Cinder Eights deck count incorrect");
       await page.locator("#full").click();
@@ -128,7 +128,7 @@ try {
       if(await page.locator("#round-moves").textContent()==="0")throw Error("Cinder Eights did not process draw/CPU turn");
       await page.locator("#new").click();
       if((await page.locator("#count-deck").textContent())!=="37")throw Error("Cinder Eights new game did not reset deck");
-      if(await page.locator("#hand button.af-deck-card").count()!==7)throw Error("Cinder Eights did not restore seven cards after restart");
+      if(await page.locator("#hand button.af-deck-card,#sp-hand .playing-card").count()!==7)throw Error("Cinder Eights did not restore seven cards after restart");
       const view=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,skin:window.AshFallDeckSkins?.current}));
       if(view.scrollWidth>view.width+3)throw Error("Cinder Eights overflows phone: "+JSON.stringify(view));
       if(!view.skin)throw Error("Cinder Eights did not mount universal Deck Locker");
@@ -235,24 +235,24 @@ try {
     const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
     const errors=[];page.on('pageerror',error=>errors.push(error.message));
     try {
-      await page.goto(base+'/arcade-card-expansion.html',{waitUntil:'domcontentloaded'});
+      await page.goto(base+'/arcade-card-room.html#table-solitaire',{waitUntil:'domcontentloaded'});
       if(!/games/.test(await page.locator('#all-record').innerText()))throw Error('Card-room records did not initialize');
       await page.locator('#sol-draw').click();
       if(await page.locator('#sol-stock-count').innerText()!=='23')throw Error('Solitaire draw did not remove a stock card');
       await page.locator('#sol-top .playing-card').nth(1).click();
       if(!/selected/i.test(await page.locator('#sol-status').innerText()))throw Error('Solitaire selection did not update status');
       await page.locator('#sol-undo').click();
-      for(const [tab,newButton] of [['freecell','fc-new'],['eights','e8-new'],['gin','gin-new'],['holdem','he-new']]) {
-        await page.locator('[data-game="'+tab+'"]').click();
+      for(const [tab,newButton] of [['freecell','fc-new'],['gin','gin-new'],['holdem','he-new']]) {
+        await page.locator('[data-tab="'+tab+'"]').click();
         await page.locator('#'+newButton).click();
-        if(!await page.locator('#game-'+tab).isVisible())throw Error('Card table did not open: '+tab);
+        if(!await page.locator('#table-'+tab).isVisible())throw Error('Card table did not open: '+tab);
       }
       if(errors.length)throw Error(errors.join('; '));
-      console.log('PASS expanded card room: all five tables, records, draw, selection, and new deals');
+      console.log('PASS expanded card room: four integrated tables, records, draw, selection, and new deals');
     } finally {await page.close();}
   }
   // Catch layout regressions that leave game canvases invisible or wider than a phone.
-  for (const route of ["/arcade/hosted/ashfall-mini-games.html", "/arcade/hosted/arcade-cabinet.html?game=ash-cannon"]) {
+  for (const route of ["/arcade/hosted/ashfall-mini-games.html", "/arcade/hosted/cinder-archer/index.html"]) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     try {
       const response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 10000 });
@@ -910,7 +910,6 @@ try {
   // Verify cloud resume for Rusty Sky, Blockfall, and Endless Runner.
   const runnerRestoreCases = [
     {name:"Blockfall",path:"/arcade/hosted/blockfall/index.html",gameId:"cabinet-blockfall",data:{serialized:{board:Array.from({length:20},()=>Array(10).fill(0)),currentPiece:{type:"T",rotation:0,x:3,y:4},nextPiece:{type:"I",rotation:0,x:3,y:-1},isPaused:false,started:true,score:240,linesCleared:4,level:1,dropInterval:800,isWin:false,elapsedSinceDrop:100}},check:()=>document.querySelector("#score-val")?.textContent==="240"&&document.querySelector("#lines-val")?.textContent==="4"&&document.querySelector("#status-banner")?.style.display==="none"},
-    {name:"Endless Runner",path:"/arcade/hosted/endless-runner/index.html",gameId:"cabinet-endless-runner",data:{serialized:{player:{x:75,y:400,vy:0,w:30,h:38},obs:[{x:320,y:505,w:30,h:35}],score:123,speed:432,spawn:0.8,ground:530}},check:()=>Number(document.querySelector("#score")?.textContent)>=123&&document.querySelector("#state")?.textContent==="Cloud save restored."}
   ];
   for(const testCase of runnerRestoreCases){
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});

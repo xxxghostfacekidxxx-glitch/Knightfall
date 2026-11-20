@@ -315,17 +315,6 @@
       "sourceImported": false
     },
     {
-      "id": "dino-dash",
-      "name": "Ash-Fall: Endless Run",
-      "category": "Arcade",
-      "description": "Race through the ruins and dodge hazards in Knightfall's own endless runner.",
-      "playUrl": "/arcade/hosted/endless-runner/index.html",
-      "repository": "https://github.com/emjay045/browser-games",
-      "license": "Original Knightfall implementation; upstream code/assets not copied",
-      "launchMode": "self-hosted-native",
-      "sourceImported": false
-    },
-    {
       "id": "skifree",
       "name": "Slush Rush",
       "category": "Arcade",
@@ -351,20 +340,6 @@
       "sourcePath": "games/shooter/alien-battle/index.html",
       "importedPath": "public/arcade/hosted/alien-battle/",
       "integrationNote": "Fresh native canvas shooter; upstream source path was mismatched to Phaser/Jet Fighter."
-    },
-    {
-      "id": "archer",
-      "name": "Archer",
-      "category": "Sports",
-      "description": "Aim carefully, judge the arc, and hit the target.",
-      "playUrl": "/arcade/hosted/archer/index.html",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "MIT",
-      "launchMode": "self-hosted",
-      "sourceImported": true,
-      "sourcePath": "games/sports/archer/index.html",
-      "importedPath": "public/arcade/hosted/archer/",
-      "integrationNote": "Self-hosted multi-file adaptation; config is local, remote font/background/audio assets removed, inline SVG retained."
     },
     {
       "id": "balance-stack",
@@ -517,20 +492,6 @@
       "sourcePath": "games/arcade/space-waves/index.html"
     },
     {
-      "id": "ludo",
-      "name": "Ludo",
-      "category": "Board",
-      "description": "Race tokens around the board against three AI opponents.",
-      "playUrl": "/arcade/hosted/ludo/index.html",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "MIT",
-      "launchMode": "self-hosted",
-      "sourceImported": true,
-      "sourcePath": "games/board/ludo/index.html",
-      "importedPath": "public/arcade/hosted/ludo/",
-      "integrationNote": "Self-hosted single-file adaptation; no external assets or runtime dependencies."
-    },
-    {
       "id": "pac-man",
       "name": "Glitch Munch",
       "category": "Arcade",
@@ -669,20 +630,6 @@
       "sourcePath": "games/arcade/kaiju-krush/index.html",
       "importedPath": "public/arcade/hosted/colossus-clash/",
       "integrationNote": "Original top-down monster arena using broad monster-brawler mechanics only; no upstream code, characters, or assets copied. Best score stored locally."
-    },
-    {
-      "id": "endless-runner",
-      "name": "Endless Runner",
-      "category": "Racing",
-      "description": "Keep running, dodge hazards, and see how long you last.",
-      "playUrl": "/arcade/hosted/endless-runner/index.html",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "Original Knightfall implementation; upstream code/assets not copied",
-      "launchMode": "self-hosted-native",
-      "sourceImported": false,
-      "sourcePath": "games/racing/endless-runner/index.html",
-      "importedPath": "public/arcade/hosted/endless-runner/",
-      "integrationNote": "Fresh native canvas runner; upstream source path was mismatched to Phaser/Jet Fighter."
     },
     {
       "id": "parkour",

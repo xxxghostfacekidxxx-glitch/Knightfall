@@ -21,7 +21,9 @@ for(const [i,g] of catalog.games.entries()){
  const decoded=decodeURIComponent(url.pathname);
  const target=path.resolve(root,'.'+decoded);
  if(!target.startsWith(root+path.sep)){errors.push(id+': route escapes public directory');continue}
- const duplicate=routes.get(url.pathname);if(duplicate)warnings.push(id+': shares launch URL with '+duplicate);else routes.set(url.pathname,id);
+ const launch=url.pathname+url.search+url.hash;
+ if(routes.has(launch))errors.push(id+': duplicate launch URL with '+routes.get(launch));
+ else routes.set(launch,id);
  try{const s=await stat(target);if(!s.isFile())errors.push(id+': not a file '+decoded);else if(s.size===0)errors.push(id+': empty file '+decoded);else if(!/\.html?$/i.test(decoded))warnings.push(id+': launch is not HTML')}
  catch{errors.push(id+': missing '+decoded)}
  entries.push({id,route,status:'local'});

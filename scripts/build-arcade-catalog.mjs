@@ -2,7 +2,7 @@ import {readFileSync,writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 const manifest=JSON.parse(readFileSync(new URL('../public/arcade/catalog.json',import.meta.url),'utf8'));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const labels={games:'Full games',mini:'Mini games',experiments:'Workshop',external:'External play',unavailable:'Unavailable'};
+const labels={games:'Full games',mini:'Mini games',family:'Family / Party',experiments:'Workshop',external:'External play',unavailable:'Unavailable'};
 const canonicalRoutes=new Set(manifest.games.map(game=>game.route));
 export function renderCard(g,secondary=false){
  const ext=g.route.startsWith('https:');

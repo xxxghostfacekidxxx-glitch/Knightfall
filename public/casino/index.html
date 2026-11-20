@@ -44,9 +44,6 @@ h1 span{display:block;margin-top:.12em;color:transparent;background:linear-gradi
 .game-card.bj{--accent:#67e9be;--accent2:#bdffe7}
 .game-card.roulette{--accent:#fa8b85;--accent2:#ffd0ce}
 .game-card.plinko{--accent:#c79aff;--accent2:#eed8ff}
-.game-card.trench{--accent:#5eeaff;--accent2:#c3fbff}
-.game-card.neon{--accent:#52f4d5;--accent2:#ff90e5}
-.game-card.magma{--accent:#56306b;--accent2:#e8b5f5}
 .art{position:relative;display:grid;place-items:center;height:170px;overflow:hidden;background:radial-gradient(ellipse at 50% 65%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 64%),linear-gradient(180deg,#121623,#0b0d14)}
 .art:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:25px 25px;mask-image:linear-gradient(#000a,transparent)}
 .art:after{content:"";position:absolute;inset:auto 0 0;height:25%;background:linear-gradient(transparent,#10131cf5)}
@@ -83,12 +80,14 @@ h1 span{display:block;margin-top:.12em;color:transparent;background:linear-gradi
     <nav class="top-actions" aria-label="Casino navigation"><a class="pill-link" href="/chaos-cartridge.html">← Arcade</a></nav>
   </header>
   <section class="masthead">
-    <div><p class="kicker">The virtual casino floor · Four cabinets</p><h1>THE FLOOR<br><span>IS YOURS.</span></h1><p class="intro">Choose a table, learn its rhythm and make every move count. Play four classic casino games with virtual credits.</p></div>
-    <div class="side-stat" aria-label="Four playable game cabinets"><div><small>On the floor</small><strong>04</strong></div><span>playable cabinets<br>all browser-based</span></div>
+    <div><p class="kicker">The virtual casino floor</p><h1>THE FLOOR<br><span>IS YOURS.</span></h1><p class="intro">Choose a table, learn its rhythm and make every move count. Visit the Card Room or play a cabinet with virtual credits.</p></div>
+    <div class="side-stat" aria-label="Casino floor destinations"><div><small>On the floor</small><strong>06</strong></div><span>destinations<br>all browser-based</span></div>
   </section>
   <section aria-labelledby="classic-title">
-    <div class="section-heading"><h2 id="classic-title">Classic tables</h2><p>Four familiar formats. A fresh cabinet around each one.</p></div>
+    <div class="section-heading"><h2 id="classic-title">Choose a game or room</h2><p></p></div>
     <div class="catalog">
+      <a class="game-card slot" href="/arcade/hosted/cinder-slots/index.html"><div class="copy"><h3>Cinder Slots</h3><p>Spin three ember reels for points.</p><span class="card-bottom">Play ↗</span></div></a>
+      <a class="game-card slot" href="/arcade-card-room.html"><div class="copy"><h3>Card Room</h3><p>Poker, solitaire, rummy, Spades, War and Cinder Eights.</p><span class="card-bottom">Play ↗</span></div></a>
       <a class="game-card slot" href="/casino/classic-floor.html?game=slots" aria-label="Play Neon Seven slots">
         <div class="art"><span class="art-label">01 / REELS</span><span class="art-badge">Spin & win</span>
           <svg viewBox="0 0 220 160" role="img" aria-label="Three glowing slot reels showing sevens"><defs><linearGradient id="slot-metal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0af"/><stop offset=".3" stop-color="#ff55d8"/><stop offset="1" stop-color="#24172a"/></linearGradient><linearGradient id="slot-neon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff5b4"/><stop offset=".5" stop-color="#e8b5f5"/><stop offset="1" stop-color="#ff55d8"/></linearGradient></defs><ellipse class="pulse" cx="110" cy="94" rx="75" ry="55" fill="#e8b5f5" opacity=".12"/><g class="float"><rect x="37" y="25" width="146" height="105" rx="10" fill="url(#slot-metal)" stroke="#e8b5f5" stroke-width="2"/><rect x="46" y="37" width="128" height="72" rx="5" fill="#11111a" stroke="#56306b" stroke-width="2"/><rect x="51" y="42" width="37" height="62" rx="3" fill="#1a1c27"/><rect x="91" y="42" width="37" height="62" rx="3" fill="#21202a"/><rect x="131" y="42" width="37" height="62" rx="3" fill="#1a1c27"/><g fill="url(#slot-neon)" font-size="43" font-weight="1000" text-anchor="middle" font-family="system-ui"><text x="69" y="87">7</text><text x="109" y="87">7</text><text x="149" y="87">7</text></g><path d="M50 117H170" stroke="#fff1b0" stroke-width="2" opacity=".8"/><circle cx="164" cy="29" r="3" fill="#fff7d1"/><path d="M183 55h10v21h-10" stroke="#e8b5f5" stroke-width="4" fill="none"/></g><g fill="#ffe4a3"><circle cx="26" cy="42" r="2"/><circle cx="195" cy="111" r="1.5"/><circle cx="53" cy="18" r="1.5"/></g></svg>

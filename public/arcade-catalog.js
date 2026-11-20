@@ -20,7 +20,7 @@ if(!document.querySelector('script[src*="/arcade/nextgen.js"]')){const s=documen
   // Browse games action instead of inserting a duplicate next to nested links.
   let collection='games';
   let explicitCollection=false;
-  const notes={games:'Full games and longer sessions. Choose a genre or controls to narrow the shelf.',mini:'Short, lightweight arcade challenges and puzzles.',experiments:'Development editions and legacy prototypes. Expect rough edges; these are kept separate from the main games.',external:'These titles use another service and require a connection. They are not hosted offline games.',all:'The complete collection, including quick mini games, development builds and external titles.',unavailable:'These builds are not currently available to launch.'};
+  const notes={family:'Board games, family card tables and party games.',games:'Full games and longer sessions. Choose a genre or controls to narrow the shelf.',mini:'Short, lightweight arcade challenges and puzzles.',experiments:'Development editions and legacy prototypes. Expect rough edges; these are kept separate from the main games.',external:'These titles use another service and require a connection. They are not hosted offline games.',all:'The complete collection, including quick mini games, development builds and external titles.',unavailable:'These builds are not currently available to launch.'};
   const params=new URLSearchParams(location.search);
   const initialCollection=params.get('collection');
   search.value=params.get('q')||'';

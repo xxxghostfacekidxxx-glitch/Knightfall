@@ -59,32 +59,6 @@
       ]
     },
     {
-      "id": "ludo",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "MIT",
-      "status": "self-hosted-adaptation",
-      "path": "public/arcade/hosted/ludo/",
-      "sourcePath": "games/board/ludo/index.html",
-      "assets": {
-        "images": "none",
-        "audio": "none",
-        "fonts": "system fonts",
-        "scripts": "inline only"
-      },
-      "dependencies": [
-        "browser DOM",
-        "browser timer"
-      ],
-      "securityNotes": [
-        "no external network calls",
-        "no account tokens or Cinders access"
-      ],
-      "limitations": [
-        "local-only game state",
-        "no online multiplayer or leaderboard"
-      ]
-    },
-    {
       "id": "line-trap",
       "repository": "https://github.com/sausi-7/games",
       "license": "MIT",
@@ -190,34 +164,6 @@
       ],
       "limitations": [
         "local session state only",
-        "no account save or leaderboard"
-      ]
-    },
-    {
-      "id": "archer",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "MIT",
-      "status": "self-hosted-adaptation",
-      "path": "public/arcade/hosted/archer/",
-      "sourcePath": "games/sports/archer/{index.html,script.js,style.css}",
-      "assets": {
-        "inlineSvg": "upstream inline vector artwork retained",
-        "background": "upstream PNG not redistributed; local CSS gradient",
-        "font": "font loader removed",
-        "audio": "not redistributed; disabled"
-      },
-      "dependencies": [
-        "browser DOM",
-        "SVG",
-        "pointer/touch input"
-      ],
-      "securityNotes": [
-        "removed config.json network fetch",
-        "no external runtime scripts or CDN",
-        "no account tokens or Cinders access"
-      ],
-      "limitations": [
-        "local session score only",
         "no account save or leaderboard"
       ]
     },
@@ -382,19 +328,6 @@
       "reviewedPath": "games/3d/stack-tower/index.html",
       "reason": "Upstream requires Three.js CDN and bundled audio; those dependencies/assets were not imported.",
       "assets": "No upstream code/assets copied; original canvas geometry/CSS.",
-      "dependencies": [
-        "inline HTML/CSS/JavaScript",
-        "canvas"
-      ],
-      "accountBoundary": "No account tokens, Cinders, or server score API."
-    },
-    {
-      "id": "endless-runner",
-      "status": "native-original-replacement",
-      "reviewedSource": "https://github.com/sausi-7/games",
-      "reviewedPath": "games/racing/endless-runner/index.html",
-      "reason": "Listed upstream page resolves to a differently titled Phaser/Jet Fighter page.",
-      "assets": "No upstream code/assets copied; original canvas runner.",
       "dependencies": [
         "inline HTML/CSS/JavaScript",
         "canvas"

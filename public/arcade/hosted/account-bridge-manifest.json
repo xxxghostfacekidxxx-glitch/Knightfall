@@ -128,13 +128,6 @@
       "scoreMode": "score"
     },
     {
-      "gameId": "cabinet-endless-runner",
-      "title": "Endless Runner",
-      "path": "/arcade/hosted/endless-runner/index.html",
-      "scoreSelector": "#score",
-      "scoreMode": "score"
-    },
-    {
       "gameId": "cabinet-slush-rush",
       "title": "Ashslide Rush",
       "path": "/arcade/hosted/slush-rush/index.html",
@@ -154,13 +147,6 @@
       "path": "/arcade/hosted/alien-battle/index.html",
       "scoreSelector": "#score",
       "scoreMode": "score"
-    },
-    {
-      "gameId": "cabinet-archer",
-      "title": "Archer",
-      "path": "/arcade/hosted/archer/index.html",
-      "scoreSelector": "",
-      "scoreMode": "completion"
     },
     {
       "gameId": "cabinet-balance-stack",
@@ -238,13 +224,6 @@
       "path": "/arcade/hosted/space-fighter/index.html",
       "scoreSelector": "#score",
       "scoreMode": "score"
-    },
-    {
-      "gameId": "cabinet-ludo",
-      "title": "Ludo",
-      "path": "/arcade/hosted/ludo/index.html",
-      "scoreSelector": "",
-      "scoreMode": "completion"
     },
     {
       "gameId": "cabinet-glitch-munch",

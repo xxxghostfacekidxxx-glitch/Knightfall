@@ -20,7 +20,6 @@ Sprite names: `imp`, `skull`, `glitch`, `heart`, `coin`, `bolt`, `boom`, `fish`,
 - `arcade-after-dark.html`: Ember Breaker orb, snake head and food, plus Pong ball.
 - `arcade/hosted/crypt-pairs/index.html`: original sprite pairs in Madhouse Memory.
 - `crypt-smash.html`: the glitch target uses the shared sprite.
-- `abyssal-arsenal.html`, `neon-kelp-reef-rush.html`, and `magma-trench-relic-hunt.html`: fish/boss sprite badges.
 - `not-dead-yet.html`: medkit, shield, and scrap pickup sprites; its dedicated character and enemy artwork remains in place.
 - `city-of-cinders.html`: character flame accent.
 - Arcade index, mini-game, open-source, card-room, Spades, card-expansion, and casino pages load the shared neon theme and animated sprite-card decoration. The card stamps are decorative and do not cover interactive controls.

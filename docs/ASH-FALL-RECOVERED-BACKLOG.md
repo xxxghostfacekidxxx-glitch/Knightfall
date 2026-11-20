@@ -20,7 +20,6 @@ Review: 2026-10-30. Reconstructed from accessible prior conversations and curren
 - [ ] Sanctuary's End original and Ash-Fall edition: actual game launch/combat, mobile graphics compatibility, browser renderer errors, downloadable packaging and provenance. Do not equate file hosting with playability.
 - [ ] Chaos Minesweeper: user confirmed gameplay works (November 2, 2026), but fullscreen still scrolls. Fullscreen now sizes the field to the available width and height at every difficulty. Verify the deployed cabinet on Android in portrait and landscape before closing.
 - [ ] Arcade audit: broken/subpar titles, fullscreen and touch controls, launch routes, genuine distinct games rather than placeholder cabinets, high-score restoration and anti-duplicate submissions; verify 160+ catalog routes against current catalog, not historical counts.
-- [ ] Three fish tables: Trench Bounty, Neon Kelp: Reef Rush, Magma Trench: Relic Hunt. Ocean King-style bottom cannons, hold-to-fire, four independent seats, multi-touch, fish schools/bosses and power/credits; current local four-seat play is not network multiplayer. No real-money gambling.
 
 ## P1: previously requested games and game creation
 - [ ] Hell & High Orbit story: absurd alien invasion vs demons, humans controlled by rare ~10% of people, both factions ultimately partition Earth; ridiculous calendar/year; demon, imp and alien creatures; legendary Minion Mouse, Mini Villain and Mini Eddie; evolutions, moves and PvP.
