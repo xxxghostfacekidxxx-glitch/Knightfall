@@ -366,6 +366,7 @@ test("Excel booleans and built-in/custom date styles retain their raw serials",a
   '</row></sheetData></worksheet>';
  const data=zipPack([["xl/styles.xml",styles],["xl/worksheets/sheet1.xml",sheet]]);
  const result=await extractTextract(file("dates.xlsx",data));
+ assert.doesNotMatch(result.text,/Sheet 1 · Sheet 1/,"Default worksheet heading must not be repeated");
  for(const piece of ["A1=TRUE","B1=FALSE","C1=2024-01-01 [Excel serial 45292]",
   "D1=2024-01-02 [Excel serial 45293]","E1=45292"])
   assert.ok(result.text.includes(piece),"Missing "+piece+" in "+result.text);
