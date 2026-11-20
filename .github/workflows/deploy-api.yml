@@ -52,6 +52,11 @@ jobs:
       - name: Validate official starter-bot catalog and public chat routing
         run: node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs
 
+      - name: Verify Miss Chaos immutable developer docket and delegated human approval
+        run: |
+          node --check backend/src/chaos-dev-reviews.js
+          node --test backend/src/chaos-dev-reviews.test.mjs
+          python3 scripts/test_chaos_dev_reviews_sql.py
       - name: Verify Miss Chaos scoped agent runtime before deploying
         run: node --test backend/chaos-*.test.mjs backend/src/chaos-forge-vision.test.mjs backend/src/notification-delivery-policy.test.mjs
 
