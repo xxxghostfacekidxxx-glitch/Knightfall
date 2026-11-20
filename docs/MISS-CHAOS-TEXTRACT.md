@@ -1,4 +1,4 @@
-# 𓂀 Knightfall Textract · Original Engine (November 2026)
+# 𓂀 Knightfall Textract · Native Extraction v2 (November 2026)
 
 ## What is original and what is not
 Textract's extraction, local comparison, data-extraction, export, user interface, and Miss Chaos draft-handoff code are written for Knightfall. The project does **not** incorporate or bundle PDF.js, JSZip, Tesseract.js, pre-trained OCR model files, third-party WASM, Amazon Textract, or third-party API calls in this build. The previous CDN vendor builder was removed.
@@ -8,8 +8,8 @@ This does not mean ownership of the PDF, ZIP or Office format specifications, br
 ## Modules
 - `public/chaos-textract-core.mjs`: file types, validation, dispatch, privacy-preserving draft handoff.
 - `public/chaos-textract-native-zip.mjs`: ZIP central-directory reader, store/deflate decoding via the browser's built-in DecompressionStream, and simple OOXML Word/Excel/PowerPoint XML parsing.
-- `public/chaos-textract-native-pdf.mjs`: locally written PDF text-layer interpreter with page-tree order, Tj/TJ/spacing commands, common ToUnicode CMaps and FlateDecode streams; not a complete renderer.
-- `public/chaos-textract-native-ocr.mjs`: original experimental browser Canvas glyph-template comparison, with optional browser-provided on-device TextDetector before fallback. Template glyphs are rendered with system fonts at runtime. No pretrained OCR weights.
+- `public/chaos-textract-native-pdf.mjs`: locally written PDF text-layer interpreter with page-tree order, Tj/TJ/spacing commands, common ToUnicode CMaps, compressed object streams, FlateDecode, ASCII85, ASCIIHex and run-length streams; not a complete renderer.
+- `public/chaos-textract-native-ocr.mjs`: browser on-device TextDetector when available; otherwise original experimental Canvas glyph-template comparison. Low-confidence fallback output is rejected instead of accepted as reliable text. Template glyphs use system fonts at runtime; no bundled OCR weights.
 - `public/chaos-textract-lab-core.mjs`: search, word/page counts, line/table/key-value extraction, CSV/JSON exports and text comparison.
 - `public/chaos-textract.mjs` + `public/chaos-textract.html`: responsive workbench, file handling, explicit handoff to Miss Chaos.
 
@@ -19,7 +19,7 @@ Users can select text documents, images, PDF text-layer documents, and Word/Powe
 ## Known limitations (do not advertise capabilities that are not implemented)
 - **OCR is experimental** for small, simple, high-contrast printed Latin characters. It is not reliable on real-world handwriting, handwriting-like fonts, complex page layouts, rotated photos, overlapping glyphs, curved text, or low-contrast receipts. Numbers must be checked visually.
 - **Scanned PDF pages are not OCRed**. Native PDF parsing works only on a supported subset of selectable text-layer files. It is not a PDF page renderer; encrypted PDFs, uncommon encodings, font maps or compressed object streams may fail or return incomplete text.
-- ZIP Office extraction supports standard small OOXML files where the browser supports built-in `deflate-raw` decompression. Password-protected/complex Office files, Office macros, charts and formula evaluation are not supported. XLSX reads cached values.
+- ZIP Office extraction supports standard OOXML files where the browser supports built-in `deflate-raw`. Memory budgets apply to entries actually read; unrelated embedded photographs no longer exhaust the text budget. Password-protected Office files, macros, charts and formula evaluation are not supported. XLSX reads cached values and labels formulas without cached results.
 - 18 MB input cap; 4 MB per decompressed ZIP document section; 24 pages for PDF; 180,000 output characters.
 - Format conversions are best-effort; unknown text must never be silently invented. Exported tables and extracted key/value pairs should be checked against the original document.
 - The original code is free to use on Knightfall and does not involve per-document OCR API charges. The software does not require external CDN requests when a user opens a file. Its functionality still depends on browser APIs and site hosting.
@@ -35,3 +35,11 @@ node --check public/chaos-textract.mjs
 ```
 
 The Cloudflare Pages release guard also runs these checks. Browser-based acceptance testing using representative real files is still required, especially on Android, before promising production-quality OCR.
+
+## Device-level diagnostic and validation
+
+The Textract workbench includes **Run reader self-test**. It creates a tiny synthetic selectable-text PDF entirely in the browser and processes it through the same path as an actual uploaded PDF. Passing this test confirms the page, module imports, file decoding and PDF text operators work on that device; it does **not** prove a specific scanned or encrypted document is supported.
+
+Images show whether the browser exposes native TextDetector. On unsupported devices the first-party fallback is limited to high-contrast printed text, and the interface should display an explicit failure when recognition is unreliable.
+
+Before claiming a real-file bug fixed, reproduce it with a sanitized example from that format and add a regression test. Do not upload members' private files or suggest posting confidential PDFs to issue trackers. Keep all processing local until the user explicitly stages a chat draft.
