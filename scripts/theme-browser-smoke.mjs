@@ -10,7 +10,7 @@ const routes = [
   "/messages.html", "/devil-tools.html", "/chaos-cartridge.html"
 ];
 const realmArtwork = {
-  "/": "obsidian-cathedral.svg",
+  "/": "black-sun-temple.svg",
   "/community.html": "realm-madhouse.svg",
   "/members.html": "realm-members.svg",
   "/shops.html": "realm-market.svg",
@@ -43,7 +43,7 @@ try {
             const body = document.body;
             return !!document.querySelector('link[data-kf-canonical-theme]') &&
               !!body && body.dataset.kfTheme === "cathedral" &&
-              getComputedStyle(body).backgroundColor === "rgb(9, 10, 17)";
+              getComputedStyle(body).backgroundColor === "rgb(9, 10, 11)";
           }, null, { timeout: 15000 });
           const state = await page.evaluate(() => {
             const color = selector => {
@@ -66,12 +66,12 @@ try {
           });
           const label = route + " / " + viewport.width + "px";
           assert.ok(state.header, label + " has shared navigation");
-          assert.equal(state.brand, "rgb(247, 228, 201)", label + " uses gilded cathedral branding");
+          assert.equal(state.brand, "rgb(247, 228, 201)", label + " uses gilded Black Sun branding");
           assert.ok(state.scroll <= state.client + 1,
             label + " must not overflow horizontally: " + JSON.stringify(state));
           assert.equal(state.oldEmergency, false, label + " must not mount legacy emergency chrome");
           assert.equal(state.stylesheets.filter(sheet => sheet.includes("/theme.css")).length,1,
-             label + " must mount exactly one canonical cathedral stylesheet");
+             label + " must mount exactly one canonical Knightfall stylesheet");
           await page.waitForFunction(() => document.body?.dataset.kfTheme === "cathedral" && !!window.KnightfallThemeCrew, null, {timeout: 15000});
           const crewCascade = await page.evaluate(() => {
             const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
@@ -84,9 +84,9 @@ try {
             };
           });
           assert.match(crewCascade.final,/\/theme\.css/,label + " must load one canonical root");
-          assert.ok(crewCascade.imported,label + " must import the Cathedral Requiem artwork");
+          assert.ok(crewCascade.imported,label + " must import the Black Sun Temple artwork");
           assert.equal(crewCascade.count,1,label + " must not inject duplicate Theme Crew CSS links");
-          assert.equal(crewCascade.activeTheme,"cathedral",label + " must default to original Gothic artwork");
+          assert.equal(crewCascade.activeTheme,"cathedral",label + " must default to the approved Egyptian Black Sun identity");
 
           if (realmArtwork[route]) {
             const expected = realmArtwork[route];
