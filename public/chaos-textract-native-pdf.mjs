@@ -113,7 +113,7 @@ function extractTextOperators(content,fontMaps=new Map()){
   const item=tokens[i];
   if(item.value==="["){
    let depth=1,parts=[];
-   while(++i<tokens.length&&depth){
+   while(i+1<tokens.length&&depth){i++;
     if(tokens[i].value==="[")depth++;
     else if(tokens[i].value==="]")depth--;
     else if(depth===1)parts.push(tokens[i]);
