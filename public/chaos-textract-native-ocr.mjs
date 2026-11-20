@@ -226,7 +226,46 @@ export function decodeGlyphMask(mask,width,height,templates,{notify=()=>{},cance
  return {text:lines.join("\n"),confidence:confidences.length?
   confidences.reduce((a,b)=>a+b,0)/confidences.length:0,lines:lines.length};
 }
-export async function readKnightfallImageOcr(file,{notify=()=>{},cancelled=()=>false}={}){
+/** Clockwise grayscale rotation, bounded to the same pixel budget as OCR. */
+export function rotateKnightfallGrey(grey,width,height,angle){
+ if(!(grey instanceof Uint8Array)||width<1||height<1||width*height!==grey.length||
+   grey.length>MAX_IMAGE_PIXELS||![0,90,180,270].includes(angle))
+  throw Error("Invalid local OCR rotation.");
+ if(angle===0)return {grey,width,height};
+ const outWidth=angle===180?width:height,outHeight=angle===180?height:width;
+ const out=new Uint8Array(grey.length);
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+  const dst=angle===90?x*outWidth+height-1-y:
+   angle===180?(height-1-y)*outWidth+width-1-x:
+   (width-1-x)*outWidth+y;
+  out[dst]=grey[y*width+x];
+ }
+ return {grey:out,width:outWidth,height:outHeight};
+}
+function scanKnightfallGrey(greys,width,height,templates,{notify,cancelled}){
+ const threshold=otsuThreshold(greys),mask=new Uint8Array(greys.length);
+ let dark=0;
+ for(let i=0;i<mask.length;i++){mask[i]=greys[i]<=threshold?1:0;dark+=mask[i];}
+ const lightText=dark>mask.length*.55;
+ if(lightText)for(let i=0;i<mask.length;i++)mask[i]=1-mask[i];
+ let result=decodeGlyphMask(mask,width,height,templates,{notify,cancelled});
+ const grade=x=>{
+  const letters=(x.text.match(/[A-Za-z0-9]/g)||[]).length;
+  const unknown=(x.text.match(/\?/g)||[]).length;
+  const fragment=x.lines>=5&&letters/x.lines<3?.18:0;
+  return x.confidence-Math.min(.6,unknown/Math.max(1,letters+unknown))+
+   Math.min(.04,letters*.003)-fragment;
+ };
+ if(cancelled())throw Error("OCR cancelled.");
+ if(result.confidence<.75||result.text.includes("?")||!result.text.trim()){
+  const improved=decodeGlyphMask(adaptiveInkMask(greys,width,height,{lightText}),
+   width,height,templates,{notify,cancelled});
+  if(grade(improved)>grade(result)+.055&&improved.text.replace(/[^A-Za-z0-9]/g,"").length>=2)
+   result=improved;
+ }
+ return {result,score:grade(result)};
+}
+export async function readKnightfallImageOcr(file,{notify=()=>{},cancelled=()=>false,rotation="auto"}={}){
  if(typeof createImageBitmap!=="function")throw Error("This browser cannot decode images for native OCR.");
  notify("Preparing original Knightfall printed-text OCR…");
  const bitmap=await createImageBitmap(file);
@@ -236,7 +275,7 @@ export async function readKnightfallImageOcr(file,{notify=()=>{},cancelled=()=>f
    throw Error("Picture is too large or corrupted. Resize it first.");
   // Some Chromium builds expose an on-device TextDetector implementation.
   // It is optional, local, and does not require a model download from us.
-  if(typeof TextDetector==="function"){
+  if(typeof TextDetector==="function"&&(rotation==="auto"||rotation===0)){
    try{
     notify("Using built-in device text recognition…");
     const hits=await new TextDetector().detect(bitmap);
@@ -261,36 +300,34 @@ export async function readKnightfallImageOcr(file,{notify=()=>{},cancelled=()=>f
   const rgba=ctx.getImageData(0,0,w,h).data;
   const greys=new Uint8Array(w*h);
   for(let i=0;i<greys.length;i++)greys[i]=Math.round(.299*rgba[i*4]+.587*rgba[i*4+1]+.114*rgba[i*4+2]);
-  const threshold=otsuThreshold(greys);
-  const mask=new Uint8Array(w*h);let count=0;
-  for(let i=0;i<mask.length;i++){mask[i]=greys[i]<=threshold?1:0;count+=mask[i];}
-  // Images with dark backgrounds and light text are inverted.
-  const lightText=count>mask.length*.55;
-  if(lightText)for(let i=0;i<mask.length;i++)mask[i]=1-mask[i];
+  if(rotation!=="auto"&&![0,90,180,270].includes(rotation))
+   throw Error("Unsupported OCR photo orientation.");
   const templates=fontTemplates();
-  let result=decodeGlyphMask(mask,w,h,templates,{notify,cancelled});
-  const quality=value=>{
-   const letters=(value.text.match(/[A-Za-z0-9]/g)||[]).length;
-   const unknown=(value.text.match(/\?/g)||[]).length;
-   return value.confidence-Math.min(.6,unknown/Math.max(1,letters+unknown))+
-    Math.min(.04,letters*.003);
-  };
-  // Retry only uncertain readings: noisy images do not deserve a doubled
-  // workload when global thresholding already yields a clean result.
-  if(cancelled())throw Error("OCR cancelled.");
-  if(result.confidence<.75||result.text.includes("?")||!result.text.trim()){
-   notify("Trying local contrast for uneven lighting…");
-   const adaptive=adaptiveInkMask(greys,w,h,{lightText});
-   const improved=decodeGlyphMask(adaptive,w,h,templates,{notify,cancelled});
-   if(quality(improved)>quality(result)+.055&&improved.text.replace(/[^A-Za-z0-9]/g,"").length>=2)
-    result=improved;
+  let chosen=rotation==="auto"?0:rotation;
+  let rotated=rotateKnightfallGrey(greys,w,h,chosen);
+  let scan=scanKnightfallGrey(rotated.grey,rotated.width,rotated.height,templates,{notify,cancelled});
+  if(rotation==="auto"){
+   const letters=(scan.result.text.match(/[A-Za-z0-9]/g)||[]).length;
+   const fragmented=scan.result.lines>=5&&letters/scan.result.lines<3;
+   if(scan.result.confidence<.65||!scan.result.text.trim()||fragmented){
+    notify("Checking photo orientation locally…");
+    for(const angle of fragmented?[270,90,180]:[180,90,270]){
+     if(cancelled())throw Error("OCR cancelled.");
+     rotated=rotateKnightfallGrey(greys,w,h,angle);
+     const trial=scanKnightfallGrey(rotated.grey,rotated.width,rotated.height,templates,{notify,cancelled});
+     const count=(trial.result.text.match(/[A-Za-z0-9]/g)||[]).length;
+     if(count>=4&&trial.score>scan.score+.12){scan=trial;chosen=angle;}
+     if(scan.result.confidence>=.86&&scan.result.lines<=3&&count>=8)break;
+    }
+   }
   }
+  const result=scan.result;
   canvas.width=0;canvas.height=0;
   if(!result.text.trim())throw Error("No high-contrast printed text detected. Try a sharper, straight-on photo with dark text on a bright background.");
   const unknowns=(result.text.match(/\?/g)||[]).length;
   const letters=(result.text.match(/[A-Za-z0-9]/g)||[]).length;
   if(result.confidence<.45||unknowns>Math.max(3,letters*.25))
    throw Error("This photo is too difficult for the offline experimental OCR. Improve lighting/crop and straighten it, or use a selectable-text document. No guessed text was returned.");
-  return {text:result.text,confidence:result.confidence,method:"original-template-ocr"};
+  return {text:result.text,confidence:result.confidence,method:"original-template-ocr",rotation:chosen};
  }finally{bitmap.close();}
 }
