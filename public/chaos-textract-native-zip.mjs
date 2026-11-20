@@ -163,7 +163,7 @@ function sharedStrings(raw){
  return entries;
 }
 function worksheetRows(raw,strings){
- const rows=[];let row=null,cell=null,field="",used=0;
+ const rows=[];let row=null,cell=null,field="",used=0,truncated=false;
  const finishCell=()=>{
   if(!cell||!row)return;
   let value=cell.type==="s"?strings[Number(cell.value)]??"":cell.type==="inlineStr"?cell.inline:cell.value;
@@ -175,7 +175,8 @@ function worksheetRows(raw,strings){
   if(!row)return;
   if(row.length){
    const line=row.join(" | ");used+=line.length;
-   if(used<170000)rows.push(line);
+   if(used<=170000&&rows.length<10000)rows.push(line);
+   else truncated=true;
   }
   row=null;
  };
@@ -193,10 +194,10 @@ function worksheetRows(raw,strings){
    if(t.name==="c")finishCell();
    if(t.name==="row")finishRow();
   }
-  if(rows.length>=10000||used>=170000)break;
+  if(rows.length>=10000||used>170000){truncated=true;break;}
  }
  finishCell();finishRow();
- return rows;
+ return {rows,truncated};
 }
 function workbookSheetDefinitions(raw){
  const definitions=[];
@@ -224,6 +225,33 @@ function worksheetRelationships(raw){
  }
  return relationships;
 }
+function presentationSlideOrder(presentation,references,available){
+ if(!presentation||!references)return available;
+ const relationships=new Map();
+ for(const token of parseKnightfallXml(references)){
+  if(token.type!=="start"||token.name!=="Relationship")continue;
+  const {Id,Target,Type,TargetMode}=token.attrs;
+  if(!Id||!Target||TargetMode==="External"||!/\/slide$/.test(Type||""))continue;
+  const base=Target.startsWith("/")?[]:["ppt"];
+  let safe=true;
+  for(const part of Target.split("/")){
+   if(!part||part===".")continue;
+   if(part===".."){if(base.length)base.pop();else {safe=false;break;}}
+   else if(/^[\w.-]+$/.test(part))base.push(part);
+   else {safe=false;break;}
+  }
+  const path=base.join("/");
+  if(safe&&/^ppt\/slides\/slide\d+\.xml$/.test(path))relationships.set(Id,path);
+ }
+ const ids=parseKnightfallXml(presentation)
+  .filter(x=>x.type==="start"&&x.name==="sldId")
+  .map(x=>x.attrs["r:id"]).filter(Boolean);
+ if(!ids.length)return available;
+ const ordered=ids.map(id=>relationships.get(id));
+ if(ordered.some(path=>!path||!available.includes(path)))
+  throw Error("PowerPoint slide order metadata references a missing or unsupported slide.");
+ return ordered;
+}
 export async function readKnightfallOffice(file,extension,{notify=()=>{},cancelled=()=>false}={}){
  const zip=await openKnightfallZip(file);
  const read=path=>zip.read(path);
@@ -245,15 +273,20 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
  if(extension==="pptx"){
   const allSlides=names.filter(s=>/^ppt\/slides\/slide\d+\.xml$/.test(s))
    .sort((a,b)=>Number(a.match(/slide(\d+)/)[1])-Number(b.match(/slide(\d+)/)[1]));
-  const slides=allSlides.slice(0,60);
+  const orderedSlides=presentationSlideOrder(
+   await read("ppt/presentation.xml"),
+   await read("ppt/_rels/presentation.xml.rels"),
+   allSlides
+  );
+  const slides=orderedSlides.slice(0,60);
   if(!slides.length)throw Error("No PowerPoint slide text files found.");
   const out=[];
   for(let i=0;i<slides.length;i++){
    check();notify("Reading slide "+(i+1)+" of "+slides.length+"…");
    out.push("Slide "+(i+1)+"\n"+(xmlText(await read(slides[i]))||"[No editable text on this slide]"));
   }
-  if(allSlides.length>slides.length)
-   out.push("[Notice: Only "+slides.length+" of "+allSlides.length+" slides were processed. Split the presentation to extract the remainder.]");
+  if(orderedSlides.length>slides.length)
+   out.push("[Notice: Only "+slides.length+" of "+orderedSlides.length+" slides were processed. Split the presentation to extract the remainder.]");
   return out.join("\n\n");
  }
  if(extension!=="xlsx")throw Error("Unsupported Office format.");
@@ -271,8 +304,10 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
  const out=[];
  for(let i=0;i<sheets.length;i++){
   check();notify("Reading worksheet "+(i+1)+" of "+sheets.length+"…");
-  const rows=worksheetRows(await read(sheets[i].path),strings);
-  out.push("Sheet "+(i+1)+(sheets[i].label?" · "+sheets[i].label:"")+"\n"+(rows.join("\n")||"[No cached cell values]"));
+  const {rows,truncated}=worksheetRows(await read(sheets[i].path),strings);
+  out.push("Sheet "+(i+1)+(sheets[i].label?" · "+sheets[i].label:"")+"\n"+
+   (rows.join("\n")||"[No cached cell values]")+
+   (truncated?"\n[Notice: Worksheet text exceeded the local 10,000-row or 170,000-character limit; remaining cells were not extracted.]":""));
  }
  if(!out.some(x=>!/^\s*Sheet[^\n]*\n\[No cached cell values\]$/.test(x)))
   throw Error("Spreadsheet contains no readable cached text or values.");
