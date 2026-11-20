@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {createHash} from "node:crypto";
-import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync} from "node:fs";
+import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync,unlinkSync,symlinkSync} from "node:fs";
 import {join,dirname} from "node:path";
 import {tmpdir} from "node:os";
 import {decodeSandboxCandidate,validateSandboxRequest,runSandboxChecks,SANDBOX_TEST_RECIPES} from "./chaos-review-sandbox.mjs";
@@ -98,6 +98,20 @@ test("explicit allowlisted candidate test recipes execute only on temporary file
   assert.equal(readFileSync(x.target,"utf8"),x.original);
   assert.equal(calls,1);
  }finally{x.cleanup();}
+});
+test("symlinked candidates cannot overwrite files outside the ephemeral checkout",()=>{
+ const x=fixture("public/link-test.mjs");
+ const outside=mkdtempSync(join(tmpdir(),"kf-review-target-"));
+ const outsideFile=join(outside,"safe.mjs");
+ try{
+   writeFileSync(outsideFile,x.original);
+   unlinkSync(x.target);
+   symlinkSync(outsideFile,x.target);
+   const report=runSandboxChecks(x.input,{checkoutSha:sha,root:x.root});
+   assert.equal(report.status,"failed");
+   assert.match(report.error,/regular checked-out repository file/);
+   assert.equal(readFileSync(outsideFile,"utf8"),x.original);
+ }finally{x.cleanup();rmSync(outside,{recursive:true,force:true});}
 });
 test("fixed recipes refer to existing tests; no arbitrary test path or command input",()=>{
  assert.ok(Object.keys(SANDBOX_TEST_RECIPES).length>=5);
