@@ -57,3 +57,19 @@ test("illustrations exist locally, have accessible descriptions and are cached o
   assert.match(headers, /^\/assets\/knightfall\/\*$/m);
   assert.match(worker, /const CACHE_NAME = "knightfall-shell-v\d+"/);
 });
+
+
+test("Egyptian theme uses canonical amber and ember tokens instead of disconnected copies",()=>{
+ assert.match(final,/--section-green:var\(--af-ember-light\)/);
+ assert.match(final,/--section-pink:var\(--af-ember\)/);
+ assert.match(final,/outline-color:var\(--af-ember-light\)/);
+ assert.match(final,/--af-ember:#b95d35;--af-ember-light:#ecc17a/);
+});
+test("core theme CSS growth is bounded until scope and specificity are simplified",()=>{
+ const shared=read("knightfall-unified-theme.css");
+ const countImportant=s=>(s.match(/!important\b/g)||[]).length;
+ assert.ok(shared.length<=105000,"Canonical shared theme grew beyond reviewed budget; consolidate before expanding");
+ assert.ok(countImportant(shared)<=500,"Canonical theme specificity budget exceeded");
+ assert.ok(final.length<=22000,"Black Sun finishing layer grew too large; consolidate rather than append");
+ assert.ok(countImportant(final)<=145,"Black Sun important-rule budget exceeded");
+});

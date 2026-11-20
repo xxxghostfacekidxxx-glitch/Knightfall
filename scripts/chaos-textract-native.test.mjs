@@ -93,3 +93,20 @@ test("original OCR separates touching printed glyphs and preserves larger word g
  assert.equal(result.text,"FA FA");
  assert.ok(result.confidence>.9);
 });
+
+
+test("offline OCR separates three touching letters without removing the real space",()=>{
+ const shapes={W:["100001","100001","100001","101101","110011","100001"],
+  M:["100001","110011","101101","100001","100001","100001"]};
+ const masks=Object.fromEntries(Object.entries(shapes).map(([key,lines])=>
+  [key,Uint8Array.from(lines.join("").split("").map(Number))]));
+ const templates=Object.entries(masks).map(([letter,mask])=>({letter,ratio:1,grid:normalizeGlyph(mask,6,6)}));
+ const width=47,height=6,joined=new Uint8Array(width*height);
+ for(let y=0;y<height;y++)for(let x=0;x<6;x++)for(let n=0;n<3;n++){
+  joined[y*width+n*6+x]=masks.W[y*6+x];
+  joined[y*width+29+n*6+x]=masks.M[y*6+x];
+ }
+ const result=decodeGlyphMask(joined,width,height,templates);
+ assert.equal(result.text,"WWW MMM");
+ assert.ok(result.confidence>.9);
+});
