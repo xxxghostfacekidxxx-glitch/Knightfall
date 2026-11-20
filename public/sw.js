@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v76";
+const CACHE_NAME = "knightfall-shell-v77";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -22,6 +22,8 @@ const APP_SHELL = [
   "/theme-crew-runtime.js",
   "/theme-crew.html",
   "/theme-crew-ui.js",
+  "/assets/knightfall/black-sun-temple.svg",
+  "/assets/knightfall/royal-cartouche.svg",
   "/assets/knightfall/obsidian-cathedral.svg",
   "/assets/knightfall/ceremonial-divider.svg",
   "/assets/knightfall/rose-window.svg",
