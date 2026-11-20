@@ -8,8 +8,8 @@ This does not mean ownership of the PDF, ZIP or Office format specifications, br
 ## Modules
 - `public/chaos-textract-core.mjs`: file types, validation, dispatch, privacy-preserving draft handoff.
 - `public/chaos-textract-native-zip.mjs`: ZIP central-directory reader, store/deflate decoding via the browser's built-in DecompressionStream, and simple OOXML Word/Excel/PowerPoint XML parsing.
-- `public/chaos-textract-native-pdf.mjs`: lightweight PDF text-stream parser for a subset of unencrypted regular PDF objects with standard Tj and TJ operators and FlateDecode content.
-- `public/chaos-textract-native-ocr.mjs`: original experimental browser Canvas pixel segmentation and glyph-template comparison. Template glyphs are rendered with system fonts at runtime. No pretrained OCR weights.
+- `public/chaos-textract-native-pdf.mjs`: locally written PDF text-layer interpreter with page-tree order, Tj/TJ/spacing commands, common ToUnicode CMaps and FlateDecode streams; not a complete renderer.
+- `public/chaos-textract-native-ocr.mjs`: original experimental browser Canvas glyph-template comparison, with optional browser-provided on-device TextDetector before fallback. Template glyphs are rendered with system fonts at runtime. No pretrained OCR weights.
 - `public/chaos-textract-lab-core.mjs`: search, word/page counts, line/table/key-value extraction, CSV/JSON exports and text comparison.
 - `public/chaos-textract.mjs` + `public/chaos-textract.html`: responsive workbench, file handling, explicit handoff to Miss Chaos.
 
@@ -26,7 +26,7 @@ Users can select text documents, images, PDF text-layer documents, and Word/Powe
 
 ## Verification and release
 ```sh
-node --test scripts/chaos-textract.test.mjs scripts/chaos-textract-native.test.mjs scripts/chaos-textract-lab.test.mjs
+node --test scripts/chaos-textract.test.mjs scripts/chaos-textract-native.test.mjs scripts/chaos-textract-lab.test.mjs scripts/chaos-textract-regression.test.mjs
 node --check public/chaos-textract-native-zip.mjs
 node --check public/chaos-textract-native-pdf.mjs
 node --check public/chaos-textract-native-ocr.mjs
