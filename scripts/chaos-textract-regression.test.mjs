@@ -388,3 +388,22 @@ test("Excel 1904 date system is respected, and the fictitious 1900-02-29 is not 
  assert.match(leap,/A1=60/);
  assert.doesNotMatch(leap,/1900-02-29/);
 });
+
+
+test("Text extraction cap reports omitted characters instead of silently dropping them",async()=>{
+ const input="A".repeat(180000)+"Z".repeat(41);
+ const result=await extractTextract({name:"large.txt",size:input.length,text:async()=>input});
+ assert.equal(result.text.length,180000);
+ assert.equal(result.characters,180041);
+ assert.equal(result.truncated,true);
+ assert.match(result.warning,/41 additional characters were omitted/);
+ assert.doesNotMatch(result.text,/Z/);
+});
+test("Text cap never leaves a dangling Unicode surrogate",async()=>{
+ const input="A".repeat(179999)+"🦂"+"END";
+ const result=await extractTextract({name:"unicode.txt",size:input.length,text:async()=>input});
+ assert.equal(result.truncated,true);
+ assert.equal(result.text.length,179999);
+ assert.equal(result.text.at(-1),"A");
+ assert.match(result.warning,/5 additional characters were omitted/);
+});
