@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="referrer" content="no-referrer"><meta name="theme-color" content="#0d1013">
+<meta name="referrer" content="no-referrer"><meta name="theme-color" content="#120d0b">
 <meta name="description" content="Knightfall staff theme planning, audited preset publishing and CSS quality command deck.">
 <title>Theme Crew | Knightfall Staff</title>
 <link rel="stylesheet" href="/theme.css?v=20261115-gothic9">
 <!-- The shared theme import and final nav layer own Theme Crew CSS; do not load a second link. -->
 <script src="/nav.js?v=20261115-gothic9" defer></script>
-<script src="/theme-crew-ui.js?v=20261119-delegated1" defer></script>
+<script src="/theme-crew-ui.js?v=20261120-quick-switch1" defer></script>
 </head>
 <body class="theme-crew-page"><header class="kf-header"></header>
 <main class="theme-crew-shell" id="theme-crew">
 <nav class="theme-crew-breadcrumb" aria-label="Breadcrumb"><a href="/admin.html">Admin</a><span>/</span><a href="/eye-of-chaos.html">Eye of Chaos</a><span>/</span><span>Theme Crew</span></nav>
 <header class="theme-crew-header"><div><p class="eyebrow">KNIGHTFALL / EYE OF CHAOS / DIVISION IV</p>
-<h1>The Theme Crew.</h1><p>Four specialist workers. One sitewide aesthetic. Audit the CSS, sculpt the atmosphere, check the visuals and change the entire kingdom with an approved, reversible command.</p></div></header>
+<h1>The Theme Forge.</h1><p>Five curated visual identities. One fast preview, one approved publish, one rollback. Change the kingdom without piling another haunted stylesheet onto the previous one.</p></div></header>
 <p id="theme-crew-status" class="theme-crew-status" role="status" aria-live="polite">Checking staff authorization and live theme state…</p>
 <section id="theme-crew-denied" class="theme-crew-panel theme-crew-denied" hidden><h2>Staff access required</h2><p>Only GOD and the accepted admin partner can publish or roll back a reviewed theme. Other admins can plan and preview. The public site never receives the control API.</p><a href="/auth.html?next=%2Ftheme-crew.html">Sign in to Knightfall</a></section>
 <div id="theme-crew-workspace" class="theme-crew-workspace" hidden>
@@ -23,13 +23,16 @@
   <h2 id="crew-presets-title">Sitewide appearance</h2>
   <p id="theme-crew-current" aria-live="polite">Reading the published version…</p>
   <div id="theme-crew-presets" class="theme-crew-presets" role="group" aria-label="Reviewed Knightfall theme presets"></div>
+  <p id="theme-crew-selected" class="theme-crew-selected" aria-live="polite">Choose a look to preview.</p>
+  <p class="theme-crew-hint">Select a card for an immediate, private preview. Arrow keys navigate themes. Publish or rollback only when authorized.</p>
   <div class="theme-crew-actions">
-    <button type="button" id="theme-crew-preview">Preview locally</button>
+    <button type="button" id="theme-crew-preview">Open homepage preview</button>
+    <button type="button" id="theme-crew-copy-preview">Copy preview link</button>
     <button type="button" id="theme-crew-publish">Publish sitewide</button>
     <button type="button" id="theme-crew-revert-preview">Clear my preview</button>
     <button type="button" id="theme-crew-rollback">Rollback last change</button>
   </div>
-  <p><small>Preview stays in your browser session. Publish requires authorization and confirmation and applies to public site chrome on the next refresh, with active pages checking for changes. Gameplay and individual profile themes stay untouched.</small></p>
+  <p><small>Selecting a card previews instantly in your tab. Publish requires authorization, confirmation and an up-to-date revision. Open tabs on your device update immediately; other devices check regularly. Gameplay and individual profile themes stay untouched.</small></p>
   <div class="theme-crew-plan">
     <h2>Ask Morgue Mason</h2>
     <p>Describe a look. The planner matches your direction to a reviewed palette without injecting generated CSS.</p>
