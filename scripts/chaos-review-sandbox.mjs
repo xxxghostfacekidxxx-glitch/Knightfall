@@ -17,7 +17,7 @@ import {fileURLToPath} from "node:url";
 const SHA40=/^[a-f0-9]{40}$/;
 const SHA256=/^[a-f0-9]{64}$/;
 const VALID_PATH=/^(?:public|backend)\/[A-Za-z0-9_./-]+\.(?:js|mjs|cjs|ts|tsx|jsx|json)$/;
-const UNSAFE_PART=/(?:^|\/)(?:\.{1,2}|node_modules|dist|coverage|secrets?|private-keys|credentials)(?:\/|$)|(?:^|[-_.\/])(?:passwords?|api[-_]?keys?|access[-_]?tokens?)(?:[-_.\/]|$)/i;
+const UNSAFE_PART=/(?:^|\/)(?:\.{1,2}|node_modules|dist|coverage|secrets?|private-keys|credentials)(?:\/|$)|(?:^|[-_.\/])(?:passwords?|credentials?|api[-_]?keys?|access[-_]?tokens?)(?:[-_.\/]|$)/i;
 const MAX_CODE_BYTES=5000,MAX_CODE_LINES=80,MAX_LINE_LENGTH=300;
 const hex=buffer=>createHash("sha256").update(buffer).digest("hex");
 export const SANDBOX_TEST_RECIPES=Object.freeze({
