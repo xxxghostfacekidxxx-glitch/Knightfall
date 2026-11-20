@@ -249,13 +249,16 @@ async function objectContent(object){
  const match=/\bstream(?:\r\n|\n|\r)/.exec(object);
  if(!match)return "";
  const start=match.index+match[0].length;
- const end=object.indexOf("endstream",start);
- if(end<start)return "";
- let raw=object.slice(start,end);
  const header=object.slice(0,match.index);
  const length=header.match(/\/Length\s+(\d+)\b(?!\s+\d+\s+R)/);
- if(length&&Number(length[1])<=raw.length)raw=raw.slice(0,Number(length[1]));
- else raw=raw.replace(/\r?\n$/,"");
+ const directLength=length?Number(length[1]):null;
+ // With a direct /Length, find the exact stream extent rather than scanning
+ // binary for the word "endstream" (which can occur inside actual page text).
+ const end=directLength!==null&&directLength<=MAX_STREAM&&start+directLength<=object.length?
+  start+directLength:object.indexOf("endstream",start);
+ if(end<start)return "";
+ let raw=object.slice(start,end);
+ if(directLength===null)raw=raw.replace(/\r?\n$/,"");
  const unpacked=await streamBytes(Uint8Array.from(raw,c=>c.charCodeAt(0)&255),header);
  return binaryString(unpacked);
 }
