@@ -357,7 +357,7 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
  for(let i=0;i<sheets.length;i++){
   check();notify("Reading worksheet "+(i+1)+" of "+sheets.length+"…");
   const {rows,truncated}=worksheetRows(await read(sheets[i].path),strings,styles,date1904);
-  out.push("Sheet "+(i+1)+(sheets[i].label?" · "+sheets[i].label:"")+"\n"+
+  out.push("Sheet "+(i+1)+(sheets[i].label&&sheets[i].label!=="Sheet "+(i+1)?" · "+sheets[i].label:"")+"\n"+
    (rows.join("\n")||"[No cached cell values]")+
    (truncated?"\n[Notice: Worksheet text exceeded the local 10,000-row or 170,000-character limit; remaining cells were not extracted.]":""));
  }
