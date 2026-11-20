@@ -54,3 +54,12 @@ body.chaos-code-page{background:radial-gradient(circle at 0% 0%,#27102d 0,transp
 #studio-json-data{min-height:108px}
 #studio-diff-output{min-height:110px}
 #studio-schema-output{min-height:80px}
+
+
+/* Supervised server-backed review stays separate from local scratch edits. */
+.studio-dev-submit{margin-top:13px;padding:13px;border:1px solid #8bd5ab79;border-radius:11px;background:linear-gradient(120deg,#202039,#10271f)}
+.studio-dev-submit label{display:grid;gap:8px;font-size:.85rem;color:#d8ffe8}
+.studio-dev-submit input{box-sizing:border-box;width:100%;min-height:40px;padding:9px 11px;border:1px solid #5e977a;border-radius:8px;background:#080e16;color:#f9eaf5;font:inherit}
+.studio-dev-submit button{min-height:42px;width:100%;margin:10px 0;border:1px solid #8cf9bb;border-radius:9px;background:#21513d;color:#eafff2;font:inherit;font-weight:800;cursor:pointer}
+.studio-dev-submit button:disabled{opacity:.52;cursor:not-allowed}
+.studio-dev-submit button:focus-visible{outline:2px solid #ff9ecf;outline-offset:3px}
