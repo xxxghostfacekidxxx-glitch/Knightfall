@@ -10,6 +10,13 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
  --kf-relic-crimson:#c45a37;--kf-relic-emerald:#67aa95;
  --kf-relic-halo:0 0 26px #ed9c3626,0 0 74px #c75a2816;
  --kf-relic-line:rgba(221,169,128,.54);
+ /* Bridge old design tokens to one consistent Egyptian sitewide palette. */
+ --af-ember:#b95d35;--af-ember-light:#ecc17a;
+ --af-ember-soft:rgba(185,93,53,.15);
+ --kf-accent:#b95d35;--kf-accent-bright:#ecc17a;
+ --kf-accent-soft:rgba(185,93,53,.15);
+ --kf-realm-metal:#edc789;--kf-realm-glow:#c77b39;
+ --kf-realm-tint:#40251a;
  color:var(--kf-relic-ivory);
  background-color:#090a0b!important;
  background-image:
@@ -21,7 +28,17 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
  background-size:auto,auto,cover,100% 110px!important;
  background-repeat:no-repeat!important;
 }
-/* Architectural chrome: ribbed vault, metallic underline and illuminated crest. */
+/* Preserve existing "cathedral" setting keys for stored previews and rollback.
+   The only default visual owner is now Black Sun Temple, not another CSS import. */
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.community-directory,.messages-shell,.admin-shell,.profile-shell,.cartridge-shelf,.foundry,.members-page,.friends-page,.dt-workspace-nav){
+ --section-surface:#171716;--section-raised:#25211c;
+ --section-stroke:rgba(214,166,92,.42);--section-green:#ecc17a;
+ --section-pink:#b95d35;--section-muted:#cfc3b1;
+}
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-header,.community-directory,.messages-shell,.admin-shell,.foundry,.cartridge-shelf) :where(a,button,input,textarea,select):focus-visible{
+ outline-color:#ecc17a;
+}
+/* Architectural chrome: carved stone, metallic underline and illuminated crest. */
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header{
  min-height:76px;
  background-image:linear-gradient(90deg,#110f0dd9,#241916bd 50%,#0b100ddf),url('/assets/knightfall/royal-cartouche.svg')!important;
