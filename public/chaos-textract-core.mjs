@@ -139,13 +139,13 @@ async function recognizeImage(image,notify,cancelled){
 async function readPdf(file,notify,cancelled,ocrScans){
  const lib=await getPdf();shouldCancel(cancelled);
  const task=lib.getDocument({data:new Uint8Array(await file.arrayBuffer()),useSystemFonts:true});
- const document=await task.promise;
+ const pdfDocument=await task.promise;
  try{
-  const length=Math.min(document.numPages,TEXTRACT_LIMITS.pdfPages);
+  const length=Math.min(pdfDocument.numPages,TEXTRACT_LIMITS.pdfPages);
   const parts=[];let scanned=0;
   for(let p=1;p<=length;p++){
    shouldCancel(cancelled);notify("Reading PDF page "+p+" of "+length+"…");
-   const page=await document.getPage(p);
+   const page=await pdfDocument.getPage(p);
    const text=await page.getTextContent();
    let content=normalizeTextractText(text.items.map(item=>item.str||"").join(" "));
    if(content.length<24&&ocrScans&&scanned<TEXTRACT_LIMITS.ocrPages){
@@ -164,10 +164,10 @@ async function readPdf(file,notify,cancelled,ocrScans){
    parts.push("Page "+p+"\n"+(content||"[No readable text]"));
    if(parts.join("\n").length>TEXTRACT_LIMITS.chars)break;
   }
-  if(document.numPages>length)parts.push("[Only the first "+length+" pages were processed. Split the PDF to read more.]");
+  if(pdfDocument.numPages>length)parts.push("[Only the first "+length+" pages were processed. Split the PDF to read more.]");
   if(scanned>=TEXTRACT_LIMITS.ocrPages)parts.push("[OCR limited to "+TEXTRACT_LIMITS.ocrPages+" scanned pages per run.]");
   return parts.join("\n\n");
- }finally{await document.destroy();}
+ }finally{await pdfDocument.destroy();}
 }
 export async function extractTextract(file,{notify=()=>{},cancelled=()=>false,ocrScans=true}={}){
  const ext=validateTextractFile(file);
