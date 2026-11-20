@@ -1,135 +1,287 @@
 /**
- * Lightweight, original Knightfall PDF text reader.
- * Implements a safe subset of the public PDF text-stream operators.
- * It is NOT a general PDF renderer and does NOT OCR scanned PDF pages.
+ * Knightfall PDF text-layer reader, original implementation.
+ * Supports standard page trees, content operators, Flate streams and a subset
+ * of embedded ToUnicode CMaps. This is not a PDF renderer or scanned-page OCR.
+ * Source bytes never leave the browser.
  */
 const LATIN=new TextDecoder("windows-1252"),UTF8=new TextDecoder();
-const MAX_DOCUMENT=18*1024*1024,MAX_OBJECTS=3000,MAX_STREAM=4*1024*1024;
-function decodePdfString(token){
- let bytes=[];
- if(token.startsWith("<")){
-  let hex=token.slice(1,-1).replace(/\s+/g,"");
-  if(hex.length%2)hex+="0";
-  for(let i=0;i<hex.length;i+=2)bytes.push(parseInt(hex.slice(i,i+2),16));
- }else{
-  const raw=token.slice(1,-1);
-  for(let i=0;i<raw.length;i++){
-   let ch=raw.charCodeAt(i);
-   if(ch===92){
-    const next=raw[++i];if(next===undefined)break;
-    const map={n:10,r:13,t:9,b:8,f:12};if(map[next])ch=map[next];
-    else if(next==="\n")continue;
-    else if(next==="\r"){if(raw[i+1]==="\n")i++;continue;}
-    else if(/[0-7]/.test(next)){
-     let digits=next;
-     while(digits.length<3&&/[0-7]/.test(raw[i+1]||""))digits+=raw[++i];
-     ch=parseInt(digits,8)&255;
-    }else ch=next.charCodeAt(0);
-   }
-   bytes.push(ch&255);
-  }
- }
- if(bytes.length>1&&bytes[0]===254&&bytes[1]===255){
-  let output="";
-  for(let i=2;i+1<bytes.length;i+=2)output+=String.fromCharCode((bytes[i]<<8)|bytes[i+1]);
-  return output;
- }
- // Some PDF text streams store basic Latin glyphs as big-endian two-byte
- // sequences without a BOM. Recognize only the unambiguous zero-high-byte case.
- if(bytes.length>=4&&bytes.length%2===0&&bytes.every((value,index)=>index%2===1||value===0)){
-  let text="";
-  for(let i=1;i<bytes.length;i+=2)text+=String.fromCharCode(bytes[i]);
-  return text;
- }
- if(bytes.length>2&&bytes[0]===239&&bytes[1]===187&&bytes[2]===191)
-  return UTF8.decode(new Uint8Array(bytes.slice(3)));
- return LATIN.decode(new Uint8Array(bytes));
-}
-export function extractKnightfallPdfOperators(content){
- const blocks=[...String(content||"").matchAll(/\bBT\b([\s\S]*?)\bET\b/g)];
+const MAX_DOCUMENT=18*1024*1024,MAX_OBJECTS=3500,MAX_STREAM=5*1024*1024,MAX_TOTAL=30*1024*1024;
+const utf16=(bytes)=>{
+ let output="";
+ for(let i=0;i+1<bytes.length;i+=2)output+=String.fromCharCode((bytes[i]<<8)|bytes[i+1]);
+ return output;
+};
+function bytesForLiteral(raw){
  const out=[];
- const textToken=String.raw`\((?:\\[\s\S]|[^\\)])*\)|<[0-9a-fA-F\s]+>`;
- for(const match of blocks.slice(0,4000)){
-  const block=match[1];let lines=[],line="";
-  const op=/(?:\[(.*?)\]|(\((?:\\[\s\S]|[^\\)])*\)|<[0-9A-Fa-f\s]+>))\s*(T[Jj]|')|(?:\bT\*\b|[-\d.]+\s+[-\d.]+\s+T[Dd]\b)/gs;
-  let found;
-  while((found=op.exec(block))){
-   if(found[0].endsWith("Td")||found[0].endsWith("TD")){if(line.trim())lines.push(line);line="";continue;}
-   if(found[1]!==undefined){
-    const inner=found[1];
-    const tokens=[...inner.matchAll(new RegExp(textToken+"|[-+]?\\d+(?:\\.\\d+)?","g"))].map(v=>v[0]);
-    for(const token of tokens){
-     if(token.startsWith("(")||token.startsWith("<"))line+=decodePdfString(token);
-     else if(Number(token)<-150)line+=" ";
-    }
-   }else if(found[2])line+=decodePdfString(found[2]);
-   if(found[3]==="'"){if(line.trim())lines.push(line);line="";}
-   if(line.length>200000)break;
+ for(let i=0;i<raw.length;i++){
+  const c=raw.charCodeAt(i);
+  if(c!==92){out.push(c&255);continue;}
+  const next=raw[++i];
+  if(next===undefined)break;
+  const escape={n:10,r:13,t:9,b:8,f:12};
+  if(next==="\r"||next==="\n"){if(next==="\r"&&raw[i+1]==="\n")i++;continue;}
+  if(Object.hasOwn(escape,next)){out.push(escape[next]);continue;}
+  if(/[0-7]/.test(next)){
+   let oct=next;
+   while(oct.length<3&&/[0-7]/.test(raw[i+1]||""))oct+=raw[++i];
+   out.push(parseInt(oct,8));continue;
   }
-  if(line.trim())lines.push(line);
-  if(lines.length)out.push(lines.join("\n"));
+  out.push(next.charCodeAt(0)&255);
  }
- return out.join("\n").replace(/[ \t]+\n/g,"\n").replace(/\n{3,}/g,"\n\n").trim();
+ return Uint8Array.from(out);
 }
-async function pdfStreamBytes(raw,filters,sizeLimit=MAX_STREAM){
- if(raw.length>sizeLimit)throw Error("PDF content stream exceeds the safe 4 MB limit.");
- const filter=String(filters||"");
- if(!/\/Filter\b/.test(filter))return raw;
- if(!/\/FlateDecode\b/.test(filter)||/\/(?:LZWDecode|DCTDecode|ASCII85Decode|ASCIIHexDecode|RunLengthDecode)\b/.test(filter))
-  throw Error("PDF contains an encoding that the native reader does not yet support.");
- if(typeof DecompressionStream!=="function")throw Error("Browser lacks PDF decompression support.");
- try{
-  const stream=new Blob([raw]).stream().pipeThrough(new DecompressionStream("deflate"));
-  const reader=stream.getReader();const parts=[];let length=0;
-  for(;;){
-   const {value,done}=await reader.read();if(done)break;
-   length+=value.byteLength;
-   if(length>sizeLimit){await reader.cancel();throw Error("Expanded PDF stream exceeds safety limit.");}
-   parts.push(value);
+function hexBytes(hex){
+ const clean=hex.replace(/\s+/g,"");const buffer=new Uint8Array(Math.ceil(clean.length/2));
+ for(let i=0;i<clean.length;i+=2)buffer[i/2]=parseInt((clean.slice(i,i+2)+"0").slice(0,2),16)||0;
+ return buffer;
+}
+function pdfText(bytes,map){
+ if(map?.size){
+  let out="",i=0;
+  const sizes=[...new Set([...map.keys()].map(k=>k.length/2))].sort((a,b)=>b-a);
+  while(i<bytes.length){
+   let found=false;
+   for(const n of sizes){
+    if(n+i>bytes.length)continue;
+    const hex=Array.from(bytes.subarray(i,i+n),x=>x.toString(16).padStart(2,"0")).join("").toUpperCase();
+    if(map.has(hex)){out+=map.get(hex);i+=n;found=true;break;}
+   }
+   if(!found){out+=LATIN.decode(bytes.subarray(i,i+1));i++;}
   }
-  const result=new Uint8Array(length);let offset=0;
-  for(const part of parts){result.set(part,offset);offset+=part.byteLength;}
-  return result;
- }catch(error){throw Error("PDF deflate decoding failed: "+String(error?.message||error));}
+  return out;
+ }
+ if(bytes.length>=2&&bytes[0]===254&&bytes[1]===255)return utf16(bytes.subarray(2));
+ if(bytes.length>=4&&bytes.length%2===0&&bytes.every((value,index)=>index%2===1||value===0))return utf16(bytes);
+ if(bytes.length>=3&&bytes[0]===239&&bytes[1]===187&&bytes[2]===191)return UTF8.decode(bytes.subarray(3));
+ return LATIN.decode(bytes);
+}
+// Each token has a type; PDF literal strings can contain nested parentheses.
+function lexPdf(raw){
+ const out=[];
+ let i=0;
+ while(i<raw.length&&out.length<150000){
+  let c=raw[i];
+  if(/\s/.test(c)){i++;continue;}
+  if(c==="%"){while(i<raw.length&&!/[\r\n]/.test(raw[i]))i++;continue;}
+  if(c==="("){
+   const start=++i;let depth=1,escaped=false;
+   while(i<raw.length&&depth){
+    c=raw[i++];
+    if(escaped){escaped=false;continue;}
+    if(c==="\\"){escaped=true;continue;}
+    if(c==="(")depth++;
+    if(c===")")depth--;
+   }
+   out.push({type:"string",bytes:bytesForLiteral(raw.slice(start,depth?i:i-1))});
+   continue;
+  }
+  if(c==="<"&&raw[i+1]!=="<"){
+   const end=raw.indexOf(">",i+1);
+   if(end<0)break;
+   out.push({type:"string",bytes:hexBytes(raw.slice(i+1,end))});i=end+1;continue;
+  }
+  if(c==="["||c==="]"||c==="<<"||c===">>"){out.push({type:"operator",value:c});i++;continue;}
+  if(c==="/"&&i+1<raw.length){const start=i++;while(i<raw.length&&!/[\s<>\[\]()/%]/.test(raw[i]))i++;out.push({type:"name",value:raw.slice(start,i)});continue;}
+  const start=i;
+  while(i<raw.length&&!/[\s<>\[\]()/%]/.test(raw[i]))i++;
+  if(i===start){i++;continue;}
+  const value=raw.slice(start,i);
+  out.push(/^[-+]?(?:\d+\.?\d*|\.\d+)$/.test(value)?{type:"number",value:Number(value)}:{type:"operator",value});
+ }
+ return out;
+}
+function extractTextOperators(content,fontMaps=new Map()){
+ const tokens=lexPdf(String(content||"")),output=[];
+ let active=false,buffer="",font="",lastY=null,leading=0,pending=[];
+ const flush=()=>{if(buffer.trim())output.push(buffer.trimEnd());buffer="";};
+ const append=bytes=>{if(active)buffer+=pdfText(bytes,fontMaps.get(font));};
+ const line=()=>{flush();};
+ const textArray=value=>{
+  for(const item of value){
+   if(item.type==="string")append(item.bytes);
+   else if(item.type==="number"&&item.value<-150)buffer+=" ";
+  }
+ };
+ for(let i=0;i<tokens.length;i++){
+  const item=tokens[i];
+  if(item.value==="["){
+   let depth=1,parts=[];
+   while(++i<tokens.length&&depth){
+    if(tokens[i].value==="[")depth++;
+    else if(tokens[i].value==="]")depth--;
+    else if(depth===1)parts.push(tokens[i]);
+   }
+   pending.push({type:"array",parts});continue;
+  }
+  if(item.type!=="operator"){pending.push(item);if(pending.length>100)pending.shift();continue;}
+  const op=item.value;
+  if(op==="BT"){active=true;pending=[];lastY=null;continue;}
+  if(op==="ET"){if(active)flush();active=false;pending=[];continue;}
+  if(!active){pending=[];continue;}
+  if(op==="Tf"){const n=pending.findLast(x=>x.type==="name");if(n)font=n.value;pending=[];continue;}
+  if(op==="TL"){const n=pending.findLast(x=>x.type==="number");if(n)leading=n.value;pending=[];continue;}
+  if(op==="Td"||op==="TD"){
+   if(buffer.trim())line();
+   if(op==="TD"&&pending.length>=2)leading=-(pending.at(-1)?.value||0);
+   pending=[];continue;
+  }
+  if(op==="T*"||op==="'"){
+   line();
+   if(op==="'"){const token=pending.findLast(x=>x.type==="string");if(token)append(token.bytes);}
+   pending=[];continue;
+  }
+  if(op==='"'){
+   line();const token=pending.findLast(x=>x.type==="string");if(token)append(token.bytes);
+   pending=[];continue;
+  }
+  if(op==="Tm"){
+   const values=pending.filter(x=>x.type==="number").map(x=>x.value);
+   const y=values.at(-1);
+   if(lastY!==null&&y!==undefined&&Math.abs(lastY-y)>1.8)line();
+   if(y!==undefined)lastY=y;
+   pending=[];continue;
+  }
+  if(op==="Tj"){const token=pending.findLast(x=>x.type==="string");if(token)append(token.bytes);pending=[];continue;}
+  if(op==="TJ"){const array=pending.findLast(x=>x.type==="array");if(array)textArray(array.parts);pending=[];continue;}
+  // Unknown operators must not leak their arguments into a subsequent Tj.
+  pending=[];
+ }
+ if(buffer.trim())flush();
+ return output.join("\n").replace(/[ \t]+\n/g,"\n").replace(/\n{3,}/g,"\n\n").trim();
+}
+export function extractKnightfallPdfOperators(content){return extractTextOperators(content);}
+
+async function streamBytes(raw,header,sizeLimit=MAX_STREAM){
+ if(raw.length>sizeLimit)throw Error("PDF stream exceeds "+Math.round(sizeLimit/1048576)+" MB limit.");
+ const filter=String(header||"");
+ if(!/\/Filter\b/.test(filter))return raw;
+ if(!/\/FlateDecode\b/.test(filter)||/\/(?:LZWDecode|DCTDecode|ASCII85Decode|ASCIIHexDecode|RunLengthDecode|Crypt)\b/.test(filter))
+  throw Error("This PDF uses an unsupported content stream compression filter.");
+ if(typeof DecompressionStream!=="function")throw Error("Browser PDF decompression is unavailable.");
+ const reader=new Blob([raw]).stream().pipeThrough(new DecompressionStream("deflate")).getReader();
+ const chunks=[];let length=0;
+ try{
+  while(true){
+   const {done,value}=await reader.read();if(done)break;
+   length+=value.byteLength;
+   if(length>sizeLimit)throw Error("Expanded PDF stream exceeded the safety limit.");
+   chunks.push(value);
+  }
+ }finally{reader.releaseLock();}
+ const result=new Uint8Array(length);let offset=0;
+ for(const chunk of chunks){result.set(chunk,offset);offset+=chunk.length;}
+ return result;
+}
+async function objectContent(object){
+ if(!object)return "";
+ const match=/\bstream(?:\r\n|\n|\r)/.exec(object);
+ if(!match)return "";
+ const start=match.index+match[0].length;
+ const end=object.indexOf("endstream",start);
+ if(end<start)return "";
+ let raw=object.slice(start,end);
+ const header=object.slice(0,match.index);
+ const length=header.match(/\/Length\s+(\d+)(?!\s+\d+\s+R)/);
+ if(length&&Number(length[1])<=raw.length)raw=raw.slice(0,Number(length[1]));
+ else raw=raw.replace(/\r?\n$/,"");
+ const unpacked=await streamBytes(Uint8Array.from(raw,c=>c.charCodeAt(0)&255),header);
+ return LATIN.decode(unpacked);
+}
+function objectReferences(source,name){
+ const m=String(source||"").match(new RegExp("\\/"+name+"\\s*(?:\\[([\\s\\S]*?)\\]|(\\d+)\\s+\\d+\\s+R)"));
+ if(!m)return [];
+ const text=m[1]||m[2]+" 0 R";
+ return [...text.matchAll(/(\d+)\s+\d+\s+R/g)].map(x=>Number(x[1])).slice(0,100);
+}
+function collectPages(objects){
+ const candidates=[...objects.entries()].filter(([,obj])=>/\/Type\s*\/Page\b/.test(obj)).map(([n])=>n);
+ const catalog=[...objects.values()].find(x=>/\/Type\s*\/Catalog\b/.test(x));
+ const root=objectReferences(catalog,"Pages")[0];
+ const visited=new Set(),ordered=[];
+ function walk(id,depth){
+  if(depth>40||visited.has(id))return;
+  visited.add(id);const text=objects.get(id)||"";
+  if(/\/Type\s*\/Page\b/.test(text)){ordered.push(id);return;}
+  for(const child of objectReferences(text,"Kids"))walk(child,depth+1);
+ }
+ if(root)walk(root,0);
+ return (ordered.length?ordered:candidates).slice(0,24);
+}
+function unicodeMaps(cmapText){
+ const map=new Map();
+ for(const match of cmapText.matchAll(/beginbfchar([\s\S]*?)endbfchar/g)){
+  for(const pair of match[1].matchAll(/<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>/g))
+   map.set(pair[1].toUpperCase(),utf16(hexBytes(pair[2])));
+ }
+ for(const match of cmapText.matchAll(/beginbfrange([\s\S]*?)endbfrange/g)){
+  const lines=match[1].split(/[\r\n]+/);
+  for(const line of lines){
+   const m=line.match(/<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>/);
+   if(!m)continue;
+   const start=parseInt(m[1],16),end=parseInt(m[2],16),base=parseInt(m[3],16);
+   if(!Number.isSafeInteger(start)||end-start>512||end<start)continue;
+   for(let i=start;i<=end;i++){
+    const src=i.toString(16).padStart(m[1].length,"0").toUpperCase();
+    const dst=(base+i-start).toString(16).padStart(m[3].length,"0");
+    map.set(src,utf16(hexBytes(dst)));
+   }
+  }
+ }
+ return map;
+}
+async function fontMapsFor(page,objects){
+ const maps=new Map();let sources=[page];
+ let parent=objectReferences(page,"Parent")[0],depth=0;
+ while(parent&&depth++<12){const item=objects.get(parent);if(!item)break;sources.push(item);parent=objectReferences(item,"Parent")[0];}
+ for(const data of sources){
+  const fontBlock=data.match(/\/Font\s*<<([\s\S]*?)>>/);
+  const resources=objectReferences(data,"Resources")[0];
+  const resolved=fontBlock?.[1]||objects.get(resources)?.match(/\/Font\s*<<([\s\S]*?)>>/)?.[1]||"";
+  for(const ref of resolved.matchAll(/\/([-\w]+)\s+(\d+)\s+\d+\s+R/g)){
+   if(maps.has("/"+ref[1]))continue;
+   const font=objects.get(Number(ref[2]));
+   const id=objectReferences(font,"ToUnicode")[0];
+   if(!id)continue;
+   const text=await objectContent(objects.get(id));
+   const table=unicodeMaps(text);
+   if(table.size)maps.set("/"+ref[1],table);
+  }
+ }
+ return maps;
 }
 export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false}={}){
  const bytes=file instanceof Uint8Array?file:new Uint8Array(await file.arrayBuffer());
  if(bytes.length>MAX_DOCUMENT)throw Error("PDF exceeds 18 MB.");
+ if(bytes.length<8||LATIN.decode(bytes.subarray(0,8)).slice(0,5)!=="%PDF-")throw Error("This is not a valid PDF header.");
  const text=LATIN.decode(bytes);
- if(!text.startsWith("%PDF-"))throw Error("This file is not a PDF document.");
+ if(/\/Encrypt\s+\d+\s+\d+\s+R/.test(text))throw Error("This PDF is encrypted. Save an unlocked copy before extracting.");
  const objects=new Map();
- const matches=text.matchAll(/(?:^|[\r\n])\s*(\d{1,9})\s+(\d{1,5})\s+obj\b([\s\S]*?)\bendobj\b/g);
- for(const item of matches){
+ for(const item of text.matchAll(/(?:^|[\r\n])\s*(\d{1,9})\s+(\d{1,5})\s+obj\b([\s\S]*?)\bendobj\b/g)){
   if(objects.size>=MAX_OBJECTS)throw Error("PDF contains too many objects.");
-  const id=Number(item[1]),data=item[3];
-  if(data.length<=MAX_STREAM*2)objects.set(id,data);
+  if(item[3].length<=MAX_STREAM*2)objects.set(Number(item[1]),item[3]);
  }
- const pages=[...objects.entries()].filter(([,v])=>/\/Type\s*\/Page\b/.test(v))
-  .sort((a,b)=>a[0]-b[0]).slice(0,24);
- if(!pages.length)throw Error("This PDF does not have an accessible page tree.");
- const parts=[];let count=0;
- for(const [pageId,page] of pages){
+ const pages=collectPages(objects);
+ if(!pages.length){
+  if(/\/ObjStm\b/.test(text))throw Error("This PDF uses compressed object streams, which this offline reader cannot decode.");
+  throw Error("No supported PDF pages found.");
+ }
+ const parts=[];let valid=0,totalChars=0;
+ for(let i=0;i<pages.length;i++){
   if(cancelled())throw Error("Extraction cancelled.");
-  count++;notify("Reading native PDF text layer "+count+" of "+pages.length+"…");
-  const contents=page.match(/\/Contents\s*(?:\[\s*([\d\sR]+)\s*\]|(\d+)\s+\d+\s+R)/);
-  if(!contents){parts.push("Page "+count+"\n[No readable text stream]");continue;}
-  const refs=[...String(contents[1]||contents[2]+" 0 R").matchAll(/(\d+)\s+\d+\s+R/g)].map(x=>Number(x[1])).slice(0,40);
-  const chunks=[];
+  notify("Extracting PDF page "+(i+1)+" of "+pages.length+"…");
+  const page=objects.get(pages[i]);const refs=objectReferences(page,"Contents").slice(0,48),chunks=[];
+  const fonts=await fontMapsFor(page,objects);
   for(const ref of refs){
-   const object=objects.get(ref);if(!object)continue;
-   const marker=/\bstream(?:\r\n|\n|\r)/.exec(object);if(!marker)continue;
-   const start=marker.index+marker[0].length;
-   const end=object.indexOf("endstream",start);if(end<start)continue;
-   let raw=object.slice(start,end).replace(/\r?\n$/,"");
-   if(raw.length>MAX_STREAM)throw Error("PDF object too large.");
-   const binary=Uint8Array.from(raw,ch=>ch.charCodeAt(0)&255);
-   const decoded=await pdfStreamBytes(binary,object.slice(0,marker.index));
-   chunks.push(extractKnightfallPdfOperators(LATIN.decode(decoded)));
+   if(cancelled())throw Error("Extraction cancelled.");
+   const stream=await objectContent(objects.get(ref));
+   if(!stream)continue;
+   const extracted=extractTextOperators(stream,fonts);
+   if(extracted)chunks.push(extracted);
   }
-  parts.push("Page "+count+"\n"+(chunks.filter(Boolean).join("\n")||"[No recognized text on this page]"));
+  if(chunks.length){valid++;totalChars+=chunks.join("").length;}
+  if(totalChars>MAX_TOTAL)throw Error("PDF extracted text exceeds memory safety limits.");
+  parts.push("Page "+(i+1)+"\n"+(chunks.join("\n")||"[No selectable text detected]"));
  }
- const result=parts.join("\n\n").trim();
- if(!parts.some(s=>s.includes("\n")&&!/^\s*Page \d+\s*\n\[(?:No|.*unsupported)/.test(s)))
-  throw Error("No selectable PDF text found. Native PDF rendering/scanned-page OCR is not supported yet.");
- return result;
+ if(!valid)throw Error("No selectable text detected. This is likely a scanned PDF, or uses fonts/streams that the offline reader cannot decode. Try an accessible text-layer PDF or image OCR for individual pages.");
+ return parts.join("\n\n");
 }
