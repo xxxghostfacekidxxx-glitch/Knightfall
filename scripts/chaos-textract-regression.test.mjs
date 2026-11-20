@@ -171,3 +171,49 @@ test("Office files with many embedded photos do not spend extraction memory on u
 test("Unsafe OOXML DTD and entities are rejected",()=>{
  assert.throws(()=>parseKnightfallXml('<!DOCTYPE a [<!ENTITY x "boom">]><a>&x;</a>'),/Unsafe XML/);
 });
+
+
+test("XLSX follows workbook relationship IDs and retains sheet labels with > characters",async()=>{
+ const doc=zipPack([
+  ["xl/workbook.xml",'<workbook><sheets><sheet name="First > Revenue" sheetId="9" r:id="rId9"/><sheet name="Second" sheetId="2" r:id="rId2"/></sheets></workbook>'],
+  ["xl/_rels/workbook.xml.rels",'<Relationships><Relationship Id="rId9" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="/xl/worksheets/sheet1.xml"/></Relationships>'],
+  ["xl/worksheets/sheet1.xml",'<worksheet><sheetData><row><c r="A1" t="inlineStr"><is><t>SECOND_VALUE</t></is></c></row></sheetData></worksheet>'],
+  ["xl/worksheets/sheet3.xml",'<worksheet><sheetData><row><c r="A1" t="inlineStr"><is><t>FIRST_VALUE</t></is></c></row></sheetData></worksheet>']
+ ]);
+ const result=await extractTextract(file("relationships.xlsx",doc));
+ assert.match(result.text,/Sheet 1 · First > Revenue\nA1=FIRST_VALUE/);
+ assert.match(result.text,/Sheet 2 · Second\nA1=SECOND_VALUE/);
+ assert.ok(result.text.indexOf("FIRST_VALUE")<result.text.indexOf("SECOND_VALUE"));
+});
+test("DOCX keeps visible field text without copying hidden instructions",async()=>{
+ const xml='<w:document><w:body><w:p><w:r><w:t>Page: </w:t></w:r><w:r><w:instrText>HYPERLINK "https://private.invalid"</w:instrText></w:r><w:r><w:t>Visible label</w:t></w:r></w:p></w:body></w:document>';
+ const result=await extractTextract(file("fields.docx",zipPack([["word/document.xml",xml]])));
+ assert.match(result.text,/Page: Visible label/);
+ assert.doesNotMatch(result.text,/HYPERLINK|private.invalid/);
+});
+test("PDF ToUnicode bfrange arrays map actual glyph codes to text",async()=>{
+ const cmap="1 beginbfrange\n<0001> <0003> [<0041> <0042> <0043>]\nendbfrange";
+ const stream="BT /F1 12 Tf <000100020003> Tj ET";
+ const bytes=pdf([
+  "1 0 obj << /Type /Page /Contents 2 0 R /Resources << /Font << /F1 7 0 R >> >> >> endobj",
+  "2 0 obj << /Length "+stream.length+" >>\nstream\n"+stream+"\nendstream\nendobj",
+  "7 0 obj << /Type /Font /ToUnicode 8 0 R >> endobj",
+  "8 0 obj << /Length "+cmap.length+" >>\nstream\n"+cmap+"\nendstream\nendobj"
+ ]);
+ assert.match(await readKnightfallPdf(bytes),/ABC/);
+});
+test("Text files with UTF-16LE, UTF-16BE and UTF-8 BOMs are decoded correctly",async()=>{
+ for(const endian of ["le","be"]){
+  const str="Knightfall: café ✓";
+  const bytes=new Uint8Array(2+str.length*2);
+  bytes.set(endian==="le"?[255,254]:[254,255]);
+  for(let i=0;i<str.length;i++){
+   const code=str.charCodeAt(i);bytes[2+i*2]=endian==="le"?code&255:code>>8;
+   bytes[3+i*2]=endian==="le"?code>>8:code&255;
+  }
+  const result=await extractTextract(file("unicode.txt",bytes));
+  assert.equal(result.text,str);
+ }
+ const bom=new Uint8Array([239,187,191,...enc.encode("UTF-8 works")]);
+ assert.equal((await extractTextract(file("utf8.txt",bom))).text,"UTF-8 works");
+});
