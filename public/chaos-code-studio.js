@@ -83,7 +83,7 @@ repoRead.addEventListener("click",async()=>{
  currentRepoExcerpt=null;proposalSnapshot=null;clearReview();
  note(repoStatus,"Reading public main-branch source with staff authorization...");
  try{
-  const result=await utility("staff.repo_file",{path,start_line:start,line_count:55});
+  const result=await utility("staff.repo_file",{path,start_line:start,line_count:80});
   if(!result?.available){note(repoStatus,result?.message||"Source unavailable.");note(repoOutput,"No verified source.");return;}
   const lines=(result.lines||[]).filter(x=>Number.isInteger(x.number)&&typeof x.text==="string");
   if(result.branch!=="main"||!/^[a-f0-9]{40}$/i.test(result.commit_sha||"")){
