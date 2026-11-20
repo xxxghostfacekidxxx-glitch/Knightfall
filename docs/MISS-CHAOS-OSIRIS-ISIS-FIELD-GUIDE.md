@@ -122,3 +122,22 @@ As of a direct Cloudflare Pages inspection on November 19, 2026, `ac1a04a78087c3
 - **Next real leap, not yet implemented:** A separately authorized staging/isolated CI pipeline to test an approved candidate; integrate an exact reviewed full-file blob into `main` only with an authorized human-approved commit operation; compare release SHA to deployed Worker/Pages and real device QA; rollback if evidence fails. No model-driven code execution on public Workers.
 
 **Links:** `/chaos-code-studio.html` for private staff proposal creation; `/eye-of-chaos.html` → Approval Queue for verified review; `/ai-handoff.html` for Ronnie/Samantha's explicit shared summary. Site role does not confer GitHub or Cloudflare access.
+
+
+
+## Manual candidate evidence runner (November 19, 2026)
+
+Miss Chaos can prepare a cryptographic test kit for a **verified complete, <=80-line / <=5 KB public source file**. Code Studio now reads up to 80 lines (still rejects clipped lines), captures a SHA-pinned original, computes a real diff and client-side SHA-256, and provides four copyable GitHub Actions inputs plus a portable JSON packet. Editing source after staging invalidates the packet. Eye of Chaos can independently build a kit from an authenticated pending/approved review detail so Isis need not recreate the author's edit.
+
+**Manual workflow:** .github/workflows/miss-chaos-candidate-check.yml
+https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/miss-chaos-candidate-check.yml
+
+1. In Code Studio, stage a complete verified small main source proposal; alternatively inspect the exact review version in Eye of Chaos → Approval Queue. Press **Prepare manual test inputs**. Nothing starts automatically.
+2. Open the GitHub Actions workflow. Manually choose **Run workflow** on main. Copy base_sha, path, candidate_base64 and candidate_sha256. The run_targeted_tests input defaults to FALSE (non-executing static check). Choose TRUE only for one of the fixed approved test recipes.
+3. The job confirms its own main checkout SHA, the public allowlisted path, exact 5 KB / 80-line limits, canonical UTF-8 Base64 and candidate SHA-256 before static syntax checking. Optional pinned tests execute in the disposable runner with sanitized child-process environment, no retained Git checkout credentials, no deployed service secrets, timeout, and source restoration afterward.
+4. Inspect the GitHub run and its miss-chaos-candidate-evidence artifact. Its status, static_check, targeted_tests and hashes represent **candidate test evidence**, not approved code, integration CI, production deployment or physical phone QA. A stale main SHA requires re-reading/re-staging the proposal.
+5. Separately verify Osiris or authorized-admin Isis decision in the private D1 review docket, manually integrate any specifically approved revision into main under owner's standard review policy, run full integrated CI, verify the exact Pages/Worker release SHAs, then test on devices. Migration 0151 still requires explicit reviewed deployment before the docket becomes writable.
+
+**Security limitations:** Manually dispatched only, read-only GitHub token, persist-credentials disabled, no automatic PR/branch, code commit, Workers deployment, production D1 access, or paid AI service. GitHub Actions inputs and logs may be visible to repository collaborators; only use genuinely public code, NEVER private member data or credentials. A hosted runner with optional code-executing tests is **not** a hardened sandbox for arbitrary hostile code, so only mapped small modules and explicitly approved test cases may be executed.
+
+**Regression tests:** scripts/chaos-review-sandbox.test.mjs and scripts/chaos-review-test-kit.test.mjs cover stale source, tampered digests, invalid Base64 and UTF-8, unsafe paths and symlinks, static syntax failure, source restoration, no implicit workflow dispatch, and UI export. Both are wired into Miss Chaos CI and the Cloudflare Pages release gate.
