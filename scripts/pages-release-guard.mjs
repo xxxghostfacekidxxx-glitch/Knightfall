@@ -10,6 +10,7 @@ const jobs=[
  ["Textract lab syntax",["--check","public/chaos-textract.mjs"]],
  ["Global CSS integrity",["scripts/theme-crew-audit.mjs"]],
  ["Black Sun navigation and theme regression checks",["--test","scripts/black-sun-cleanup.test.mjs"]],
+ ["Theme Forge artwork and rapid preset switching",["--test","scripts/theme-forge-fast-switch.test.mjs"]],
  ["Internal navigation and duplicate links",["scripts/site-link-integrity.mjs"]],
  ["Approved Gothic colors, assets and PWA invariants",["scripts/site-theme-audit.mjs"]],
  ["Messaging theme regression",["scripts/messaging-theme-audit.mjs"]],
