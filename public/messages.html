@@ -669,7 +669,10 @@ function syncMessagesViewport(){
  const viewport=window.visualViewport,visibleHeight=viewport?.height||window.innerHeight;
  const offsetTop=viewport?.offsetTop||0,header=document.querySelector(".kf-header");
  const headerBottom=header?.getBoundingClientRect().bottom||0;
- const top=Math.max(offsetTop,Math.min(headerBottom,offsetTop+72,offsetTop+visibleHeight*0.22));
+ // Respect the measured sticky site header. Short keyboard viewports receive
+ // a smaller allowance so the scrollable transcript and composer still fit.
+ const headerAllowance=Math.max(60,Math.min(190,visibleHeight*.32));
+ const top=Math.max(offsetTop,Math.min(headerBottom,offsetTop+headerAllowance));
  const available=Math.max(140,offsetTop+visibleHeight-top);
  const root=document.documentElement;
  root.style.setProperty("--messages-visible-height",visibleHeight+"px");
