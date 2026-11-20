@@ -88,7 +88,9 @@ function parserCheck(candidate,path,root){
  if([".js",".mjs",".cjs"].includes(extension)){
    const dir=mkdtempSync(join(tmpdir(),"kf-chaos-syntax-"));
    try{
-     const target=join(dir,"candidate"+extension);
+     // The temporary folder is outside backend/package.json (type: module).
+     // Treat regular .js as ESM for syntax-only validation; .cjs stays CommonJS.
+     const target=join(dir,"candidate"+(extension===".js"?".mjs":extension));
      writeFileSync(target,candidate,{flag:"wx",mode:0o600});
      const result=spawnSync(process.execPath,["--check",target],{
        encoding:"utf8",timeout:20000,
