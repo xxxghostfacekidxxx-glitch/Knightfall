@@ -188,17 +188,37 @@ async function objectContent(object){
  if(end<start)return "";
  let raw=object.slice(start,end);
  const header=object.slice(0,match.index);
- const length=header.match(/\/Length\s+(\d+)(?!\s+\d+\s+R)/);
+ const length=header.match(/\/Length\s+(\d+)\b(?!\s+\d+\s+R)/);
  if(length&&Number(length[1])<=raw.length)raw=raw.slice(0,Number(length[1]));
  else raw=raw.replace(/\r?\n$/,"");
  const unpacked=await streamBytes(Uint8Array.from(raw,c=>c.charCodeAt(0)&255),header);
- return LATIN.decode(unpacked);
+ return binaryString(unpacked);
 }
 function objectReferences(source,name){
  const m=String(source||"").match(new RegExp("\\/"+name+"\\s*(?:\\[([\\s\\S]*?)\\]|(\\d+)\\s+\\d+\\s+R)"));
  if(!m)return [];
  const text=m[1]||m[2]+" 0 R";
  return [...text.matchAll(/(\d+)\s+\d+\s+R/g)].map(x=>Number(x[1])).slice(0,100);
+}
+async function unpackObjectStreams(objects,cancelled){
+ const encoded=[...objects.entries()].filter(([,data])=>/\/Type\s*\/ObjStm\b/.test(data)).slice(0,160);
+ for(const [,data] of encoded){
+  if(cancelled())throw Error("Extraction cancelled.");
+  const num=Number(data.match(/\/N\s+(\d+)/)?.[1]||0),first=Number(data.match(/\/First\s+(\d+)/)?.[1]||0);
+  if(num<1||num>800||first<1||first>MAX_STREAM)continue;
+  const plain=await objectContent(data);
+  if(!plain||plain.length<first)continue;
+  const header=plain.slice(0,first);
+  const pairs=[...header.matchAll(/(\d+)\s+(\d+)/g)].slice(0,num).map(x=>[Number(x[1]),Number(x[2])]);
+  for(let i=0;i<pairs.length;i++){
+   if(objects.size>=MAX_OBJECTS)throw Error("PDF contains too many embedded objects.");
+   const [id,offset]=pairs[i];
+   const end=i+1<pairs.length?first+pairs[i+1][1]:plain.length;
+   const start=first+offset;
+   if(!Number.isSafeInteger(id)||id<1||start<first||end>plain.length||start>=end)continue;
+   if(!objects.has(id))objects.set(id,plain.slice(start,end));
+  }
+ }
 }
 function collectPages(objects){
  const candidates=[...objects.entries()].filter(([,obj])=>/\/Type\s*\/Page\b/.test(obj)).map(([n])=>n);
@@ -267,6 +287,7 @@ export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false}
   if(objects.size>=MAX_OBJECTS)throw Error("PDF contains too many objects.");
   if(item[3].length<=MAX_STREAM*2)objects.set(Number(item[1]),item[3]);
  }
+ await unpackObjectStreams(objects,cancelled);
  const pages=collectPages(objects);
  if(!pages.length){
   if(/\/ObjStm\b/.test(text))throw Error("This PDF uses compressed object streams, which this offline reader cannot decode.");
