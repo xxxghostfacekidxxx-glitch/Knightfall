@@ -501,6 +501,25 @@
       statusEl.textContent = health?.ok ? "Connected · AI model availability checked on send" : "API connection needs attention";
       if (conversations.length) await openConversation(conversations[0].id);
       else showWelcome();
+      // Textract keeps all original files on device. The short excerpt only
+      // enters the composer after an explicit handoff; sending remains manual.
+      try {
+        const raw=sessionStorage.getItem("knightfall:textract-draft");
+        if(raw){
+          sessionStorage.removeItem("knightfall:textract-draft");
+          const staged=JSON.parse(raw);
+          const value=String(staged?.text||"");
+          if(Number.isFinite(staged?.at)&&Date.now()-staged.at<10*60*1000&&value.length>0&&value.length<=3900){
+            const original=input.value.trim();
+            const combined=original?original+"\n\n"+value:value;
+            if(combined.length<=4000){
+              input.value=combined;input.dispatchEvent(new Event("input",{bubbles:true}));
+              statusEl.textContent="Textract excerpt staged. Review your message before pressing Send.";
+              input.focus({preventScroll:true});
+            }else showError("Textract excerpt did not fit alongside your existing draft. Return to Textract and copy a shorter section.");
+          }
+        }
+      } catch(error){console.warn("Textract private handoff unavailable",error);}
       // A published or owner-authorized derived chart is transferred only by a click;
       // no raw birth date, UTC timestamp, or coordinates enter session storage.
       try {
