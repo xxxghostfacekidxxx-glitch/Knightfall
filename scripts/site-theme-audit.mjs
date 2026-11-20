@@ -22,7 +22,8 @@ for(const id of ["kf-nav-emergency-css","kf-pwa-navigation-recovery","kf-nav-sta
 assert.match(css,/Canonical navigation chrome/);
 assert.match(nav,/DOMContentLoaded[^\n]*mountApprovedTheme/,"Approved theme must mount after page styles");
 assert.match(nav,/document\.head\.appendChild\(link\)/,"Approved theme must be last in cascade");
-assert.match(nav,/theme\.css\?v=20261116-cascade4/);
+assert.match(nav,/const target = "\/theme\.css";/,"Nav must use the canonical revalidated stylesheet URL");
+assert.doesNotMatch(nav,/\/theme\.css\?v=/,"Do not revive hardcoded cache-busting on the shared stylesheet");
 for(const old of ["/gravewave-takeover.js","/gravewave-decor.js","/neon-global.css","/gravewave-consistency.css"])
  assert.ok(!nav.includes(old),"Nav reintroduces legacy neon theme: "+old);
 assert.doesNotMatch(home,/\/gravewave-takeover\.(js|css)/);
