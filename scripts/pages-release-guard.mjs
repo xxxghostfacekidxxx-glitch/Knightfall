@@ -3,6 +3,7 @@
 import {spawnSync} from "node:child_process";
 const jobs=[
  ["Global CSS integrity",["scripts/theme-crew-audit.mjs"]],
+ ["Black Sun navigation and theme regression checks",["--test","scripts/black-sun-cleanup.test.mjs"]],
  ["Internal navigation and duplicate links",["scripts/site-link-integrity.mjs"]],
  ["Approved Gothic colors, assets and PWA invariants",["scripts/site-theme-audit.mjs"]],
  ["Messaging theme regression",["scripts/messaging-theme-audit.mjs"]],
