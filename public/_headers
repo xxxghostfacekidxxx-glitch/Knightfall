@@ -89,11 +89,7 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /miss-chaos-field-kit.mjs
   Cache-Control: no-cache, max-age=0, must-revalidate
-/chaos-textract.html
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/chaos-textract.mjs
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/chaos-textract-core.mjs
+/chaos-textract*
   Cache-Control: no-cache, max-age=0, must-revalidate
 /chaos-crucible*
   Cache-Control: no-cache, max-age=0, must-revalidate
