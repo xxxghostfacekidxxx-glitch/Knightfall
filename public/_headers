@@ -25,7 +25,11 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew.html
   Cache-Control: no-cache, max-age=0, must-revalidate
-# Keep signature Gothic artwork fresh on all pages and installed web apps.
+# Keep Black Sun theme artwork and legacy fallback art fresh in installed web apps.
+/assets/knightfall/black-sun-temple.svg
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/assets/knightfall/royal-cartouche.svg
+  Cache-Control: no-cache, max-age=0, must-revalidate
 /assets/knightfall/obsidian-cathedral.svg
   Cache-Control: no-cache, max-age=0, must-revalidate
 /assets/knightfall/vaulted-cathedral.svg
