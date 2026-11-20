@@ -511,3 +511,39 @@ test("PDF JPEG image bytes may contain endobj without corrupting OCR input",asyn
  assert.equal(called,true);
  assert.match(result,/INTACT SCANNED IMAGE/);
 });
+
+
+test("XLSX explicitly reports unresolved workbook tabs instead of silently omitting them",async()=>{
+ const doc=zipPack([
+  ["xl/workbook.xml",'<workbook><sheets><sheet name="Found" sheetId="1" r:id="rIdA"/><sheet name="Missing tab" sheetId="2" r:id="rIdB"/></sheets></workbook>'],
+  ["xl/_rels/workbook.xml.rels",'<Relationships><Relationship Id="rIdA" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/><Relationship Id="rIdB" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet999.xml"/></Relationships>'],
+  ["xl/worksheets/sheet3.xml",'<worksheet><row><c r="A1" t="inlineStr"><is><t>VISIBLE</t></is></c></row></worksheet>'],
+  ["xl/worksheets/sheet1.xml",'<worksheet><row><c r="A1" t="inlineStr"><is><t>UNREFERENCED</t></is></c></row></worksheet>']
+ ]);
+ const result=await extractTextract(file("broken-links.xlsx",doc));
+ assert.match(result.text,/Sheet 1 · Found\nA1=VISIBLE/);
+ assert.doesNotMatch(result.text,/UNREFERENCED/);
+ assert.match(result.text,/1 workbook tab\(s\) could not be read/);
+ assert.match(result.text,/Missing tab/);
+ assert.match(result.text,/These tabs were omitted/);
+ assert.match(result.warning,/extraction is incomplete/);
+});
+test("XLSX missing workbook relationships labels sheet filenames only as unverified",async()=>{
+ const doc=zipPack([
+  ["xl/workbook.xml",'<workbook><sheets><sheet name="Last report" sheetId="3" r:id="rId3"/><sheet name="First report" sheetId="1" r:id="rId1"/></sheets></workbook>'],
+  ["xl/worksheets/sheet1.xml",'<worksheet><row><c r="A1" t="inlineStr"><is><t>DATA</t></is></c></row></worksheet>']
+ ]);
+ const result=await extractTextract(file("no-relationships.xlsx",doc));
+ assert.match(result.text,/Sheet 1\nA1=DATA/);
+ assert.doesNotMatch(result.text,/Sheet 1 · Last report/);
+ assert.match(result.text,/Declared tab names \(unverified\): Last report, First report/);
+ assert.match(result.warning,/extraction is incomplete/);
+});
+test("XLSX missing all referenced worksheets reports an explicit error",async()=>{
+ const doc=zipPack([
+  ["xl/workbook.xml",'<workbook><sheets><sheet name="Lost" sheetId="3" r:id="rId3"/></sheets></workbook>'],
+  ["xl/_rels/workbook.xml.rels",'<Relationships><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet9.xml"/></Relationships>'],
+  ["xl/worksheets/sheet1.xml",'<worksheet><row><c r="A1"><v>123</v></c></row></worksheet>']
+ ]);
+ await assert.rejects(()=>extractTextract(file("missing-sheets.xlsx",doc)),/No readable Excel worksheets.*Lost/);
+});
