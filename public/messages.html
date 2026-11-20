@@ -68,7 +68,7 @@
       <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Knightfall.</small></span></div><div class="chat-tools"><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><details id="chat-more" class="chat-more"><summary aria-label="More conversation options">⋯ <span>Options</span></summary><div class="chat-more-panel"><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><a id="connect-four-chat-invite" class="chaos-card-chat-invite" href="/arcade/async-play.html" hidden title="Join this friend's Connect Four challenge">🎮 Join Connect Four</a><button id="history-search-open" type="button" title="Search message history">⌕ Search</button><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="message-live-state" class="message-live-state" role="status" aria-live="polite">Connecting…</span><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></details></div></div>
       <div id="typing-indicator" class="typing-indicator" role="status" aria-live="polite" hidden></div><button id="jump-latest" class="jump-latest" type="button" hidden>↓ Jump to latest</button><button id="load-older" class="load-older" hidden>Load older messages</button><div id="messages" class="messages-list"><div class="empty">Choose a conversation to begin.</div></div><div id="conversation-restricted" class="conversation-restricted" role="status" hidden>Messaging is paused because one of these accounts has blocked the other. Existing messages remain available to read.</div>
       <form id="composer" class="composer" hidden>
-        <div class="composer-main"><textarea id="body" maxlength="4000" rows="1" placeholder="Write a message..." aria-label="Message text"></textarea><div id="pending-attachments" class="pending-attachments" aria-live="polite" hidden></div></div><input id="attachment-input" type="file" hidden multiple accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><button id="attach-file" type="button" class="attach-file" aria-label="Attach photo or file" title="Attach photo or file">＋</button>
+        <div class="composer-main"><textarea id="body" maxlength="4000" rows="1" placeholder="Write a message..." aria-label="Message text"></textarea><div id="pending-attachments" class="pending-attachments" aria-live="polite" hidden></div></div><input id="attachment-input" type="file" hidden multiple accept="image/*,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><button id="attach-file" type="button" class="attach-file" aria-label="Attach photo or file" title="Attach photo or file">＋</button>
         <div><small id="composer-hint">Enter to send · Shift + Enter for a new line</small><span class="composer-actions"><small id="character-count">0 / 4,000</small><button class="primary"><span>Send</span> <span aria-hidden="true">↗</span></button></span></div>
       </form>
     </section>
@@ -80,6 +80,7 @@
   </section>
 </main>
 <script src="/nav.js?v=20261115-gothic9"></script>
+<script src="/photo-upload.js?v=1"></script>
 <script src="/message-live.js?v=20261113-realtime1"></script>
 <script>
 const API="https://api.ash-fall.com";
@@ -405,7 +406,35 @@ async function uploadAttachment(file,conversationId){const form=new FormData();f
 async function deletePendingAttachment(id){try{await api("/api/messages/attachments/"+id,{method:"DELETE"})}catch(e){console.warn("Could not remove pending attachment",e.message)}}
 async function discardPendingAttachments(){const items=pendingAttachments.filter(x=>!sendingAttachmentIds.has(Number(x.id)));pendingAttachments=[];drawPendingAttachments();await Promise.all(items.map(x=>deletePendingAttachment(x.id)))}
 $("#attach-file").onclick=()=>{if(!currentId){status("Choose a conversation before attaching a file.");return}$("#attachment-input").click()};
-$("#attachment-input").addEventListener("change",async e=>{const files=[...e.target.files||[]];e.target.value="";if(!currentId||!files.length)return;if(pendingAttachments.length+files.length>10){status("Attach no more than 10 files to one message.");return}const conversationId=Number(currentId),epoch=composerEpoch;attachmentUploads++;$("#attach-file").disabled=true;status("Uploading "+files.length+" file"+(files.length===1?"":"s")+"…");try{for(const file of files){if(Number(currentId)!==conversationId||epoch!==composerEpoch)throw Error("Conversation changed during upload.");const data=await uploadAttachment(file,conversationId);if(Number(currentId)!==conversationId||epoch!==composerEpoch){await deletePendingAttachment(data.id);throw Error("Conversation changed during upload. File was not attached.");}pendingAttachments.push(data);drawPendingAttachments()}status("File upload ready to send.",true)}catch(err){status(err.message)}finally{attachmentUploads=Math.max(0,attachmentUploads-1);$("#attach-file").disabled=attachmentUploads>0}});
+$("#attachment-input").addEventListener("change",async event=>{
+ const files=Array.from(event.target.files||[]);
+ event.target.value="";
+ if(!currentId||!files.length||attachmentUploads)return;
+ if(pendingAttachments.length+files.length>10){status("Attach no more than 10 files to one message.");return;}
+ const conversationId=Number(currentId),epoch=composerEpoch;
+ const sameComposer=()=>Number(currentId)===conversationId&&epoch===composerEpoch;
+ const failures=[];
+ attachmentUploads++;
+ $("#attach-file").disabled=true;
+ status("Preparing "+files.length+" attachment(s)…");
+ try {
+  for(const file of files){
+   if(!sameComposer())break;
+   try{
+    const prepared=await KnightfallPhotoUpload.prepareAttachment(file);
+    if(!sameComposer())break;
+    const data=await uploadAttachment(prepared,conversationId);
+    if(!sameComposer()){await deletePendingAttachment(data.id);break;}
+    pendingAttachments.push(data);
+    drawPendingAttachments();
+   }catch(error){failures.push(file.name+": "+error.message);}
+  }
+  if(sameComposer())status(failures.join(" · ")||"Attachments ready to send.",!failures.length);
+ }finally{
+  attachmentUploads--;
+  $("#attach-file").disabled=attachmentUploads>0;
+ }
+});
 $("#pending-attachments").addEventListener("click",async e=>{const btn=e.target.closest("[data-pending-remove]");if(!btn)return;const id=Number(btn.dataset.pendingRemove),item=pendingAttachments.find(x=>Number(x.id)===id);pendingAttachments=pendingAttachments.filter(x=>Number(x.id)!==id);drawPendingAttachments();await deletePendingAttachment(id);if(item)status("Removed "+item.filename+" from this message.",true)});
 async function refreshAttachments(){const id=Number(currentId);if(!id)return;const articles=[...$("#messages").querySelectorAll("[data-message]")].slice(-100);if(!articles.length)return;const ids=articles.map(x=>Number(x.dataset.message)).filter(Number.isSafeInteger).slice(-100);try{const d=await api("/api/messages/conversations/"+id+"/attachments?message_ids="+ids.join(","));if(Number(currentId)!==id)return;const grouped={};for(const a of d.attachments||[])(grouped[a.message_id]??=[]).push(a);for(const article of articles){const box=article.querySelector("[data-attachments-for]");if(!box)continue;box.innerHTML=(grouped[article.dataset.message]||[]).map(a=>{
  const url=API+'/api/messages/attachments/'+Number(a.id);

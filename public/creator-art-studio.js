@@ -3,7 +3,7 @@
   'use strict';
   const root=document.getElementById('site-image-library');
   if(!root)return;
-  const API='https://api.ash-fall.com',MAX=2*1024*1024,INCOMING=8*1024*1024;
+  const API='https://api.ash-fall.com',MAX=2*1024*1024,INCOMING=32*1024*1024;
   const drop=document.getElementById('kf-art-drop'),fileInput=document.getElementById('kf-art-input'),photoInput=document.getElementById('kf-art-photo-input');
   const staged=document.getElementById('kf-art-staged'),published=document.getElementById('kf-art-published'),review=document.getElementById('kf-art-review');
   const status=document.getElementById('kf-art-upload-status'),items=new Set();
@@ -11,7 +11,7 @@
   const button=(label,onClick,cls='')=>{const el=document.createElement('button');el.type='button';el.className=cls;el.textContent=label;el.addEventListener('click',onClick);return el};
   const label=(tag,text)=>{const el=document.createElement(tag);el.textContent=text;return el};
   const allowed=new Set(['image/png','image/jpeg','image/webp','image/avif','image/gif','image/heic','image/heif']);
-  const accepted=file=>file&&allowed.has(String(file.type||'').toLowerCase());
+  const accepted=file=>file&&Boolean(KnightfallPhotoUpload.typeOf(file));
   const nameOf=file=>(file.name.replace(/\.[^.]+$/,'').normalize('NFKC').toLowerCase().replace(/[^a-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,64)||'knightfall-art');
   function download(blob,name){
     const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;
@@ -19,14 +19,12 @@
   }
   async function optimize(file){
     if(!accepted(file))throw Error('Choose an image from Photos or Files. JPG, PNG, WebP, GIF, AVIF and browser-supported HEIC are accepted.');
-    if(file.size<8||file.size>INCOMING)throw Error('Image must be between 8 bytes and 8 MB.');
-    let bitmap;
-    try{bitmap=await createImageBitmap(file)}
-    catch{throw Error('This device could not decode the picture. For cloud-only Google Photos or HEIC, download or export a JPG/PNG first.');}
+    if(file.size<8||file.size>INCOMING)throw Error('Choose a photo up to 32 MB.');
+    const {image:bitmap,release}=await KnightfallPhotoUpload.decode(file);
     try{
-      if(bitmap.width<8||bitmap.height<8||bitmap.width>8000||bitmap.height>8000)throw Error('Image dimensions must be between 8 and 8000 pixels.');
+      if(bitmap.width<8||bitmap.height<8)throw Error('Artwork needs to be at least 8 × 8 pixels.');
       const canvas=document.createElement('canvas');
-      for(let edge=Math.min(2048,Math.max(bitmap.width,bitmap.height));edge>=192;edge=Math.floor(edge*.78)){
+      for(let edge=Math.max(192,Math.min(2048,Math.max(bitmap.width,bitmap.height)));edge>=192;edge=edge===192?0:Math.max(192,Math.floor(edge*.78))){
         const ratio=Math.min(1,edge/Math.max(bitmap.width,bitmap.height));
         canvas.width=Math.max(1,Math.round(bitmap.width*ratio));
         canvas.height=Math.max(1,Math.round(bitmap.height*ratio));
@@ -36,10 +34,10 @@
         ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
         ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
         const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
-        if(blob&&blob.size>=8&&blob.size<=MAX)return {blob,width:canvas.width,height:canvas.height};
+        if(canvas.width>=8&&canvas.height>=8&&blob&&blob.size>=24&&blob.size<=MAX)return {blob,width:canvas.width,height:canvas.height};
       }
       throw Error('This image is too complex for the 2 MB publication limit. Reduce its dimensions or use another image.');
-    }finally{bitmap.close()}
+    }finally{release()}
   }
   async function publish(item){
     const action=item.node.querySelector('.kf-art-publish');if(!action)return;
@@ -175,10 +173,12 @@
     const files=Array.from(list||[]).slice(0,12);
     if(!files.length)return;
     report('Preparing '+files.length+' image'+(files.length===1?'':'s')+'…');
+    const failures=[];
     for(const file of files){
-      if(items.size>=12){report('Maximum 12 previews. Clear some before adding more.');break}
+      if(items.size>=12){failures.push('Maximum 12 previews. Clear some before adding more.');break}
       try{
         const processed=await optimize(file),name=nameOf(file),url=URL.createObjectURL(processed.blob);
+        if(items.size>=12){URL.revokeObjectURL(url);failures.push('Maximum 12 previews.');break;}
         const node=document.createElement('article');node.className='kf-art-item';
         const img=document.createElement('img');img.src=url;img.alt='Prepared image: '+file.name;img.loading='lazy';
         const heading=label('strong',file.name);heading.title=file.name;
@@ -193,13 +193,13 @@
         actions.append(button('Submit for review',()=>submit(item),'kf-art-submit'));
         if(root.dataset.canPublish==='true')actions.append(publishBtn);
         node.append(img,heading,meta,actions);staged.append(node);items.add(item);
-      }catch(error){report(file.name+': '+error.message)}
+      }catch(error){failures.push(file.name+': '+error.message)}
     }
-    if(items.size)report(items.size+' artwork file(s) prepared. Publishing is a separate, deliberate action.');
+    report([items.size ? items.size+' previews ready.' : '', ...failures].filter(Boolean).join(' '));
   }
   function openPicker(){fileInput.click()}
   document.getElementById('kf-art-choose').addEventListener('click',openPicker);
-  drop.addEventListener('click',openPicker);
+  drop.addEventListener('click',event=>{if(event.target!==fileInput)openPicker()});
   drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openPicker()}});
   fileInput.addEventListener('change',()=>{void addFiles(fileInput.files);fileInput.value=''});
   photoInput?.addEventListener('change',()=>{void addFiles(photoInput.files);photoInput.value=''});

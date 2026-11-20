@@ -536,7 +536,7 @@
     <h1 class="logo" aria-label="Neon Surge"><span>NEON</span><span>SURGE</span></h1>
     <p class="tagline" id="tagline">Blast geometric swarms on a neon grid that pulses to the beat. Fight the OVERSEER boss every five waves.</p>
     <div class="cta">
-      <button type="button" class="btn primary" id="startBtn">START</button>
+      <button type="button" class="btn primary" id="startBtn" disabled>LOADING</button>
       <button type="button" class="btn ghost" id="titleSound">SOUND ON</button>
     </div>
     <p class="best">BEST <b id="titleBest">0</b></p>
@@ -601,13 +601,23 @@
 }
 </script>
 <script type="module">
-import * as THREE from 'three';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { FXAAPass } from 'three/addons/postprocessing/FXAAPass.js';
+const [
+  THREE, { EffectComposer }, { RenderPass }, { UnrealBloomPass },
+  { ShaderPass }, { OutputPass }, { FXAAPass }
+] = await Promise.all([
+  import('three'),
+  import('three/addons/postprocessing/EffectComposer.js'),
+  import('three/addons/postprocessing/RenderPass.js'),
+  import('three/addons/postprocessing/UnrealBloomPass.js'),
+  import('three/addons/postprocessing/ShaderPass.js'),
+  import('three/addons/postprocessing/OutputPass.js'),
+  import('three/addons/postprocessing/FXAAPass.js')
+]).catch(error => {
+  document.getElementById('startBtn').hidden = true;
+  document.getElementById('tagline').textContent =
+    'The game engine could not load. Check your connection and reload Neon Surge.';
+  throw error;
+});
 
 // ─── helpers ──────────────────────────────────────────────
 const TAU = Math.PI * 2;
@@ -3418,6 +3428,8 @@ function boot(data = {}) {
   last = performance.now();
   requestAnimationFrame(frame);
 }
+$('startBtn').textContent = 'START';
+$('startBtn').disabled = false;
 window.__NS = { G, player, boss, director, enemies, startGame, spawnEnemy, dropPowerup, audio, renderer, composer, scene, camera };
 try { window.claude?.hot?.snapshot?.(() => ({ hi: G.hi, muted: audio.muted, autoFire: input.autoFire })); } catch { /* optional */ }
 const hot = window.claude?.hot;

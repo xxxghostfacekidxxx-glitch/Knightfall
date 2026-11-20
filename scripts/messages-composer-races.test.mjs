@@ -6,13 +6,13 @@ const html=readFileSync('public/messages.html','utf8');
 function deferred(){let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b});return {promise,resolve,reject}}
 function harness(){
  const nodes=new Map(),drafts=new Map();const $=s=>{if(!nodes.has(s))nodes.set(s,{value:'',style:{},addEventListener(type,fn){this[type]=fn},focus(){},dispatchEvent(){},hidden:false,disabled:false});return nodes.get(s)};
- const request=deferred(),posts=[],deleted=[];
+ const request=deferred(),uploadStarted=deferred(),posts=[],deleted=[];
  const c={$ ,currentId:1,historyPinnedConversationId:null,composerEpoch:1,sendingConversation:null,sendingAttachmentIds:new Set(),messageSendQueues:new Map(),conversationDrafts:drafts,persistConversationDrafts:()=>{},rememberConversationDraft:(id,value)=>{if(value)drafts.set(id,value);else drafts.delete(id);},pendingAttachments:[],attachmentUploads:0,typingHandle:null,clearTimeout,Set,Number,JSON,Event,document:{hidden:false},console,
  activeConversation:()=>({}),status(){},drawPendingAttachments(){},sendTypingState:async()=>{},loadConversations:async()=>{},refreshCurrent:async()=>{},
- api:async(path,opts)=>{posts.push({path,opts});return request.promise},uploadAttachment:async()=>request.promise,deletePendingAttachment:async id=>deleted.push(id)};
+ KnightfallPhotoUpload:{prepareAttachment:async file=>file},api:async(path,opts)=>{posts.push({path,opts});return request.promise},uploadAttachment:async()=>{uploadStarted.resolve();return request.promise},deletePendingAttachment:async id=>deleted.push(id)};
  vm.createContext(c);vm.runInContext(html.slice(html.indexOf('$("#composer").onsubmit='),html.indexOf('\nfunction drawPendingAttachments')),c);
  vm.runInContext(html.slice(html.indexOf('$("#attachment-input").addEventListener'),html.indexOf('\n$("#pending-attachments").addEventListener')),c);
- return {c,$,request,posts,deleted};
+ return {c,$,request,uploadStarted,posts,deleted};
 }
 test('late send keeps another conversation draft and attachments intact',async()=>{
  const h=harness();h.$('#body').value='first draft';h.c.conversationDrafts.set(1,'first draft');h.c.pendingAttachments=[{id:5}];
@@ -29,7 +29,7 @@ test('failed send retains draft and releases sending lock',async()=>{
  const h=harness();h.$('#body').value='keep me';const send=h.$('#composer').onsubmit({preventDefault(){}});h.request.reject(Error('network'));await send;assert.equal(h.$('#body').value,'keep me');assert.equal(h.c.sendingConversation,null);
 });
 for(const returnToOriginal of [false,true])test('late upload is discarded after switch'+(returnToOriginal?' and return':''),async()=>{
- const h=harness();const upload=h.$('#attachment-input').change({target:{files:[{}],value:'file'}});h.c.currentId=returnToOriginal?1:2;h.c.composerEpoch+=2;h.request.resolve({id:9});await upload;assert.equal(h.c.pendingAttachments.length,0);assert.deepEqual(h.deleted,[9]);assert.equal(h.c.attachmentUploads,0);
+ const h=harness();const upload=h.$('#attachment-input').change({target:{files:[{name:'photo.jpg'}],value:'file'}});await h.uploadStarted.promise;h.c.currentId=returnToOriginal?1:2;h.c.composerEpoch+=2;h.request.resolve({id:9});await upload;assert.equal(h.c.pendingAttachments.length,0);assert.deepEqual(h.deleted,[9]);assert.equal(h.c.attachmentUploads,0);
 });
 test('attachment refresh leaves older history attachments intact outside its request window',async()=>{
  const nodes=Array.from({length:105},(_,i)=>({dataset:{message:String(i+1)},box:{innerHTML:'saved-'+i},querySelector(){return this.box}}));

@@ -2682,7 +2682,10 @@ For complex questions, organize the answer clearly and provide actionable detail
     const object=await env.MESSAGE_ATTACHMENTS.get(attachment.object_key);
     if(!object)return json({error:"Attachment file is missing."},404,origin);
     const filename=String(attachment.original_filename||"attachment").replace(/[\r\n"\\]/g,"_");
-    const headers=new Headers({"content-type":attachment.content_type,"content-length":String(attachment.byte_size),"content-disposition":(attachment.content_type.startsWith("image/")?"inline":"attachment")+'; filename="'+filename+'"',"cache-control":"private, no-store","x-content-type-options":"nosniff","content-security-policy":"default-src 'none'; sandbox"});
+    const fallback=filename.replace(/[^\x20-\x7e]/g,"_");
+    const encoded=encodeURIComponent(filename.toWellFormed()).replace(/['()*]/g,c=>"%"+c.charCodeAt(0).toString(16).toUpperCase());
+    const disposition=(attachment.content_type.startsWith("image/")?"inline":"attachment")+'; filename="'+fallback+'"; filename*=UTF-8'+"''"+encoded;
+    const headers=new Headers({"content-type":attachment.content_type,"content-length":String(attachment.byte_size),"content-disposition":disposition,"cache-control":"private, no-store","x-content-type-options":"nosniff","content-security-policy":"default-src 'none'; sandbox"});
     return new Response(object.body,{status:200,headers});
   }
   const attachmentListMatch=url.pathname.match(/^\/api\/messages\/conversations\/(\d+)\/attachments$/);
