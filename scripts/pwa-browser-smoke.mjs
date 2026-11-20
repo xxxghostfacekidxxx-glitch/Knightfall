@@ -37,6 +37,7 @@ try {
       crest:brand?getComputedStyle(brand,"::before").backgroundImage:"",
       backdrop:getComputedStyle(document.body).backgroundImage,
       hero:getComputedStyle(document.querySelector(".home-intro")).backgroundImage,
+      poster:((image)=>({src:image?.currentSrc||"",width:image?.naturalWidth||0,alt:image?.alt||""}))(document.querySelector(".kf-black-sun-art img")),
       cartouche:getComputedStyle(document.querySelector(".home-intro"),"::after").backgroundImage,
       canonicalSheets:[...document.querySelectorAll('link[rel="stylesheet"]')]
         .filter(node=>new URL(node.href).pathname==="/theme.css").length,
@@ -47,13 +48,16 @@ try {
   // suite independently verifies this same midnight shade.
   assert.equal(gothic.ink,"rgb(9, 10, 11)","Black Sun homepage must use deep obsidian canvas");
   assert.match(gothic.backdrop,/royal-cartouche\.svg/,"Black Sun background decoration must be visible");
-  assert.match(gothic.hero,/black-sun-temple\.svg/,"Hero must show the Egyptian temple illustration");
+  assert.match(gothic.hero,/black-sun-mobile\.svg/,"Mobile fallback must retain Egyptian temple artwork");
+  assert.match(gothic.poster.src,/black-sun-hero-illustration\.webp/,"Original Egyptian image must be served locally");
+  assert.equal(gothic.poster.width,1200,"Optimized artwork must load before verification");
+  assert.match(gothic.poster.alt,/Anubis guardians/,"Poster must have descriptive alt text");
   assert.match(gothic.cartouche,/royal-cartouche\.svg/,"Hero must mount the unobtrusive Egyptian cartouche");
   assert.equal(gothic.canonicalSheets,1,"Only one canonical theme stylesheet may load");
   assert.equal(gothic.bone,"#ece1d3");
   assert.equal(gothic.crimson,"#b25b68");
   assert.equal(gothic.bronze,"#c7a77c");
-  assert.match(gothic.crest,/knightfall-crest-192\.png/);
+  assert.match(gothic.crest,/eye-of-chaos-crest\.svg/,"New Egyptian Eye of Chaos crest must be live");
   assert.equal(gothic.floatingMascots,0,"Older Gravewave decorations must not cover site controls");
   assert.equal(await page.locator('link[rel="manifest"]').getAttribute("href"), "/manifest.webmanifest");
   const manifestResponse = await page.request.get(base + "/manifest.webmanifest");
