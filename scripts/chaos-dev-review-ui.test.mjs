@@ -45,7 +45,7 @@ test("Owner and partner authority is verified by the Worker, not client-side mod
  assert.match(worker,/canAccessEyeOfHorus\(user\)\|\|await acceptedAdminPartner\(env,user\)/);
  assert.match(worker,/!ORIGINS\.has\(request\.headers\.get\("Origin"\)\)/);
  assert.match(worker,/validateKnightfallFileArgs/);
- assert.match(worker,/source_sha!==p\.source_sha/);
+ assert.match(worker,/verified\.commit_sha!==p\.source_sha/);
  assert.match(worker,/status='pending'/);
  assert.match(worker,/env\.DB\.batch\(\[update,audit\]\)/);
  assert.doesNotMatch(worker,/\bfetch\(\s*["']https:\/\/api\.github\.com/);
