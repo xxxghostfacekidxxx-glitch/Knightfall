@@ -354,3 +354,36 @@ test("PDF JPEG OCR failure reports inability to recover source text rather than 
  const {bytes}=jpegPdfFixture();
  await assert.rejects(()=>readKnightfallPdf(bytes,{ocrImage:async()=>{throw Error("JPEG unable to be recognized");}}),/No selectable text could be recovered/);
 });
+
+
+test("Excel booleans and built-in/custom date styles retain their raw serials",async()=>{
+ const styles='<styleSheet><numFmts><numFmt numFmtId="164" formatCode="yyyy-mm-dd"/></numFmts>'+
+  '<cellXfs><xf numFmtId="0"/><xf numFmtId="14"/><xf numFmtId="164"/></cellXfs></styleSheet>';
+ const sheet='<worksheet><sheetData><row r="1">'+
+  '<c r="A1" t="b"><v>1</v></c><c r="B1" t="b"><v>0</v></c>'+
+  '<c r="C1" s="1"><v>45292</v></c><c r="D1" s="2"><v>45293</v></c>'+
+  '<c r="E1"><v>45292</v></c>'+
+  '</row></sheetData></worksheet>';
+ const data=zipPack([["xl/styles.xml",styles],["xl/worksheets/sheet1.xml",sheet]]);
+ const result=await extractTextract(file("dates.xlsx",data));
+ for(const piece of ["A1=TRUE","B1=FALSE","C1=2024-01-01 [Excel serial 45292]",
+  "D1=2024-01-02 [Excel serial 45293]","E1=45292"])
+  assert.ok(result.text.includes(piece),"Missing "+piece+" in "+result.text);
+});
+test("Excel 1904 date system is respected, and the fictitious 1900-02-29 is not invented",async()=>{
+ const styles='<styleSheet><cellXfs><xf numFmtId="14"/></cellXfs></styleSheet>';
+ const sheet='<worksheet><sheetData><row><c r="A1" s="0"><v>0</v></c>'+
+  '<c r="B1" s="0"><v>1</v></c></row></sheetData></worksheet>';
+ const workbook='<workbook><workbookPr date1904="1"/></workbook>';
+ const text=(await extractTextract(file("1904.xlsx",zipPack([
+  ["xl/styles.xml",styles],["xl/workbook.xml",workbook],["xl/worksheets/sheet1.xml",sheet]
+ ])))).text;
+ assert.match(text,/A1=1904-01-01 \[Excel serial 0\]/);
+ assert.match(text,/B1=1904-01-02 \[Excel serial 1\]/);
+ const leap=(await extractTextract(file("excel-1900.xlsx",zipPack([
+  ["xl/styles.xml",styles],["xl/worksheets/sheet1.xml",
+   '<worksheet><row><c r="A1" s="0"><v>60</v></c></row></worksheet>']
+ ])))).text;
+ assert.match(leap,/A1=60/);
+ assert.doesNotMatch(leap,/1900-02-29/);
+});
