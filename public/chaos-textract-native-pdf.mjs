@@ -275,6 +275,72 @@ async function objectContent(object){
  if(!stream)return "";
  return binaryString(await streamBytes(stream.bytes,stream.header));
 }
+/* A small first-party raster path for scanned PDF pages stored as Flate-compressed
+ * 8-bit DeviceGray/DeviceRGB XObjects. It is deliberately NOT a PDF renderer.
+ * Decompression, row predictors and pixel allocation are bounded. */
+export async function decodeKnightfallPdfRaster(image){
+ if(!image||image.kind!=="flate")throw Error("Unsupported PDF raster image.");
+ const {width,height,channels,predictor}=image;
+ if(!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||
+    width<1||height<1||![1,3].includes(channels)||width*height>1200000)
+  throw Error("PDF raster image dimensions exceed supported limits.");
+ const rowSize=width*channels,rawSize=rowSize*height;
+ if(rawSize>5*1024*1024)throw Error("PDF raster pixel buffer exceeds 5 MB.");
+ const decoded=await inflatePdf(image.bytes,Math.min(6*1024*1024,(rowSize+1)*height+32));
+ const prefixed=decoded.length===(rowSize+1)*height;
+ if(predictor===1||predictor===2){
+  if(decoded.length!==rawSize)throw Error("PDF raster image has unexpected pixel length.");
+ }else if(predictor>=10&&predictor<=15){
+  if(!prefixed&&!(predictor<15&&decoded.length===rawSize))
+   throw Error("PDF PNG-predictor raster has an unexpected row length.");
+ }else throw Error("Unsupported PDF raster predictor "+predictor+".");
+ const samples=new Uint8Array(rawSize);
+ for(let y=0;y<height;y++){
+  const rowOffset=y*rowSize,sourceOffset=y*(rowSize+(prefixed?1:0));
+  const filter=predictor===1?0:predictor===2?5:prefixed?decoded[sourceOffset]:predictor-10;
+  if(filter>5||filter<0)throw Error("PDF raster uses an invalid PNG row filter.");
+  for(let x=0;x<rowSize;x++){
+   const src=decoded[sourceOffset+(prefixed?1:0)+x];
+   const left=x>=channels?samples[rowOffset+x-channels]:0;
+   const up=y?samples[rowOffset-rowSize+x]:0;
+   const upperLeft=y&&x>=channels?samples[rowOffset-rowSize+x-channels]:0;
+   let predictorValue=0;
+   if(filter===1||filter===5)predictorValue=left;
+   else if(filter===2)predictorValue=up;
+   else if(filter===3)predictorValue=Math.floor((left+up)/2);
+   else if(filter===4){
+    const p=left+up-upperLeft;
+    const a=Math.abs(p-left),b=Math.abs(p-up),c=Math.abs(p-upperLeft);
+    predictorValue=a<=b&&a<=c?left:b<=c?up:upperLeft;
+   }
+   samples[rowOffset+x]=(src+predictorValue)&255;
+  }
+ }
+ const pixels=new Uint8ClampedArray(width*height*4);
+ for(let i=0;i<width*height;i++){
+  const pos=i*4,sample=i*channels;
+  pixels[pos]=samples[sample];
+  pixels[pos+1]=channels===1?samples[sample]:samples[sample+1];
+  pixels[pos+2]=channels===1?samples[sample]:samples[sample+2];
+  pixels[pos+3]=255;
+ }
+ return {width,height,pixels};
+}
+async function renderKnightfallPdfRaster(image){
+ const raster=await decodeKnightfallPdfRaster(image);
+ const canvas=typeof OffscreenCanvas==="function"?
+  new OffscreenCanvas(raster.width,raster.height):
+  typeof document!=="undefined"?document.createElement("canvas"):null;
+ if(!canvas)throw Error("This browser cannot render a PDF raster image locally.");
+ canvas.width=raster.width;canvas.height=raster.height;
+ const context=canvas.getContext("2d",{willReadFrequently:false});
+ if(!context)throw Error("Canvas 2D rendering is unavailable for PDF OCR.");
+ const bitmap=context.createImageData(raster.width,raster.height);
+ bitmap.data.set(raster.pixels);context.putImageData(bitmap,0,0);
+ if(typeof canvas.convertToBlob==="function")return canvas.convertToBlob({type:"image/png"});
+ return new Promise((resolve,reject)=>
+  canvas.toBlob(blob=>blob?resolve(blob):reject(Error("Cannot encode PDF page for OCR.")),"image/png"));
+}
 /* Read only JPEG XObjects explicitly painted by a page's content stream.
  * No external PDF renderer, file upload, or paid OCR endpoint is involved. */
 function pageImageObjects(page,objects,drawn){
@@ -308,13 +374,26 @@ function pageImageObjects(page,objects,drawn){
   if(!stream)continue;
   const filter=stream.header.match(/\/Filter\s*(?:\[([^\]]*)\]|(\/[\w]+))/);
   const filters=[...(filter?.[1]||filter?.[2]||"").matchAll(/\/([\w]+)/g)].map(x=>x[1]);
-  if(filters.length!==1||!["DCTDecode","DCT"].includes(filters[0]))continue;
+  if(filters.length!==1)continue;
+  const kind=["DCTDecode","DCT"].includes(filters[0])?"jpeg":
+   ["FlateDecode","Fl"].includes(filters[0])?"flate":null;
+  if(!kind)continue;
   const width=Number(stream.header.match(/\/Width\s+(\d+)/)?.[1]||0);
   const height=Number(stream.header.match(/\/Height\s+(\d+)/)?.[1]||0);
   if(width<120||height<120||width*height>50000000)continue;
   const bytes=stream.bytes;
-  if(bytes.length<100||bytes[0]!==255||bytes[1]!==216||bytes[2]!==255)continue;
-  candidates.push({name,bytes,width,height,area:width*height});
+  if(kind==="jpeg"){
+   if(bytes.length<100||bytes[0]!==255||bytes[1]!==216||bytes[2]!==255)continue;
+   candidates.push({name,kind,bytes,width,height,area:width*height});
+  }else{
+   const channels=/\/ColorSpace\s*\/DeviceGray\b/.test(stream.header)?1:
+    /\/ColorSpace\s*\/DeviceRGB\b/.test(stream.header)?3:0;
+   const bits=Number(stream.header.match(/\/BitsPerComponent\s+(\d+)/)?.[1]||0);
+   const predictor=Number(stream.header.match(/\/Predictor\s+(\d+)/)?.[1]||1);
+   if(!channels||bits!==8||width*height>1200000||width*height*channels>MAX_STREAM)continue;
+   if(![1,2,10,11,12,13,14,15].includes(predictor))continue;
+   candidates.push({name,kind,bytes,width,height,channels,predictor,area:width*height});
+  }
  }
  return candidates.sort((a,b)=>b.area-a.area).slice(0,8);
 }
@@ -401,7 +480,7 @@ async function fontMapsFor(page,objects){
  }
  return maps;
 }
-export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false,ocrImage=readKnightfallImageOcr}={}){
+export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false,ocrImage=readKnightfallImageOcr,rasterizeImage=renderKnightfallPdfRaster}={}){
  const bytes=file instanceof Uint8Array?file:new Uint8Array(await file.arrayBuffer());
  if(bytes.length>MAX_DOCUMENT)throw Error("PDF exceeds 18 MB.");
  if(bytes.length<8||!binaryString(bytes.subarray(0,Math.min(1024,bytes.length))).includes("%PDF-"))throw Error("This is not a valid PDF header.");
@@ -439,16 +518,21 @@ export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false,
    if(images.length){
     const image=images[0];
     try{
-     notify("Recognizing embedded JPEG on PDF page "+(i+1)+" of "+visible.length+"…");
-     const result=await ocrImage(new Blob([image.bytes],{type:"image/jpeg"}),{notify,cancelled});
+     notify("Recognizing embedded "+(image.kind==="jpeg"?"JPEG":"Flate")+
+      " image on PDF page "+(i+1)+" of "+visible.length+"…");
+     const imageBlob=image.kind==="jpeg"?new Blob([image.bytes],{type:"image/jpeg"}):
+      await rasterizeImage(image);
+     if(cancelled())throw Error("Extraction cancelled.");
+     const result=await ocrImage(imageBlob,{notify,cancelled});
      if(cancelled())throw Error("Extraction cancelled.");
      if(result?.text?.trim()){
-      chunks.push("[OCR from embedded JPEG image; verify text and numbers]\n"+result.text.trim());
-      if(images.length>1)chunks.push("[Notice: Other embedded JPEG images on this page were not recognized.]");
+      chunks.push("[OCR from embedded "+(image.kind==="jpeg"?"JPEG":"Flate")+
+       " image; verify text and numbers]\n"+result.text.trim());
+      if(images.length>1)chunks.push("[Notice: Other embedded page images on this page were not recognized.]");
      }
     }catch(error){
      if(cancelled())throw Error("Extraction cancelled.");
-     chunks.push("[Embedded JPEG OCR unsuccessful: "+String(error?.message||error).slice(0,180)+"]");
+     chunks.push("[Embedded "+(image.kind==="jpeg"?"JPEG":"Flate")+" OCR unsuccessful: "+String(error?.message||error).slice(0,180)+"]");
     }
    }
   }
@@ -456,7 +540,7 @@ export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false,
   if(totalChars>MAX_TOTAL)throw Error("PDF extracted text exceeds memory safety limits.");
   parts.push("Page "+(i+1)+"\n"+(chunks.join("\n")||"[No selectable text detected; JPEG image OCR may not be supported for this page]"));
  }
- if(!valid)throw Error("No selectable text could be recovered. JPEG page OCR was attempted where supported. Other scanned PDFs may use unsupported image encodings; export their pages as individual images.");
+ if(!valid)throw Error("No selectable text could be recovered. Embedded JPEG and Flate image OCR were attempted where supported. Other scanned PDFs may use unsupported image encodings; export their pages as individual images.");
  if(pages.length>visible.length)
   parts.push("[Notice: Only "+visible.length+" of "+pages.length+" PDF pages were processed. Split the document to extract the remainder.]");
  return parts.join("\n\n");
