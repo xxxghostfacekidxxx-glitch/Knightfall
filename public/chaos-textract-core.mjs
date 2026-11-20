@@ -7,7 +7,7 @@ import {readKnightfallOffice} from "./chaos-textract-native-zip.mjs";
 import {readKnightfallPdf} from "./chaos-textract-native-pdf.mjs";
 import {readKnightfallImageOcr} from "./chaos-textract-native-ocr.mjs";
 export const TEXTRACT_LIMITS=Object.freeze({bytes:18*1024*1024,chars:180000,pdfPages:24,ocrPages:0});
-export const TEXTRACT_ENGINE="knightfall-native-v1";
+export const TEXTRACT_ENGINE="knightfall-native-v2";
 const supported=new Set(["txt","md","csv","tsv","json","xml","html","htm","log","css","js","mjs","ts","svg","pdf","docx","xlsx","pptx","png","jpg","jpeg","webp","gif","bmp","avif"]);
 const TEXT_EXT=new Set(["txt","md","csv","tsv","json","xml","html","htm","log","css","js","mjs","ts","svg"]);
 const IMAGE_EXT=new Set(["png","jpg","jpeg","webp","gif","bmp","avif"]);
@@ -37,20 +37,26 @@ export function buildTextractDraft(name,text,task="Summarize this document, dist
 export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={}){
  const ext=validateTextractFile(file);
  if(cancelled())throw Error("Extraction cancelled.");
- let output="",mode="text";
+ let output="",mode="text",warning=null,confidence=null;
  if(TEXT_EXT.has(ext)){notify("Reading text locally…");output=await file.text();}
  else if(["docx","xlsx","pptx"].includes(ext)){
   mode="native-office";output=await readKnightfallOffice(file,ext,{notify,cancelled});
  }else if(ext==="pdf"){
   mode="native-pdf";output=await readKnightfallPdf(file,{notify,cancelled});
+  if(output.includes("[No selectable text detected]"))
+   warning="Some PDF pages had no selectable text. Their contents were not recognized. Review the original for missing pages.";
  }else if(IMAGE_EXT.has(ext)){
-  mode="original-ocr";const result=await readKnightfallImageOcr(file,{notify,cancelled});
-  output=result.text;
+  const result=await readKnightfallImageOcr(file,{notify,cancelled});
+  output=result.text;confidence=result.confidence??null;
+  mode=result.method==="device-native-text-detector"?"device-ocr":"original-ocr";
+  warning=mode==="original-ocr"?
+   "Experimental pattern OCR: spelling, punctuation and numbers may be wrong. Check all results against the image.":
+   "Device OCR completed locally. Text and numbers still require verification against the original.";
  }
  if(cancelled())throw Error("Extraction cancelled.");
  const text=normalizeTextractText(output);
  if(!text)throw Error("No readable text detected. This original engine handles printed text and supported document text layers.");
  const truncated=text.length>TEXTRACT_LIMITS.chars;
  return {text:text.slice(0,TEXTRACT_LIMITS.chars),truncated,characters:text.length,extension:ext,engine:TEXTRACT_ENGINE,mode,
-  warning:mode==="original-ocr"?"Experimental pattern-matching OCR: verify each character and number against the image.":null};
+  warning,confidence};
 }
