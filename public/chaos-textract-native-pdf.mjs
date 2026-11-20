@@ -480,17 +480,53 @@ async function fontMapsFor(page,objects){
  }
  return maps;
 }
+/* The PDF endobj marker is valid only after a stream's data ends.
+ * Reading objects with a bare non-greedy regex could truncate a scanned image
+ * or text stream containing the literal bytes "endobj". */
+function parseKnightfallPdfObjects(source){
+ const objects=new Map();
+ const header=/(?:^|[\r\n])\s*(\d{1,9})\s+(\d{1,5})\s+obj\b/g;
+ let match;
+ while((match=header.exec(source))){
+  if(objects.size>=MAX_OBJECTS)throw Error("PDF contains too many objects.");
+  const start=header.lastIndex;
+  let cursor=start,end=-1;
+  for(let segment=0;segment<6;segment++){
+   const possibleEnd=source.indexOf("endobj",cursor);
+   if(possibleEnd<0)break;
+   const stream=/\bstream(?:\r\n|\n|\r)/g;
+   stream.lastIndex=cursor;
+   const found=stream.exec(source);
+   if(!found||found.index>=possibleEnd){end=possibleEnd;break;}
+   const dictionary=source.slice(cursor,found.index);
+   const lengthMatch=dictionary.match(/\/Length\s+(\d+)\b(?!\s+\d+\s+R)/);
+   let payloadEnd;
+   if(lengthMatch){
+    const n=Number(lengthMatch[1]);
+    if(!Number.isSafeInteger(n)||n<0||n>MAX_STREAM||stream.lastIndex+n>source.length)break;
+    payloadEnd=stream.lastIndex+n;
+   }else{
+    payloadEnd=source.indexOf("endstream",stream.lastIndex);
+    if(payloadEnd<0||payloadEnd-stream.lastIndex>MAX_STREAM)break;
+   }
+   const terminator=source.indexOf("endstream",payloadEnd);
+   if(terminator<0||terminator-payloadEnd>32)break;
+   cursor=terminator+"endstream".length;
+  }
+  if(end<0)continue;
+  const body=source.slice(start,end);
+  if(body.length<=MAX_STREAM*2)objects.set(Number(match[1]),body);
+  header.lastIndex=end+"endobj".length;
+ }
+ return objects;
+}
 export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false,ocrImage=readKnightfallImageOcr,rasterizeImage=renderKnightfallPdfRaster}={}){
  const bytes=file instanceof Uint8Array?file:new Uint8Array(await file.arrayBuffer());
  if(bytes.length>MAX_DOCUMENT)throw Error("PDF exceeds 18 MB.");
  if(bytes.length<8||!binaryString(bytes.subarray(0,Math.min(1024,bytes.length))).includes("%PDF-"))throw Error("This is not a valid PDF header.");
  const text=binaryString(bytes);
  if(/\/Encrypt\s+\d+\s+\d+\s+R/.test(text))throw Error("This PDF is encrypted. Save an unlocked copy before extracting.");
- const objects=new Map();
- for(const item of text.matchAll(/(?:^|[\r\n])\s*(\d{1,9})\s+(\d{1,5})\s+obj\b([\s\S]*?)\bendobj\b/g)){
-  if(objects.size>=MAX_OBJECTS)throw Error("PDF contains too many objects.");
-  if(item[3].length<=MAX_STREAM*2)objects.set(Number(item[1]),item[3]);
- }
+ const objects=parseKnightfallPdfObjects(text);
  await unpackObjectStreams(objects,cancelled);
  const pages=collectPages(objects);
  if(!pages.length){
