@@ -139,7 +139,33 @@ function splitConnectedGlyph(mask,width,band,chunk,templates,whole,median,cancel
   const quality=(a.confidence+b.confidence)/2;
   if(quality>score){score=quality;best=[a,b];}
  }
- return score>=.72&&score>whole.confidence+.14?best:null;
+ if(score>=.72&&score>whole.confidence+.14)return best;
+ // Very wide touching runs can contain three letters, not just two.
+ // Search a tiny neighbourhood around thirds instead of an unbounded
+ // combinatorial segmenter. A strong three-way match must beat the original.
+ if(w>Math.max(h*2.35,Math.min(median*2.3,h*2.75))&&w<=Math.max(230,h*5.8)){
+  const mid1=Math.round(w/3),mid2=Math.round(w*2/3);
+  let bestThree=null,bestScore=0;
+  const adjustments=[-9,-6,-3,0,3,6,9];
+  for(const da of adjustments)for(const db of adjustments){
+   if(cancelled())throw Error("OCR cancelled.");
+   const cut1=chunk.start+mid1+da-1,cut2=chunk.start+mid2+db-1;
+   if(cut1<chunk.start+3||cut2>chunk.end-3||cut2-cut1<4)continue;
+   const sections=[
+    {start:chunk.start,end:cut1},
+    {start:cut1+1,end:cut2},
+    {start:cut2+1,end:chunk.end}
+   ];
+   const glyphs=sections.map(x=>glyphFromArea(mask,width,band,x));
+   if(glyphs.some(g=>!g||g.width<3||g.height<3))continue;
+   const matches=glyphs.map(g=>classifyGlyph(g.mask,g.width,g.height,templates));
+   if(matches.some(x=>x.letter==="?"||x.confidence<.60))continue;
+   const quality=matches.reduce((sum,x)=>sum+x.confidence,0)/3;
+   if(quality>bestScore){bestScore=quality;bestThree=matches;}
+  }
+  if(bestScore>.76&&bestScore>whole.confidence+.16)return bestThree;
+ }
+ return null;
 }
 export function decodeGlyphMask(mask,width,height,templates,{notify=()=>{},cancelled=()=>false}={}){
  const bands=extractLines(mask,width,height),lines=[],confidences=[];
