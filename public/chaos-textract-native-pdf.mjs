@@ -347,7 +347,7 @@ async function fontMapsFor(page,objects){
 export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false}={}){
  const bytes=file instanceof Uint8Array?file:new Uint8Array(await file.arrayBuffer());
  if(bytes.length>MAX_DOCUMENT)throw Error("PDF exceeds 18 MB.");
- if(bytes.length<8||LATIN.decode(bytes.subarray(0,8)).slice(0,5)!=="%PDF-")throw Error("This is not a valid PDF header.");
+ if(bytes.length<8||!binaryString(bytes.subarray(0,Math.min(1024,bytes.length))).includes("%PDF-"))throw Error("This is not a valid PDF header.");
  const text=binaryString(bytes);
  if(/\/Encrypt\s+\d+\s+\d+\s+R/.test(text))throw Error("This PDF is encrypted. Save an unlocked copy before extracting.");
  const objects=new Map();
