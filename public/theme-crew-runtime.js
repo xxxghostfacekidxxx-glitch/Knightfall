@@ -4,12 +4,19 @@
 // session-local, never published by an unprivileged browser.
 const API="https://api.ash-fall.com/api/theme";
 const PREVIEW="kf:theme-crew-preview";
+const LIVE_CACHE="kf:theme-live-cache-v1";
+const PUBLISH_SIGNAL="kf:theme-published-v1";
+const channel=typeof BroadcastChannel==="function"?new BroadcastChannel("kf:theme-published"):null;
 const KNOWN=new Set(["cathedral","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"]);
 const enabledHosts=new Set(["ash-fall.com","www.ash-fall.com"]);
 const path=location.pathname.toLowerCase();
 if(/^\/(?:arcade\/hosted\/|games\/|casino\/)/.test(path)||/^\/(?:offline|personal-bots-offline)(?:\.html)?$/.test(path))return;
 const isLive=enabledHosts.has(location.hostname.toLowerCase());
-let lastRevision=-1,published="cathedral";
+const cached=(()=>{try{
+ const value=JSON.parse(localStorage.getItem(LIVE_CACHE)||"null");
+ return value&&KNOWN.has(value.preset)&&Number.isSafeInteger(value.revision)&&value.revision>=0?value:null;
+}catch{return null}})();
+let lastRevision=cached?.revision??-1,published=cached?.preset??"cathedral";
 const safe=value=>KNOWN.has(value)?value:null;
 const params=new URLSearchParams(location.search);
 const param=safe(params.get("kf_theme_preview"));
@@ -32,6 +39,7 @@ const refresh=async()=>{
   const key=safe(result.preset);
   if(!key||!Number.isSafeInteger(result.revision))return;
   if(lastRevision!==result.revision||published!==key){lastRevision=result.revision;published=key;paint()}
+  try{localStorage.setItem(LIVE_CACHE,JSON.stringify({preset:key,revision:result.revision}))}catch{}
  }catch{/* Safe, offline fallback: use the last known theme. */}
 };
 const addFallbackRealm=()=>{
@@ -45,16 +53,27 @@ const start=()=>{
  addFallbackRealm();
  paint();
  refresh();
- window.addEventListener("storage",event=>{if(event.key===PREVIEW)paint()});
+ window.addEventListener("storage",event=>{
+  if(event.key===PREVIEW)paint();
+  if(event.key===PUBLISH_SIGNAL)refresh();
+ });
+ channel?.addEventListener("message",event=>{if(event?.data?.kind==="theme-published")refresh()});
  window.addEventListener("pageshow",()=>{paint();refresh()});
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refresh()});
  // Existing open pages catch sitewide GOD changes without a reload.
- if(isLive)window.setInterval(refresh,45000);
+ if(isLive)window.setInterval(refresh,20000);
 };
 window.KnightfallThemeCrew=Object.freeze({
  preview(key){if(key!==null&&!safe(key))return false;try{if(key)sessionStorage.setItem(PREVIEW,key);else sessionStorage.removeItem(PREVIEW)}catch{return false}paint();return true},
  refresh(){return refresh()},
- current(){return {preset:preview()||published,published,preview:!!preview(),revision:lastRevision}}
+ current(){return {preset:preview()||published,published,preview:!!preview(),revision:lastRevision}},
+ announcePublished(revision){
+  if(!Number.isSafeInteger(revision)||revision<0)return false;
+  channel?.postMessage({kind:"theme-published",revision});
+  try{localStorage.setItem(PUBLISH_SIGNAL,String(revision)+":"+Date.now())}catch{}
+  refresh();
+  return true;
+ }
 });
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
 })();
