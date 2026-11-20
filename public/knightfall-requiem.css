@@ -1,5 +1,6 @@
 /*
  * KNIGHTFALL / BLACK SUN TEMPLE
+ * Historical filename retained to avoid breaking existing imports and installed PWAs.
  * Canonical Egyptian-inspired visual layer. No script, remote font, or additional runtime.
  * Artwork exists in /assets/knightfall; member profiles and gameplay stay owned
  * by their own themes. Alternate GOD presets stay owned by theme-crew.css.
@@ -117,10 +118,13 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:h
  letter-spacing:-.055em!important;
  text-shadow:0 3px 2px #08070be6,0 13px 34px #000,0 0 22px #a76b9240!important;
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro h1 span{
- color:#f2c985!important;
- background:linear-gradient(100deg,#ffe8c5 0%,#df9e53 52%,#79b9a0 100%);
- -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])):not(.profile-custom-theme) .home-intro h1 span{
+ color:#f4c875!important;
+ background:none!important;
+ -webkit-background-clip:border-box!important;
+ background-clip:border-box!important;
+ -webkit-text-fill-color:#f4c875!important;
+ text-shadow:0 3px 3px #000,0 0 16px #000c!important;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro>p{
  color:#f7e9db!important;
@@ -131,8 +135,21 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:h
  border:1px solid #edc99e!important;border-radius:10px!important;
  padding:.86rem 1.35rem!important;min-height:48px;
  color:#fff1dc!important;font-weight:850!important;letter-spacing:.025em;
- background:linear-gradient(145deg,#80415f,#38273f 75%)!important;
- box-shadow:inset 0 1px #ffdfba55,0 8px 24px #0009,0 0 16px #ba638344!important;
+ background:linear-gradient(145deg,#252119,#151915 75%)!important;
+ box-shadow:inset 0 1px #f1d69b38,0 8px 24px #0009!important;
+}
+/* Per-action finishes follow the one shared button geometry above. */
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])):not(.profile-custom-theme) .home-intro .home-sign-in{
+ color:#fff1d5!important;
+ border-color:#f0c078!important;
+ background:linear-gradient(135deg,#754020,#3b281a 72%,#18251d)!important;
+ box-shadow:inset 0 1px #fff2b34d,0 9px 24px #0008,0 0 20px #b36f3452!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])):not(.profile-custom-theme) .home-intro .home-explore-link{
+ color:#e9dbbe!important;
+ border-color:#b28d5c!important;
+ background:linear-gradient(150deg,#20271e,#101615)!important;
+ box-shadow:inset 0 1px #e4ce9e25,0 8px 24px #0007!important;
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.home-sign-in,.home-explore-link):hover{
  filter:brightness(1.17)!important;transform:translateY(-1px)
@@ -222,13 +239,10 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
 @media(max-width:780px){
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro{
   min-height:590px!important;margin-top:.6rem!important;
-  padding:1.5rem!important;background-position:center,center,54% center!important;
+  padding:1.5rem!important;
  }
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
   inset:auto 5% 8px;width:90%;height:35px;opacity:.7;
- }
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro h1{
-  font-size:clamp(2.25rem,10vw,3.8rem)!important;
  }
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section){
   padding:1.1rem!important;margin-block:1.1rem!important;
@@ -253,7 +267,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
 }
 @media(forced-colors:active){
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) :is(.home-intro,.kf-start-here,.kf-realm-atlas,.kf-atlas-card,.kf-start-card){border:1px solid CanvasText!important}
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro h1 span{-webkit-text-fill-color:CanvasText!important}
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro h1 span{-webkit-text-fill-color:CanvasText!important;color:CanvasText!important}
 }
 
 
@@ -267,28 +281,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])) .home-intro::after{display:none!important}
 }
 
-/* Black Sun final chrome: guard accessibility and avoid the retired pink
-   gradient's transparent text-fill making headings unreadable on mobile. */
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])):not(.profile-custom-theme) .home-intro h1 span{
- background:none!important;
- -webkit-background-clip:border-box!important;
- background-clip:border-box!important;
- -webkit-text-fill-color:#f4c875!important;
- color:#f4c875!important;
- text-shadow:0 3px 3px #000,0 0 16px #000c!important;
-}
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])):not(.profile-custom-theme) .home-intro .home-sign-in{
- color:#fff1d5!important;
- border-color:#f0c078!important;
- background:linear-gradient(135deg,#754020,#3b281a 72%,#18251d)!important;
- box-shadow:inset 0 1px #fff2b34d,0 9px 24px #0008,0 0 20px #b36f3452!important;
-}
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])):not(.profile-custom-theme) .home-intro .home-explore-link{
- color:#e9dbbe!important;
- border-color:#b28d5c!important;
- background:linear-gradient(150deg,#20271e,#101615)!important;
- box-shadow:inset 0 1px #e4ce9e25,0 8px 24px #0007!important;
-}
+/* Black Sun portrait rendering. Text and button rules have canonical owners above. */
 @media(max-width:780px){
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(:has(#profile[data-theme])):not(.profile-custom-theme) .home-intro{
   background-image:
