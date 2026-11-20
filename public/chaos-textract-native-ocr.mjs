@@ -117,6 +117,30 @@ function glyphFromArea(mask,width,band,chunk){
   out[y*w+x]=mask[(band.start+y)*width+chunk.start+x];
  return cropInk(out,w,h);
 }
+/* Touching printed letters can form one wide vertical-ink chunk (e.g. FA).
+ * Split only when two independently strong glyph matches beat the unsplit one.
+ * Bounded cut search protects phone CPUs from adversarial or noisy images. */
+function splitConnectedGlyph(mask,width,band,chunk,templates,whole,median,cancelled){
+ const w=chunk.end-chunk.start+1,h=band.end-band.start+1;
+ const gate=Math.max(h*1.42,Math.min(median*1.65,h*1.58));
+ if(w<=gate||w<12||w>Math.max(180,h*3.4))return null;
+ const min=Math.max(4,Math.floor(w*.23)),max=Math.min(w-4,Math.ceil(w*.77));
+ const step=Math.max(1,Math.ceil((max-min)/24));
+ let best=null,score=0;
+ for(let offset=min;offset<=max;offset+=step){
+  if(cancelled())throw Error("OCR cancelled.");
+  const cut=chunk.start+offset-1;
+  const left=glyphFromArea(mask,width,band,{start:chunk.start,end:cut});
+  const right=glyphFromArea(mask,width,band,{start:cut+1,end:chunk.end});
+  if(!left||!right||left.width<3||right.width<3||left.height<3||right.height<3)continue;
+  const a=classifyGlyph(left.mask,left.width,left.height,templates);
+  const b=classifyGlyph(right.mask,right.width,right.height,templates);
+  if(a.letter==="?"||b.letter==="?"||Math.min(a.confidence,b.confidence)<.60)continue;
+  const quality=(a.confidence+b.confidence)/2;
+  if(quality>score){score=quality;best=[a,b];}
+ }
+ return score>=.72&&score>whole.confidence+.14?best:null;
+}
 export function decodeGlyphMask(mask,width,height,templates,{notify=()=>{},cancelled=()=>false}={}){
  const bands=extractLines(mask,width,height),lines=[],confidences=[];
  for(let lineIndex=0;lineIndex<bands.length;lineIndex++){
@@ -127,11 +151,12 @@ export function decodeGlyphMask(mask,width,height,templates,{notify=()=>{},cance
   let output="",previous=null;
   for(const chunk of chunks.slice(0,300)){
    if(cancelled())throw Error("OCR cancelled.");
-   if(previous&&chunk.start-previous.end-1>Math.max(4,median*.7))output+=" ";
+   if(previous&&chunk.start-previous.end-1>Math.max(4,median*.56))output+=" ";
    const glyph=glyphFromArea(mask,width,band,chunk);
    if(glyph&&glyph.width>=1&&glyph.height>=2){
     const match=classifyGlyph(glyph.mask,glyph.width,glyph.height,templates);
-    output+=match.letter;confidences.push(match.confidence);
+    const found=splitConnectedGlyph(mask,width,band,chunk,templates,match,median,cancelled)||[match];
+    for(const letter of found){output+=letter.letter;confidences.push(letter.confidence);}
    }
    previous=chunk;
   }
