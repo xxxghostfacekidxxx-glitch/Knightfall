@@ -5,12 +5,14 @@ const input=$("textract-file"),drop=$("textract-drop"),output=$("textract-output
 const extractButton=$("textract-extract"),stopButton=$("textract-stop"),copyButton=$("textract-copy");
 const downloadButton=$("textract-download"),handoffButton=$("textract-handoff");
 const nameLabel=$("textract-filename"),stats=$("textract-stats"),task=$("textract-task");
+const rotationControl=$("textract-photo-rotation"),rotationSection=$("textract-photo-orientation");
 let currentFile=null,active=0,busy=false;
 function report(message,isError=false){status.textContent=message;status.dataset.error=String(isError);}
 function choose(file){
  // Clear the previous document before validating a new selection: failed image
  // or unsupported file changes must never expose stale text as the new result.
  active++;currentFile=null;output.value="";stats.textContent="";
+ rotationSection.hidden=true;
  // Switching the primary document also invalidates its prior comparison.
  compareToken++;compareBusy=false;secondFile=null;compareFile.value="";compareOutput.value="";
  compareStatus.textContent="Choose a second file after extracting this document.";updateCompareControls();
@@ -19,11 +21,19 @@ function choose(file){
  try{
   validateTextractFile(file);
   currentFile=file;nameLabel.textContent=file.name+" · "+(file.size/1024/1024).toFixed(2)+" MB";
+  rotationSection.hidden=!/\.(?:jpe?g|png|webp|gif)$/i.test(file.name);
   extractButton.disabled=false;
   report("Ready. Press Extract text. The original stays on your device.");
  }catch(error){extractButton.disabled=true;report(error.message,true);}
 }
-function setBusy(on){busy=on;extractButton.disabled=on||!currentFile;stopButton.hidden=!on;input.disabled=on;}
+function setBusy(on){busy=on;extractButton.disabled=on||!currentFile;stopButton.hidden=!on;input.disabled=on;rotationControl.disabled=on;}
+rotationSection.hidden=true;
+rotationControl.addEventListener("change",()=>{
+ if(!currentFile||rotationSection.hidden||busy)return;
+ active++;output.value="";stats.textContent="";renderInsights();
+ copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;
+ report("Photo orientation updated. Extract again to use the new rotation.");
+});
 input.addEventListener("change",()=>{if(input.files?.[0])choose(input.files[0]);});
 for(const type of ["dragenter","dragover"]){drop.addEventListener(type,event=>{event.preventDefault();drop.classList.add("drag");});}
 for(const type of ["dragleave","drop"]){drop.addEventListener(type,event=>{event.preventDefault();drop.classList.remove("drag");});}
@@ -37,12 +47,13 @@ extractButton.addEventListener("click",async()=>{
  report("Preparing extraction…");
  try{
   const data=await extractTextract(file,{notify:message=>{if(run===active)report(message);},
-   cancelled:()=>run!==active});
+   cancelled:()=>run!==active,imageRotation:rotationControl.value==="auto"?"auto":Number(rotationControl.value)});
   if(run!==active)return;
   output.value=data.text;renderInsights();
   stats.textContent=data.characters.toLocaleString()+" characters · "+data.extension.toUpperCase()+
    " · "+(data.mode==="device-ocr"?"device OCR":data.mode==="original-ocr"?"experimental OCR":data.mode.replaceAll("-"," "))+
    (typeof data.confidence==="number"?" · rough glyph match "+Math.round(data.confidence*100)+"%":"")+
+   (data.rotation?" · rotated "+data.rotation+"° clockwise":"")+
    (data.truncated?" · capped at "+TEXTRACT_LIMITS.chars.toLocaleString()+" characters":"");
   copyButton.disabled=false;downloadButton.disabled=false;handoffButton.disabled=false;
   report(data.warning||"Extracted by Knightfall original code on your device. Review accuracy before sharing.");
@@ -98,6 +109,7 @@ handoffButton.addEventListener("click",()=>{
 $("textract-clear").addEventListener("click",()=>{
  if(busy){active++;setBusy(false);}
  currentFile=null;input.value="";output.value="";renderInsights();nameLabel.textContent="No file selected";
+ rotationControl.value="auto";rotationSection.hidden=true;
  secondFile=null;compareFile.value="";compareOutput.value="";compareToken++;compareBusy=false;updateCompareControls();
  stats.textContent="";copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;extractButton.disabled=true;
  report("Cleared. The browser has not uploaded your original file.");
