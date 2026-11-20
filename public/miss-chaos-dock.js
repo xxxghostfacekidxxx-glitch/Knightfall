@@ -52,7 +52,7 @@ function obstacles(){
   }
   const style=getComputedStyle(el);
   // Exclude huge general containers but include full-width sticky nav/footer bars.
-  const structural=el.id==='ashfall-support-footer'||style.position==='fixed'||style.position==='sticky';
+  const structural=el.hasAttribute('data-mc-keep-clear')||el.id==='ashfall-support-footer'||style.position==='fixed'||style.position==='sticky';
   if((rect.width>innerWidth*.89||rect.height>innerHeight*.57)&&!structural)continue;
   result.push({rect,weight:structural?2.5:1});
  }
