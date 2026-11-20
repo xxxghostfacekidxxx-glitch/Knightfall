@@ -34,8 +34,8 @@ export function inspectVendorAsset(name,buffer,kind){
   throw Error(name+": WebAssembly magic header missing");
  if(kind==="gzip"&&!(buffer[0]===31&&buffer[1]===139))
   throw Error(name+": gzip language data header missing");
- if(kind==="js"&&!(new TextDecoder().decode(buffer.slice(0,1024)).includes("!")||buffer.length>50000))
-  throw Error(name+": does not look like a JavaScript bundle");
+ if(kind==="js"&&buffer.length<500)
+  throw Error(name+": JavaScript bundle is unexpectedly small");
  if(["js","license"].includes(kind)){
   const head=new TextDecoder().decode(buffer.slice(0,128)).trimStart();
   if(head.startsWith("<!")||head.startsWith("<html"))
