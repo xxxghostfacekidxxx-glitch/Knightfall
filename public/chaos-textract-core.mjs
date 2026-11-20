@@ -47,10 +47,10 @@ export function buildTextractDraft(name,text,task="Summarize this document, dist
  if(available<100)throw Error("The instruction or filename is too long.");
  return preface+source.slice(0,available)+(source.length>available?warning:"")+suffix;
 }
-export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={}){
+export async function extractTextract(file,{notify=()=>{},cancelled=()=>false,imageRotation="auto"}={}){
  const ext=validateTextractFile(file);
  if(cancelled())throw Error("Extraction cancelled.");
- let output="",mode="text",warning=null,confidence=null;
+ let output="",mode="text",warning=null,confidence=null,rotation=null;
  if(TEXT_EXT.has(ext)){notify("Reading text locally…");output=await readTextractPlainText(file);}
  else if(["docx","xlsx","pptx"].includes(ext)){
   mode="native-office";output=await readKnightfallOffice(file,ext,{notify,cancelled});
@@ -75,8 +75,8 @@ export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={
   if(output.includes("[Notice: Only "))
    warning=[warning,"Only the first 24 PDF pages were processed. Split the document to read later pages."].filter(Boolean).join(" ");
  }else if(IMAGE_EXT.has(ext)){
-  const result=await readKnightfallImageOcr(file,{notify,cancelled});
-  output=result.text;confidence=result.confidence??null;
+  const result=await readKnightfallImageOcr(file,{notify,cancelled,rotation:imageRotation});
+  output=result.text;confidence=result.confidence??null;rotation=result.rotation??null;
   mode=result.method==="device-native-text-detector"?"device-ocr":"original-ocr";
   warning=mode==="original-ocr"?
    "Experimental pattern OCR: spelling, punctuation and numbers may be wrong. Check all results against the image.":
@@ -92,5 +92,5 @@ export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={
  if(truncated)
   warning=[warning,"Only the first "+end.toLocaleString("en-US")+" characters are shown. "+(text.length-end).toLocaleString("en-US")+" additional characters were omitted; split the source to recover them."].filter(Boolean).join(" ");
  return {text:text.slice(0,end),truncated,characters:text.length,extension:ext,engine:TEXTRACT_ENGINE,mode,
-  warning,confidence};
+  warning,confidence,rotation};
 }
