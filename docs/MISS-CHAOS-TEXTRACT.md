@@ -43,3 +43,15 @@ The Textract workbench includes **Run reader self-test**. It creates a tiny synt
 Images show whether the browser exposes native TextDetector. On unsupported devices the first-party fallback is limited to high-contrast printed text, and the interface should display an explicit failure when recognition is unreliable.
 
 Before claiming a real-file bug fixed, reproduce it with a sanitized example from that format and add a regression test. Do not upload members' private files or suggest posting confidential PDFs to issue trackers. Keep all processing local until the user explicitly stages a chat draft.
+
+## November 20 extraction accuracy and maintenance follow-up
+
+- PDF ToUnicode CMap decoding now supports explicit glyph-array ranges in addition to sequential ranges. PDFs with more than 24 pages show a clear notice about omitted pages rather than silently stopping.
+- XLSX worksheets follow `xl/_rels/workbook.xml.rels` so tab titles and order remain correct even when sheet filenames or IDs do not match the displayed tab order. Exported UTF-8, UTF-16LE and UTF-16BE text files honor their byte-order marks.
+- Word field instructions are not included as visible document text. PowerPoint decks over 60 slides and spreadsheets over 25 worksheets announce the unprocessed remainder.
+- Original fallback OCR can evaluate two-way and three-way splits of touching high-contrast printed glyphs. The split search is bounded, chooses only higher-confidence combinations, and improves spacing between words. Synthetic browser checks include `KNIGHTFALL 123`, `HELLO WORLD`, `FAMILY 456`, `WWW MMM` and `TOTAL 12.45`. This is **not** evidence of general photo or handwriting accuracy.
+- Regression tests exercise these cases. The public site still avoids paid extraction APIs, external model bundles and uploading original files without user action.
+
+### Remaining scope
+
+Scanned PDFs still cannot be rendered and read automatically. The first-party glyph engine remains an experimental fallback when the browser has no built-in text detector, and real photos can be substantially more difficult than clean generated images. Every release needs real-device checks with non-sensitive representative documents before advertising broader reliability.
