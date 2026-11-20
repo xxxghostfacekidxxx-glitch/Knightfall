@@ -61,7 +61,7 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 .tool-stats{color:#e3bf91;font-weight:650}
 .tools-grid .panel p{line-height:1.5}
 </style>
-<script type="module" src="/chaos-textract.mjs?v=20261120-native3"></script>
+<script type="module" src="/chaos-textract.mjs?v=20261120-native4"></script>
 </head>
 <body class="textract-page">
 <header class="kf-header"></header>
@@ -84,6 +84,8 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 </div>
 <div class="field"><label for="textract-file">Browse Photos or Files</label><input id="textract-file" type="file" accept=".pdf,.docx,.xlsx,.pptx,.txt,.md,.csv,.tsv,.json,.xml,.html,.htm,.log,.css,.js,.mjs,.ts,.svg,image/*"></div>
 <div class="filename" id="textract-filename">No file selected</div>
+<div class="controls"><button type="button" id="textract-self-test">Run reader self-test</button></div>
+<p id="textract-ocr-availability" class="help" role="status">Checking on-device image recognition…</p>
 <p class="help">18 MB maximum. The original PDF engine reads supported selectable text streams on up to 24 pages, but cannot render or OCR scanned PDF pages. Image OCR is experimental and intended for simple, high-contrast printed Latin text. Google Photos cloud-only images may need saving to Files.</p>
 <p class="help">𓂀 Original Glyph Forge OCR runs only on image files. It does not yet handle handwriting, arbitrary fonts, or PDF page rendering. Verify extracted names, numbers, and dates.</p>
 <div class="controls"><button id="textract-extract" class="primary" disabled type="button">𓂀 Extract text</button><button id="textract-stop" type="button" hidden>Stop</button><button id="textract-clear" type="button">Clear</button></div>
