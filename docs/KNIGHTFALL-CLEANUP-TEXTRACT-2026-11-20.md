@@ -64,3 +64,23 @@ Manual browser QA:
 - Bounded 8-bit grayscale and RGB FlateDecode images explicitly drawn by a PDF page can now be locally decoded to PNG for OCR, including common TIFF and PNG row predictors.
 - Unit tests check pixel channels, row reconstruction, malformed inputs, and truthful failure handling. A production-browser synthetic Flate scanned page yielded `KNIGHTFALL 123` without uploading the file to a service.
 - This is not a general PDF renderer and does not cover JBIG2/CCITT, JPEG2000, nested forms or every type of scan.
+
+## November 20 follow-up: integrity-first Office extraction and theme specificity
+
+### Issues fixed
+- **Excel workbook relationships:** When workbook metadata refers to nonexistent, unsupported, or duplicate worksheet parts, Textract keeps safely resolved sheets and explicitly lists every omitted tab (up to eight names). It does not relabel an unrelated worksheet with the missing tab's name.
+- **Excel relationship-free files:** Text is still recovered from known worksheet parts, but displayed names and ordering are marked *unverified*; declared workbook tab names appear in a warning, not as fabricated sheet headings.
+- **Correct diagnostics:** The engine distinguishes workbook relationship errors from worksheet/slides/row-size limits. A missing relationship is not misreported as a size cap.
+- **ZIP integrity:** Each opened Office entry with a specified CRC32 checksum is verified against the decompressed bytes. A mismatch causes a clear error instead of accepting corrupted document text.
+- **Large Office media:** Oversized embedded images do not count against text extraction and need not be read. Oversized *referenced XML* no longer silently disappears; attempting to read it produces an explicit per-section size error.
+- **Black Sun CSS:** Removed the redundant mobile `min-height:0` rule within the 520px breakpoint and consolidated duplicated forced-colors accessibility rules. The 780px rule continues to own the mobile height and all accessibility behavior remains.
+
+### Verified evidence and release caution
+- In the live production browser, a fabricated Excel workbook with one valid tab and one broken relationship produced the valid sheet and an omission notice. It did not invent values for the missing tab.
+- In the live production browser, an Office file with a valid ZIP CRC was accepted while a modified checksum was rejected.
+- The scoped Black Sun CSS refactor deployed successfully and has a focused regression test.
+- New and tightened regression tests cover the relationship mapping, uncertain fallback names, CRC32, oversize XML and large unused media. Cloudflare Pages builds for the *latest test-only changes* may be queued independently of successful source deployments. Check the actual deployment and gate logs before claiming those latest tests passed.
+
+### Remaining work
+- Scanned PDF and difficult photographic OCR still have unsupported encodings/layouts and require representative real-device testing.
+- The large unified theme sheet remains a separate careful consolidation task. Do not delete rules solely because they use `!important`; test profile styling, messages, arcade, high contrast and staff Theme Forge on each change.
