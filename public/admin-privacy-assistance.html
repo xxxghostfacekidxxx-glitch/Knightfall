@@ -7,7 +7,7 @@
 <button id="refresh" type="button">Refresh queue</button><p id="status" role="status" aria-live="polite">Checking permissions…</p>
 <div id="tickets"></div><button id="next-page" hidden type="button">Load more</button>
 <p><a href="/admin-deletion-requests.html">Verified account deletion queue</a></p>
-</main><script src="/nav.js?v=20261115-gothic9" defer></script><script>
+</main><script src="/nav.js" defer></script><script>
 const API='https://api.ash-fall.com', statusEl=document.querySelector('#status'),list=document.querySelector('#tickets'),next=document.querySelector('#next-page');
 let cursor=null;
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

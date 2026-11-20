@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v81";
+const CACHE_NAME = "knightfall-shell-v82";
 const APP_SHELL = [
   "/",
   "/offline.html",

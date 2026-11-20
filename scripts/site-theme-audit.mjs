@@ -31,7 +31,7 @@ for (const path of ["auth.html","community.html"]) {
  const page=read("../public/"+path);
  assert.ok(!page.includes("gravewave-takeover."),"Retired Gravewave must not load on "+path);
  assert.ok(page.includes("/theme.css"),"Shared theme must use revalidated canonical asset on "+path);
- assert.ok(page.includes("/nav.js?v=20261115-gothic9"),"Current navigation must be versioned on "+path);
+ assert.ok(page.includes("/nav.js"),"Shared navigation must use the revalidated stable path on "+path);
 }
 assert.doesNotMatch(read("../public/auth.html"),/#ff55d8|#c6ff45|#a8ff3e/i,"Neon auth styling must not return");
 assert.doesNotMatch(read("../public/realm-polish.css"),/inset:0 -4vw auto/,"Directory decorations must not overflow mobile viewport");

@@ -2,7 +2,7 @@
 // Bootstrap one shared header and authenticated chat dock on first-party arcade cabinets.
 if(document.querySelector(".kf-header")&&!document.querySelector('script[src*="/nav.js"]')&&!document.querySelector('script[data-kf-arcade-nav]')){
  const navScript=document.createElement("script");
- navScript.src="/nav.js?v=20261114-game-chat2";navScript.dataset.kfArcadeNav="true";
+ navScript.src="/nav.js";navScript.dataset.kfArcadeNav="true";
  document.head.append(navScript);
 }
 // A shared launch guard for lightweight cabinets. A title alone never proves a board rendered.

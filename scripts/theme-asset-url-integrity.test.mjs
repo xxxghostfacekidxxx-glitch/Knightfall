@@ -15,6 +15,7 @@ test("Page-level theme links have one stable, revalidated URL",()=>{
     if(source.includes("/theme.css"))examined++;
     assert.doesNotMatch(source,/\/theme\.css\?v=/,page+" has obsolete style cache-buster");
     assert.doesNotMatch(source,/\/theme-crew-runtime\.js\?v=/,page+" has obsolete crew runtime cache-buster");
+    assert.doesNotMatch(source,/\/nav\.js\?v=/,page+" has obsolete global navigation cache-buster");
   }
   assert.ok(examined>=40,"Expected sitewide HTML audit to cover the major pages");
 });
@@ -33,6 +34,7 @@ test("Cloudflare and the PWA revalidate theme files instead of freezing old URLs
  const worker=read("sw.js");
  assert.match(headers,/\/theme\.css\s*\n\s*Cache-Control: no-cache, max-age=0, must-revalidate/);
  assert.match(headers,/\/theme-crew-runtime\.js\s*\n\s*Cache-Control: no-cache, max-age=0, must-revalidate/);
+ assert.match(headers,/\/nav\.js\s*\n\s*Cache-Control: no-cache, max-age=0, must-revalidate/);
  assert.match(worker,/const CACHE_NAME = "knightfall-shell-v\d+";/);
  assert.match(worker,/"\/theme\.css"/);
  assert.match(worker,/"\/theme-crew-runtime\.js"/);
@@ -42,5 +44,7 @@ test("Cloudflare and the PWA revalidate theme files instead of freezing old URLs
 test("Arcade catalog builder does not resurrect obsolete shared-theme paths",()=>{
  const build=readFileSync(new URL("./build-arcade-catalog.mjs",import.meta.url),"utf8");
  assert.ok(build.includes('href="/theme.css"'));
+ assert.ok(build.includes('src="/nav.js"'));
+ assert.doesNotMatch(build,/\/nav\.js\?v=/);
  assert.doesNotMatch(build,/\/theme\.css\?v=/);
 });
