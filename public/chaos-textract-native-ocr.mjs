@@ -177,7 +177,7 @@ export function decodeGlyphMask(mask,width,height,templates,{notify=()=>{},cance
   let output="",previous=null;
   for(const chunk of chunks.slice(0,300)){
    if(cancelled())throw Error("OCR cancelled.");
-   if(previous&&chunk.start-previous.end-1>Math.max(4,median*.56))output+=" ";
+   if(previous&&chunk.start-previous.end-1>Math.max(4,median*.48))output+=" ";
    const glyph=glyphFromArea(mask,width,band,chunk);
    if(glyph&&glyph.width>=1&&glyph.height>=2){
     const match=classifyGlyph(glyph.mask,glyph.width,glyph.height,templates);
