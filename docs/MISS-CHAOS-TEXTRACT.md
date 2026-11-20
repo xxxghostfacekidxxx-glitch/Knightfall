@@ -55,3 +55,13 @@ Before claiming a real-file bug fixed, reproduce it with a sanitized example fro
 ### Remaining scope
 
 JPEG-backed and some Flate-backed scanned PDF pages may now be OCRed, but the engine remains unable to render arbitrary PDF page graphics. The first-party glyph engine remains an experimental fallback when the browser has no built-in text detector, and real photos can be substantially more difficult than clean generated images. Every release needs real-device checks with non-sensitive representative documents before advertising broader reliability.
+
+## Phone-photo orientation recovery
+
+The Textract image OCR reader can recover **sideways printed text** using bounded local grayscale rotations. Auto mode starts upright, then tests other orientations only when the text is missing, uncertain, or broken into suspicious one-character vertical lines. The tool preserves upright clear results rather than automatically changing every photo. Auto orientation is a heuristic, not a guarantee.
+
+The workbench's **Photo orientation** selector supports Auto, 0°, 90°, 180° and 270° clockwise for individual JPG, PNG, WebP and GIF images. On changing orientation it clears the previous extraction and any stale comparison output, so old text is never labeled as if it came from the new orientation. The selector is hidden for non-image documents, and changing photos resets it to Auto.
+
+The rotation path allocates only bounded browser-local pixel buffers. It does not introduce a cloud OCR endpoint, a downloaded model, or a third-party parser.
+
+Verification: a browser-generated `KNIGHTFALL 123` image was recognized upright, auto-corrected after a 90° clockwise picture rotation, and recognized after explicitly choosing 270°. Pixel-matrix unit tests check all four rotations. These tests do not validate photographic perspective, blurry handwriting or unusual fonts.
