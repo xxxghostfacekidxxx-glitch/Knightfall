@@ -33,11 +33,11 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
    The only default visual owner is now Black Sun Temple, not another CSS import. */
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.community-directory,.messages-shell,.admin-shell,.profile-shell,.cartridge-shelf,.foundry,.members-page,.friends-page,.dt-workspace-nav){
  --section-surface:#171716;--section-raised:#25211c;
- --section-stroke:rgba(214,166,92,.42);--section-green:#ecc17a;
- --section-pink:#b95d35;--section-muted:#cfc3b1;
+ --section-stroke:rgba(214,166,92,.42);--section-green:var(--af-ember-light);
+ --section-pink:var(--af-ember);--section-muted:#cfc3b1;
 }
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-header,.community-directory,.messages-shell,.admin-shell,.foundry,.cartridge-shelf) :where(a,button,input,textarea,select):focus-visible{
- outline-color:#ecc17a;
+ outline-color:var(--af-ember-light);
 }
 /* One original Eye of Chaos crest, replacing the inherited pink skull stamp.
    Never skin custom profiles or game rendering. */
