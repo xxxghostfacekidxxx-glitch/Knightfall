@@ -128,14 +128,18 @@ async function readZipDocument(file,ext,notify,cancelled){
  if(!result)throw Error("The file has no readable text. Try an image or a scanned PDF.");
  return result;
 }
-async function recognizeImage(image,notify,cancelled){
- const Tesseract=await getOcr();shouldCancel(cancelled);
- notify("Loading local OCR language data…");
- const worker=await Tesseract.createWorker("eng",1,{logger:event=>{
-  if(event?.status==="recognizing text")notify("Reading image: "+Math.round((event.progress||0)*100)+"%");
- }});
+async function recognizeImage(image,notify,cancelled,session=null){
+ let worker=session?.worker;
+ if(!worker){
+  const Tesseract=await getOcr();shouldCancel(cancelled);
+  notify("Loading local OCR language data…");
+  worker=await Tesseract.createWorker("eng",1,{logger:event=>{
+   if(event?.status==="recognizing text")notify("Reading image: "+Math.round((event.progress||0)*100)+"%");
+  }});
+  if(session)session.worker=worker;
+ }
  try{shouldCancel(cancelled);const output=await worker.recognize(image);shouldCancel(cancelled);return output.data?.text||"";}
- finally{await worker.terminate();}
+ finally{if(!session)await worker.terminate();}
 }
 async function readPdf(file,notify,cancelled,ocrScans){
  const lib=await getPdf();shouldCancel(cancelled);
@@ -143,7 +147,7 @@ async function readPdf(file,notify,cancelled,ocrScans){
  const pdfDocument=await task.promise;
  try{
   const length=Math.min(pdfDocument.numPages,TEXTRACT_LIMITS.pdfPages);
-  const parts=[];let scanned=0;
+  const parts=[];let scanned=0;const ocrSession={worker:null};
   for(let p=1;p<=length;p++){
    shouldCancel(cancelled);notify("Reading PDF page "+p+" of "+length+"…");
    const page=await pdfDocument.getPage(p);
@@ -159,7 +163,7 @@ async function readPdf(file,notify,cancelled,ocrScans){
     try{
      await page.render({canvasContext:canvas.getContext("2d",{alpha:false}),viewport:view}).promise;
      notify("OCR on scanned PDF page "+p+"…");
-     content=normalizeTextractText(await recognizeImage(canvas,notify,cancelled));
+     content=normalizeTextractText(await recognizeImage(canvas,notify,cancelled,ocrSession));
     }finally{canvas.width=0;canvas.height=0;}
    }
    parts.push("Page "+p+"\n"+(content||"[No readable text]"));
@@ -168,7 +172,7 @@ async function readPdf(file,notify,cancelled,ocrScans){
   if(pdfDocument.numPages>length)parts.push("[Only the first "+length+" pages were processed. Split the PDF to read more.]");
   if(scanned>=TEXTRACT_LIMITS.ocrPages)parts.push("[OCR limited to "+TEXTRACT_LIMITS.ocrPages+" scanned pages per run.]");
   return parts.join("\n\n");
- }finally{await pdfDocument.destroy();}
+ }finally{try{if(ocrSession.worker)await ocrSession.worker.terminate();}finally{await pdfDocument.destroy();}}
 }
 export async function extractTextract(file,{notify=()=>{},cancelled=()=>false,ocrScans=true}={}){
  const ext=validateTextractFile(file);
