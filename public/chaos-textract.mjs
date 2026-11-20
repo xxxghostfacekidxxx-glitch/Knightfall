@@ -29,11 +29,11 @@ extractButton.addEventListener("click",async()=>{
  report("Preparing extraction…");
  try{
   const data=await extractTextract(file,{notify:message=>{if(run===active)report(message);},
-   cancelled:()=>run!==active,ocrScans:$("textract-ocr-pdf").checked});
+   cancelled:()=>run!==active});
   if(run!==active)return;
   output.value=data.text;renderInsights();stats.textContent=data.characters.toLocaleString()+" characters · "+data.extension.toUpperCase()+(data.truncated?" · capped at "+TEXTRACT_LIMITS.chars.toLocaleString()+" characters":"");
   copyButton.disabled=false;downloadButton.disabled=false;handoffButton.disabled=false;
-  report("Extracted on your device. Edit or verify the text, then copy, download, or stage a draft for Miss Chaos.");
+  report(data.warning||"Extracted by Knightfall original code on your device. Review accuracy before sharing.");
  }catch(error){if(run===active)report(error?.message||"Extraction failed.",true);}
  finally{if(run===active)setBusy(false);}
 });
@@ -157,7 +157,7 @@ compareButton.addEventListener("click",async()=>{
  compareStatus.textContent="Extracting second document locally…";
  try{
   const second=await extractTextract(file,{notify:message=>{if(id===compareToken)compareStatus.textContent=message;},
-   cancelled:()=>id!==compareToken,ocrScans:$("textract-ocr-pdf").checked});
+   cancelled:()=>id!==compareToken});
   if(id!==compareToken)return;
   const report=compareTextractTexts(original,second.text);
   compareOutput.value=formatTextractComparison(report);
