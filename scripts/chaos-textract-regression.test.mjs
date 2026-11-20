@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {deflateSync,deflateRawSync} from "node:zlib";
-import {extractKnightfallPdfOperators,readKnightfallPdf} from "../public/chaos-textract-native-pdf.mjs";
+import {extractKnightfallPdfOperators,readKnightfallPdf,decodeKnightfallPdfRaster} from "../public/chaos-textract-native-pdf.mjs";
 import {readKnightfallOffice,parseKnightfallXml} from "../public/chaos-textract-native-zip.mjs";
 import {extractTextract,TEXTRACT_ENGINE} from "../public/chaos-textract-core.mjs";
 
@@ -406,4 +406,79 @@ test("Text cap never leaves a dangling Unicode surrogate",async()=>{
  assert.equal(result.text.length,179999);
  assert.equal(result.text.at(-1),"A");
  assert.match(result.warning,/5 additional characters were omitted/);
+});
+
+
+test("Flate grayscale PDF images decode to exact local pixels without a PDF renderer",async()=>{
+ const raw=new Uint8Array(120*120).fill(242);
+ raw[0]=0;raw[120]=14;raw[121]=70;
+ const decoded=await decodeKnightfallPdfRaster({
+  kind:"flate",width:120,height:120,channels:1,predictor:1,bytes:deflateSync(raw)
+ });
+ assert.equal(decoded.width,120);assert.equal(decoded.height,120);
+ assert.deepEqual([...decoded.pixels.slice(0,8)],[0,0,0,255,242,242,242,255]);
+ assert.deepEqual([...decoded.pixels.slice(120*4,120*4+8)],[14,14,14,255,70,70,70,255]);
+});
+test("PDF PNG up/sub row predictors reconstruct grayscale pixels correctly",async()=>{
+ const width=120,height=120,encoded=new Uint8Array((width+1)*height);
+ for(let row=0;row<height;row++){
+  const offset=row*(width+1);
+  encoded[offset]=row===0?1:2; // First row Sub; subsequent rows Up
+  if(row===0)encoded[offset+1]=213;
+ }
+ const decoded=await decodeKnightfallPdfRaster({
+  kind:"flate",width,height,channels:1,predictor:15,bytes:deflateSync(encoded)
+ });
+ assert.deepEqual([...decoded.pixels.slice(0,8)],[213,213,213,255,213,213,213,255]);
+ assert.deepEqual([...decoded.pixels.slice((width*height-1)*4)],[213,213,213,255]);
+});
+test("Flate RGB PDF images extract every color sample without confusing channel order",async()=>{
+ const width=120,height=120,raw=new Uint8Array(width*height*3).fill(240);
+ raw.set([235,18,99],0);
+ const decoded=await decodeKnightfallPdfRaster({
+  kind:"flate",width,height,channels:3,predictor:1,bytes:deflateSync(raw)
+ });
+ assert.deepEqual([...decoded.pixels.slice(0,8)],[235,18,99,255,240,240,240,255]);
+});
+test("Drawn Flate-scanned PDF page reaches image OCR, with no fabricated text on failure",async()=>{
+ const width=120,height=120;
+ const raw=new Uint8Array(width*height).fill(250);
+ raw.set(new Uint8Array(120).fill(20),0);
+ const packed=deflateSync(raw);
+ const stream="q /Scan Do Q";
+ const prefix=Buffer.from("%PDF-1.4\n"+
+  "1 0 obj << /Type /Page /Resources << /XObject << /Scan 8 0 R >> >> /Contents 4 0 R >> endobj\n"+
+  "4 0 obj << /Length "+stream.length+" >>\nstream\n"+stream+"\nendstream\nendobj\n"+
+  "8 0 obj << /Type /XObject /Subtype /Image /Width "+width+" /Height "+height+
+  " /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length "+packed.length+" >>\nstream\n");
+ const bytes=new Uint8Array(Buffer.concat([prefix,packed,Buffer.from("\nendstream\nendobj\n%%EOF")]));
+ let seen=0;
+ const rasterizeImage=async image=>{
+  const data=await decodeKnightfallPdfRaster(image);
+  assert.equal(image.kind,"flate");
+  assert.equal(data.pixels[0],20);
+  return new Blob([data.pixels],{type:"image/png"});
+ };
+ const result=await readKnightfallPdf(bytes,{
+  rasterizeImage,
+  ocrImage:async blob=>{
+   seen++;assert.equal(blob.type,"image/png");
+   return {text:"LOCAL FLATE SCAN 42",method:"original-template-ocr"};
+  }
+ });
+ assert.equal(seen,1);
+ assert.match(result,/OCR from embedded Flate image/);
+ assert.match(result,/LOCAL FLATE SCAN 42/);
+ await assert.rejects(()=>readKnightfallPdf(bytes,{
+  rasterizeImage,
+  ocrImage:async()=>{throw Error("Blurry image");}
+ }),/No selectable text could be recovered/);
+});
+test("Unsupported raster parameters fail instead of inventing pixel data",async()=>{
+ await assert.rejects(()=>decodeKnightfallPdfRaster({
+  kind:"flate",width:120,height:120,channels:1,predictor:15,bytes:deflateSync(Uint8Array.of(2,3,4))
+ }),/unexpected row length/);
+ await assert.rejects(()=>decodeKnightfallPdfRaster({
+  kind:"flate",width:2000,height:1200,channels:1,predictor:1,bytes:deflateSync(Uint8Array.of(1))
+ }),/dimensions exceed supported limits/);
 });
