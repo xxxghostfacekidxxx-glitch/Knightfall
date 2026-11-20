@@ -20,9 +20,18 @@
       <div class="compose-dialog-head"><div><p class="eyebrow">OPEN A PRIVATE CHANNEL</p><h2 id="compose-title">New conversation</h2></div><button type="button" id="close-compose" class="icon-button" aria-label="Close">×</button></div>
       <div class="compose-tabs" role="tablist" aria-label="People"><button type="button" class="compose-tab active" data-people-tab="discover" role="tab" aria-selected="true">Find members</button><button type="button" class="compose-tab" data-people-tab="friends" role="tab" aria-selected="false">Friends</button><button type="button" class="compose-tab" data-people-tab="requests" role="tab" aria-selected="false">Requests <span id="friend-request-count" hidden>0</span></button></div>
       <section id="people-discover" class="people-pane" role="tabpanel">
+      <div class="cs-direct-start">
+        <label for="direct-recipient">Open a private chat by username</label>
+        <div class="cs-direct-start-row">
+          <input id="direct-recipient" class="search" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="25" placeholder="@username" aria-describedby="direct-recipient-help">
+          <button id="direct-start" type="submit" class="primary">Open chat</button>
+        </div>
+        <p id="direct-recipient-help" class="compose-hint">No friend request required. Type a member's exact username or choose from the list below.</p>
+        <p id="compose-feedback" class="cs-compose-feedback" role="status" aria-live="polite" hidden></p>
+      </div>
       <label for="member-search">Find a member</label>
       <input id="member-search" class="search" type="search" autocomplete="off" placeholder="Search username or display name…">
-      <div id="member-results" class="member-results"><p class="empty">Start typing to find members.</p></div>
+      <div id="member-results" class="member-results"><p class="empty">Loading active members…</p></div>
       <p class="compose-hint">Add friends to build your circle, or start a private conversation.</p></section>
       <section id="people-friends" class="people-pane" role="tabpanel" hidden><div id="friends-list" class="member-results"><p class="empty">Loading friends…</p></div></section>
       <section id="people-requests" class="people-pane" role="tabpanel" hidden><div id="requests-list" class="member-results"><p class="empty">Loading requests…</p></div></section>
