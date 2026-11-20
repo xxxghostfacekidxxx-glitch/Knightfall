@@ -79,7 +79,7 @@ test("Black Sun default chrome no longer falls back to inherited magenta or stai
  assert.doesNotMatch(final, /rose-window\.svg|#b4588c44|#a4507c19|#d67aa142/);
  assert.match(final, /--kf-start-art,url\('\/assets\/knightfall\/black-sun-temple\.svg'\)/);
  assert.match(final, /0 0 24px #b95d3544!important/);
- assert.match(root, /knightfall-requiem\.css\?v=20261120-black-sun5/);
+ assert.match(root, /knightfall-requiem\.css\?v=20261120-black-sun6/);
 });
 
 test("profile foundation selectors keep their guard with lower specificity",()=>{
@@ -104,4 +104,14 @@ test("Black Sun mobile rules have no redundant narrow breakpoint or duplicate fo
  assert.equal((final.match(/@media\(forced-colors:active\)/g)||[]).length,1);
  assert.match(final,/\.home-intro::after\{display:none!important\}/);
  assert.match(final,/@media\(max-width:780px\)\{[\s\S]*?\.home-intro\{[\s\S]*?min-height:0!important/);
+});
+
+
+test("Black Sun compact cartouche inherits identical side coordinates instead of repeating them",()=>{
+ const match=final.match(/@media\(max-width:420px\)\{([\s\S]*?)\n\}/);
+ assert.ok(match,"Compact 420px design rule exists");
+ assert.match(match[1],/\.home-intro::after\{\s*height:28px;opacity:\.65/);
+ assert.doesNotMatch(match[1],/right:5%|left:5%|width:90%/);
+ const tablet=final.match(/@media\(max-width:780px\)\{([\s\S]*?)\n\}/);
+ assert.match(tablet?.[1]||"",/inset:auto 5% 8px;width:90%;height:35px;opacity:\.7/);
 });

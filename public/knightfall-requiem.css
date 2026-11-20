@@ -285,7 +285,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
 /* Compact screen refinement for the single cartouche owner. */
 @media(max-width:420px){
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
-  height:28px;right:5%;left:5%;width:90%;opacity:.65
+  height:28px;opacity:.65
  }
 }
 
