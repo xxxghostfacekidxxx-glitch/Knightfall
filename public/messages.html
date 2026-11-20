@@ -474,6 +474,46 @@ async function refreshTyping(){const id=Number(currentId),token=conversationLoad
 $("#body").addEventListener("input",()=>{const f=$("#body");f.style.height="auto";f.style.height=Math.min(f.scrollHeight,180)+"px";$("#character-count").textContent=f.value.length.toLocaleString()+" / 4,000";if(currentId){rememberConversationDraft(currentId,f.value);drawConversations();}if(!f.value.trim()){clearTimeout(typingHandle);sendTypingState(false);return}if(Date.now()-lastTypingSentAt>1800){lastTypingSentAt=Date.now();sendTypingState(true)}clearTimeout(typingHandle);typingHandle=setTimeout(()=>sendTypingState(false),6500);});
 document.querySelectorAll("[data-inbox-filter]").forEach(b=>b.addEventListener("click",()=>{inboxFilter=b.dataset.inboxFilter;document.querySelectorAll("[data-inbox-filter]").forEach(x=>{const active=x===b;x.classList.toggle("active",active);x.setAttribute("aria-pressed",String(active))});drawConversations()}));
 const composeDialog=$("#compose-dialog"),memberSearch=$("#member-search"),memberResults=$("#member-results");
+ const directRecipient=$("#direct-recipient"),directStart=$("#direct-start"),composeFeedback=$("#compose-feedback");
+ let directMessageStarting=false;
+ function composeNotice(text,error=false){
+  composeFeedback.hidden=!text;
+  composeFeedback.textContent=text;
+  composeFeedback.classList.toggle("error",!!error);
+ }
+ async function startDirectMessage(raw,trigger){
+  if(directMessageStarting)return;
+  const username=String(raw||"").trim().replace(/^@/,"").toLowerCase();
+  if(!/^[a-z0-9_]{3,24}$/.test(username)){
+   composeNotice("Enter an exact username (3–24 letters, numbers or underscores).",true);
+   directRecipient.focus();return;
+  }
+  if(username===String(currentUser?.username||"").toLowerCase()){
+   composeNotice("You cannot open a conversation with yourself.",true);return;
+  }
+  directMessageStarting=true;
+  const originalLabel=trigger?.textContent;
+  if(trigger){trigger.disabled=true;trigger.textContent="Opening…";}
+  directStart.disabled=true;
+  composeNotice("Opening your private conversation…");
+  let createdId=null;
+  try{
+   const data=await api("/api/messages/conversations",{method:"POST",body:JSON.stringify({username})});
+   const id=Number(data.id);
+   if(!Number.isSafeInteger(id)||id<1)throw Error("The server did not return a valid conversation.");
+   createdId=id;
+   composeDialog.close();
+   await loadConversations({openSelected:false});
+   await openConversation(id);
+   status("Private conversation ready. Send a message when you're ready.",true);
+  }catch(error){
+   if(createdId)status("Conversation created, but the inbox didn't refresh. Reload Messages to see it.");
+   else composeNotice(error.message||"Could not start the conversation. Try again.",true);
+  }finally{
+   directMessageStarting=false;directStart.disabled=false;
+   if(trigger){trigger.disabled=false;trigger.textContent=originalLabel;}
+  }
+ }
 let friendData={friends:[],incoming:[],outgoing:[]};
 function personRow(p,kind){const name=esc(p.display_name||p.username),avatar=p.avatar_url&&/^https:\/\/[^\\s"'<>]+$/i.test(p.avatar_url)?'<img class="person-avatar" src="'+esc(p.avatar_url)+'" alt="" loading="lazy">':'<span class="person-avatar">'+esc((p.display_name||p.username||"?").slice(0,1).toUpperCase())+'</span>';let actions="";
 if(kind==="discover"){const state=p.friend_status||"none";actions='<button class="small-action" data-friend-add="'+esc(p.username)+'" '+(state==="accepted"||state==="outgoing"?"disabled":"")+'>'+(state==="accepted"?"Friends":state==="outgoing"?"Requested":state==="incoming"?"Accept request":"+ Add friend")+'</button><button class="small-action secondary" data-message-user="'+esc(p.username)+'">Message</button>'}
