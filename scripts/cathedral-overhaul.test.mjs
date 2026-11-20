@@ -8,24 +8,27 @@ const theme=read('theme.css');
 const nav=read('nav.js');
 const sw=read('sw.js');
 
-test('stained glass has one owner and realm artwork remains in the cascade',()=>{
+test('Egyptian Black Sun art has one owner and realm artwork remains in the cascade',()=>{
  const requiem=read('knightfall-requiem.css');
  const shared=read('knightfall-unified-theme.css');
  assert.ok(!chrome.includes('height:52px;width:min(640px,88%)'),'Old tiny cathedral divider must stay deleted');
- assert.ok(!shared.includes(':where(.home-intro,.cartridge-hero)::after'),'Legacy crest cannot occupy the glass pseudo element');
+ assert.ok(!shared.includes(':where(.home-intro,.cartridge-hero)::after'),'Legacy crest cannot obscure the hero');
  assert.ok(!requiem.includes('REQUIEM STAINED-GLASS CASCADE REPAIR'),'No layered emergency repair');
- assert.ok(requiem.includes('sanctum-stained-glass.svg'));
+ assert.ok(requiem.includes('black-sun-temple.svg'));
+ assert.ok(requiem.includes('royal-cartouche.svg'));
+ assert.ok(!requiem.includes('sanctum-stained-glass.svg'),'Old overlay must not cover the temple art');
  assert.ok(requiem.includes('var(--kf-start-art'));
- assert.ok(requiem.includes('rose-window.svg'));
 });
-test('Sanctum luminous stained glass is visible, accessible and installed offline',()=>{
- const art=read('assets/knightfall/sanctum-stained-glass.svg');
+test('Black Sun and cartouche are scalable, descriptive and installed offline',()=>{
  const visual=read('knightfall-requiem.css');
- assert.match(art,/<svg[^>]*viewBox=/);
- assert.match(art,/<title/);
- assert.match(art,/lancet windows/);
- assert.match(visual,/sanctum-stained-glass\.svg/);
- assert.match(sw,/sanctum-stained-glass\.svg/);
+ for(const asset of ['black-sun-temple.svg','royal-cartouche.svg']){
+  const art=read('assets/knightfall/'+asset);
+  assert.match(art,/<svg[^>]*viewBox=/,asset+' has a scalable viewBox');
+  assert.match(art,/aria-label=/,asset+' has an accessible description');
+  assert.ok(art.length>500,asset+' must contain original vector work');
+  assert.ok(visual.includes(asset),'Site stylesheet must use '+asset);
+  assert.ok(sw.includes(asset),'Installed site must cache '+asset);
+ }
 });
 test('Cathedral Ascendant ships real original illustration assets and readable markup',()=>{
  for(const asset of ['obsidian-cathedral.svg','ceremonial-divider.svg','rose-window.svg','vaulted-cathedral.svg']){
