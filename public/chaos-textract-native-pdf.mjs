@@ -300,7 +300,7 @@ function collectPages(objects){
   for(const child of objectReferences(text,"Kids"))walk(child,depth+1);
  }
  if(root)walk(root,0);
- return (ordered.length?ordered:candidates).slice(0,24);
+ return ordered.length?ordered:candidates;
 }
 function unicodeMaps(cmapText){
  const map=new Map();
@@ -362,11 +362,12 @@ export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false}
   if(/\/ObjStm\b/.test(text))throw Error("This PDF uses compressed object streams, which this offline reader cannot decode.");
   throw Error("No supported PDF pages found.");
  }
+ const visible=pages.slice(0,24);
  const parts=[];let valid=0,totalChars=0;
- for(let i=0;i<pages.length;i++){
+ for(let i=0;i<visible.length;i++){
   if(cancelled())throw Error("Extraction cancelled.");
-  notify("Extracting PDF page "+(i+1)+" of "+pages.length+"…");
-  const page=objects.get(pages[i]);const refs=objectReferences(page,"Contents").slice(0,48),chunks=[];
+  notify("Extracting PDF page "+(i+1)+" of "+visible.length+"…");
+  const page=objects.get(visible[i]);const refs=objectReferences(page,"Contents").slice(0,48),chunks=[];
   const fonts=await fontMapsFor(page,objects);
   for(const ref of refs){
    if(cancelled())throw Error("Extraction cancelled.");
@@ -380,5 +381,7 @@ export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false}
   parts.push("Page "+(i+1)+"\n"+(chunks.join("\n")||"[No selectable text detected]"));
  }
  if(!valid)throw Error("No selectable text detected. This is likely a scanned PDF, or uses fonts/streams that the offline reader cannot decode. Try an accessible text-layer PDF or image OCR for individual pages.");
+ if(pages.length>visible.length)
+  parts.push("[Notice: Only "+visible.length+" of "+pages.length+" PDF pages were processed. Split the document to extract the remainder.]");
  return parts.join("\n\n");
 }
