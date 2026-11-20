@@ -63,3 +63,19 @@ body.chaos-code-page{background:radial-gradient(circle at 0% 0%,#27102d 0,transp
 .studio-dev-submit button{min-height:42px;width:100%;margin:10px 0;border:1px solid #8cf9bb;border-radius:9px;background:#21513d;color:#eafff2;font:inherit;font-weight:800;cursor:pointer}
 .studio-dev-submit button:disabled{opacity:.52;cursor:not-allowed}
 .studio-dev-submit button:focus-visible{outline:2px solid #ff9ecf;outline-offset:3px}
+
+
+/* Explicit manual candidate-test packet: prepared on device, no implicit CI. */
+.studio-candidate-check{margin:15px 0;padding:14px;border-radius:12px;background:linear-gradient(110deg,#192237,#181122);border:1px solid #6488a9}
+.studio-candidate-check h4{color:#b4ffdf;font-size:.95rem;margin:0 0 10px}
+.studio-candidate-check p{margin:8px 0;line-height:1.5}
+.studio-candidate-fields{display:flex;flex-wrap:wrap;align-items:end;gap:10px;margin-top:12px}
+.studio-candidate-fields label{display:grid;gap:6px;flex:1 1 185px;color:#f3dff4;font-size:.8rem}
+.studio-candidate-fields label:last-child{flex-basis:100%}
+.studio-candidate-fields select,.studio-candidate-fields textarea{width:100%;min-width:0;box-sizing:border-box;background:#0c101b;border:1px solid #6e8b9c;border-radius:9px;color:#edfdf4;padding:9px 11px;font:400 .8rem/1.55 ui-monospace,Consolas,monospace}
+.studio-candidate-fields button{min-height:41px;border:1px solid #80eaba;border-radius:9px;background:#24443c;color:#e6fff0;padding:8px 12px;font:inherit;font-weight:800;cursor:pointer}
+.studio-candidate-fields button:disabled{opacity:.47;cursor:not-allowed}
+.studio-candidate-fields textarea{resize:vertical;min-height:92px;overflow-wrap:anywhere;word-break:break-all}
+.studio-candidate-fields :is(button,textarea,select):focus-visible{outline:2px solid #ffb8df;outline-offset:2px}
+#studio-candidate-status{margin-top:12px}
+@media(max-width:400px){.studio-candidate-check{padding:11px}.studio-candidate-fields button{width:100%}}
