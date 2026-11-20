@@ -20,7 +20,7 @@ try {
     }
   }
   await page.goto(base + "/", { waitUntil: "load" });
-  // Actual computed-browser verification of the approved Nov 14 Gothic site style.
+  // Actual computed-browser verification of the approved Black Sun Temple site style.
   await page.waitForFunction(() =>
     document.body.dataset.kfTheme === "cathedral" &&
     document.body.dataset.kfRealm === "home" &&
@@ -36,8 +36,8 @@ try {
       bronze:getComputedStyle(document.documentElement).getPropertyValue("--kf-antique-gold").trim(),
       crest:brand?getComputedStyle(brand,"::before").backgroundImage:"",
       backdrop:getComputedStyle(document.body).backgroundImage,
-      cathedral:getComputedStyle(document.querySelector(".home-intro")).backgroundImage,
-      stainedGlass:getComputedStyle(document.querySelector(".home-intro"),"::after").backgroundImage,
+      hero:getComputedStyle(document.querySelector(".home-intro")).backgroundImage,
+      cartouche:getComputedStyle(document.querySelector(".home-intro"),"::after").backgroundImage,
       canonicalSheets:[...document.querySelectorAll('link[rel="stylesheet"]')]
         .filter(node=>new URL(node.href).pathname==="/theme.css").length,
       floatingMascots:document.querySelectorAll(".gw-character-crew,.gw-ambient,.kf-gravewave-ribbon").length
@@ -45,10 +45,10 @@ try {
   });
   // Requiem superseded the older deep-stone canvas. The separate theme browser
   // suite independently verifies this same midnight shade.
-  assert.equal(gothic.ink,"rgb(9, 10, 17)","Cathedral Requiem homepage must use approved midnight canvas");
-  assert.match(gothic.backdrop,/vaulted-cathedral\.svg/,"Cathedral background artwork must be visible");
-  assert.match(gothic.cathedral,/obsidian-cathedral\.svg/,"Hero must show the cathedral illustration");
-  assert.match(gothic.stainedGlass,/sanctum-stained-glass\.svg/,"Hero must mount the stained-glass window");
+  assert.equal(gothic.ink,"rgb(9, 10, 11)","Black Sun homepage must use deep obsidian canvas");
+  assert.match(gothic.backdrop,/royal-cartouche\.svg/,"Black Sun background decoration must be visible");
+  assert.match(gothic.hero,/black-sun-temple\.svg/,"Hero must show the Egyptian temple illustration");
+  assert.match(gothic.cartouche,/royal-cartouche\.svg/,"Hero must mount the unobtrusive Egyptian cartouche");
   assert.equal(gothic.canonicalSheets,1,"Only one canonical theme stylesheet may load");
   assert.equal(gothic.bone,"#ece1d3");
   assert.equal(gothic.crimson,"#b25b68");
