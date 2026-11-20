@@ -90,6 +90,7 @@
     <p id="chaos-dev-review-status" class="chaos-note" role="status" aria-live="polite">Verify permissions and the D1 review schema to load proposals.</p>
     <div id="chaos-dev-review-list" class="chaos-stack" aria-label="Pending code review proposals"></div>
     <a class="chaos-quiet" href="/chaos-code-studio.html">Open Code Studio to prepare a source change</a>
+    <p class="chaos-note">If the docket reports migration pending, the owner must review <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/backend/migrations/0151_chaos_dev_reviews.sql" target="_blank" rel="noopener noreferrer">migration 0151</a> and any other pending migrations before using the <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/apply-d1-migrations.yml" target="_blank" rel="noopener noreferrer">separately confirmed D1 migration workflow</a>. This panel never applies database changes.</p>
   </article>
   <h3>Pending, approved and rejected drafts</h3><p class="chaos-note">Approved means signed off by Osiris or the authorized Isis, not published. Editing an approved draft invalidates its approval.</p>
   <div id="chaos-draft-list" class="chaos-stack"><p class="chaos-empty">Loading drafts…</p></div>
