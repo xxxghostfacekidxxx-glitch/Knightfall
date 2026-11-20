@@ -40,6 +40,7 @@ export function listKnightfallZipEntries(bytes){
   if(size>MAX_SECTION||compressed>MAX_SECTION)continue;
   // Do not count images, thumbnails and embedded media against a text
   // extraction budget when we never decompress them. Count actual reads below.
+  if(entries.has(name))throw Error("ZIP has duplicate document entries: "+name);
   entries.set(name,{name,method,compressed,size,localOffset});
  }
  return entries;
@@ -78,7 +79,12 @@ export async function openKnightfallZip(file){
    const i=item.localOffset;
    requireRange(bytes,i,30,"local header");
    if(uint32(view,i)!==0x04034b50)throw Error("Invalid local ZIP header.");
-   const start=i+30+uint16(view,i+26)+uint16(view,i+28);
+   if(uint16(view,i+8)!==item.method)throw Error("ZIP compression method disagrees with its local header.");
+   const nameLength=uint16(view,i+26),extraLength=uint16(view,i+28);
+   requireRange(bytes,i+30,nameLength+extraLength,"local filename");
+   if(dec.decode(bytes.subarray(i+30,i+30+nameLength))!==item.name)
+    throw Error("ZIP local filename does not match its directory entry.");
+   const start=i+30+nameLength+extraLength;
    requireRange(bytes,start,item.compressed,"compressed content");
    const packed=bytes.subarray(start,start+item.compressed);
    const plain=item.method===0?packed:await inflateDeflate(packed);
@@ -130,22 +136,30 @@ export function parseKnightfallXml(raw){
 }
 function xmlText(raw,{paragraph="p",textTag="t",includeRows=false}={}){
  const tokens=parseKnightfallXml(raw),pieces=[];
- let textDepth=0,skip=0,lastCell=false;
+ let textDepth=0,skip=0,lastCell=false,cellDepth=0,cellParagraphs=0;
  const space=()=>{const prev=pieces.at(-1);if(prev&&prev!=="\n"&&prev!=="\t")pieces.push("\n");};
  for(const token of tokens){
   if(token.type==="text"){if(textDepth&&!skip)pieces.push(token.value);continue;}
   if(token.type==="start"){
    if(token.name==="del"||token.name==="delText"){skip++;continue;}
    if(skip)continue;
-   if(token.name===paragraph||token.name==="br"||token.name==="cr")space();
    if(token.name==="tr"&&includeRows){space();lastCell=false;}
-   if(token.name==="tc"&&includeRows){if(lastCell)pieces.push("\t");lastCell=true;}
+   if(token.name==="tc"&&includeRows){
+    if(lastCell)pieces.push("\t");
+    lastCell=true;cellDepth++;cellParagraphs=0;
+   }
+   if(token.name===paragraph){
+    if(includeRows&&cellDepth){if(cellParagraphs++)pieces.push(" / ");}
+    else space();
+   }
+   if(token.name==="br"||token.name==="cr")space();
    if(token.name==="tab")pieces.push("\t");
    if(token.name===textTag)textDepth++;
    if(token.self&&token.name===textTag)textDepth=Math.max(0,textDepth-1);
   }else{
    if(token.name==="del"||token.name==="delText"){skip=Math.max(0,skip-1);continue;}
    if(token.name===textTag)textDepth=Math.max(0,textDepth-1);
+   if(token.name==="tc"&&includeRows)cellDepth=Math.max(0,cellDepth-1);
   }
  }
  return pieces.join("").replace(/[\t ]+\n/g,"\n").replace(/^\s+|\s+$/g,"").replace(/\n{4,}/g,"\n\n\n");
