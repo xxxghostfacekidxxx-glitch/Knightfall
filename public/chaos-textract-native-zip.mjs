@@ -345,19 +345,41 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
  const definitions=workbookSheetDefinitions(workbookXml);
  const date1904=parseKnightfallXml(workbookXml).some(x=>x.type==="start"&&x.name==="workbookPr"&&["1","true"].includes(x.attrs.date1904));
  const styles=excelDateStyles(await read("xl/styles.xml"));
- const rels=worksheetRelationships(await read("xl/_rels/workbook.xml.rels"));
+ const relationshipsXml=await read("xl/_rels/workbook.xml.rels");
+ const rels=worksheetRelationships(relationshipsXml);
  const available=names.filter(s=>/^xl\/worksheets\/sheet\d+\.xml$/.test(s))
   .sort((a,b)=>Number(a.match(/sheet(\d+)/)[1])-Number(b.match(/sheet(\d+)/)[1]));
- const linked=definitions.map((def,i)=>({path:rels.get(def.id)||available[i]||"",label:def.name||"Sheet "+(i+1)}))
-  .filter(def=>available.includes(def.path));
- const allSheets=(linked.length?linked:available.map((path,i)=>({path,label:definitions[i]?.name||"Sheet "+(i+1)})));
+ const unreadableTabs=[],usedPaths=new Set();
+ let inferredOrder=false;
+ let allSheets;
+ if(definitions.length&&relationshipsXml){
+  allSheets=[];
+  for(let i=0;i<definitions.length;i++){
+   const def=definitions[i],path=rels.get(def.id);
+   if(!path||!available.includes(path)||usedPaths.has(path)){
+    unreadableTabs.push(def.name||"Sheet "+(i+1));continue;
+   }
+   usedPaths.add(path);
+   allSheets.push({path,label:def.name||"Sheet "+(i+1),position:i+1});
+  }
+ }else{
+  // Damaged or simplified OOXML fixtures may lack workbook relationships.
+  // Preserve readable cells but never claim their tab names are authoritative.
+  inferredOrder=definitions.length>0&&!relationshipsXml;
+  allSheets=available.map((path,i)=>({
+   path,label:inferredOrder?"":definitions[i]?.name||"Sheet "+(i+1),position:i+1
+  }));
+ }
  const sheets=allSheets.slice(0,25);
- if(!sheets.length)throw Error("No Excel worksheets found.");
+ if(!sheets.length)
+  throw Error(unreadableTabs.length?
+   "No readable Excel worksheets. Unresolved workbook tabs: "+unreadableTabs.slice(0,8).join(", "):
+   "No Excel worksheets found.");
  const out=[];
  for(let i=0;i<sheets.length;i++){
   check();notify("Reading worksheet "+(i+1)+" of "+sheets.length+"…");
   const {rows,truncated}=worksheetRows(await read(sheets[i].path),strings,styles,date1904);
-  out.push("Sheet "+(i+1)+(sheets[i].label&&sheets[i].label!=="Sheet "+(i+1)?" · "+sheets[i].label:"")+"\n"+
+  out.push("Sheet "+sheets[i].position+(sheets[i].label&&sheets[i].label!=="Sheet "+sheets[i].position?" · "+sheets[i].label:"")+"\n"+
    (rows.join("\n")||"[No cached cell values]")+
    (truncated?"\n[Notice: Worksheet text exceeded the local 10,000-row or 170,000-character limit; remaining cells were not extracted.]":""));
  }
@@ -365,5 +387,10 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
   throw Error("Spreadsheet contains no readable cached text or values.");
  if(allSheets.length>sheets.length)
   out.push("[Notice: Only "+sheets.length+" of "+allSheets.length+" worksheets were processed. Split the workbook to extract the remainder.]");
+ if(unreadableTabs.length)
+  out.push("[Notice: "+unreadableTabs.length+" workbook tab(s) could not be read because their worksheet relationship is missing, unsupported or duplicated: "+
+   unreadableTabs.slice(0,8).join(", ")+(unreadableTabs.length>8?", and others":"")+". These tabs were omitted.]");
+ if(inferredOrder)
+  out.push("[Notice: The workbook has no worksheet relationship metadata. Sheet filenames were used as a fallback; actual tab names and order could differ.]");
  return out.join("\n\n");
 }
