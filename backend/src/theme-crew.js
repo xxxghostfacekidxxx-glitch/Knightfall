@@ -4,7 +4,7 @@ import {acceptedAdminPartner} from "./chaos-companion.mjs";
 // Theme Crew: fixed, allowlisted sitewide looks. No AI-generated or arbitrary CSS
 // reaches the browser. This state is stored in the existing site_settings D1 table.
 export const THEME_CREW_PRESETS=Object.freeze({
- cathedral:Object.freeze({name:"Cathedral Ascendant",tag:"Approved original",mood:"Opulent Gothic architecture, antique metal, eclipse violet, bone parchment",accent:"#c7a77c"}),
+ cathedral:Object.freeze({name:"Black Sun Temple",tag:"Egyptian / obsidian",mood:"Anubis guardians, golden cartouches, dark temples, crimson eclipse and emerald scarabs",accent:"#e2bc76"}),
  blood_moon:Object.freeze({name:"Blood Moon Court",tag:"Crimson / velvet",mood:"Ox-blood velvet, candlelight, rose gold and dark cathedral stone",accent:"#e59ab1"}),
  verdant_crypt:Object.freeze({name:"Verdant Crypt",tag:"Poison ivy / copper",mood:"Moss-covered ironwork, emerald stained glass and aged bronze",accent:"#a7c899"}),
  iron_eclipse:Object.freeze({name:"Iron Eclipse",tag:"Steel / electric violet",mood:"Cold moonsteel, bruised violet and mechanical Gothic ruins",accent:"#b3a4de"}),
