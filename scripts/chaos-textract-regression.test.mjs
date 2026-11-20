@@ -73,6 +73,37 @@ test("PDF Flate streams preserve binary bytes, scanned PDF returns explicit erro
   "2 0 obj << /Length 0 >>\nstream\n\nendstream\nendobj"
  ])),/No selectable text/);
 });
+function ascii85Encode(bytes){
+ let out="";
+ for(let i=0;i<bytes.length;i+=4){
+  const chunk=bytes.subarray(i,i+4),nbytes=chunk.length;
+  const word=((chunk[0]||0)*16777216)+((chunk[1]||0)*65536)+((chunk[2]||0)*256)+(chunk[3]||0);
+  if(nbytes===4&&word===0){out+="z";continue;}
+  let remaining=word,digits="";
+  for(let j=0;j<5;j++){digits=String.fromCharCode(33+remaining%85)+digits;remaining=Math.floor(remaining/85);}
+  out+=nbytes===4?digits:digits.slice(0,nbytes+1);
+ }
+ return out+"~>";
+}
+test("PDF ASCII85 plus Flate, ASCIIHex and run-length filter pipelines",async()=>{
+ const words="BT (Decoded a real encoded stream) Tj ET";
+ const compressed=deflateSync(enc.encode(words));
+ const ascii85=Buffer.from(ascii85Encode(compressed),"ascii");
+ const hex=Buffer.from(enc.encode(words)).toString("hex")+">";
+ const run=Uint8Array.from([words.length-1,...enc.encode(words),128]);
+ for(const [name,encoded,filter] of [
+  ["ASCII85",ascii85,"/Filter [/ASCII85Decode /FlateDecode]"],
+  ["ASCIIHex",Buffer.from(hex,"ascii"),"/Filter /ASCIIHexDecode"],
+  ["RunLength",run,"/Filter /RunLengthDecode"]
+ ]){
+  const wrapped=Buffer.concat([
+   Buffer.from("%PDF-1.5\n1 0 obj << /Type /Page /Contents 2 0 R >> endobj\n2 0 obj << /Length "+encoded.length+" "+filter+" >>\nstream\n"),
+   Buffer.from(encoded),Buffer.from("\nendstream\nendobj\n%%EOF")
+  ]);
+  const result=await readKnightfallPdf(new Uint8Array(wrapped));
+  assert.match(result,/Decoded a real encoded stream/,name+" PDF pipeline");
+ }
+});
 test("DOCX preserves Word runs, paragraphs and escaped entities",async()=>{
  const xml='<w:document><w:body><w:p><w:r><w:t>Hello </w:t></w:r><w:r><w:t>world &amp; chaos</w:t></w:r></w:p><w:p><w:r><w:t>Second line</w:t></w:r></w:p></w:body></w:document>';
  const result=await extractTextract(file("sample.docx",zipPack([["word/document.xml",xml]])));
