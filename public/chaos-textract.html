@@ -15,13 +15,18 @@ body{margin:0;background:radial-gradient(circle at 70% 0%,#3c242c,#0b0b10 50%);c
 main{width:min(1060px,94vw);margin:2rem auto 5rem}
 .breadcrumb{display:flex;flex-wrap:wrap;gap:.5rem;color:#cebeac;font-size:.85rem}
 a{color:#e8c482}
-header.hero{position:relative;overflow:hidden;padding:2rem 1.4rem;margin:1.2rem 0 1rem;border:1px solid #a58862;border-radius:19px;background:linear-gradient(125deg,#24151e,#111017)}
-.hero:before{content:"𓂀";position:absolute;right:1.2rem;top:-2rem;color:#dfb7681b;font-size:12rem;pointer-events:none}
-.hero>*{position:relative}
+header.textract-hero{position:relative;isolation:isolate;overflow:hidden;padding:clamp(1.25rem,4vw,2rem);margin:1.2rem 0 1rem;border:1px solid #aa834b;border-radius:19px;background:linear-gradient(102deg,#111310fc,#151710ef 66%,#19120cd4),url('/assets/knightfall/black-sun-hero-illustration.webp') center/cover no-repeat;box-shadow:0 18px 45px #0007}
+.textract-hero:before{content:"𓂀";position:absolute;right:-1rem;top:-.75rem;color:#dfb76815;font-size:9rem;pointer-events:none;z-index:0}
+.textract-hero>*{position:relative;z-index:1}
 .eyebrow{font-weight:800;letter-spacing:.18em;color:var(--gold);font-size:.72rem}
 h1{font-size:clamp(2.3rem,8vw,4.8rem);margin:.35rem 0;line-height:1}
-h1 span{color:var(--coral)}
-.hero p{max-width:740px;line-height:1.6;color:#d9c9cb}
+h1 span{color:#e6bc78}
+.textract-hero p{max-width:640px;line-height:1.55;color:#eadfd1}
+.textract-hero .notice{margin:.8rem 0 0}
+.textract-hero details{margin-top:.6rem;color:#e6d7bc;font-size:.85rem}
+.textract-hero summary{cursor:pointer;color:#f2d19a;font-weight:750}
+.textract-hero details p{margin:.5rem 0 0;font-size:.85rem}
+@media(max-width:560px){header.textract-hero{background:linear-gradient(105deg,#111310fa,#171512ec),url('/assets/knightfall/black-sun-hero-illustration.webp') center/cover no-repeat}.textract-hero:before{font-size:6rem;opacity:.45}}
 .notice{border-left:3px solid var(--gold);padding:.7rem 1rem;background:#3428237c;border-radius:3px 10px 10px 3px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .panel{border:1px solid #8d706266;background:linear-gradient(160deg,#211722ee,#110e17ee);border-radius:16px;padding:1.1rem;min-width:0}
@@ -46,7 +51,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ffe5
 #textract-status[data-error=true]{color:#ffaaaa;border-color:#b85f60}
 #textract-stats{font-size:.8rem;color:#d9bd94}
 footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{padding:1.3rem}.panel{padding:.9rem}main{margin-top:1rem}textarea{min-height:240px}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.textract-hero{padding:1.3rem}.panel{padding:.9rem}main{margin-top:1rem}textarea{min-height:240px}}
 
 .tools-grid{margin-top:1rem}
 #textract-search-results{max-height:225px;overflow:auto;padding-left:1.6rem;line-height:1.5}
@@ -56,17 +61,20 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 .tool-stats{color:#e3bf91;font-weight:650}
 .tools-grid .panel p{line-height:1.5}
 </style>
-<script type="module" src="/chaos-textract.mjs?v=20261120-native2"></script>
+<script type="module" src="/chaos-textract.mjs?v=20261120-native3"></script>
 </head>
-<body>
+<body class="textract-page">
 <header class="kf-header"></header>
 <main id="main-content">
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Knightfall</a><span>/</span><a href="/devil-tools.html">Creator Foundry</a><span>/</span>Textract</nav>
-<header class="hero">
+<header class="textract-hero">
 <div class="eyebrow">𓂀 MISS CHAOS · THE SCRIBE'S CHAMBER</div>
 <h1>TEX<span>TRACT</span></h1>
 <p>Feed the little demon a document. She'll turn its readable words into text you can inspect, copy, save, or explicitly hand to Miss Chaos for analysis.</p>
-<p class="notice"><strong>Free and local first:</strong> your original files stay in this browser. Extraction now uses original Knightfall JavaScript and browser built-in decoding tools. No Tesseract, PDF.js, JSZip, downloadable OCR model, paid API, or external runtime CDN. PDF and Office text extraction have been upgraded. Images use on-device OCR when supported, with an experimental fallback. Scanned PDFs still require individual page images; verify important text and figures.</p>
+<p class="notice"><strong>Private and free:</strong> files are processed in your browser. Text-layer PDFs and Office documents are supported. Pictures use on-device text detection where available, otherwise experimental OCR. Always verify important numbers.</p>
+<details><summary>Which documents can Textract read?</summary>
+<p>Selectable-text PDFs, DOCX, XLSX, PPTX and plain text work locally. Scanned PDF pages cannot yet be rendered or OCRed automatically; export them as individual images. No cloud upload, paid OCR API, Tesseract, PDF.js or third-party runtime is used.</p>
+</details>
 </header>
 <div class="grid">
 <section class="panel" aria-labelledby="source-title">
