@@ -98,7 +98,7 @@ test("strict full-file input validation blocks traversal, bloated text and no-op
 test("source HEAD and exact original text must match GitHub before storing anything",async()=>{
  const changed=await source(sample(),{sha:"b".repeat(40)})();
  await assert.rejects(()=>inspectDevReviewCandidate(sample(),{readSource:source(sample(),{sha:"b".repeat(40)})}),/stale/);
- await assert.rejects(()=>inspectDevReviewCandidate(sample(),{readSource:async()=>({...changed,commit_sha:sha})}),/differs/);
+ await assert.rejects(()=>inspectDevReviewCandidate(sample(),{readSource:async()=>({...changed,commit_sha:sha,lines:[{number:1,text:"export const status = 'tampered';"}]})}),/differs/);
  await assert.rejects(()=>inspectDevReviewCandidate(sample(),{readSource:async()=>({
    ...await source()(),long_lines_omitted:true
  })}),/incomplete/);
