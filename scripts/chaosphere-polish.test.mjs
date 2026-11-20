@@ -92,3 +92,17 @@ test("Quote and emoji actions update the existing draft without sending or stori
  assert.equal(body.value.length,3999,"Long quotes never exceed server body limit");
  assert.match(status.textContent,/4,000-character limit/);
 });
+
+
+test("Pasted image attachments reuse the existing private upload picker and never auto-send",()=>{
+ assert.match(extras,/body\.addEventListener\("paste"/);
+ assert.match(extras,/attachmentInput\.dispatchEvent\(new Event\("change",\{bubbles:true\}\)\)/);
+ assert.match(extras,/^image\\\/\\\(\\?:png\\\|jpeg\\\|gif\\\|webp\\\)/);
+ assert.doesNotMatch(extras,/requestSubmit\(|\/api\/messages\/conversations|fetch\s*\(/);
+ assert.match(html,/Paste a picture to attach/);
+});
+test("Mobile conversation keeps Miss Chaos available above the composer",()=>{
+ assert.match(css,/body:has\(\.messages-shell \.message-layout\.show-chat\) #miss-chaos-presence/);
+ assert.match(css,/top:calc\(var\(--messages-chat-top,62px\) \+ 76px\)!important/);
+ assert.match(css,/>:not\(#miss-chaos-launcher\):not\(#mc-restore\)/);
+});

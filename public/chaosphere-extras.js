@@ -55,6 +55,34 @@
    closeTray();announce("Quote inserted into your draft. Edit it or press Send.");
   }
  });
+ body.addEventListener("paste",event=>{
+  if(composer.hidden||body.disabled)return;
+  const images=Array.from(event.clipboardData?.files||[]).filter(file=>
+   /^image\/(?:png|jpeg|gif|webp)$/i.test(file.type));
+  if(!images.length)return;
+  const attachmentInput=document.getElementById("attachment-input");
+  const attachButton=document.getElementById("attach-file");
+  if(!attachmentInput||typeof DataTransfer!=="function")return;
+  event.preventDefault();
+  if(attachButton?.disabled){
+   announce("Finish your current attachment upload before pasting another picture.");
+   return;
+  }
+  if(images.length>10){
+   announce("Attach up to 10 images at a time.");
+   return;
+  }
+  try{
+   const files=new DataTransfer();
+   for(const image of images)files.items.add(image);
+   attachmentInput.files=files.files;
+   closeTray();
+   announce("Preparing your pasted image attachment. The message won't send until you press Send.");
+   attachmentInput.dispatchEvent(new Event("change",{bubbles:true}));
+  }catch{
+   announce("Your browser can't paste this image as a file. Use the + button to attach it.");
+  }
+ });
  document.addEventListener("keydown",event=>{
   if(event.key==="Escape"&&!tray.hidden)closeTray();
  });

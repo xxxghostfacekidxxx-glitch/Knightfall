@@ -232,3 +232,17 @@
  .messages-shell .conversation,.messages-shell .inbox-toolbar button{transition:none!important}
  .messages-shell .conversation:hover{transform:none!important}
 }
+
+
+/* Keep the floating Miss Chaos companion accessible without covering the
+   keyboard-sensitive send bar while a mobile conversation occupies the screen. */
+@media(max-width:850px){
+ body:has(.messages-shell .message-layout.show-chat) #miss-chaos-presence{
+  top:calc(var(--messages-chat-top,62px) + 76px)!important;
+  bottom:auto!important;
+ }
+ body:has(.messages-shell .message-layout.show-chat) #miss-chaos-presence #mc-dock
+  >:not(#miss-chaos-launcher):not(#mc-restore){
+  display:none!important;
+ }
+}
