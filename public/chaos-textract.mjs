@@ -95,7 +95,7 @@ const compareFile=$("textract-compare-file"),compareButton=$("textract-compare")
 let secondFile=null,compareBusy=false,compareToken=0;
 function downloadLocal(suffix,text,type="text/plain;charset=utf-8"){
  if(!String(text||"").trim())return;
- const filename=(currentFile?.name||"document").replace(/\\.[^.]+$/,"").replace(/[^\\w.-]/g,"_").slice(0,75);
+ const filename=(currentFile?.name||"document").replace(/\.[^.]+$/,"").replace(/[^\w.-]/g,"_").slice(0,75);
  const blob=new Blob([text],{type});
  const href=URL.createObjectURL(blob);
  const a=document.createElement("a");a.href=href;a.download=filename+suffix;
@@ -125,7 +125,7 @@ function renderInsights(){
   tables.length+(tables.length===500?"+":"")+" table-like rows":
   "Extract a document to unlock statistics.";
  fieldsPreview.textContent=hasText?
-  (fields.length?fields.slice(0,40).map(x=>x.key+": "+x.value).join("\\n"):"No key-value pairs confidently detected."):
+  (fields.length?fields.slice(0,40).map(x=>x.key+": "+x.value).join("\n"):"No key-value pairs confidently detected."):
   "No document loaded.";
  for(const id of labButtons)$(id).disabled=!hasText;
  if(compareButton)compareButton.disabled=!hasText||!secondFile||busy||compareBusy;
