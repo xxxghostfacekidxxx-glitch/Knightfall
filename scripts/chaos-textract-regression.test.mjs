@@ -527,6 +527,8 @@ test("XLSX explicitly reports unresolved workbook tabs instead of silently omitt
  assert.match(result.text,/Missing tab/);
  assert.match(result.text,/These tabs were omitted/);
  assert.match(result.warning,/extraction is incomplete/);
+ assert.match(result.warning,/unresolved or unsupported workbook relationships/);
+ assert.doesNotMatch(result.warning,/safety limit/);
 });
 test("XLSX missing workbook relationships labels sheet filenames only as unverified",async()=>{
  const doc=zipPack([
@@ -538,6 +540,8 @@ test("XLSX missing workbook relationships labels sheet filenames only as unverif
  assert.doesNotMatch(result.text,/Sheet 1 · Last report/);
  assert.match(result.text,/Declared tab names \(unverified\): Last report, First report/);
  assert.match(result.warning,/extraction is incomplete/);
+ assert.match(result.warning,/tab names and order are unverified/);
+ assert.doesNotMatch(result.warning,/safety limit/);
 });
 test("XLSX missing all referenced worksheets reports an explicit error",async()=>{
  const doc=zipPack([
