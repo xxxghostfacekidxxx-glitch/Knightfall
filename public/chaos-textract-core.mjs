@@ -19,6 +19,19 @@ export function validateTextractFile(file){
  if(file.size>TEXTRACT_LIMITS.bytes)throw Error("File exceeds 18 MB. Split or compress it first.");
  return ext;
 }
+/** Decode plain text according to its BOM before normalization. Browser File.text()
+ * assumes UTF-8 and destroys UTF-16 exported receipts and spreadsheets. */
+export async function readTextractPlainText(file){
+ if(typeof file.arrayBuffer!=="function")return file.text();
+ const bytes=new Uint8Array(await file.arrayBuffer());
+ if(bytes.length>=2&&bytes[0]===255&&bytes[1]===254)
+  return new TextDecoder("utf-16le").decode(bytes.subarray(2));
+ if(bytes.length>=2&&bytes[0]===254&&bytes[1]===255)
+  return new TextDecoder("utf-16be").decode(bytes.subarray(2));
+ if(bytes.length>=3&&bytes[0]===239&&bytes[1]===187&&bytes[2]===191)
+  return new TextDecoder("utf-8").decode(bytes.subarray(3));
+ return new TextDecoder("utf-8").decode(bytes);
+}
 export function normalizeTextractText(text){
  return String(text||"").replace(/\r\n?/g,"\n").replace(/\u0000/g,"").replace(/[\t ]+\n/g,"\n").replace(/\n{4,}/g,"\n\n\n").trim();
 }
@@ -38,7 +51,7 @@ export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={
  const ext=validateTextractFile(file);
  if(cancelled())throw Error("Extraction cancelled.");
  let output="",mode="text",warning=null,confidence=null;
- if(TEXT_EXT.has(ext)){notify("Reading text locally…");output=await file.text();}
+ if(TEXT_EXT.has(ext)){notify("Reading text locally…");output=await readTextractPlainText(file);}
  else if(["docx","xlsx","pptx"].includes(ext)){
   mode="native-office";output=await readKnightfallOffice(file,ext,{notify,cancelled});
  }else if(ext==="pdf"){
