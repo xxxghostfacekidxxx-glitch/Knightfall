@@ -71,3 +71,25 @@ test("original engine reads text without network or AWS dependencies",async()=>{
   assert.doesNotMatch(content,/pdfjs|tesseract(?:\.js)?|jszip|cdn\./i);
  }
 });
+
+
+test("original OCR separates touching printed glyphs and preserves larger word gaps",()=>{
+ const shapes={
+  F:["111111","100000","111110","100000","100000","100000"],
+  A:["011110","100001","100001","111111","100001","100001"]
+ };
+ const masks=Object.fromEntries(Object.entries(shapes).map(([name,rows])=>
+  [name,Uint8Array.from(rows.join("").split("").map(Number))]));
+ const templates=Object.entries(masks).map(([letter,mask])=>
+  ({letter,ratio:1,grid:normalizeGlyph(mask,6,6)}));
+ const width=33,height=6,joined=new Uint8Array(width*height);
+ for(let y=0;y<height;y++)for(let x=0;x<6;x++){
+  joined[y*width+x]=masks.F[y*6+x];
+  joined[y*width+x+6]=masks.A[y*6+x];
+  joined[y*width+x+21]=masks.F[y*6+x];
+  joined[y*width+x+27]=masks.A[y*6+x];
+ }
+ const result=decodeGlyphMask(joined,width,height,templates);
+ assert.equal(result.text,"FA FA");
+ assert.ok(result.confidence>.9);
+});
