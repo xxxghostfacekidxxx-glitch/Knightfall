@@ -1,4 +1,5 @@
 import {buildChaosFlow} from "./chaos-flow-core.mjs";
+import {makeChaosCandidateTestKit} from "./chaos-review-test-kit.mjs?v=20261119-candidate1";
 const API="https://api.ash-fall.com";
 const byId=id=>document.getElementById(id);
 const code=byId("studio-code"),language=byId("studio-language");
@@ -66,8 +67,14 @@ const proposeButton=byId("studio-repo-propose"),reviewDownload=byId("studio-prop
 const reviewHandoff=byId("studio-proposal-handoff");
 const reviewOutput=byId("studio-proposal-output"),reviewStatus=byId("studio-proposal-status");
 const devSubmit=byId("studio-dev-review-submit"),devSummary=byId("studio-dev-review-summary"),devStatus=byId("studio-dev-review-status");
+const candidateBuild=byId("studio-candidate-build"),candidateDownload=byId("studio-candidate-download"),candidateCopy=byId("studio-candidate-copy");
+const candidateField=byId("studio-candidate-field"),candidateValue=byId("studio-candidate-value"),candidateStatus=byId("studio-candidate-status");
+let candidateKit=null;
+function resetCandidateKit(){candidateKit=null;candidateBuild.disabled=true;candidateDownload.disabled=true;candidateCopy.disabled=true;candidateField.disabled=true;candidateValue.value="";}
+function renderCandidateField(){candidateValue.value=candidateKit?String(candidateKit.inputs[candidateField.value]||""):"";}
 function clearReview(message="No proposal staged yet."){
  reviewPacket="";reviewCandidate="";reviewSummary="";reviewSubmission=null;reviewDownload.disabled=true;reviewHandoff.disabled=true;devSubmit.disabled=true;
+ resetCandidateKit();
  note(reviewOutput,message);
 }
 repoRead.addEventListener("click",async()=>{
@@ -194,6 +201,9 @@ proposeButton.addEventListener("click",async()=>{
   reviewSubmission=fullFile?{path:snapshot.path,source_sha:snapshot.commitSha,
     original:snapshot.original,candidate}:null;
   devSubmit.disabled=!reviewSubmission;
+  candidateBuild.disabled=!reviewSubmission;
+  note(candidateStatus,fullFile?"Verified full file ready for a local SHA-256 test packet.":
+    "Only full small files can be tested by the manual candidate workflow.");
   note(devStatus,fullFile?"Complete small file verified. Add a clear summary to submit for review; nothing will be committed.":
     "This is only an excerpt. Cannot submit a partial-file change to the review docket.");
   reviewSummary=[
@@ -249,7 +259,8 @@ devSubmit.addEventListener("click",async()=>{
    if(!result.ok)throw Error(String(data.error||"Developer review docket unavailable.").slice(0,235));
    if(data.status!=="pending"||!data.id)throw Error("The server did not confirm a pending review.");
    note(devStatus,"Submitted review #"+data.id+". No code was committed or deployed. Open Eye of Chaos's approval panel.");
-   reviewSubmission=null;devSubmit.disabled=true;
+   // Keep the exact reviewed candidate available to export for manual CI.
+   devSubmit.disabled=true;
  }catch(error){devSubmit.disabled=false;note(devStatus,String(error.message||"Unable to submit this review."));}
 });
 
