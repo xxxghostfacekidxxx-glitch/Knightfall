@@ -56,7 +56,7 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 .tool-stats{color:#e3bf91;font-weight:650}
 .tools-grid .panel p{line-height:1.5}
 </style>
-<script type="module" src="/chaos-textract.mjs?v=20261120-lab2"></script>
+<script type="module" src="/chaos-textract.mjs?v=20261120-native1"></script>
 </head>
 <body>
 <header class="kf-header"></header>
@@ -66,7 +66,7 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 <div class="eyebrow">𓂀 MISS CHAOS · THE SCRIBE'S CHAMBER</div>
 <h1>TEX<span>TRACT</span></h1>
 <p>Feed the little demon a document. She'll turn its readable words into text you can inspect, copy, save, or explicitly hand to Miss Chaos for analysis.</p>
-<p class="notice"><strong>Free and local first:</strong> your original files stay in this browser. PDF, Word, spreadsheet, slide, and image processing uses open-source libraries loaded on demand. The extraction engines, workers, WASM, and English OCR language file are served directly by Knightfall. No AWS account, paid API, or third-party runtime CDN.</p>
+<p class="notice"><strong>Free and local first:</strong> your original files stay in this browser. Extraction now uses original Knightfall JavaScript and browser built-in decoding tools. No Tesseract, PDF.js, JSZip, downloadable OCR model, paid API, or external runtime CDN. This is an experimental native reader, not a full document-recognition suite.</p>
 </header>
 <div class="grid">
 <section class="panel" aria-labelledby="source-title">
@@ -76,8 +76,8 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 </div>
 <div class="field"><label for="textract-file">Browse Photos or Files</label><input id="textract-file" type="file" accept=".pdf,.docx,.xlsx,.pptx,.txt,.md,.csv,.tsv,.json,.xml,.html,.htm,.log,.css,.js,.mjs,.ts,.svg,image/*"></div>
 <div class="filename" id="textract-filename">No file selected</div>
-<p class="help">18 MB maximum. The first 24 PDF pages are read; OCR is capped at 8 scanned pages per extraction. Google Photos cloud-only items may need to be saved to Files first.</p>
-<label class="check"><input id="textract-ocr-pdf" type="checkbox" checked>Use OCR when a PDF page has little or no selectable text (slower on phones)</label>
+<p class="help">18 MB maximum. The original PDF engine reads supported selectable text streams on up to 24 pages, but cannot render or OCR scanned PDF pages. Image OCR is experimental and intended for simple, high-contrast printed Latin text. Google Photos cloud-only images may need saving to Files.</p>
+<p class="help">𓂀 Original Glyph Forge OCR runs only on image files. It does not yet handle handwriting, arbitrary fonts, or PDF page rendering. Verify extracted names, numbers, and dates.</p>
 <div class="controls"><button id="textract-extract" class="primary" disabled type="button">𓂀 Extract text</button><button id="textract-stop" type="button" hidden>Stop</button><button id="textract-clear" type="button">Clear</button></div>
 <div id="textract-status" role="status" aria-live="polite">Choose a file to begin.</div>
 </section>
@@ -136,6 +136,6 @@ footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
 <p class="help">This compares extracted lines, not visual layout. It may show an edited line as one removed line and one added line; rearranged or unreadable content requires manual checking.</p>
 </section>
 </div>
-<footer>⚠ OCR can misread handwriting, low-resolution images, columns, and numbers. Do not rely on it without checking against the original. Open-source engines are hosted by Knightfall with upstream licenses; your selected files are processed locally. No extracted text is stored in Knightfall until you choose to send it in chat.</footer>
+<footer>⚠ OCR can misread handwriting, low-resolution images, columns, and numbers. Do not rely on it without checking against the original. The Textract parsing and OCR code is written for Knightfall and runs locally using browser platform APIs. No extracted text is stored in Knightfall until you choose to send it in chat.</footer>
 </main>
 </body></html>
