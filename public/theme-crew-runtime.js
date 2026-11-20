@@ -30,8 +30,11 @@ const paint=()=>{
  else delete document.body.dataset.kfThemePreview;
  document.dispatchEvent(new CustomEvent("kf:theme-change",{detail:{preset:chosen,published,preview:!!preview(),revision:lastRevision}}));
 };
-const refresh=async()=>{
- if(!isLive||document.visibilityState==="hidden")return;
+let pendingRefresh=null;
+const refresh=()=>{
+ if(!isLive||document.visibilityState==="hidden")return Promise.resolve();
+ if(pendingRefresh)return pendingRefresh;
+ pendingRefresh=(async()=>{
  try{
   const response=await fetch(API,{credentials:"include",cache:"no-store",headers:{accept:"application/json"}});
   if(!response.ok)return;
@@ -41,6 +44,8 @@ const refresh=async()=>{
   if(lastRevision!==result.revision||published!==key){lastRevision=result.revision;published=key;paint()}
   try{localStorage.setItem(LIVE_CACHE,JSON.stringify({preset:key,revision:result.revision}))}catch{}
  }catch{/* Safe, offline fallback: use the last known theme. */}
+ })().finally(()=>{pendingRefresh=null});
+ return pendingRefresh;
 };
 const addFallbackRealm=()=>{
  if(document.body?.dataset.kfRealm)return;

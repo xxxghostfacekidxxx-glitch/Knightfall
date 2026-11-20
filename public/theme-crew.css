@@ -109,7 +109,15 @@ body.theme-crew-page{background:#0b0d0c;color:#f4e5d0}
 .theme-crew-choice .theme-crew-chip{width:28px;height:28px;border-radius:50%;background:var(--kf-choice-accent,#a77a97);border:2px solid #eed8c4;box-shadow:0 0 15px var(--kf-choice-accent,#a77a97)}
 .theme-crew-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin:1.2rem 0 .4rem}
 .theme-crew-actions button,.theme-crew-action{min-height:44px;border:1px solid #d7ac6b;border-radius:10px;padding:.7rem 1rem;background:linear-gradient(145deg,#684122,#342216);color:#fff1d5;font-weight:800;cursor:pointer}
-.theme-crew-actions button:nth-child(2){background:#29323b}
+/* Action styling uses stable IDs, not a position that changes whenever a new control is inserted. */
+#theme-crew-preview,#theme-crew-copy-preview{background:#25352e}
+#theme-crew-rollback{background:#381d1a;border-color:#c6886b}
+.theme-crew-choice:disabled{opacity:.64;cursor:wait}
+.theme-crew-choice small{color:#e1cbb0}
+.theme-crew-bot{border-color:#aa824b80;background:linear-gradient(145deg,#251d17,#101918)}
+.theme-crew-bot small{color:#e6bc79}
+.theme-crew-plan label{color:#e4c68e}
+.theme-crew-plan textarea{background:#111713;border-color:#aa8458;color:#f1e4d0}
 .theme-crew-actions button:disabled{opacity:.45;cursor:not-allowed}
 .theme-crew-actions button:is(:hover,:focus-visible){filter:brightness(1.18)}
 .theme-crew-bot-grid{display:grid;gap:.7rem}

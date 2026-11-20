@@ -9,7 +9,7 @@
     document.querySelector('link[rel="manifest"]')?.getAttribute("href")||"");
   const mainPwaRecorded=()=>{try{return localStorage.getItem(mainPwaKey)==="1"}catch{return false}};
   const recordMainPwa=()=>{if(mainManifestActive())try{localStorage.setItem(mainPwaKey,"1")}catch{}};
-  // Apply shared Gothic chrome AFTER every page-specific and inline stylesheet.
+  // Apply shared Knightfall chrome AFTER every page-specific and inline stylesheet.
   // The previous eager injection could run in <head> before later stylesheets
   // were parsed, allowing old neon/page CSS to override the approved theme.
   const mountApprovedTheme = () => {
@@ -23,7 +23,7 @@
     const link = themes.shift() || document.createElement("link");
     link.rel = "stylesheet";
     link.dataset.kfCanonicalTheme = "true";
-    const target = "/theme.css?v=20261116-cascade4";
+    const target = "/theme.css";
     if (link.getAttribute("href") !== target) link.href = target;
     // The canonical root imports tokens, shared chrome, presets and Requiem
     // in that order. Appending only this link prevents double application.
@@ -39,7 +39,7 @@
   const mountCrewRuntime = () => {
     if(document.querySelector('script[data-kf-theme-crew-runtime],script[src^="/theme-crew-runtime.js"]'))return;
     const script=document.createElement("script");
-    script.src="/theme-crew-runtime.js?v=20261120-fast-theme1";
+    script.src="/theme-crew-runtime.js";
     script.dataset.kfThemeCrewRuntime="true";
     script.defer=true;
     document.head.appendChild(script);

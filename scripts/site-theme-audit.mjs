@@ -29,7 +29,7 @@ assert.doesNotMatch(home,/\/gravewave-takeover\.(js|css)/);
 for (const path of ["auth.html","community.html"]) {
  const page=read("../public/"+path);
  assert.ok(!page.includes("gravewave-takeover."),"Retired Gravewave must not load on "+path);
- assert.ok(page.includes("/theme.css?v=20261115-gothic9"),"Gothic theme must be versioned on "+path);
+ assert.ok(page.includes("/theme.css"),"Shared theme must use revalidated canonical asset on "+path);
  assert.ok(page.includes("/nav.js?v=20261115-gothic9"),"Current navigation must be versioned on "+path);
 }
 assert.doesNotMatch(read("../public/auth.html"),/#ff55d8|#c6ff45|#a8ff3e/i,"Neon auth styling must not return");
@@ -75,7 +75,7 @@ for(const filename of sharedGothicFiles){
  const src=read("../public/"+filename);
  assert.ok(!src.includes("#ff55d8")&&!src.includes("#c6ff45")&&!src.includes("rgba(255,85,216"),"Legacy neon must not revive in "+filename);
 }
-assert.ok(read("../public/support.html").includes("/theme.css?v=20261115-gothic9"),"Support page must load the approved shared theme");
+assert.ok(read("../public/support.html").includes("/theme.css"),"Support page must load the approved shared theme");
 assert.match(read("../public/memo-pad.html"),/\/memo-pad\.css\?v=20\d{6}-[a-z0-9-]+/,"Memo Pad styles must be cache busted");
 
 

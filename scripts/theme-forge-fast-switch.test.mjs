@@ -36,7 +36,7 @@ test("Theme Forge has accessible one-click preview and versioned staff controls"
   "theme-crew-selected","theme-crew-current"])
   assert.ok(deck.includes('id="'+id+'"'),"Missing control "+id);
  assert.match(ui,/const PREVIEW_ART=Object\.freeze/);
- assert.match(ui,/KnightfallThemeCrew\?\.preview\?\.\(preset\)/);
+ assert.match(ui,/KnightfallThemeCrew\?\.preview\?\.\(preset===current\?\.preset\?null:preset\)/);
  assert.match(ui,/theme-crew-presets"\)\.addEventListener\("keydown"/);
  assert.match(ui,/navigator\.clipboard\.writeText/);
  assert.match(ui,/theme-crew-scene/);

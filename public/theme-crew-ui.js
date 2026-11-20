@@ -23,15 +23,23 @@ async function req(path,method="GET",payload){
  if(!res.ok)throw Error(d.error||"Theme Crew request failed ("+res.status+").");
  return d;
 }
-const lock=value=>{busy=value;for(const id of ["theme-crew-preview","theme-crew-publish","theme-crew-revert-preview","theme-crew-rollback","theme-crew-refresh"])$(id).disabled=busy||((id==="theme-crew-publish"||id==="theme-crew-rollback")&&!canPublish)};
+const lock=value=>{
+ busy=value;
+ for(const id of ["theme-crew-preview","theme-crew-copy-preview","theme-crew-publish","theme-crew-revert-preview","theme-crew-rollback","theme-crew-refresh"]){
+  $(id).disabled=busy||((id==="theme-crew-publish"||id==="theme-crew-rollback")&&!canPublish);
+ }
+ for(const choice of document.querySelectorAll(".theme-crew-choice"))choice.disabled=busy;
+ $("theme-crew-plan-form").querySelector("button").disabled=busy;
+};
 function choose(preset){
- if(!Object.hasOwn(presets,preset))return;
+ if(busy||!Object.hasOwn(presets,preset))return;
  selected=preset;
  for(const b of document.querySelectorAll(".theme-crew-choice")){
   b.setAttribute("aria-pressed",String(b.dataset.preset===selected));
  }
  const p=presets[preset];
- const local=window.KnightfallThemeCrew?.preview?.(preset)===true;
+ // Selecting the live theme clears a stale preview, rather than pinning it.
+ const local=window.KnightfallThemeCrew?.preview?.(preset===current?.preset?null:preset)===true;
  $("theme-crew-selected").textContent=(current?.preset===preset?"LIVE THEME":"PRIVATE PREVIEW")+" · "+p.name;
  announce("Selected "+p.name+". "+(local?"Preview applied instantly. ":"")+(canPublish?"Publish to change Knightfall for everyone.":"Only authorized staff can publish."));
 }
@@ -76,7 +84,7 @@ async function load(){
  current=data.current;presets=data.presets;
  canPublish=data.permissions?.can_publish===true;
  for(const id of ["theme-crew-publish","theme-crew-rollback"])$(id).hidden=!canPublish;
- lock(false);
+ if(!busy)lock(false);
  if(!initialized||!Object.hasOwn(presets,selected))selected=current.preset;
  initialized=true;
  $("theme-crew-selected").textContent="SELECTED · "+(presets[selected]?.name||"Choose a look");
@@ -101,6 +109,7 @@ async function publish(undo=false){
  try{
   const result=await req(undo?"/rollback":"/activate","POST",undo?{expectedRevision:current.revision}:{preset:desired,expectedRevision:current.revision});
   current=result.current;
+  selected=current.preset;
   published=true;
   try{await load()}catch(error){announce("Theme published as "+presets[current.preset].name+", but dashboard refresh failed: "+error.message+". Reload to verify.");}
   // Local preview must not hide the new live state.
