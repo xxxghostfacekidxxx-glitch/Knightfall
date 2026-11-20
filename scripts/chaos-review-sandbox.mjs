@@ -59,8 +59,8 @@ export function validateSandboxRequest(input,{checkoutSha,root}={}){
    throw Error("Candidate SHA-256 mismatch. Do not run an altered review file.");
  if(input.run_targeted_tests!==true&&input.run_targeted_tests!==false)
    throw Error("Choose an explicit true/false test execution mode.");
- const file=resolve(root,path),base=resolve(root);
- if(!file.startsWith(base+sep)||!lstatSync(file).isFile()||realpathSync(file)!==file)
+ const file=resolve(root,path),baseDir=resolve(root);
+ if(!file.startsWith(baseDir+sep)||!lstatSync(file).isFile()||realpathSync(file)!==file)
    throw Error("Source path must be a regular checked-out repository file, never a symlink.");
  const original=readFileSync(file);
  if(original.length<1||original.length>MAX_CODE_BYTES)
