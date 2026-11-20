@@ -570,3 +570,20 @@ test("Office ZIP CRC verification detects mutated XML instead of accepting corru
  view.setUint32(central+16,(correct^0xFFFFFFFF)>>>0,true);
  await assert.rejects(()=>extractTextract(file("crc-corrupted.docx",bytes)),/CRC integrity verification/);
 });
+
+
+test("Oversized referenced Office XML sections fail clearly instead of vanishing",async()=>{
+ const xml='<worksheet><sheetData>'+('<row><c r="A1"><v>1</v></c></row>').repeat(150000)+'</sheetData></worksheet>';
+ assert.ok(enc.encode(xml).length>4*1024*1024);
+ const zipped=zipPack([["xl/worksheets/sheet1.xml",xml]]);
+ await assert.rejects(()=>extractTextract(file("large-worksheet.xlsx",zipped)),/section xl\/worksheets\/sheet1\.xml exceeds the 4 MB/);
+});
+test("Large embedded images do not block extraction of small Word text",async()=>{
+ const image="PHOTO".repeat(1100000);
+ const zipped=zipPack([
+  ["word/document.xml",'<w:document><w:p><w:r><w:t>READABLE EVEN WITH LARGE PHOTO</w:t></w:r></w:p></w:document>'],
+  ["word/media/image1.png",image]
+ ]);
+ const result=await extractTextract(file("image-rich.docx",zipped));
+ assert.match(result.text,/READABLE EVEN WITH LARGE PHOTO/);
+});
