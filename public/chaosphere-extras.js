@@ -40,6 +40,34 @@
   if(insertAtCursor(button.dataset.insertEmoji))closeTray();
  });
  transcript.addEventListener("click",event=>{
+  const photo=event.target.closest("a.message-attachment.image-preview");
+  if(photo&&typeof HTMLDialogElement!=="undefined"&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey){
+   const href=photo.getAttribute("href"),thumbnail=photo.querySelector("img");
+   if(href&&thumbnail){
+    const url=new URL(href,location.origin),apiOrigin="https://api.ash-fall.com";
+    if((url.origin===location.origin||url.origin===apiOrigin)&&url.protocol==="https:"){
+     let lightbox=document.getElementById("cs-image-lightbox");
+     if(!lightbox){
+      lightbox=document.createElement("dialog");
+      lightbox.id="cs-image-lightbox";lightbox.className="cs-image-lightbox";
+      lightbox.setAttribute("aria-label","Message photo preview");
+      lightbox.innerHTML='<div class="cs-image-stage"><button class="cs-image-close" type="button" aria-label="Close photo preview">×</button><img alt=""><div class="cs-image-caption"><strong></strong><a target="_blank" rel="noopener noreferrer">Open original</a></div></div>';
+      document.body.append(lightbox);
+      lightbox.querySelector(".cs-image-close").addEventListener("click",()=>lightbox.close());
+      lightbox.addEventListener("click",click=>{if(click.target===lightbox)lightbox.close()});
+      lightbox.addEventListener("close",()=>lightbox.querySelector("img").removeAttribute("src"));
+     }
+     const image=lightbox.querySelector("img");
+     image.src=thumbnail.getAttribute("src")||href;
+     image.alt=thumbnail.alt||"Message attachment";
+     lightbox.querySelector(".cs-image-caption strong").textContent=photo.querySelector(".attachment-info strong")?.textContent||"Photo attachment";
+     lightbox.querySelector(".cs-image-caption a").href=url.href;
+     if(typeof lightbox.showModal==="function"){
+      event.preventDefault();lightbox.showModal();return;
+     }
+    }
+   }
+  }
   const button=event.target.closest("[data-quote-message]");
   if(!button)return;
   const article=button.closest("article.message[data-message]");

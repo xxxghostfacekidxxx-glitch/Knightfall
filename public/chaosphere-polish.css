@@ -246,3 +246,31 @@
   display:none!important;
  }
 }
+
+
+/* Private photo attachments open inside Chaosphere, not a contextless browser tab. */
+.cs-image-lightbox{
+ box-sizing:border-box;width:min(960px,calc(100vw - 24px));
+ max-width:960px;max-height:calc(100dvh - 32px);
+ padding:clamp(.6rem,2vw,1rem);border:1px solid #d2af8c9c;
+ border-radius:22px;background:linear-gradient(145deg,#25202a,#101419);
+ color:#f6e8d8;box-shadow:0 24px 95px #000d;overflow:auto;
+}
+.cs-image-lightbox::backdrop{background:#05070be5;backdrop-filter:blur(9px)}
+.cs-image-stage{display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;gap:.7rem;position:relative;min-width:0}
+.cs-image-stage>img{
+ display:block;max-width:100%;max-height:calc(100dvh - 178px);
+ width:auto;height:auto;object-fit:contain;border-radius:12px;
+ background:#11161c;
+}
+.cs-image-stage .cs-image-close{
+ position:sticky;top:0;justify-self:end;z-index:1;min-width:44px;min-height:44px;
+ border:1px solid #d4b589;border-radius:12px;color:#f8e8d1;
+ background:#332833;font-size:1.5rem;cursor:pointer;
+}
+.cs-image-caption{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;width:100%;font-size:.87rem}
+.cs-image-caption strong{overflow-wrap:anywhere}
+.cs-image-caption a{color:#f0c992;text-underline-offset:4px}
+.cs-image-lightbox :is(button,a):focus-visible{outline:3px solid #e9bc80;outline-offset:3px}
+@media(max-width:550px){.cs-image-lightbox{border-radius:13px;padding:.6rem}.cs-image-stage>img{max-height:calc(100dvh - 144px)}}
+@media(prefers-reduced-motion:reduce){.cs-image-lightbox::backdrop{backdrop-filter:none}}
