@@ -5,7 +5,7 @@
 export const CHAOS_CANDIDATE_WORKFLOW="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/miss-chaos-candidate-check.yml";
 export const CHAOS_CANDIDATE_KIT_SCHEMA="knightfall.miss-chaos.manual-candidate-check.v1";
 const SHA=/^[a-f0-9]{40}$/,PATH=/^(?:public|backend)\/[A-Za-z0-9_./-]+\.(?:js|mjs|cjs|ts|tsx|jsx|json)$/;
-const UNSAFE=/(?:^|\/)(?:\.{1,2}|node_modules|dist|coverage|secrets?|private-keys|credentials)(?:\/|$)|(?:^|[-_.\/])(?:passwords?|api[-_]?keys?|access[-_]?tokens?)(?:[-_.\/]|$)/i;
+const UNSAFE=/(?:^|\/)(?:\.{1,2}|node_modules|dist|coverage|secrets?|private-keys|credentials)(?:\/|$)|(?:^|[-_.\/])(?:passwords?|credentials?|api[-_]?keys?|access[-_]?tokens?)(?:[-_.\/]|$)/i;
 const MAX_BYTES=5000;
 function encodeBytesAsBase64(bytes){
  let raw="";
