@@ -2,7 +2,7 @@
 // site/theme contracts fail. No dependencies, private keys, or network calls.
 import {spawnSync} from "node:child_process";
 const jobs=[
- ["Textract local OCR, file safety and exports",["--test","scripts/chaos-textract.test.mjs","scripts/chaos-textract-native.test.mjs","scripts/chaos-textract-lab.test.mjs"]],
+ ["Textract local OCR, file safety and exports",["--test","scripts/chaos-textract.test.mjs","scripts/chaos-textract-native.test.mjs","scripts/chaos-textract-lab.test.mjs","scripts/chaos-textract-regression.test.mjs"]],
  ["Textract extraction syntax",["--check","public/chaos-textract-core.mjs"]],
  ["Original Textract ZIP syntax",["--check","public/chaos-textract-native-zip.mjs"]],
  ["Original Textract PDF syntax",["--check","public/chaos-textract-native-pdf.mjs"]],
