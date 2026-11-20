@@ -547,3 +547,26 @@ test("XLSX missing all referenced worksheets reports an explicit error",async()=
  ]);
  await assert.rejects(()=>extractTextract(file("missing-sheets.xlsx",doc)),/No readable Excel worksheets.*Lost/);
 });
+
+
+test("Office ZIP CRC verification detects mutated XML instead of accepting corrupted text",async()=>{
+ const xml='<w:document><w:p><w:t>INTEGRITY PASS</w:t></w:p></w:document>';
+ const bytes=zipPack([["word/document.xml",xml]]);
+ const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
+ const central=view.getUint32(bytes.length-22+16,true);
+ const checksum=content=>{
+  let crc=0xFFFFFFFF;
+  for(const value of content){
+   crc^=value;
+   for(let n=0;n<8;n++)crc=(crc&1)?(crc>>>1)^0xEDB88320:crc>>>1;
+  }
+  return (crc^0xFFFFFFFF)>>>0;
+ };
+ const correct=checksum(enc.encode(xml));
+ assert.notEqual(correct,0);
+ view.setUint32(central+16,correct,true);
+ const accepted=await extractTextract(file("crc-valid.docx",bytes));
+ assert.match(accepted.text,/INTEGRITY PASS/);
+ view.setUint32(central+16,(correct^0xFFFFFFFF)>>>0,true);
+ await assert.rejects(()=>extractTextract(file("crc-corrupted.docx",bytes)),/CRC integrity verification/);
+});
