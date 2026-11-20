@@ -243,14 +243,17 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
   return sections.filter(Boolean).join("\n\n");
  }
  if(extension==="pptx"){
-  const slides=names.filter(s=>/^ppt\/slides\/slide\d+\.xml$/.test(s))
-   .sort((a,b)=>Number(a.match(/slide(\d+)/)[1])-Number(b.match(/slide(\d+)/)[1])).slice(0,60);
+  const allSlides=names.filter(s=>/^ppt\/slides\/slide\d+\.xml$/.test(s))
+   .sort((a,b)=>Number(a.match(/slide(\d+)/)[1])-Number(b.match(/slide(\d+)/)[1]));
+  const slides=allSlides.slice(0,60);
   if(!slides.length)throw Error("No PowerPoint slide text files found.");
   const out=[];
   for(let i=0;i<slides.length;i++){
    check();notify("Reading slide "+(i+1)+" of "+slides.length+"…");
    out.push("Slide "+(i+1)+"\n"+(xmlText(await read(slides[i]))||"[No editable text on this slide]"));
   }
+  if(allSlides.length>slides.length)
+   out.push("[Notice: Only "+slides.length+" of "+allSlides.length+" slides were processed. Split the presentation to extract the remainder.]");
   return out.join("\n\n");
  }
  if(extension!=="xlsx")throw Error("Unsupported Office format.");
@@ -262,7 +265,8 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
   .sort((a,b)=>Number(a.match(/sheet(\d+)/)[1])-Number(b.match(/sheet(\d+)/)[1]));
  const linked=definitions.map((def,i)=>({path:rels.get(def.id)||available[i]||"",label:def.name||"Sheet "+(i+1)}))
   .filter(def=>available.includes(def.path));
- const sheets=(linked.length?linked:available.map((path,i)=>({path,label:definitions[i]?.name||"Sheet "+(i+1)}))).slice(0,25);
+ const allSheets=(linked.length?linked:available.map((path,i)=>({path,label:definitions[i]?.name||"Sheet "+(i+1)})));
+ const sheets=allSheets.slice(0,25);
  if(!sheets.length)throw Error("No Excel worksheets found.");
  const out=[];
  for(let i=0;i<sheets.length;i++){
@@ -272,5 +276,7 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
  }
  if(!out.some(x=>!/^\s*Sheet[^\n]*\n\[No cached cell values\]$/.test(x)))
   throw Error("Spreadsheet contains no readable cached text or values.");
+ if(allSheets.length>sheets.length)
+  out.push("[Notice: Only "+sheets.length+" of "+allSheets.length+" worksheets were processed. Split the workbook to extract the remainder.]");
  return out.join("\n\n");
 }
