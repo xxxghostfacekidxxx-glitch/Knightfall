@@ -221,9 +221,8 @@ body.zombie-immersive-open #miss-chaos-presence{display:none!important}
 #miss-chaos-presence #mc-private-actions a{min-width:0;overflow-wrap:anywhere}
 @media(max-width:600px){
  #miss-chaos-presence #miss-chaos-window{
-  left:max(8px,env(safe-area-inset-left))!important;
-  right:max(8px,env(safe-area-inset-right))!important;
-  width:auto!important;max-width:none!important;
+  right:max(12px,env(safe-area-inset-right))!important;
+  width:min(418px,calc(100vw - max(12px,env(safe-area-inset-left)) - max(12px,env(safe-area-inset-right))))!important;
   height:min(70dvh,650px)!important;
   max-height:calc(100dvh - 103px)!important;
   bottom:calc(72px + env(safe-area-inset-bottom))!important;
@@ -251,6 +250,24 @@ body.zombie-immersive-open #miss-chaos-presence{display:none!important}
  #miss-chaos-presence #mc-move,#miss-chaos-presence #mc-minimize{height:23px;width:23px;min-width:23px}
 }
 
+
+#miss-chaos-presence #mc-settings{
+ flex:0 1 auto;min-height:0;max-height:32%;overflow:auto;
+ background:#181220;border-bottom:1px solid #46364b;
+}
+#mc-settings>summary{padding:.45rem .75rem;cursor:pointer;font-size:.78rem;font-weight:750}
+#miss-chaos-presence .sr-only{
+ position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+ clip-path:inset(50%);white-space:nowrap;border:0;
+}
+@media(max-height:500px){
+ #miss-chaos-presence #miss-chaos-window,
+ #miss-chaos-presence[data-dock] #miss-chaos-window{
+  top:max(4px,env(safe-area-inset-top))!important;bottom:auto!important;
+  height:calc(100dvh - max(4px,env(safe-area-inset-top)) - max(4px,env(safe-area-inset-bottom)))!important;
+  max-height:none!important;z-index:1;overflow-y:auto!important;
+ }
+}
 
 /* Chaos Console: compact quick drafts and explicit private memo capture. */
 #miss-chaos-presence #mc-field-kit{flex:0 0 auto;display:grid;gap:5px;min-width:0;padding:5px 9px 6px;

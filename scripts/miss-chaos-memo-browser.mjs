@@ -130,6 +130,7 @@ async function run(name,width,height){
   assert.equal(await page.locator('#mc-memo-host [data-tab="inbox"]').count(),1);
   await page.locator('#mc-memo-close').click();
   await page.locator('#miss-chaos-launcher').click();
+  await page.locator('.mc-field-kit-toggle[aria-expanded="false"]').click();
   await page.locator('#mc-field-kit .mc-field-kit-chip').first().waitFor();
   assert.equal(await page.locator('#mc-field-kit .mc-field-kit-chip').filter({hasText:'𓂀 Mission'}).count(),0,
     'Standard users must not see owner mission prompts');

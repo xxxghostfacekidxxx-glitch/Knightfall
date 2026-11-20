@@ -4,13 +4,14 @@
   if (document.getElementById("miss-chaos-presence")) return;
   const API = "https://api.ash-fall.com";
   const AVATAR = "/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";
-  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261119-guide1"; document.head.append(css);
+  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261119-popup2"; document.head.append(css);
   const photoCss=document.createElement("link");photoCss.rel="stylesheet";photoCss.href="/chaos-chat-image-picker.css?v=20261119-attach1";document.head.append(photoCss);
-  const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261115-mc-scope2"; document.head.append(glitchCss);
+  const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261119-popup2"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
   root.innerHTML=`
     <section id="miss-chaos-window" aria-label="Chat with Miss Chaos" aria-hidden="true" hidden>
       <header class="mc-head"><img src="${AVATAR}" alt="Miss Chaos portrait"><div class="mc-head-copy"><strong>Miss Chaos</strong><small id="mc-presence-status"><span aria-hidden="true">● </span>Your chaos, one tap away</small></div><div class="mc-head-actions"><button type="button" id="mc-quick-memo" aria-label="Open Memo Pad" title="Memo Pad">📝</button><button type="button" id="mc-voice" aria-label="Enable spoken replies" aria-pressed="false" title="Spoken replies">♫</button><button type="button" id="mc-full-chat" aria-label="Open full Miss Chaos chat" title="Full chat">↗</button><button type="button" id="mc-close" aria-label="Close Miss Chaos" title="Close">×</button></div></header>
+      <details id="mc-settings"><summary>Chat settings</summary><div class="mc-settings-body">
       <label id="mc-companion-label" class="mc-companion-control" for="mc-companion-mode" hidden>PRIVATE WORKSPACE
         <select id="mc-companion-mode" aria-label="Miss Chaos assistant workspace" disabled><option value="standard">Miss Chaos</option></select>
       </label>
@@ -21,6 +22,7 @@
       </nav>
       <label class="sr-only" for="mc-mood">Miss Chaos mood</label><select id="mc-mood"><option value="default">Mood: Default</option><option value="playful">Playful</option><option value="dark">Dark humor</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option></select>
       <button type="button" id="mc-game-tips" hidden>🎮 Ask for game tips</button>
+      </div></details>
       <div id="mc-messages" aria-live="polite"><div class="mc-bubble system">I'm here. Ask me something, throw me an idea, or let me help untangle the mess. 🖤</div></div><div id="mc-error" role="status" aria-live="polite"></div>
       <p id="mc-attachment-status" class="mc-attachment-status" aria-live="polite" role="status" hidden></p>
       <form id="mc-form"><label class="sr-only" for="mc-input">Message Miss Chaos</label><textarea id="mc-input" rows="1" maxlength="4000" placeholder="Message or photo question…" ></textarea><button id="mc-send" type="submit">Send ↗</button></form>
@@ -177,7 +179,9 @@
   function speak(text){if(!voiceEnabled||!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined")return;window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(String(text||""));utterance.rate=1.02;utterance.pitch=1.1;utterance.onstart=()=>setExpression("speaking");utterance.onend=()=>setExpression(mood.value);utterance.onerror=()=>setExpression(mood.value);window.speechSynthesis.speak(utterance);}
 
   try{input.value=sessionStorage.getItem(draftKey())||"";}catch(_){}
-  function open(){closeMemo();panel.hidden=false;panel.setAttribute("aria-hidden","false");launcher.setAttribute("aria-expanded","true");window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"miss-chaos"}}));input.focus({preventScroll:true});}
+  function open(){closeMemo();panel.hidden=false;panel.setAttribute("aria-hidden","false");launcher.setAttribute("aria-expanded","true");window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"miss-chaos"}}));
+    if(matchMedia("(pointer: fine)").matches)input.focus({preventScroll:true});
+    else $("#mc-close").focus({preventScroll:true});}
   function close({restoreFocus=true}={}){saveModeDraft(); panel.hidden=true;panel.setAttribute("aria-hidden","true");launcher.setAttribute("aria-expanded","false");if(restoreFocus)launcher.focus({preventScroll:true});}
   window.addEventListener("kf:floating-panel-open",event=>{
     if(event.detail?.panel==="member-chat"){
@@ -273,7 +277,7 @@
   void ensureAccount(true).catch(e=>{console.warn("Miss Chaos account mode discovery failed:",e.message);});
   // Local, free-first console: reusable draft prompts and explicit reply-to-memo.
   // Import failures cannot prevent Miss Chaos chat or her floating dock from loading.
-  import("/miss-chaos-field-kit.mjs?v=20261119-guide1")
+  import("/miss-chaos-field-kit.mjs?v=20261119-popup2")
     .then(({mountMissChaosFieldKit})=>{
       fieldKit=mountMissChaosFieldKit({
         panel,messages,input,api:request,onOpenMemo:openMemo,getMode:()=>assistantMode

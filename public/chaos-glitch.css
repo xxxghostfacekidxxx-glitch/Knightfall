@@ -10,7 +10,7 @@ body.chaos-glitch-arcade .game-panel,body.chaos-glitch-arcade .game-panel.active
 body.chaos-glitch-arcade .game-panel::before,body.chaos-glitch-arcade .cabinet::before,body.chaos-glitch-arcade .play-area::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent,#ff2f92 18%,#54f5df 52%,transparent 82%);opacity:.78;animation:cc-edge-scan 3.2s linear infinite}
 body.chaos-glitch-arcade button:hover,body.chaos-glitch-arcade a:hover{filter:drop-shadow(2px 0 #ff2f92) drop-shadow(-2px 0 #54f5df);text-shadow:0 0 8px #ff2f9266}
 /* Miss Chaos remains visibly corrupted even while idle, not just while talking. */
-#miss-chaos-presence{filter:drop-shadow(0 0 14px #ff2f9218)}
+/* Keep filters on painted elements. A filtered dock traps fixed descendants. */
 #miss-chaos-launcher{border-color:#ff2f92;box-shadow:0 0 0 1px #54f5df55,0 0 24px #ff2f9255,0 8px 32px #000b;animation:mc-launcher-pulse 3s ease-in-out infinite}
 #miss-chaos-presence .mc-head{position:relative;overflow:hidden;background:linear-gradient(100deg,#ff2f9222,#54f5df0b 65%,transparent)}
 #miss-chaos-presence .mc-head img,#miss-chaos-launcher img{position:relative;filter:drop-shadow(2px 0 #ff2f92) drop-shadow(-2px 0 #54f5df);animation:cc-face-glitch 2.8s steps(1,end) infinite}

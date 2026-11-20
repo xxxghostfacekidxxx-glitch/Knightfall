@@ -67,7 +67,8 @@ test("Site Image Library exposes a dedicated Android Photos picker and real clip
  assert.match(library,/id="kf-art-paste"/);
  assert.match(libraryJs,/photoInput\?\.addEventListener\('change'/);
  assert.match(libraryJs,/navigator\.clipboard\.read\(\)/);
- assert.match(libraryJs,/createImageBitmap\(file\)/);
+ assert.match(libraryJs,/KnightfallPhotoUpload\.decode\(file\)/);
+ assert.match(load("public/photo-upload.js"),/createImageBitmap\(file\)/);
  assert.match(libraryJs,/image\/heic/);
  assert.match(libraryJs,/api\/devil-tools\/asset-submissions/);
 });

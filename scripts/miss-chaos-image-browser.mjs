@@ -48,6 +48,7 @@ async function mockApi(page,kind="owner"){
 }
 async function verifyPopup(width,kind){
  const page=await browser.newPage({viewport:{width,height:850},acceptDownloads:true});
+ await page.addInitScript(()=>localStorage.setItem("kf:miss-chaos:dock","br"));
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
  const calls=await mockApi(page,kind);
  try{
@@ -64,10 +65,15 @@ async function verifyPopup(width,kind){
   }
   await page.waitForSelector('#miss-chaos-window:not([hidden])',{timeout:10000});
   await page.waitForSelector("#mc-form .mc-attach-button",{timeout:10000});
-  const dimensions=await page.locator("#miss-chaos-window").boundingBox();
-  assert.ok(dimensions&&dimensions.width>=300&&dimensions.height>=260,"popup must be usable at "+width+"px");
-  assert.ok(dimensions.x>=-1&&dimensions.x+dimensions.width<=width+1,"popup must stay horizontally on screen");
-  assert.ok(dimensions.y>=-1&&dimensions.y+dimensions.height<=850+1,"popup must stay vertically on screen");
+  for(let corner=0;corner<4;corner++){
+   const dimensions=await page.locator("#miss-chaos-window").boundingBox();
+   assert.ok(dimensions&&dimensions.width>=300&&dimensions.height>=260,"popup must be usable at "+width+"px");
+   assert.ok(dimensions.x>=-1&&dimensions.x+dimensions.width<=width+1,"popup must stay horizontally on screen");
+   assert.ok(dimensions.y>=-1&&dimensions.y+dimensions.height<=850+1,"popup must stay vertically on screen");
+   const send=await page.locator("#mc-send").boundingBox();
+   assert.ok(send.y+send.height<=dimensions.y+dimensions.height,"composer must fit inside popup");
+   await page.click("#mc-move");
+  }
   const avatar=await page.locator("#miss-chaos-window .mc-head>img").boundingBox();
   assert.ok(Math.abs(avatar.width-avatar.height)<1.5,"portrait cannot become stretched");
   if(kind!=="owner"){

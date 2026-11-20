@@ -41,13 +41,12 @@ export function mountMissChaosFieldKit({panel,messages,input,api,onOpenMemo,getM
  toggle.setAttribute("aria-controls","mc-field-kit-tools");
  const list=doc.createElement("div");list.id="mc-field-kit-tools";list.className="mc-field-kit-tools";
  heading.append(caption,toggle);bar.append(heading,list);
- const mood=panel.querySelector("#mc-mood");
- if(mood) mood.after(bar); else messages.before(bar);
+ messages.before(bar);
  const notice=doc.createElement("p");notice.id="mc-field-kit-status";
  notice.className="mc-field-kit-status";notice.setAttribute("role","status");notice.setAttribute("aria-live","polite");
  bar.append(notice);
- let expanded=true;
- try{expanded=sessionStorage.getItem("mc:field-kit:expanded")!=="false";}catch{}
+ let expanded=false;
+ try{expanded=sessionStorage.getItem("mc:field-kit:expanded")==="true";}catch{}
  const announce=(message,failed=false)=>{notice.textContent=String(message);notice.dataset.error=failed?"true":"false";};
  function setExpanded(next){
    expanded=!!next;list.hidden=!expanded;
@@ -80,6 +79,7 @@ export function mountMissChaosFieldKit({panel,messages,input,api,onOpenMemo,getM
        if(draft===null){announce("Your current draft is too long to add that prompt. Nothing was replaced.",true);return;}
        input.value=draft;
        input.dispatchEvent(new Event("input",{bubbles:true}));
+       setExpanded(false);
        input.focus({preventScroll:true});announce("Prompt added to your draft. Review it before sending.");
      });
      list.append(button);
