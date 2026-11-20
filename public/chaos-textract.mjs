@@ -11,6 +11,9 @@ function choose(file){
  // Clear the previous document before validating a new selection: failed image
  // or unsupported file changes must never expose stale text as the new result.
  active++;currentFile=null;output.value="";stats.textContent="";
+ // Switching the primary document also invalidates its prior comparison.
+ compareToken++;compareBusy=false;secondFile=null;compareFile.value="";compareOutput.value="";
+ compareStatus.textContent="Choose a second file after extracting this document.";updateCompareControls();
  copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;
  nameLabel.textContent="No valid file selected";renderInsights();
  try{
