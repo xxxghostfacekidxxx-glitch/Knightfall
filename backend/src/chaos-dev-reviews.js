@@ -129,7 +129,7 @@ export async function handleChaosDevReviews(request,env,url,{requireUser,json,or
  if(url.pathname===BASE&&request.method==="POST"){
    let data,verified;
    try{data=await body();verified=await inspectDevReviewCandidate(data,{readSource});}
-   catch(error)return reply({error:String(error.message||"Could not verify source.").slice(0,230)},409);
+   catch(error){return reply({error:String(error.message||"Could not verify source.").slice(0,230)},409);}
    const id=crypto.randomUUID();
    const insert=env.DB.prepare("INSERT INTO chaos_dev_reviews(id,author_id,source_sha,path,original,candidate,change_summary,syntax_status) VALUES(?,?,?,?,?,?,?,?)")
      .bind(id,user.id,verified.source_sha,verified.path,verified.original,verified.candidate,verified.summary,verified.syntax_status);
