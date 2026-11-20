@@ -83,7 +83,7 @@ for(const name of ["theme-crew.css","theme-crew-runtime.js","theme-crew.html","t
  if(!sw.includes('"/'+name+'"'))failures.push({type:"offline_shell_missing",file:name});
 // Preserve the new default-theme artwork without duplicating a stylesheet owner.
 const blackSun=read("knightfall-requiem.css");
-for(const asset of ["black-sun-temple.svg","royal-cartouche.svg"]){
+for(const asset of ["black-sun-temple.svg","black-sun-mobile.svg","eye-of-chaos-crest.svg","royal-cartouche.svg"]){
  const filepath="assets/knightfall/"+asset;
  if(!existsSync(join(root,filepath)))failures.push({type:"missing_black_sun_art",file:filepath});
  if(!blackSun.includes(asset))failures.push({type:"unused_black_sun_art",file:filepath});
