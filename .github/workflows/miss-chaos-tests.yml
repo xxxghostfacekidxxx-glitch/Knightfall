@@ -11,6 +11,10 @@ on:
       - 'public/miss-chaos.js'
       - 'public/chaos-textract*'
       - 'scripts/chaos-textract.test.mjs'
+      - 'scripts/chaos-textract-lab.test.mjs'
+      - 'scripts/chaos-textract-vendor.test.mjs'
+      - 'scripts/textract-vendor.mjs'
+      - 'scripts/pages-release-guard.mjs'
       - 'public/miss-chaos.html'
       - 'public/miss-chaos-presence*'
       - 'public/nav.js'
@@ -78,8 +82,10 @@ jobs:
       - name: Verify Textract OCR extraction, private handoff and source boundaries
         run: |
           node --check public/chaos-textract-core.mjs
+          node --check public/chaos-textract-lab-core.mjs
           node --check public/chaos-textract.mjs
-          node --test scripts/chaos-textract.test.mjs
+          node --check scripts/textract-vendor.mjs
+          node --test scripts/chaos-textract.test.mjs scripts/chaos-textract-lab.test.mjs scripts/chaos-textract-vendor.test.mjs
       - name: Verify Crucible original project briefs and safe chat draft handoff
         run: |
           node --check public/chaos-crucible-core.mjs
