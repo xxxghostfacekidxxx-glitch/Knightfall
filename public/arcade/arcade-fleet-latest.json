@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T07:52:55.854Z",
+  "generatedAt": "2026-11-20T08:01:20.276Z",
   "reportsFound": 10,
   "catalogRoutes": 129,
   "targets": {
@@ -17,5 +17,5 @@
     }
   },
   "passed": false,
-  "sourceRunId": 44697581756
+  "sourceRunId": 44698619711
 }
