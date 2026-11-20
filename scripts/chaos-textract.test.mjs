@@ -41,6 +41,10 @@ test("Textract is linked to all chat modes, floating console, Creator Foundry an
  assert.match(kit,/chaos-textract\.html\?return=/);
  assert.match(page,/id="textract-file"/);
  assert.match(page,/id="textract-handoff"/);
+ assert.match(page,/id="textract-self-test"/);
+ assert.match(page,/id="textract-ocr-availability"/);
+ assert.match(controller,/Knightfall Textract self-test passed/);
+ assert.match(controller,/typeof TextDetector==="function"/);
  assert.match(controller,/sessionStorage\.setItem\("knightfall:textract-draft"/);
  assert.match(chat,/sessionStorage\.removeItem\("knightfall:textract-draft"/);
  assert.match(controller,/location\.assign\(returnToChat\(\)\)/);
