@@ -9,6 +9,8 @@ on:
       - 'backend/src/chaos-chat-image.test.mjs'
       - 'public/chaos-chat-image-picker*'
       - 'public/miss-chaos.js'
+      - 'public/chaos-textract*'
+      - 'scripts/chaos-textract.test.mjs'
       - 'public/miss-chaos.html'
       - 'public/miss-chaos-presence*'
       - 'public/nav.js'
@@ -73,6 +75,11 @@ jobs:
           node --check public/vendor/visual-lab/qrcode.mjs
           node --check public/vendor/visual-lab/imagetracer.js
           node --test scripts/chaos-visual-lab-ui.test.mjs scripts/chaos-visual-lab-libraries.test.mjs scripts/chaos-visual-effects.test.mjs
+      - name: Verify Textract OCR extraction, private handoff and source boundaries
+        run: |
+          node --check public/chaos-textract-core.mjs
+          node --check public/chaos-textract.mjs
+          node --test scripts/chaos-textract.test.mjs
       - name: Verify Crucible original project briefs and safe chat draft handoff
         run: |
           node --check public/chaos-crucible-core.mjs
