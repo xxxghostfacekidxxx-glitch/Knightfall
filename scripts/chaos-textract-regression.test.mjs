@@ -217,3 +217,32 @@ test("Text files with UTF-16LE, UTF-16BE and UTF-8 BOMs are decoded correctly",a
  const bom=new Uint8Array([239,187,191,...enc.encode("UTF-8 works")]);
  assert.equal((await extractTextract(file("utf8.txt",bom))).text,"UTF-8 works");
 });
+
+
+test("PDF exceeding the 24-page safety limit displays a visible truncation notice",async()=>{
+ const objects=[];
+ for(let i=1;i<=25;i++){
+  const page=i*2-1,content=i*2,stream="BT (PAGE_"+i+") Tj ET";
+  objects.push(page+" 0 obj << /Type /Page /Contents "+content+" 0 R >> endobj");
+  objects.push(content+" 0 obj << /Length "+stream.length+" >>\nstream\n"+stream+"\nendstream\nendobj");
+ }
+ const result=await extractTextract(file("too-many-pages.pdf",pdf(objects)));
+ assert.match(result.text,/PAGE_24/);
+ assert.doesNotMatch(result.text,/PAGE_25/);
+ assert.match(result.text,/Only 24 of 25 PDF pages were processed/);
+ assert.match(result.warning,/first 24 PDF pages/);
+});
+test("Large PowerPoint and Excel files report safely omitted slides and sheets",async()=>{
+ const slides=Array.from({length:61},(_,i)=>[
+  "ppt/slides/slide"+(i+1)+".xml",'<p:sld><a:p><a:t>SLIDE_'+(i+1)+'</a:t></a:p></p:sld>'
+ ]);
+ const powerpoint=await extractTextract(file("deck.pptx",zipPack(slides)));
+ assert.match(powerpoint.text,/Only 60 of 61 slides were processed/);
+ assert.match(powerpoint.warning,/Only part/);
+ const sheets=Array.from({length:26},(_,i)=>[
+  "xl/worksheets/sheet"+(i+1)+".xml",'<worksheet><row><c r="A1" t="inlineStr"><is><t>SHEET_'+(i+1)+'</t></is></c></row></worksheet>'
+ ]);
+ const excel=await extractTextract(file("budget.xlsx",zipPack(sheets)));
+ assert.match(excel.text,/Only 25 of 26 worksheets were processed/);
+ assert.match(excel.warning,/Only part/);
+});

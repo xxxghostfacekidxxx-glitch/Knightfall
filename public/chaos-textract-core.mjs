@@ -54,10 +54,14 @@ export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={
  if(TEXT_EXT.has(ext)){notify("Reading text locally…");output=await readTextractPlainText(file);}
  else if(["docx","xlsx","pptx"].includes(ext)){
   mode="native-office";output=await readKnightfallOffice(file,ext,{notify,cancelled});
+  if(output.includes("[Notice: Only "))
+   warning="Only part of this Office document was processed due to the safety limit. Split the file to extract the remaining sheets or slides.";
  }else if(ext==="pdf"){
   mode="native-pdf";output=await readKnightfallPdf(file,{notify,cancelled});
   if(output.includes("[No selectable text detected]"))
    warning="Some PDF pages had no selectable text. Their contents were not recognized. Review the original for missing pages.";
+  if(output.includes("[Notice: Only "))
+   warning=[warning,"Only the first 24 PDF pages were processed. Split the document to read later pages."].filter(Boolean).join(" ");
  }else if(IMAGE_EXT.has(ext)){
   const result=await readKnightfallImageOcr(file,{notify,cancelled});
   output=result.text;confidence=result.confidence??null;
