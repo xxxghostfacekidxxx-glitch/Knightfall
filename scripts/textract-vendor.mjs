@@ -34,13 +34,13 @@ export function inspectVendorAsset(name,buffer,kind){
   throw Error(name+": WebAssembly magic header missing");
  if(kind==="gzip"&&!(buffer[0]===31&&buffer[1]===139))
   throw Error(name+": gzip language data header missing");
- if(kind==="js"&&buffer.length<500)
-  throw Error(name+": JavaScript bundle is unexpectedly small");
  if(["js","license"].includes(kind)){
   const head=new TextDecoder().decode(buffer.slice(0,128)).trimStart();
   if(head.startsWith("<!")||head.startsWith("<html"))
    throw Error(name+": received an HTML error page instead of a library");
  }
+ if(kind==="js"&&buffer.length<500)
+  throw Error(name+": JavaScript bundle is unexpectedly small");
  return createHash("sha256").update(buffer).digest("hex");
 }
 async function download(url,maxAttempts=3){
