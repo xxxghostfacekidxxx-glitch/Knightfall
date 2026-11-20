@@ -47,11 +47,11 @@ test("Textract is linked to all chat modes, floating console, Creator Foundry an
  assert.doesNotMatch(core,/AWS_ACCESS|@aws-sdk|api\.ash-fall\.com|\bfetch\s*\(/);
  assert.doesNotMatch(controller,/\bfetch\s*\(|XMLHttpRequest|FormData/);
 });
-test("Textract code supports PDF OCR fallback and zipped Office documents",()=>{
+test("Textract uses Knightfall-native readers and honest capabilities",()=>{
  const core=read("public/chaos-textract-core.mjs");
- for(const term of ["pdf.worker.min.mjs","tesseract.min.js","jszip.min.js","word/document.xml","xl/sharedStrings.xml","ppt","recognizeImage(canvas"])assert.ok(core.includes(term),term);
- assert.match(core,/const pdfDocument=await task\.promise;\s*const ocrSession=\{worker:null\}/);
- assert.match(core,/recognizeImage\(canvas,notify,cancelled,ocrSession\)/);
- assert.match(core,/ocrSession\.worker\.terminate\(\)/);
- assert.match(core,/rows=\[\];let total=0/);
+ for(const module of ["chaos-textract-native-zip.mjs","chaos-textract-native-pdf.mjs","chaos-textract-native-ocr.mjs"])
+  assert.ok(core.includes(module),"missing original parser: "+module);
+ assert.match(core,/TEXTRACT_ENGINE="knightfall-native-v1"/);
+ assert.match(core,/ocrPages:0/);
+ assert.doesNotMatch(core,/tesseract|pdf\.min|jszip|cdn\/|vendor\/textract/i);
 });
