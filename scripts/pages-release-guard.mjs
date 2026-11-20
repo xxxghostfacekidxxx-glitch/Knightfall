@@ -2,6 +2,9 @@
 // site/theme contracts fail. No dependencies, private keys, or network calls.
 import {spawnSync} from "node:child_process";
 const jobs=[
+ ["Textract local OCR, file safety and exports",["--test","scripts/chaos-textract.test.mjs","scripts/chaos-textract-vendor.test.mjs","scripts/chaos-textract-lab.test.mjs"]],
+ ["Textract extraction syntax",["--check","public/chaos-textract-core.mjs"]],
+ ["Textract lab syntax",["--check","public/chaos-textract.mjs"]],
  ["Global CSS integrity",["scripts/theme-crew-audit.mjs"]],
  ["Black Sun navigation and theme regression checks",["--test","scripts/black-sun-cleanup.test.mjs"]],
  ["Internal navigation and duplicate links",["scripts/site-link-integrity.mjs"]],
@@ -41,4 +44,13 @@ for(const [label,args] of jobs){
   break;
  }
 }
-if(!process.exitCode)console.log("\nPAGES RELEASE GATE PASSED: all critical source and role checks.");
+if(!process.exitCode){
+ console.log("\\nPAGES BUILD: bundling fully local Textract OCR and document engines");
+ const vendored=spawnSync(process.execPath,["scripts/textract-vendor.mjs"],{stdio:"inherit",timeout:420000});
+ if(vendored.error||vendored.status!==0){
+  console.error("PAGES RELEASE BLOCKED: local Textract runtime could not be assembled"+
+   (vendored.error?": "+vendored.error.message:" (exit "+vendored.status+")"));
+  process.exitCode=1;
+ }
+}
+if(!process.exitCode)console.log("\\nPAGES RELEASE GATE PASSED: all critical source and role checks; Textract dependencies hosted on Knightfall.");
