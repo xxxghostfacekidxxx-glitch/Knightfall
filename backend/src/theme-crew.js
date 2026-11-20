@@ -61,6 +61,7 @@ export function themePlan(mood){
  if(typeof mood!=="string"||mood.length>200)return null;
  const q=mood.toLowerCase().trim();
  const patterns=[
+  [/egypt|anubis|horus|isis|osiris|scarab|pharaoh|temple|black sun|duat|sphinx/,"cathedral"],
   [/blood|rose|red|velvet|vamp|crimson|gore/,"blood_moon"],
   [/green|poison|forest|moss|ivy|emerald|crypt/,"verdant_crypt"],
   [/steel|iron|industrial|silver|blue|violet|cyber/,"iron_eclipse"],
