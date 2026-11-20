@@ -81,7 +81,7 @@ test("backend presets, runtime allowlist and local preview assets never drift ap
  assert.ok(block,"Theme Forge must declare all preview thumbnails");
  const previews=[...block[1].matchAll(/^\s*([a-z_]+):"(\/assets\/knightfall\/[^"]+)"[,\s]*$/gm)];
  assert.deepEqual(previews.map(x=>x[1]).sort(),allowed);
- for(const [,file] of previews)readFileSync(new URL("../public"+file,import.meta.url));
+ for(const [,key,file] of previews)readFileSync(new URL("../public"+file,import.meta.url));
  for(const key of allowed){
   assert.ok(css.includes('data-kf-theme="'+key+'"') || (key==="cathedral"&&visual.includes('data-kf-theme="cathedral"')),
    "Missing presentation recipe for "+key);
