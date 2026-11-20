@@ -7,9 +7,9 @@
   <meta name="description" content="Knightfall's free private code editor, Prettier formatter, JavaScript, TypeScript, JSX, TSX and JSON inspector, and SVG flowchart builder.">
   <title>Chaos Code Studio | Knightfall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-reviewqueue1">
+  <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-candidate1">
   <script src="/nav.js" defer></script>
-  <script type="module" src="/chaos-code-studio.js?v=20261119-reviewqueue1"></script>
+  <script type="module" src="/chaos-code-studio.js?v=20261119-candidate1"></script>
 </head>
 <body class="chaos-code-page">
 <header class="kf-header"></header>
@@ -94,6 +94,31 @@
             <button type="button" id="studio-dev-review-submit" disabled>Submit verified full-file proposal to Eye of Chaos</button>
             <p id="studio-dev-review-status" class="studio-status" role="status" aria-live="polite">Submit is available only for a complete, SHA-pinned small source file. No code is committed or deployed.</p>
           </div>
+          <section class="studio-candidate-check" aria-labelledby="studio-candidate-heading">
+            <h4 id="studio-candidate-heading">🧪 Isolated candidate checks · manual GitHub Actions</h4>
+            <p class="studio-note">For a verified <strong>complete small file</strong>, prepare a portable testing kit locally. GitHub checks the exact main commit and SHA-256 without making a repository commit. Optional pinned tests run only if you choose them in GitHub's workflow. A green result is candidate evidence, <strong>not</strong> Osiris/Isis approval or production deployment.</p>
+            <p class="studio-note">Only use public source code. GitHub Actions inputs and logs may be visible to repository collaborators. Never paste account credentials, private member data or secrets.</p>
+            <div class="studio-actions">
+              <button type="button" id="studio-candidate-build" disabled>Prepare manual test inputs</button>
+              <button type="button" id="studio-candidate-download" disabled>Export test kit (.json)</button>
+              <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/miss-chaos-candidate-check.yml" target="_blank" rel="noopener noreferrer">Open manual candidate test workflow</a>
+            </div>
+            <div class="studio-candidate-fields">
+              <label for="studio-candidate-field">Choose an input to copy to GitHub Actions
+                <select id="studio-candidate-field" disabled>
+                  <option value="base_sha">base_sha · current main SHA</option>
+                  <option value="path">path · source filename</option>
+                  <option value="candidate_base64">candidate_base64 · entire proposed file</option>
+                  <option value="candidate_sha256">candidate_sha256 · fingerprint</option>
+                </select>
+              </label>
+              <button type="button" id="studio-candidate-copy" disabled>Copy selected input</button>
+              <label for="studio-candidate-value">Selected GitHub Actions input
+                <textarea id="studio-candidate-value" rows="3" readonly spellcheck="false" placeholder="Prepare a verified complete-file proposal to get test inputs."></textarea>
+              </label>
+            </div>
+            <p id="studio-candidate-status" class="studio-status" role="status" aria-live="polite">Waiting for a source-verified full-file proposal. No external testing starts automatically.</p>
+          </section>
           <p id="studio-proposal-status" class="studio-status" role="status" aria-live="polite">Nothing staged. Source inspection is limited to verified staff; sharing a summary requires your own accepted Between the Flames access.</p>
           <pre id="studio-proposal-output" class="studio-results" tabindex="0">No proposal staged yet.</pre>
         </div>
