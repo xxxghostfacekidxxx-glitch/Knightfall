@@ -149,6 +149,26 @@ export async function readKnightfallImageOcr(file,{notify=()=>{},cancelled=()=>f
   if(cancelled())throw Error("OCR cancelled.");
   if(!bitmap.width||!bitmap.height||bitmap.width*bitmap.height>50000000)
    throw Error("Picture is too large or corrupted. Resize it first.");
+  // Some Chromium builds expose an on-device TextDetector implementation.
+  // It is optional, local, and does not require a model download from us.
+  if(typeof TextDetector==="function"){
+   try{
+    notify("Using built-in device text recognition…");
+    const hits=await new TextDetector().detect(bitmap);
+    if(cancelled())throw Error("OCR cancelled.");
+    const ordered=(Array.isArray(hits)?hits:[])
+     .filter(x=>typeof x.rawValue==="string"&&x.rawValue.trim())
+     .sort((a,b)=>{
+      const ay=a.boundingBox?.y??0,by=b.boundingBox?.y??0;
+      return Math.abs(ay-by)<12?(a.boundingBox?.x??0)-(b.boundingBox?.x??0):ay-by;
+     });
+    const detected=ordered.map(x=>x.rawValue.trim()).join("\n").trim();
+    if(detected.length>=2)return {text:detected,confidence:null,method:"device-native-text-detector"};
+   }catch(error){
+    if(cancelled())throw Error("OCR cancelled.");
+    notify("Device text recognition unavailable; trying the original high-contrast reader…");
+   }
+  }
   const scale=Math.min(1,Math.sqrt(MAX_IMAGE_PIXELS/(bitmap.width*bitmap.height)),1300/Math.max(bitmap.width,bitmap.height));
   const w=Math.max(1,Math.round(bitmap.width*scale)),h=Math.max(1,Math.round(bitmap.height*scale));
   const {canvas,ctx}=canvasFor(w,h);
@@ -163,7 +183,11 @@ export async function readKnightfallImageOcr(file,{notify=()=>{},cancelled=()=>f
   if(count>mask.length*.55)for(let i=0;i<mask.length;i++)mask[i]=1-mask[i];
   const result=decodeGlyphMask(mask,w,h,fontTemplates(),{notify,cancelled});
   canvas.width=0;canvas.height=0;
-  if(!result.text.trim())throw Error("No high-contrast printed text detected. Handwriting and complex layouts need a stronger OCR engine.");
+  if(!result.text.trim())throw Error("No high-contrast printed text detected. Try a sharper, straight-on photo with dark text on a bright background.");
+  const unknowns=(result.text.match(/\?/g)||[]).length;
+  const letters=(result.text.match(/[A-Za-z0-9]/g)||[]).length;
+  if(result.confidence<.45||unknowns>Math.max(3,letters*.25))
+   throw Error("This photo is too difficult for the offline experimental OCR. Improve lighting/crop and straighten it, or use a selectable-text document. No guessed text was returned.");
   return {text:result.text,confidence:result.confidence,method:"original-template-ocr"};
  }finally{bitmap.close();}
 }
