@@ -1,7 +1,7 @@
 /**
  * Knightfall PDF text-layer reader, original implementation.
  * Supports standard page trees, content operators, Flate streams and a subset
- * of embedded ToUnicode CMaps. This is not a PDF renderer or scanned-page OCR.
+ * of embedded ToUnicode CMaps. A bounded raster path handles selected scanned images; this is not a general PDF renderer.
  * Source bytes never leave the browser.
  */
 import {readKnightfallImageOcr} from "./chaos-textract-native-ocr.mjs";
@@ -341,7 +341,7 @@ async function renderKnightfallPdfRaster(image){
  return new Promise((resolve,reject)=>
   canvas.toBlob(blob=>blob?resolve(blob):reject(Error("Cannot encode PDF page for OCR.")),"image/png"));
 }
-/* Read only JPEG XObjects explicitly painted by a page's content stream.
+/* Read only supported JPEG/Flate XObjects explicitly painted by a page's content stream.
  * No external PDF renderer, file upload, or paid OCR endpoint is involved. */
 function pageImageObjects(page,objects,drawn){
  if(!drawn.size)return [];

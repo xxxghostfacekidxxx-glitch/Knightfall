@@ -20,7 +20,7 @@ Date: 2026-11-20
 - Mobile: Textract hero uses isolated Egyptian dark-gold styling instead of colliding with shared gothic hero selectors. Floating-dock placement now honors intentionally protected page areas.
 
 ## Important limitations, not hidden
-1. **General scanned PDF rendering remains incomplete**. JPEG-backed pages that explicitly draw DCTDecode image XObjects can now run through local OCR, but JBIG2, CCITT, JPX/JPEG2000, Flate image raster decoding, and nested form rendering are not supported. Unreadable pages must be disclosed, never invented.
+1. **General scanned PDF rendering remains incomplete**. JPEG-backed pages that explicitly draw DCTDecode image XObjects can now run through local OCR, and bounded Flate grayscale/RGB rasters can now run through local OCR, but JBIG2, CCITT, JPX/JPEG2000, arbitrary color spaces, and nested form rendering remain unsupported. Unreadable pages must be disclosed, never invented.
 2. **Image OCR is not production-grade on all devices**. `TextDetector` is browser-dependent. The fallback is appropriate only for clear printed Latin text; handwritten, skewed, tiny and complex images can fail or produce inaccuracies.
 3. **PDF coverage is deliberately bounded**. Encryption, some font CMaps, unusual filters/predictors, rich forms and complex rendering may require a fuller PDF engine.
 4. Excel builtin and recognizably date-formatted cells now include readable ISO dates alongside original serials, and booleans are shown as TRUE/FALSE. Unknown date styles remain raw; calculated formulas are not executed, and table reconstruction is best effort.
@@ -45,7 +45,7 @@ node --check public/chaos-textract.mjs
 Manual browser QA:
 1. Open `/chaos-textract.html` on mobile. Press **Run reader self-test**. Expect `Page 1\nKnightfall Textract self-test passed`.
 2. Upload a real selectable-text PDF, DOCX, XLSX, PPTX, TXT and one clear printed image. Check the preview against the source, not just nonempty output.
-3. Check a JPEG-backed scanned PDF produces labeled OCR and a caveat. Verify unsupported scan formats and heavily blurred images produce candid errors instead of invented content.
+3. Check JPEG-backed and Flate grayscale/RGB scanned PDFs produce labeled OCR and a caveat. Verify unsupported scan formats and heavily blurred images produce candid errors instead of invented content.
 4. Repeat on Android Chrome and a desktop browser. Verify no network requests send original file bytes.
 5. Confirm Cloudflare release, main branch and source tests before claiming any follow-up change is live.
 
@@ -59,3 +59,8 @@ Manual browser QA:
 - Canonical Knightfall section palette tokens now replace scattered copies of identical foundation colors; the CSS import version and PWA shell cache are incremented together.
 
 **Release interpretation:** A successful Cloudflare build and public browser checks validate the tested cases, not all arbitrary files. Cross-browser OCR, sensitive document workflows and exceptional PDF formats require continued testing.
+
+## November 20: Additional scanned-PDF image decoding
+- Bounded 8-bit grayscale and RGB FlateDecode images explicitly drawn by a PDF page can now be locally decoded to PNG for OCR, including common TIFF and PNG row predictors.
+- Unit tests check pixel channels, row reconstruction, malformed inputs, and truthful failure handling. A production-browser synthetic Flate scanned page yielded `KNIGHTFALL 123` without uploading the file to a service.
+- This is not a general PDF renderer and does not cover JBIG2/CCITT, JPEG2000, nested forms or every type of scan.

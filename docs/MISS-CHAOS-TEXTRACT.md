@@ -18,7 +18,7 @@ Users can select text documents, images, PDF text-layer documents, and Word/Powe
 
 ## Known limitations (do not advertise capabilities that are not implemented)
 - **OCR is experimental** for small, simple, high-contrast printed Latin characters. It is not reliable on real-world handwriting, handwriting-like fonts, complex page layouts, rotated photos, overlapping glyphs, curved text, or low-contrast receipts. Numbers must be checked visually.
-- **Some scanned PDFs are now OCRed locally**: pages containing a drawn DCTDecode JPEG image can be passed directly to the native on-device text detector or experimental glyph OCR. Other PDF image encodings (JBIG2, JPX, CCITT and Flate image rasters), form-wrapped images and encrypted files are not rendered. The reader reports unsupported/partially recognized pages.
+- **Some scanned PDFs are now OCRed locally**: pages containing a drawn DCTDecode JPEG or bounded FlateDecode 8-bit DeviceGray/DeviceRGB image can reach local OCR. Flate image decoding supports TIFF/PNG scanline predictors. Other encodings (JBIG2, JPX/JPEG2000, CCITT), unsupported color spaces, nested form-wrapped images and encrypted files are not rendered. The reader reports unsupported/partially recognized pages.
 - ZIP Office extraction supports standard OOXML files where the browser supports built-in `deflate-raw`. Memory budgets apply to entries actually read; unrelated embedded photographs no longer exhaust the text budget. Password-protected Office files, macros, charts and formula evaluation are not supported. XLSX reads cached values and labels formulas without cached results.
 - 18 MB input cap; 4 MB per decompressed ZIP document section; 24 pages for PDF; 180,000 output characters.
 - Format conversions are best-effort; unknown text must never be silently invented. Exported tables and extracted key/value pairs should be checked against the original document.
@@ -54,4 +54,4 @@ Before claiming a real-file bug fixed, reproduce it with a sanitized example fro
 
 ### Remaining scope
 
-JPEG-backed scanned PDF pages may now be OCRed, but the engine remains unable to render arbitrary PDF page images. The first-party glyph engine remains an experimental fallback when the browser has no built-in text detector, and real photos can be substantially more difficult than clean generated images. Every release needs real-device checks with non-sensitive representative documents before advertising broader reliability.
+JPEG-backed and some Flate-backed scanned PDF pages may now be OCRed, but the engine remains unable to render arbitrary PDF page graphics. The first-party glyph engine remains an experimental fallback when the browser has no built-in text detector, and real photos can be substantially more difficult than clean generated images. Every release needs real-device checks with non-sensitive representative documents before advertising broader reliability.
