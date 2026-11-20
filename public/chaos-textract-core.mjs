@@ -60,9 +60,9 @@ export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={
   mode="native-pdf";output=await readKnightfallPdf(file,{notify,cancelled});
   if(output.includes("[No selectable text detected"))
    warning="Some PDF pages had no selectable text. Their contents were not recognized. Review the original for missing pages.";
-  if(output.includes("[OCR from embedded JPEG image"))
-   warning=[warning,"JPEG-based scanned PDF pages were recognized locally. OCR is experimental on browsers without a native text detector; verify every number and word."].filter(Boolean).join(" ");
-  if(output.includes("[Embedded JPEG OCR unsuccessful:")||output.includes("[Notice: Other embedded JPEG images"))
+  if(output.includes("[OCR from embedded JPEG image")||output.includes("[OCR from embedded Flate image"))
+   warning=[warning,"Scanned PDF page images were recognized locally. OCR is experimental on browsers without a native text detector; verify every number and word."].filter(Boolean).join(" ");
+  if(output.includes("[Embedded JPEG OCR unsuccessful:")||output.includes("[Embedded Flate OCR unsuccessful:")||output.includes("[Notice: Other embedded page images"))
    warning=[warning,"Some embedded page images were not recognized. The extracted document may be incomplete."].filter(Boolean).join(" ");
   if(output.includes("[Notice: Only "))
    warning=[warning,"Only the first 24 PDF pages were processed. Split the document to read later pages."].filter(Boolean).join(" ");
