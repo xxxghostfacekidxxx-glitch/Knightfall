@@ -279,3 +279,21 @@ test("Excel truncated worksheet content shows an explicit partial-extraction war
  assert.match(result.warning,/extraction is incomplete/);
  assert.match(result.text,/A1=X/);
 });
+
+
+test("DOCX tables retain adjacent columns and separated rows in reading order",async()=>{
+ const xml='<w:document><w:body><w:tbl>'+
+  '<w:tr><w:tc><w:p><w:r><w:t>Item</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>Price</w:t></w:r></w:p></w:tc></w:tr>'+
+  '<w:tr><w:tc><w:p><w:r><w:t>Pen</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>2</w:t></w:r></w:p></w:tc></w:tr>'+
+  '</w:tbl></w:body></w:document>';
+ const result=await extractTextract(file("table.docx",zipPack([["word/document.xml",xml]])));
+ assert.match(result.text,/Item\tPrice\nPen\t2/);
+});
+test("OOXML rejects conflicting or spoofed local ZIP directory names",async()=>{
+ const xml='<w:document><w:p><w:r><w:t>Readable</w:t></w:r></w:p></w:document>';
+ const duplicated=zipPack([["word/document.xml",xml],["word/document.xml",xml]]);
+ await assert.rejects(()=>extractTextract(file("duplicate.docx",duplicated)),/duplicate document entries/);
+ const spoofed=zipPack([["word/document.xml",xml]]);
+ spoofed[30]=spoofed[30]===119?120:119;
+ await assert.rejects(()=>extractTextract(file("spoofed.docx",spoofed)),/local filename does not match/);
+});
