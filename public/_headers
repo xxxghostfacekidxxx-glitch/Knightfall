@@ -49,6 +49,10 @@
   Cache-Control: private, no-store
 /messages.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+/chaosphere-polish.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/chaosphere-extras.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
 /chaosphere.webmanifest
   Cache-Control: no-cache, max-age=0, must-revalidate
 /chaosphere.html
