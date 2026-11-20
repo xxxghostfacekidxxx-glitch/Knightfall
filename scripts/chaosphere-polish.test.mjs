@@ -121,3 +121,16 @@ test("Message photos open in a local accessible dialog with vetted attachment or
  assert.match(css,/max-height:calc\(100dvh - 178px\)/);
  assert.doesNotMatch(extras,/fetch\s*\(/);
 });
+
+
+test("Message bubbles show safe sender avatars or readable initials",()=>{
+ assert.match(html,/function safeMessageSenderAvatar\(m,mine\)/);
+ assert.match(html,/function messageAvatarMarkup\(m,mine\)/);
+ assert.match(html,/messageAvatarMarkup\(m,mine\)\+'<div class="message-meta">/);
+ assert.match(html,/m\?\.sender_avatar_url\|\|m\?\.avatar_url/);
+ assert.match(html,/convo\?\.kind!=="group"/);
+ assert.match(html,/onerror="this.hidden=true;this.nextElementSibling.hidden=false"/);
+ assert.match(css,/\.messages-shell \.message \.cs-message-avatar/);
+ assert.match(css,/\.messages-shell \.message\.mine \.cs-message-avatar/);
+ assert.match(css,/\.cs-message-avatar \.cs-message-initial:not\(\[hidden\]\)/);
+});

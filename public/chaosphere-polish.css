@@ -274,3 +274,32 @@
 .cs-image-lightbox :is(button,a):focus-visible{outline:3px solid #e9bc80;outline-offset:3px}
 @media(max-width:550px){.cs-image-lightbox{border-radius:13px;padding:.6rem}.cs-image-stage>img{max-height:calc(100dvh - 144px)}}
 @media(prefers-reduced-motion:reduce){.cs-image-lightbox::backdrop{backdrop-filter:none}}
+
+
+/* Profile pictures accompany message bubbles, with initials when unavailable. */
+.messages-shell .messages-list{padding-inline:clamp(2.25rem,4vw,3rem)}
+.messages-shell .message{max-width:min(82%,660px)}
+.messages-shell .message .cs-message-avatar{
+ position:absolute;left:-2.45rem;top:.18rem;
+ display:grid;place-items:center;width:32px;height:32px;
+ overflow:hidden;border-radius:50%;border:1px solid #d0a8848c;
+ background:linear-gradient(140deg,#694751,#26222e);
+ color:#fff1db;font-size:.82rem;font-weight:900;
+ box-shadow:0 3px 12px #0006;
+}
+.messages-shell .message.mine .cs-message-avatar{
+ left:auto;right:-2.45rem;border-color:#d38a8e;
+ background:linear-gradient(140deg,#8f5267,#312534);
+}
+.messages-shell .cs-message-avatar .message-avatar-img{
+ display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;
+}
+.messages-shell .cs-message-avatar .cs-message-initial:not([hidden]){
+ display:grid;place-items:center;width:100%;height:100%;
+}
+@media(max-width:480px){
+ .messages-shell .messages-list{padding-inline:2.35rem}
+ .messages-shell .message{max-width:96%}
+ .messages-shell .message .cs-message-avatar{left:-2.22rem;width:29px;height:29px}
+ .messages-shell .message.mine .cs-message-avatar{left:auto;right:-2.22rem}
+}
