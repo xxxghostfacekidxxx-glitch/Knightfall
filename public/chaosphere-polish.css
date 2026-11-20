@@ -305,3 +305,95 @@
  .messages-shell .message .cs-message-avatar{left:-2.22rem;width:29px;height:29px}
  .messages-shell .message.mine .cs-message-avatar{left:auto;right:-2.22rem}
 }
+
+
+/* Direct message composer: accessible for every active member, including
+   creator-titled members. The recipient search never relies on friend status. */
+.messages-shell #compose-dialog .cs-direct-start{
+ margin:1rem 0 1.1rem;padding:1rem;
+ background:linear-gradient(125deg,#342632,#201e29 72%);
+ border:1px solid #bc8b84b3;border-radius:16px;
+ box-shadow:inset 0 1px #ffffff17,0 7px 18px #0003;
+}
+.messages-shell #compose-dialog .cs-direct-start>label{
+ display:block;font-size:.83rem;font-weight:800;
+ color:#f8d9bd;letter-spacing:.015em;
+}
+.messages-shell #compose-dialog .cs-direct-start-row{
+ display:flex;align-items:stretch;gap:.55rem;
+ margin:.45rem 0 .25rem;
+}
+.messages-shell #compose-dialog #direct-recipient{
+ margin:0!important;min-width:0;flex:1;
+ color:#fff0e8!important;background:#161720!important;
+ border:1px solid #a38782!important;border-radius:12px;
+ min-height:45px;padding:.65rem .75rem;
+}
+.messages-shell #compose-dialog #direct-start{
+ min-width:108px;padding:.45rem .8rem;
+ background:linear-gradient(130deg,#c57584,#a84b63);
+ color:#fff;border:1px solid #ebb19b;
+ border-radius:12px;font-weight:800;
+ cursor:pointer;box-shadow:0 5px 14px #0005;
+}
+.messages-shell #compose-dialog #direct-start:disabled{
+ opacity:.7;cursor:progress;
+}
+.messages-shell #compose-dialog #direct-recipient-help{
+ color:#d4c2ba;margin:.55rem 0 0;font-size:.76rem;
+ line-height:1.5;
+}
+.messages-shell #compose-dialog .cs-compose-feedback{
+ padding:.65rem .7rem;margin:.65rem 0 0;
+ color:#e6d3a5;background:#121b20;
+ border:1px solid #8b7d66;border-radius:9px;
+ font-size:.8rem;line-height:1.45;
+ overflow-wrap:anywhere;
+}
+.messages-shell #compose-dialog .cs-compose-feedback.error{
+ color:#ffe4de;background:#40232c;
+ border-color:#c98383;
+}
+.messages-shell #compose-dialog .cs-compose-feedback[hidden]{display:none!important}
+.messages-shell #compose-dialog #member-results{
+ margin-top:.45rem;padding:.25rem .15rem .4rem;
+ scrollbar-color:#97717a transparent;
+}
+.messages-shell #compose-dialog .person-row{
+ padding:.7rem .45rem;
+ border:1px solid #7c63694d!important;border-radius:12px;
+ background:#ffffff04;
+ gap:.7rem;
+}
+.messages-shell #compose-dialog .person-row:hover{
+ background:#b25b681b;border-color:#ba8b7b7d!important;
+}
+.messages-shell #compose-dialog .person-info{min-width:0}
+.messages-shell #compose-dialog .person-info strong{color:#f8ebe4}
+.messages-shell #compose-dialog .person-info small{color:#d5b9ad;overflow-wrap:anywhere}
+.messages-shell #compose-dialog .person-actions button[data-message-user]{
+ background:linear-gradient(130deg,#b8737d,#713a4d);
+ border:1px solid #e4b7a2;color:#fff;font-weight:800;
+ min-height:38px;border-radius:9px;
+}
+.messages-shell .inbox-empty{
+ display:flex;flex-direction:column;align-items:center;
+ gap:.6rem;padding:1.7rem 1rem;
+ color:#d1beb6;
+}
+.messages-shell .inbox-empty strong{font-size:1.1rem;color:#f5e6dc}
+.messages-shell .inbox-empty small{text-align:center;max-width:26rem;line-height:1.5}
+.messages-shell .cs-open-compose{
+ min-height:44px;margin:.4rem 0 0;padding:.6rem 1.1rem;
+ border-radius:12px;border:1px solid #dfac92;
+ background:linear-gradient(130deg,#ac5c72,#7e3c52);
+ color:#fff;font-weight:800;cursor:pointer;
+}
+.messages-shell .cs-open-compose:hover{filter:brightness(1.1)}
+@media(max-width:520px){
+ .messages-shell #compose-dialog .cs-direct-start{padding:.8rem}
+ .messages-shell #compose-dialog .cs-direct-start-row{flex-wrap:wrap}
+ .messages-shell #compose-dialog #direct-recipient{flex:1 1 100%;width:100%}
+ .messages-shell #compose-dialog #direct-start{flex:1 1 100%;min-height:44px}
+ .messages-shell #compose-dialog .person-row{gap:.5rem}
+}
