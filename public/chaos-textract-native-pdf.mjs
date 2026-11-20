@@ -99,7 +99,7 @@ function lexPdf(raw){
 }
 function extractTextOperators(content,fontMaps=new Map()){
  const tokens=lexPdf(String(content||"")),output=[];
- let active=false,buffer="",font="",lastY=null,leading=0,pending=[];
+ let active=false,buffer="",font="",lastX=null,lastY=null,leading=0,pending=[];
  const flush=()=>{if(buffer.trim())output.push(buffer.trimEnd());buffer="";};
  const append=bytes=>{if(active)buffer+=pdfText(bytes,fontMaps.get(font));};
  const line=()=>{flush();};
@@ -122,14 +122,23 @@ function extractTextOperators(content,fontMaps=new Map()){
   }
   if(item.type!=="operator"){pending.push(item);if(pending.length>100)pending.shift();continue;}
   const op=item.value;
-  if(op==="BT"){active=true;pending=[];lastY=null;continue;}
+  if(op==="BT"){active=true;pending=[];lastX=null;lastY=null;continue;}
   if(op==="ET"){if(active)flush();active=false;pending=[];continue;}
   if(!active){pending=[];continue;}
   if(op==="Tf"){const n=pending.findLast(x=>x.type==="name");if(n)font=n.value;pending=[];continue;}
   if(op==="TL"){const n=pending.findLast(x=>x.type==="number");if(n)leading=n.value;pending=[];continue;}
   if(op==="Td"||op==="TD"){
-   if(buffer.trim())line();
-   if(op==="TD"&&pending.length>=2)leading=-(pending.at(-1)?.value||0);
+   const numbers=pending.filter(x=>x.type==="number").map(x=>x.value);
+   const dx=numbers.at(-2),dy=numbers.at(-1);
+   // A horizontal Td moves to the next word on the same baseline.
+   // Only a vertical displacement requires a new extracted line.
+   if(buffer.trim()){
+    if(dy===undefined||Math.abs(dy)>1.8)line();
+    else if(dx!==undefined&&dx>1.8&&!buffer.endsWith(" "))buffer+=" ";
+   }
+   if(op==="TD"&&dy!==undefined)leading=-dy;
+   if(dx!==undefined&&lastX!==null)lastX+=dx;
+   if(dy!==undefined&&lastY!==null)lastY+=dy;
    pending=[];continue;
   }
   if(op==="T*"||op==="'"){
@@ -143,8 +152,10 @@ function extractTextOperators(content,fontMaps=new Map()){
   }
   if(op==="Tm"){
    const values=pending.filter(x=>x.type==="number").map(x=>x.value);
-   const y=values.at(-1);
+   const x=values.at(-2),y=values.at(-1);
    if(lastY!==null&&y!==undefined&&Math.abs(lastY-y)>1.8)line();
+   else if(buffer.trim()&&lastX!==null&&x!==undefined&&x-lastX>1.8&&!buffer.endsWith(" "))buffer+=" ";
+   if(x!==undefined)lastX=x;
    if(y!==undefined)lastY=y;
    pending=[];continue;
   }
