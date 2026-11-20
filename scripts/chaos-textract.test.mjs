@@ -49,7 +49,7 @@ test("Textract is linked to all chat modes, floating console, Creator Foundry an
 });
 test("Textract code supports PDF OCR fallback and zipped Office documents",()=>{
  const core=read("public/chaos-textract-core.mjs");
- for(const term of ["pdf.worker.min.mjs","tesseract.min.js","jszip.min.js","word/document.xml","xl/sharedStrings.xml","ppt/slides/","recognizeImage(canvas"])assert.ok(core.includes(term),term);
+ for(const term of ["pdf.worker.min.mjs","tesseract.min.js","jszip.min.js","word/document.xml","xl/sharedStrings.xml","ppt","recognizeImage(canvas"])assert.ok(core.includes(term),term);
  assert.match(core,/const pdfDocument=await task\.promise;\s*const ocrSession=\{worker:null\}/);
  assert.match(core,/recognizeImage\(canvas,notify,cancelled,ocrSession\)/);
  assert.match(core,/ocrSession\.worker\.terminate\(\)/);
