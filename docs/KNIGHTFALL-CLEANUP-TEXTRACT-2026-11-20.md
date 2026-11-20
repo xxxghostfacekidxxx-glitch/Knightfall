@@ -3,7 +3,7 @@ Date: 2026-11-20
 
 ## Release facts verified
 - Cloudflare Pages release gate passed for Textract native v2 after implementing PDF byte-exact decoding, common filter pipelines, Office XML preservation and bounded extraction.
-- The 25-test Textract group passed (25 pass, 0 fail), including new PDF Unicode/page-tree/Flate/ASCII85/ASCIIHex/run-length and multi-entry DOCX/XLSX/PPTX regressions.
+- The 28-test Textract group passed (28 pass, 0 fail), including new PDF Unicode/page-tree/Flate/ASCII85/ASCIIHex/run-length and multi-entry DOCX/XLSX/PPTX regressions.
 - Live browser checks successfully extracted text from a synthetic PDF, and the on-page **Run reader self-test** passed through the same public workbench UI.
 - Existing site audit: 172 CSS files, 90 top-level HTML pages, 505 local links; no broken or duplicate static links or missing shared-theme assets in the verified release.
 - Header list contained 94 unique route rules; offline-cache app shell had 88 entries without duplicate paths in the previous audit.
