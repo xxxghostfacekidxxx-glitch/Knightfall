@@ -58,8 +58,12 @@ export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={
    warning="This Office extraction is incomplete. Some slides, worksheets, or cells exceeded safe processing limits. Split the document to recover omitted content.";
  }else if(ext==="pdf"){
   mode="native-pdf";output=await readKnightfallPdf(file,{notify,cancelled});
-  if(output.includes("[No selectable text detected]"))
+  if(output.includes("[No selectable text detected"))
    warning="Some PDF pages had no selectable text. Their contents were not recognized. Review the original for missing pages.";
+  if(output.includes("[OCR from embedded JPEG image"))
+   warning=[warning,"JPEG-based scanned PDF pages were recognized locally. OCR is experimental on browsers without a native text detector; verify every number and word."].filter(Boolean).join(" ");
+  if(output.includes("[Embedded JPEG OCR unsuccessful:")||output.includes("[Notice: Other embedded JPEG images"))
+   warning=[warning,"Some embedded page images were not recognized. The extracted document may be incomplete."].filter(Boolean).join(" ");
   if(output.includes("[Notice: Only "))
    warning=[warning,"Only the first 24 PDF pages were processed. Split the document to read later pages."].filter(Boolean).join(" ");
  }else if(IMAGE_EXT.has(ext)){
