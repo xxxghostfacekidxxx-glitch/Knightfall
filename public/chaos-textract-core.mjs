@@ -80,7 +80,7 @@ export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={
  const truncated=text.length>TEXTRACT_LIMITS.chars;
  // Avoid splitting a UTF-16 surrogate pair when the visible excerpt is capped.
  let end=TEXTRACT_LIMITS.chars;
- if(truncated&&end>0&&/^[\\uD800-\\uDBFF]$/.test(text.charAt(end-1))&&/^[\\uDC00-\\uDFFF]$/.test(text.charAt(end)))end--;
+ if(truncated&&end>0&&text.charCodeAt(end-1)>=0xD800&&text.charCodeAt(end-1)<=0xDBFF&&text.charCodeAt(end)>=0xDC00&&text.charCodeAt(end)<=0xDFFF)end--;
  if(truncated)
   warning=[warning,"Only the first "+end.toLocaleString("en-US")+" characters are shown. "+(text.length-end).toLocaleString("en-US")+" additional characters were omitted; split the source to recover them."].filter(Boolean).join(" ");
  return {text:text.slice(0,end),truncated,characters:text.length,extension:ext,engine:TEXTRACT_ENGINE,mode,
