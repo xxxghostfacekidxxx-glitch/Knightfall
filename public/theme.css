@@ -6,7 +6,7 @@
 @import url("/visual-refresh.css?v=20261116-cascade4");
 @import url("/knightfall-unified-theme.css?v=20261116-cascade4");
 @import url("/theme-crew.css?v=20261116-cascade4");
-@import url("/knightfall-requiem.css?v=20261119-black-sun2");
+@import url("/knightfall-requiem.css?v=20261120-black-sun3");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
