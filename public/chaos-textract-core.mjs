@@ -54,8 +54,8 @@ export async function extractTextract(file,{notify=()=>{},cancelled=()=>false}={
  if(TEXT_EXT.has(ext)){notify("Reading text locally…");output=await readTextractPlainText(file);}
  else if(["docx","xlsx","pptx"].includes(ext)){
   mode="native-office";output=await readKnightfallOffice(file,ext,{notify,cancelled});
-  if(output.includes("[Notice: Only "))
-   warning="Only part of this Office document was processed due to the safety limit. Split the file to extract the remaining sheets or slides.";
+  if(output.includes("[Notice: "))
+   warning="This Office extraction is incomplete. Some slides, worksheets, or cells exceeded safe processing limits. Split the document to recover omitted content.";
  }else if(ext==="pdf"){
   mode="native-pdf";output=await readKnightfallPdf(file,{notify,cancelled});
   if(output.includes("[No selectable text detected]"))

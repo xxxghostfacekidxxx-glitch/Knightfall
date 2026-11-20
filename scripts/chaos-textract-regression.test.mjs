@@ -246,3 +246,36 @@ test("Large PowerPoint and Excel files report safely omitted slides and sheets",
  assert.match(excel.text,/Only 25 of 26 worksheets were processed/);
  assert.match(excel.warning,/Only part/);
 });
+
+
+test("PowerPoint reads relationship-defined presentation order rather than slide filenames",async()=>{
+ const slideXml=value=>'<p:sld><p:spTree><a:p><a:r><a:t>'+value+'</a:t></a:r></a:p></p:spTree></p:sld>';
+ const doc=zipPack([
+  ["ppt/slides/slide1.xml",slideXml("Last slide in presentation")],
+  ["ppt/slides/slide3.xml",slideXml("First slide in presentation")],
+  ["ppt/slides/slide2.xml",slideXml("Middle slide in presentation")],
+  ["ppt/presentation.xml",'<p:presentation><p:sldIdLst><p:sldId id="256" r:id="rId3"/><p:sldId id="257" r:id="rId2"/><p:sldId id="258" r:id="rId1"/></p:sldIdLst></p:presentation>'],
+  ["ppt/_rels/presentation.xml.rels",'<Relationships><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="/ppt/slides/slide3.xml"/></Relationships>']
+ ]);
+ const result=await extractTextract(file("out-of-order.pptx",doc));
+ assert.match(result.text,/Slide 1\nFirst slide in presentation/);
+ assert.match(result.text,/Slide 2\nMiddle slide in presentation/);
+ assert.match(result.text,/Slide 3\nLast slide in presentation/);
+ assert.ok(result.text.indexOf("First slide")<result.text.indexOf("Last slide"));
+});
+test("PowerPoint corrupted slide relationships fail visibly instead of silently reordering",async()=>{
+ const doc=zipPack([
+  ["ppt/slides/slide1.xml",'<p:sld><a:p><a:t>ONE</a:t></a:p></p:sld>'],
+  ["ppt/presentation.xml",'<p:presentation><p:sldIdLst><p:sldId r:id="lostSlide"/></p:sldIdLst></p:presentation>'],
+  ["ppt/_rels/presentation.xml.rels",'<Relationships><Relationship Id="lostSlide" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../secret.xml"/></Relationships>']
+ ]);
+ await assert.rejects(()=>extractTextract(file("broken.pptx",doc)),/missing or unsupported slide/);
+});
+test("Excel truncated worksheet content shows an explicit partial-extraction warning",async()=>{
+ const cells=Array.from({length:10002},(_,i)=>'<row r="'+(i+1)+'"><c r="A'+(i+1)+'" t="inlineStr"><is><t>X</t></is></c></row>').join("");
+ const doc=zipPack([["xl/worksheets/sheet1.xml",'<worksheet><sheetData>'+cells+'</sheetData></worksheet>']]);
+ const result=await extractTextract(file("long-rows.xlsx",doc));
+ assert.match(result.text,/Worksheet text exceeded the local/);
+ assert.match(result.warning,/extraction is incomplete/);
+ assert.match(result.text,/A1=X/);
+});
