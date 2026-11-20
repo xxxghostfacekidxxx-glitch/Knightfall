@@ -51,7 +51,7 @@ test("Textract uses Knightfall-native readers and honest capabilities",()=>{
  const core=read("public/chaos-textract-core.mjs");
  for(const module of ["chaos-textract-native-zip.mjs","chaos-textract-native-pdf.mjs","chaos-textract-native-ocr.mjs"])
   assert.ok(core.includes(module),"missing original parser: "+module);
- assert.match(core,/TEXTRACT_ENGINE="knightfall-native-v1"/);
+ assert.match(core,/TEXTRACT_ENGINE="knightfall-native-v2"/);
  assert.match(core,/ocrPages:0/);
  assert.doesNotMatch(core,/tesseract|pdf\.min|jszip|cdn\/|vendor\/textract/i);
 });
