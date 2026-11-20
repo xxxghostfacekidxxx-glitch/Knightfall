@@ -186,3 +186,20 @@ compareStop.addEventListener("click",()=>{
 });
 diffButton.addEventListener("click",()=>downloadLocal("-comparison.txt",compareOutput.value));
 renderInsights();
+
+/* Local diagnostic: a tiny, public synthetic PDF helps distinguish engine
+   problems from unreadable scans or unsupported source formats. */
+const capability=$("textract-ocr-availability");
+capability.textContent=typeof TextDetector==="function"?
+ "This device exposes on-device text recognition for images. Results still need checking.":
+ "This browser does not expose a native text detector. Image OCR will use the limited, experimental glyph reader.";
+$("textract-self-test").addEventListener("click",()=>{
+ if(busy)return;
+ if(output.value.trim()&&!confirm("Replace the current text preview with a small PDF extraction self-test?"))return;
+ const stream="BT (Knightfall Textract self-test passed) Tj ET";
+ const pdf="%PDF-1.4\n1 0 obj << /Type /Page /Contents 2 0 R >>\nendobj\n"+
+  "2 0 obj << /Length "+stream.length+" >>\nstream\n"+stream+"\nendstream\nendobj\n%%EOF";
+ input.value="";
+ choose(new File([pdf],"Knightfall-self-test.pdf",{type:"application/pdf"}));
+ extractButton.click();
+});
