@@ -237,6 +237,65 @@ reviewDownload.addEventListener("click",()=>{
  download("knightfall-source-review.txt",reviewPacket,"text/plain;charset=utf-8");
  note(reviewStatus,"Read-only proposal downloaded. No repository or production change occurred.");
 });
+candidateBuild.addEventListener("click",async()=>{
+ const proposal=reviewSubmission;
+ if(!proposal||!reviewPacket){note(candidateStatus,"Stage a complete main-SHA-verified file first.");return;}
+ if(code.value!==proposal.candidate){
+   clearReview("The edited code changed after verification. Stage again.");
+   note(candidateStatus,"Old candidate test inputs were invalidated.");return;
+ }
+ candidateBuild.disabled=true;
+ note(candidateStatus,"Hashing the verified proposal locally. No code is being sent or executed.");
+ try{
+   const kit=await makeChaosCandidateTestKit(proposal);
+   if(reviewSubmission!==proposal||code.value!==proposal.candidate)
+     throw Error("Editor or source changed during hashing. Re-stage the candidate.");
+   candidateKit=kit;
+   candidateField.disabled=false;candidateCopy.disabled=false;candidateDownload.disabled=false;
+   candidateField.value="base_sha";renderCandidateField();
+   note(candidateStatus,"Test inputs ready. Copy each field into the manual GitHub Actions workflow. Leave targeted tests OFF for static checks, or explicitly enable them if a pinned recipe exists. No workflow was launched.");
+ }catch(error){
+   candidateKit=null;candidateField.disabled=true;candidateCopy.disabled=true;candidateDownload.disabled=true;
+   candidateValue.value="";
+   note(candidateStatus,String(error.message||"Could not build test kit."));
+ }finally{candidateBuild.disabled=!reviewSubmission;}
+});
+candidateField.addEventListener("change",renderCandidateField);
+candidateCopy.addEventListener("click",async()=>{
+ if(!candidateKit||!reviewSubmission)return;
+ if(code.value!==reviewSubmission.candidate){
+   clearReview("Editor changed. Re-stage before exporting test inputs.");return;
+ }
+ const value=String(candidateKit.inputs[candidateField.value]||"");
+ if(!value){note(candidateStatus,"Choose a valid input field.");return;}
+ try{
+   if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(value);
+   else{
+     candidateValue.focus();candidateValue.select();
+     if(!document.execCommand("copy"))throw Error("Clipboard unavailable.");
+   }
+   note(candidateStatus,"Copied "+candidateField.value+". Paste it into the corresponding manual GitHub Actions input. Never paste secrets.");
+ }catch{
+   candidateValue.focus();candidateValue.select();
+   note(candidateStatus,"Clipboard permission was denied. The input is highlighted for manual copying.");
+ }
+});
+candidateDownload.addEventListener("click",()=>{
+ if(!candidateKit||!reviewSubmission)return;
+ if(code.value!==reviewSubmission.candidate){
+   clearReview("Editor changed. Re-stage before exporting test inputs.");return;
+ }
+ download("knightfall-candidate-test-"+candidateKit.inputs.base_sha.slice(0,12)+".json",
+   JSON.stringify(candidateKit,null,2)+"\n","application/json;charset=utf-8");
+ note(candidateStatus,"Local test packet exported. This is NOT a test run, approval or deployment.");
+});
+code.addEventListener("input",()=>{
+ if(reviewPacket&&code.value!==reviewCandidate){
+   clearReview("Editor changed after staging. Recheck and stage the new source.");
+   note(candidateStatus,"Previous candidate test inputs were invalidated by your edit.");
+ }
+});
+
 devSubmit.addEventListener("click",async()=>{
  const proposal=reviewSubmission;
  if(!proposal||!reviewPacket){note(devStatus,"Only complete SHA-verified source can enter the review docket.");return;}
