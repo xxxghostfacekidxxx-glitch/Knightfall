@@ -297,3 +297,12 @@ test("OOXML rejects conflicting or spoofed local ZIP directory names",async()=>{
  spoofed[30]=spoofed[30]===119?120:119;
  await assert.rejects(()=>extractTextract(file("spoofed.docx",spoofed)),/local filename does not match/);
 });
+
+
+test("PDF horizontal positioning retains spaces without incorrectly starting new lines",()=>{
+ const operators="BT 1 0 0 1 72 700 Tm (LEFT) Tj 40 0 Td (RIGHT) Tj 1 0 0 1 72 680 Tm (NEXT) Tj ET";
+ const result=extractKnightfallPdfOperators(operators);
+ assert.equal(result,"LEFT RIGHT\nNEXT");
+ const matrix="BT 1 0 0 1 72 700 Tm (ONE) Tj 1 0 0 1 150 700 Tm (TWO) Tj ET";
+ assert.equal(extractKnightfallPdfOperators(matrix),"ONE TWO");
+});
