@@ -39,6 +39,7 @@ test("Theme Crew has five fixed presets and four real worker roles",()=>{
  assert.equal(themePlan("poison emerald forest").preset,"verdant_crypt");
  assert.equal(themePlan("old blood red vampire").preset,"blood_moon");
  assert.equal(themePlan("gold black royal").preset,"royal_abyss");
+ assert.equal(themePlan("Ancient Egypt with Anubis, gold and scarabs").preset,"cathedral");
  assert.equal(themePlan("industrial moonsteel").preset,"iron_eclipse");
  assert.equal(themePlan("a classic cathedral").preset,"cathedral");
  assert.equal(themePlan("x".repeat(201)),null);
