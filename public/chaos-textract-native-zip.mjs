@@ -391,6 +391,6 @@ export async function readKnightfallOffice(file,extension,{notify=()=>{},cancell
   out.push("[Notice: "+unreadableTabs.length+" workbook tab(s) could not be read because their worksheet relationship is missing, unsupported or duplicated: "+
    unreadableTabs.slice(0,8).join(", ")+(unreadableTabs.length>8?", and others":"")+". These tabs were omitted.]");
  if(inferredOrder)
-  out.push("[Notice: The workbook has no worksheet relationship metadata. Sheet filenames were used as a fallback; actual tab names and order could differ.]");
+  out.push("[Notice: The workbook has no worksheet relationship metadata. Sheet filenames were used as a fallback; actual tab names and order could differ. Declared tab names (unverified): "+definitions.slice(0,8).map(def=>def.name||"Unnamed").join(", ")+".]");
  return out.join("\n\n");
 }
