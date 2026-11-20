@@ -158,26 +158,91 @@ function extractTextOperators(content,fontMaps=new Map()){
 }
 export function extractKnightfallPdfOperators(content){return extractTextOperators(content);}
 
-async function streamBytes(raw,header,sizeLimit=MAX_STREAM){
- if(raw.length>sizeLimit)throw Error("PDF stream exceeds "+Math.round(sizeLimit/1048576)+" MB limit.");
- const filter=String(header||"");
- if(!/\/Filter\b/.test(filter))return raw;
- if(!/\/FlateDecode\b/.test(filter)||/\/(?:LZWDecode|DCTDecode|ASCII85Decode|ASCIIHexDecode|RunLengthDecode|Crypt)\b/.test(filter))
-  throw Error("This PDF uses an unsupported content stream compression filter.");
+function asciiHexDecode(raw,cap){
+ const hex=Array.from(raw,b=>String.fromCharCode(b)).join("").split(">")[0].replace(/\s+/g,"");
+ if(!/^[\da-fA-F]*$/.test(hex))throw Error("PDF ASCIIHex text contains non-hexadecimal bytes.");
+ if(Math.ceil(hex.length/2)>cap)throw Error("Decoded PDF stream exceeds safety limit.");
+ return hexBytes(hex);
+}
+function ascii85Decode(raw,cap){
+ const out=[];let word=0,count=0,started=false;
+ const emit=(n,amount)=>{
+  for(let shift=24;shift>=32-8*amount;shift-=8){
+   if(out.length>=cap)throw Error("Decoded PDF ASCII85 stream exceeds safety limit.");
+   out.push((n>>>shift)&255);
+  }
+ };
+ for(let i=0;i<raw.length;i++){
+  const c=raw[i];
+  if(!started&&c===60&&raw[i+1]===126){i++;started=true;continue;}
+  if(c===126){if(raw[i+1]===62)break;throw Error("Invalid PDF ASCII85 end marker.");}
+  if(c===0||c===9||c===10||c===12||c===13||c===32)continue;
+  if(c===122){if(count)throw Error("Misplaced PDF ASCII85 zero block.");emit(0,4);continue;}
+  if(c<33||c>117)throw Error("Invalid PDF ASCII85 digit.");
+  word=word*85+(c-33);count++;
+  if(count===5){
+   if(word>0xffffffff)throw Error("PDF ASCII85 word overflow.");
+   emit(word>>>0,4);word=0;count=0;
+  }
+ }
+ if(count===1)throw Error("Incomplete PDF ASCII85 stream.");
+ if(count){
+  for(let i=count;i<5;i++)word=word*85+84;
+  if(word>0xffffffff)throw Error("PDF ASCII85 final word overflow.");
+  emit(word>>>0,count-1);
+ }
+ return Uint8Array.from(out);
+}
+function runLengthDecode(raw,cap){
+ const out=[];
+ for(let i=0;i<raw.length;){
+  const count=raw[i++];if(count===128)break;
+  if(count<128){
+   if(i+count+1>raw.length)throw Error("Truncated PDF run-length stream.");
+   for(let n=0;n<=count;n++)out.push(raw[i++]);
+  }else{
+   if(i>=raw.length)throw Error("Truncated PDF run-length sequence.");
+   const value=raw[i++];for(let n=0;n<257-count;n++)out.push(value);
+  }
+  if(out.length>cap)throw Error("Expanded PDF stream exceeds safety limit.");
+ }
+ return Uint8Array.from(out);
+}
+async function inflatePdf(raw,cap){
  if(typeof DecompressionStream!=="function")throw Error("Browser PDF decompression is unavailable.");
  const reader=new Blob([raw]).stream().pipeThrough(new DecompressionStream("deflate")).getReader();
  const chunks=[];let length=0;
  try{
-  while(true){
+  for(;;){
    const {done,value}=await reader.read();if(done)break;
    length+=value.byteLength;
-   if(length>sizeLimit)throw Error("Expanded PDF stream exceeded the safety limit.");
+   if(length>cap)throw Error("Expanded PDF stream exceeds safety limit.");
    chunks.push(value);
   }
  }finally{reader.releaseLock();}
- const result=new Uint8Array(length);let offset=0;
- for(const chunk of chunks){result.set(chunk,offset);offset+=chunk.length;}
- return result;
+ const output=new Uint8Array(length);let offset=0;
+ for(const chunk of chunks){output.set(chunk,offset);offset+=chunk.byteLength;}
+ return output;
+}
+async function streamBytes(raw,header,sizeLimit=MAX_STREAM){
+ if(raw.length>sizeLimit)throw Error("PDF stream exceeds "+Math.round(sizeLimit/1048576)+" MB limit.");
+ const meta=String(header||"");
+ const filter=meta.match(/\/Filter\s*(?:\[\s*([^\]]+)\s*\]|\/([A-Za-z0-9]+))/);
+ if(!filter)return raw;
+ const predictor=Number(meta.match(/\/Predictor\s+(\d+)/)?.[1]||1);
+ if(predictor>1)throw Error("This PDF uses a filtered predictor the offline text reader cannot decode.");
+ const names=[...(filter[1]||"/"+filter[2]).matchAll(/\/([A-Za-z0-9]+)/g)].map(x=>x[1]);
+ if(!names.length||names.length>5)throw Error("PDF has an unsupported filter pipeline.");
+ let data=raw;
+ for(const name of names){
+  if(name==="ASCIIHexDecode"||name==="AHx")data=asciiHexDecode(data,sizeLimit);
+  else if(name==="ASCII85Decode"||name==="A85")data=ascii85Decode(data,sizeLimit);
+  else if(name==="RunLengthDecode"||name==="RL")data=runLengthDecode(data,sizeLimit);
+  else if(name==="FlateDecode"||name==="Fl")data=await inflatePdf(data,sizeLimit);
+  else throw Error("PDF uses unsupported stream filter: "+name+".");
+  if(data.length>sizeLimit)throw Error("Expanded PDF stream exceeds safety limit.");
+ }
+ return data;
 }
 async function objectContent(object){
  if(!object)return "";
