@@ -14,7 +14,8 @@ test("Code Studio collects an explicit, full-file-only review submission",()=>{
  assert.match(js,/window\.confirm\("Submit this full-file source change/);
  assert.match(js,/method:"POST",credentials:"include",cache:"no-store"/);
  assert.match(js,/api\/chaos\/dev-reviews/);
- assert.match(js,/reviewSubmission=null;devSubmit\.disabled=true/);
+ assert.match(js,/devSubmit\.disabled=true/);
+ assert.match(js,/Keep the exact reviewed candidate available to export for manual CI/);
  assert.match(css,/\.studio-dev-submit/);
  assert.doesNotMatch(js,/\.innerHTML\s*=/);
  assert.doesNotMatch(js,/localStorage|sessionStorage/);
