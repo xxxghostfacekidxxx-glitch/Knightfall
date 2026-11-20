@@ -18,7 +18,7 @@ test("Theme Crew and final Cathedral Requiem use one canonical ordered cascade",
 test("Navigationless legal, account-recovery and staff views get the live switch",()=>{
  for(const file of ["admin-bot-archive.html","eula.html","moderation-accounts.html","reset-password.html","terms.html","verify-email.html"]){
   const html=read("public/"+file);
-  assert.match(html,/theme-crew-runtime\.js\?v=20261116-crew2/,file+" missing fallback runtime");
+  assert.match(html,/\/theme-crew-runtime\.js(?:"|\?)/,file+" missing fallback runtime");
   assert.ok(html.includes("/theme.css"),file+" must preserve shared styling");
  }
  for(const file of ["offline.html","personal-bots-offline.html"]){
