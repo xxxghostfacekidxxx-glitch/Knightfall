@@ -49,6 +49,14 @@ test("PDF honors logical page tree order rather than raw object IDs",async()=>{
  const result=await readKnightfallPdf(bytes);
  assert.match(result,/Page 1\nFIRST/);assert.match(result,/Page 2\nSECOND/);
 });
+test("PDF direct stream lengths preserve literal endstream words inside extracted text",async()=>{
+ const text="BT (The word endstream belongs to the document) Tj ET";
+ const bytes=pdf([
+  "1 0 obj << /Type /Page /Contents 2 0 R >> endobj",
+  "2 0 obj << /Length "+text.length+" >>\nstream\n"+text+"\nendstream\nendobj"
+ ]);
+ assert.match(await readKnightfallPdf(bytes),/word endstream belongs/);
+});
 test("PDF ToUnicode CMap maps custom glyph codes to readable characters",async()=>{
  const cmap="2 beginbfchar\n<0001> <0048>\n<0002> <0069>\nendbfchar";
  const stream="BT /F1 14 Tf <00010002> Tj ET";
