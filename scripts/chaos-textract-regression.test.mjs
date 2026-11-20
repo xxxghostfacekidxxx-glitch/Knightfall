@@ -482,3 +482,32 @@ test("Unsupported raster parameters fail instead of inventing pixel data",async(
   kind:"flate",width:2000,height:1200,channels:1,predictor:1,bytes:deflateSync(Uint8Array.of(1))
  }),/dimensions exceed supported limits/);
 });
+
+
+test("PDF stream containing literal endobj does not truncate selectable text",async()=>{
+ const stream="BT (The word endobj belongs to this page, not PDF syntax) Tj ET";
+ const bytes=pdf([
+  "1 0 obj << /Type /Page /Contents 2 0 R >> endobj",
+  "2 0 obj << /Length "+stream.length+" >>\nstream\n"+stream+"\nendstream\nendobj"
+ ]);
+ const result=await readKnightfallPdf(bytes);
+ assert.match(result,/word endobj belongs to this page/);
+});
+test("PDF JPEG image bytes may contain endobj without corrupting OCR input",async()=>{
+ const example=jpegPdfFixture();
+ const prefix=Array.from(example.bytes).findIndex((value,index,a)=>
+  value===255&&a[index+1]===216&&a[index+2]===255&&a[index+3]===224);
+ assert.ok(prefix>0);
+ const phrase=new TextEncoder().encode("endobj inside JPEG metadata");
+ example.bytes.set(phrase,prefix+40);
+ let called=false;
+ const result=await readKnightfallPdf(example.bytes,{ocrImage:async blob=>{
+  called=true;
+  const source=new Uint8Array(await blob.arrayBuffer());
+  assert.ok(Buffer.from(source).includes("endobj inside JPEG metadata"));
+  assert.equal(source.length,example.jpeg.length);
+  return {text:"INTACT SCANNED IMAGE"};
+ }});
+ assert.equal(called,true);
+ assert.match(result,/INTACT SCANNED IMAGE/);
+});
