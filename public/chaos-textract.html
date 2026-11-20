@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#100b14">
+<meta name="description" content="Textract by Miss Chaos: free, local document reading, image OCR, PDF and Office text extraction.">
+<title>𓂀 Textract | Miss Chaos · Knightfall</title>
+<link rel="stylesheet" href="/theme.css">
+<script src="/nav.js" defer></script>
+<style>
+:root{color-scheme:dark;--ink:#0d0b12;--panel:#17131c;--line:#806a61;--gold:#dfb768;--coral:#f08b81;--copy:#d9cad5}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 70% 0%,#3c242c,#0b0b10 50%);color:#f5ece8;font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
+main{width:min(1060px,94vw);margin:2rem auto 5rem}
+.breadcrumb{display:flex;flex-wrap:wrap;gap:.5rem;color:#cebeac;font-size:.85rem}
+a{color:#e8c482}
+header.hero{position:relative;overflow:hidden;padding:2rem 1.4rem;margin:1.2rem 0 1rem;border:1px solid #a58862;border-radius:19px;background:linear-gradient(125deg,#24151e,#111017)}
+.hero:before{content:"𓂀";position:absolute;right:1.2rem;top:-2rem;color:#dfb7681b;font-size:12rem;pointer-events:none}
+.hero>*{position:relative}
+.eyebrow{font-weight:800;letter-spacing:.18em;color:var(--gold);font-size:.72rem}
+h1{font-size:clamp(2.3rem,8vw,4.8rem);margin:.35rem 0;line-height:1}
+h1 span{color:var(--coral)}
+.hero p{max-width:740px;line-height:1.6;color:#d9c9cb}
+.notice{border-left:3px solid var(--gold);padding:.7rem 1rem;background:#3428237c;border-radius:3px 10px 10px 3px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.panel{border:1px solid #8d706266;background:linear-gradient(160deg,#211722ee,#110e17ee);border-radius:16px;padding:1.1rem;min-width:0}
+.panel h2{font-size:1.2rem;margin:.15rem 0 1rem;color:#f3dfc4}
+.field{display:flex;flex-direction:column;gap:.45rem;margin:.8rem 0}
+label{font-weight:700;color:#e9d7c8}
+input[type=file]{max-width:100%;font:inherit;font-size:.92rem;color:#ead6cd}
+select,textarea{width:100%;font:inherit;color:#f5ece8;background:#0f1116;border:1px solid #987d6b;border-radius:10px;padding:.72rem}
+textarea{min-height:335px;resize:vertical;line-height:1.55;white-space:pre-wrap}
+.drop{cursor:pointer;border:2px dashed #987d6b;border-radius:12px;padding:1.5rem 1rem;text-align:center;background:#130f18;outline-offset:3px;transition:background .16s}
+.drop.drag,.drop:focus-visible{background:#30202b;border-color:#ecc378}
+.drop strong{font-size:1.1rem}.drop small{display:block;color:#c4b6bd;margin-top:.45rem}
+.filename{color:#f3cf9a;overflow-wrap:anywhere;font-size:.84rem}
+.controls{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+button{cursor:pointer;background:#261923;color:#ffede3;border:1px solid #9d7c70;border-radius:10px;padding:.72rem 1rem;font:inherit;font-weight:750}
+button.primary{background:linear-gradient(110deg,#dfb768,#f08b81);color:#171016;border:0}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ffe5aa;outline-offset:3px}
+.check{display:flex;gap:.5rem;align-items:flex-start;line-height:1.5;font-size:.9rem;font-weight:500}
+.help{font-size:.85rem;color:#c3b9bd;line-height:1.6}
+#textract-status{min-height:2.7rem;margin-top:.9rem;padding:.8rem;background:#15131c;border:1px solid #6c635d;border-radius:10px;color:#d5ddcd}
+#textract-status[data-error=true]{color:#ffaaaa;border-color:#b85f60}
+#textract-stats{font-size:.8rem;color:#d9bd94}
+footer{margin-top:1rem;color:#c0b0b9;font-size:.86rem;line-height:1.6}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{padding:1.3rem}.panel{padding:.9rem}main{margin-top:1rem}textarea{min-height:240px}}
+</style>
+<script type="module" src="/chaos-textract.mjs?v=20261120-a"></script>
+</head>
+<body>
+<header class="kf-header"></header>
+<main id="main-content">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Knightfall</a><span>/</span><a href="/devil-tools.html">Creator Foundry</a><span>/</span>Textract</nav>
+<header class="hero">
+<div class="eyebrow">𓂀 MISS CHAOS · THE SCRIBE'S CHAMBER</div>
+<h1>TEX<span>TRACT</span></h1>
+<p>Feed the little demon a document. She'll turn its readable words into text you can inspect, copy, save, or explicitly hand to Miss Chaos for analysis.</p>
+<p class="notice"><strong>Free and local first:</strong> your original files stay in this browser. PDF, Word, spreadsheet, slide, and image processing uses open-source libraries loaded on demand. The first OCR run downloads language data and needs an internet connection. No Amazon Textract account or paid API is used.</p>
+</header>
+<div class="grid">
+<section class="panel" aria-labelledby="source-title">
+<h2 id="source-title">01 · Offer the document</h2>
+<div id="textract-drop" class="drop" role="button" tabindex="0" aria-label="Choose or drop a document">
+<strong>✣ Choose or drop a document</strong><small>PDF · DOCX · XLSX · PPTX · JPG · PNG · WebP · GIF · TXT · CSV · Markdown and more</small>
+</div>
+<div class="field"><label for="textract-file">Browse Photos or Files</label><input id="textract-file" type="file" accept=".pdf,.docx,.xlsx,.pptx,.txt,.md,.csv,.tsv,.json,.xml,.html,.htm,.log,.css,.js,.mjs,.ts,.svg,image/*"></div>
+<div class="filename" id="textract-filename">No file selected</div>
+<p class="help">18 MB maximum. The first 24 PDF pages are read; OCR is capped at 8 scanned pages per extraction. Google Photos cloud-only items may need to be saved to Files first.</p>
+<label class="check"><input id="textract-ocr-pdf" type="checkbox" checked>Use OCR when a PDF page has little or no selectable text (slower on phones)</label>
+<div class="controls"><button id="textract-extract" class="primary" disabled type="button">𓂀 Extract text</button><button id="textract-stop" type="button" hidden>Stop</button><button id="textract-clear" type="button">Clear</button></div>
+<div id="textract-status" role="status" aria-live="polite">Choose a file to begin.</div>
+</section>
+<section class="panel" aria-labelledby="output-title">
+<h2 id="output-title">02 · Inspect the transcription</h2>
+<label class="field" for="textract-output">Extracted text, editable before sharing</label>
+<textarea id="textract-output" spellcheck="false" placeholder="Readable text appears here. Check names, numbers, handwriting and tables carefully."></textarea>
+<p id="textract-stats" aria-live="polite"></p>
+<div class="controls"><button type="button" id="textract-copy" disabled>Copy text</button><button type="button" id="textract-download" disabled>Download .txt</button></div>
+<div class="field"><label for="textract-task">03 · What should Miss Chaos do?</label>
+<select id="textract-task">
+<option>Summarize this document and explain its key points.</option>
+<option>List important facts, dates, figures, and uncertainties found in the document.</option>
+<option>Clean up the extracted text, correcting obvious OCR errors while flagging guesses.</option>
+<option>Help me understand the code or technical details in this document.</option>
+<option>Turn this document into actionable steps and a checklist.</option>
+</select></div>
+<button class="primary" id="textract-handoff" type="button" disabled>⚡ Stage draft for Miss Chaos</button>
+<p class="help">This stages a short excerpt in the chat composer. You must review it and press Send before Miss Chaos receives anything. Long documents can be downloaded and broken into excerpts.</p>
+</section>
+</div>
+<footer>⚠ OCR can misread handwriting, low-resolution images, columns, and numbers. Do not rely on it without checking against the original. Third-party libraries are downloaded from public CDNs, but your selected file is processed locally. No extracted text is stored in Knightfall until you choose to send it in chat.</footer>
+</main>
+</body></html>
