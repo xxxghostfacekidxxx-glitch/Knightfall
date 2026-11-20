@@ -12,7 +12,7 @@ function choose(file){
  // Clear the previous document before validating a new selection: failed image
  // or unsupported file changes must never expose stale text as the new result.
  active++;currentFile=null;output.value="";stats.textContent="";
- rotationSection.hidden=true;
+ rotationSection.hidden=true;rotationControl.value="auto";
  // Switching the primary document also invalidates its prior comparison.
  compareToken++;compareBusy=false;secondFile=null;compareFile.value="";compareOutput.value="";
  compareStatus.textContent="Choose a second file after extracting this document.";updateCompareControls();
@@ -30,7 +30,11 @@ function setBusy(on){busy=on;extractButton.disabled=on||!currentFile;stopButton.
 rotationSection.hidden=true;
 rotationControl.addEventListener("change",()=>{
  if(!currentFile||rotationSection.hidden||busy)return;
- active++;output.value="";stats.textContent="";renderInsights();
+ active++;output.value="";stats.textContent="";
+ // A previous comparison is attached to the old primary OCR result.
+ compareToken++;compareBusy=false;secondFile=null;compareFile.value="";compareOutput.value="";
+ compareStatus.textContent="The photo orientation changed; extract again before comparing files.";
+ updateCompareControls();renderInsights();
  copyButton.disabled=true;downloadButton.disabled=true;handoffButton.disabled=true;
  report("Photo orientation updated. Extract again to use the new rotation.");
 });
