@@ -488,7 +488,7 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
 .home-page .home-intro>p{max-width:660px;color:#eadfd3;text-shadow:0 2px 8px #000;font-size:clamp(.98rem,1.8vw,1.18rem)}
 .home-page .home-intro-actions{justify-content:flex-start}
 .home-page .kf-start-here{position:relative;border-color:#977b71;background:linear-gradient(150deg,#282029,#11171b)}
-.home-page .kf-start-card{position:relative;overflow:hidden;border-color:#9b817354;background:linear-gradient(145deg,#2e2630,#16191d)}
+.home-page .kf-start-card{border-color:#9b817354;background:linear-gradient(145deg,#2e2630,#16191d)}
 .home-page .kf-start-card::before{content:"";position:absolute;right:-30px;top:-38px;width:150px;height:150px;border:1px solid #c7a77c3b;border-radius:50%;box-shadow:0 0 0 13px #c7a77c0b,0 0 0 28px #c7a77c08;pointer-events:none}
 .home-page .kf-start-card h3,.home-page .kf-start-card p,.home-page .kf-start-card a{position:relative}
 @media(max-width:640px){.home-page .home-intro{min-height:510px;background-position:54% center;padding:1.4rem}.home-page .home-intro h1{font-size:clamp(2.2rem,10vw,3.3rem)}.home-page .home-intro-actions{width:100%}}
@@ -515,7 +515,7 @@ body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):n
  border-radius:20px!important;min-height:clamp(210px,23vw,310px);padding:clamp(1.4rem,3vw,2.6rem)!important;
  background-color:#171820!important;
  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#101219f7 0%,#16151bf0 32%,#17151ec4 49%,#16151d47 75%),var(--kf-art-image)!important;
- background-size:100% 100%,cover,cover!important;background-position:center,center,center!important;background-repeat:no-repeat!important;
+ background-position:center,center,center!important;background-repeat:no-repeat!important;
  box-shadow:0 21px 58px #000a,inset 0 0 0 1px #e0c4a71f!important;
 }
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] :is(h1,h2,p,a,button,.eyebrow){position:relative;z-index:1;text-shadow:0 2px 12px #050408de}
@@ -595,7 +595,7 @@ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-
 /* Pet sanctuary stays cartoon-bright, but the primary mint CTA needs dark text.
    The shared bronze link rule otherwise creates near-invisible bronze-on-mint text. */
 body[data-kf-realm="pets"]:not(.profile-custom-theme) .sanctuary-header .sanctuary-links a:first-child{
- color:#14231f!important;text-shadow:none!important;font-weight:900!important;
+ color:#14231f!important;font-weight:900!important;
  border-color:#abf6da!important;
 }
 body[data-kf-realm="pets"]:not(.profile-custom-theme) .sanctuary-header .sanctuary-links a:not(:first-child){
@@ -765,7 +765,7 @@ body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):n
   radial-gradient(ellipse at 88% 3%,color-mix(in srgb,var(--kf-realm-glow,#b55584) 29%,transparent),transparent 55%),
   var(--kf-cathedral-art)!important;
  background-position:center top,center top,center top!important;
- background-size:cover,cover,cover!important;
+ 
  background-attachment:fixed,fixed,fixed!important;
 }
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)::selection{background:#b25b68;color:#fff9f0}
