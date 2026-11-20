@@ -228,7 +228,7 @@ export function decodeGlyphMask(mask,width,height,templates,{notify=()=>{},cance
 }
 /** Clockwise grayscale rotation, bounded to the same pixel budget as OCR. */
 export function rotateKnightfallGrey(grey,width,height,angle){
- if(!(grey instanceof Uint8Array)||width<1||height<1||width*height!==grey.length||
+ if(!(grey instanceof Uint8Array)||!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||width<1||height<1||width*height!==grey.length||
    grey.length>MAX_IMAGE_PIXELS||![0,90,180,270].includes(angle))
   throw Error("Invalid local OCR rotation.");
  if(angle===0)return {grey,width,height};
