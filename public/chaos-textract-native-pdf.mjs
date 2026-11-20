@@ -4,6 +4,7 @@
  * of embedded ToUnicode CMaps. This is not a PDF renderer or scanned-page OCR.
  * Source bytes never leave the browser.
  */
+import {readKnightfallImageOcr} from "./chaos-textract-native-ocr.mjs";
 const LATIN=new TextDecoder("windows-1252"),UTF8=new TextDecoder();
 /* PDF bytes must remain reversible: TextDecoder("latin1") aliases to Windows-1252
    in browsers, corrupting binary deflate streams at bytes 0x80–0x9F. */
@@ -255,23 +256,67 @@ async function streamBytes(raw,header,sizeLimit=MAX_STREAM){
  }
  return data;
 }
-async function objectContent(object){
- if(!object)return "";
+function rawPdfStream(object){
+ if(!object)return null;
  const match=/\bstream(?:\r\n|\n|\r)/.exec(object);
- if(!match)return "";
- const start=match.index+match[0].length;
- const header=object.slice(0,match.index);
+ if(!match)return null;
+ const start=match.index+match[0].length,header=object.slice(0,match.index);
  const length=header.match(/\/Length\s+(\d+)\b(?!\s+\d+\s+R)/);
  const directLength=length?Number(length[1]):null;
- // With a direct /Length, find the exact stream extent rather than scanning
- // binary for the word "endstream" (which can occur inside actual page text).
  const end=directLength!==null&&directLength<=MAX_STREAM&&start+directLength<=object.length?
   start+directLength:object.indexOf("endstream",start);
- if(end<start)return "";
+ if(end<start||end-start>MAX_STREAM)return null;
  let raw=object.slice(start,end);
  if(directLength===null)raw=raw.replace(/\r?\n$/,"");
- const unpacked=await streamBytes(Uint8Array.from(raw,c=>c.charCodeAt(0)&255),header);
- return binaryString(unpacked);
+ return {header,bytes:Uint8Array.from(raw,c=>c.charCodeAt(0)&255)};
+}
+async function objectContent(object){
+ const stream=rawPdfStream(object);
+ if(!stream)return "";
+ return binaryString(await streamBytes(stream.bytes,stream.header));
+}
+/* Read only JPEG XObjects explicitly painted by a page's content stream.
+ * No external PDF renderer, file upload, or paid OCR endpoint is involved. */
+function pageImageObjects(page,objects,drawn){
+ if(!drawn.size)return [];
+ const scoped=[];let node=page,depth=0;
+ while(node&&depth++<12){
+  scoped.push(node);
+  const resources=objectReferences(node,"Resources")[0];
+  if(resources&&objects.has(resources))scoped.push(objects.get(resources));
+  node=objects.get(objectReferences(node,"Parent")[0]);
+ }
+ const found=new Map();
+ for(const source of scoped){
+  const dictionaries=[];
+  for(const match of source.matchAll(/\/XObject\s*<<([\s\S]*?)>>/g))dictionaries.push(match[1]);
+  for(const id of objectReferences(source,"XObject")){
+   const ref=objects.get(id);
+   if(ref)dictionaries.push(ref);
+  }
+  for(const dictionary of dictionaries){
+   for(const ref of dictionary.matchAll(/\/([\w.-]+)\s+(\d+)\s+\d+\s+R/g)){
+    if(drawn.has(ref[1])&&!found.has(ref[1]))found.set(ref[1],Number(ref[2]));
+   }
+  }
+ }
+ const candidates=[];
+ for(const [name,id] of found){
+  const obj=objects.get(id);
+  if(!obj||!/\/Subtype\s*\/Image\b/.test(obj))continue;
+  const stream=rawPdfStream(obj);
+  if(!stream)continue;
+  const filter=stream.header.match(/\/Filter\s*(?:\[([^\]]*)\]|(\/[\w]+))/);
+  const filters=[...(filter?.[1]||filter?.[2]||"").matchAll(/\/([\w]+)/g)].map(x=>x[1]);
+  if(filters.length!==1||!["DCTDecode","DCT"].includes(filters[0]))continue;
+  const width=Number(stream.header.match(/\/Width\s+(\d+)/)?.[1]||0);
+  const height=Number(stream.header.match(/\/Height\s+(\d+)/)?.[1]||0);
+  if(width<120||height<120||width*height>50000000)continue;
+  const bytes=stream.bytes;
+  if(bytes.length<100||bytes[0]!==255||bytes[1]!==216||bytes[2]!==255)continue;
+  candidates.push({name,bytes,width,height,area:width*height});
+ }
+ return candidates.sort((a,b)=>b.area-a.area).slice(0,8);
 }
 function objectReferences(source,name){
  const m=String(source||"").match(new RegExp("\\/"+name+"\\s*(?:\\[([\\s\\S]*?)\\]|(\\d+)\\s+\\d+\\s+R)"));
@@ -356,7 +401,7 @@ async function fontMapsFor(page,objects){
  }
  return maps;
 }
-export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false}={}){
+export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false,ocrImage=readKnightfallImageOcr}={}){
  const bytes=file instanceof Uint8Array?file:new Uint8Array(await file.arrayBuffer());
  if(bytes.length>MAX_DOCUMENT)throw Error("PDF exceeds 18 MB.");
  if(bytes.length<8||!binaryString(bytes.subarray(0,Math.min(1024,bytes.length))).includes("%PDF-"))throw Error("This is not a valid PDF header.");
@@ -379,19 +424,39 @@ export async function readKnightfallPdf(file,{notify=()=>{},cancelled=()=>false}
   if(cancelled())throw Error("Extraction cancelled.");
   notify("Extracting PDF page "+(i+1)+" of "+visible.length+"…");
   const page=objects.get(visible[i]);const refs=objectReferences(page,"Contents").slice(0,48),chunks=[];
+  const drawn=new Set();
   const fonts=await fontMapsFor(page,objects);
   for(const ref of refs){
    if(cancelled())throw Error("Extraction cancelled.");
    const stream=await objectContent(objects.get(ref));
    if(!stream)continue;
+   for(const match of stream.matchAll(/\/([\w.-]+)\s+Do\b/g))drawn.add(match[1]);
    const extracted=extractTextOperators(stream,fonts);
    if(extracted)chunks.push(extracted);
   }
-  if(chunks.length){valid++;totalChars+=chunks.join("").length;}
+  if(!chunks.length&&drawn.size){
+   const images=pageImageObjects(page,objects,drawn);
+   if(images.length){
+    const image=images[0];
+    try{
+     notify("Recognizing embedded JPEG on PDF page "+(i+1)+" of "+visible.length+"…");
+     const result=await ocrImage(new Blob([image.bytes],{type:"image/jpeg"}),{notify,cancelled});
+     if(cancelled())throw Error("Extraction cancelled.");
+     if(result?.text?.trim()){
+      chunks.push("[OCR from embedded JPEG image; verify text and numbers]\n"+result.text.trim());
+      if(images.length>1)chunks.push("[Notice: Other embedded JPEG images on this page were not recognized.]");
+     }
+    }catch(error){
+     if(cancelled())throw Error("Extraction cancelled.");
+     chunks.push("[Embedded JPEG OCR unsuccessful: "+String(error?.message||error).slice(0,180)+"]");
+    }
+   }
+  }
+  if(chunks.some(x=>!/^\[Embedded JPEG OCR unsuccessful:/.test(x))){valid++;totalChars+=chunks.join("").length;}
   if(totalChars>MAX_TOTAL)throw Error("PDF extracted text exceeds memory safety limits.");
-  parts.push("Page "+(i+1)+"\n"+(chunks.join("\n")||"[No selectable text detected]"));
+  parts.push("Page "+(i+1)+"\n"+(chunks.join("\n")||"[No selectable text detected; JPEG image OCR may not be supported for this page]"));
  }
- if(!valid)throw Error("No selectable text detected. This is likely a scanned PDF, or uses fonts/streams that the offline reader cannot decode. Try an accessible text-layer PDF or image OCR for individual pages.");
+ if(!valid)throw Error("No selectable text could be recovered. JPEG page OCR was attempted where supported. Other scanned PDFs may use unsupported image encodings; export their pages as individual images.");
  if(pages.length>visible.length)
   parts.push("[Notice: Only "+visible.length+" of "+pages.length+" PDF pages were processed. Split the document to extract the remainder.]");
  return parts.join("\n\n");
