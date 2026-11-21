@@ -82,6 +82,8 @@ test("Creator Foundry discovers the four complete collections, both formats, and
  assert.match(html,/id="theme-art-collection" data-workspace hidden/);
  assert.match(html,/href="#theme-art-collection" data-workspace-search/);
  assert.match(html,/id="kf-theme-art-gallery"/);
+ for(const id of ["kf-theme-kit-stage","kf-theme-kit-header","kf-theme-kit-frame","kf-theme-kit-emblem","kf-theme-kit-divider","kf-theme-kit-caption"])
+  assert.ok(html.includes('id="'+id+'"'),"Missing live original vector kit preview "+id);
  for(const c of ["egyptian-eclipse","dark-lord-ascendant","korriban","mustafar","theme-selector"])
   assert.ok(html.includes('data-collection="'+c+'"'),"Missing Foundry filter "+c);
  for(const ext of ["png","svg"])assert.ok(html.includes('data-format="'+ext+'"'));
@@ -96,6 +98,8 @@ test("Creator Foundry discovers the four complete collections, both formats, and
  assert.match(js,/navigator\.clipboard\.writeText/);
  assert.match(js,/image\.loading="lazy"/);
  assert.match(js,/Copy CSS/);
+ assert.match(js,/function previewKit\(/);
+ assert.match(js,/kit\.dataset\.collection=chosen/);
  assert.doesNotMatch(js,/\.innerHTML\s*=/);
  const css=read("public/creator-theme-art-gallery.css");
  assert.doesNotMatch(css,/!important\b/);
