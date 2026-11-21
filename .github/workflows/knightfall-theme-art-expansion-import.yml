@@ -1,0 +1,49 @@
+name: Knightfall Four Realm Theme Artwork Expansion Import
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/knightfall-theme-art-expansion-sources.json'
+permissions:
+  contents: write
+concurrency:
+  group: knightfall-theme-art-expansion-import-main
+  cancel-in-progress: false
+jobs:
+  import-originals:
+    if: github.repository == 'xxxghostfacekidxxx-glitch/Knightfall'
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify immutable existing originals, import new images, and verify whole collection
+        run: |
+          node --check scripts/knightfall-theme-art-expansion-import.mjs
+          node scripts/knightfall-theme-art-import.mjs --verify
+          node scripts/knightfall-theme-art-expansion-import.mjs --import
+          node scripts/knightfall-theme-art-import.mjs --verify
+          node scripts/knightfall-theme-art-expansion-import.mjs --verify
+      - name: Commit all seven original PNGs and the append-only inventory
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/assets/knightfall/theme-collections
+          if git diff --cached --quiet; then
+            echo "All seven new images are already saved."
+            exit 0
+          fi
+          git commit -m "assets(foundry): save seven new Egyptian, Dark Lord, Korriban and Mustafar originals"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Recheck original image integrity after repository save
+        run: |
+          node scripts/knightfall-theme-art-import.mjs --verify
+          node scripts/knightfall-theme-art-expansion-import.mjs --verify
