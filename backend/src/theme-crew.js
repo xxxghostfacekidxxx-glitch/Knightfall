@@ -16,7 +16,17 @@ export const THEME_CREW_BOTS=Object.freeze([
  {key:"prism-warden",name:"Prism Warden",role:"Visual QA",capability:"Real route, game-exclusion, accessibility and responsive regression checks",execution:"GitHub Actions checks",publishes:false},
  {key:"switchblade",name:"Switchblade",role:"Theme Publisher",capability:"Immediate allowlisted sitewide preset change and single-step rollback",execution:"GOD approval required",publishes:true}
 ]);
+// Each domain can inherit the site look or publish its own independent recipe.
+export const THEME_CREW_REALMS=Object.freeze({
+ site:Object.freeze({name:"Knightfall / Shared",path:"/"}),
+ madhouse:Object.freeze({name:"The Madhouse",path:"/community.html"}),
+ arcade:Object.freeze({name:"Chaos Cartridge",path:"/chaos-cartridge.html"}),
+ chaosphere:Object.freeze({name:"Chaosphere",path:"/chaosphere.html"}),
+ admin:Object.freeze({name:"Eye of Chaos / Osiris & Isis",path:"/eye-of-chaos.html"})
+});
 const STORE_KEY="theme_crew_current";
+const storeKey=realm=>realm==="site"?STORE_KEY:"theme_crew_realm_"+realm;
+const validRealm=value=>typeof value==="string"&&Object.hasOwn(THEME_CREW_REALMS,value);
 const DEFAULT=Object.freeze({preset:"cathedral",previous:"cathedral",revision:0,updated_at:null});
 const allowedOrigin=new Set(["https://ash-fall.com","https://www.ash-fall.com"]);
 const ts=()=>new Date().toISOString();
@@ -31,14 +41,25 @@ export function normalizeThemeState(value){
   return {preset:state.preset,previous,revision,updated_at:typeof state.updated_at==="string"?state.updated_at:null};
  }catch{return {...DEFAULT}}
 }
-async function readCurrent(env){
- const row=await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(STORE_KEY).first();
- return {state:normalizeThemeState(row?.value),raw:row?.value??null};
+async function readCurrent(env,realm="site",inherited=null){
+ const row=await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(storeKey(realm)).first();
+ if(row?.value!=null)return {state:normalizeThemeState(row.value),raw:row.value};
+ const base=inherited||DEFAULT;
+ return {state:{preset:base.preset,previous:base.preset,revision:0,updated_at:null,inherited:realm!=="site"},raw:null};
 }
-async function prepareCurrent(env){
+async function prepareCurrent(env,realm="site"){
+ // Realm first-edit snapshot comes from the live shared theme; later edits are isolated.
+ const inherited=realm==="site"?DEFAULT:(await readCurrent(env)).state;
+ const initial={preset:inherited.preset,previous:inherited.preset,revision:0,updated_at:null};
  await env.DB.prepare("INSERT OR IGNORE INTO site_settings (key,value,updated_by,updated_at) VALUES (?,?,NULL,?)")
-  .bind(STORE_KEY,JSON.stringify(DEFAULT),ts()).run();
- return readCurrent(env);
+  .bind(storeKey(realm),JSON.stringify(initial),ts()).run();
+ return readCurrent(env,realm);
+}
+async function readAllCurrent(env){
+ const site=(await readCurrent(env)).state;
+ const entries=await Promise.all(Object.keys(THEME_CREW_REALMS).filter(key=>key!=="site")
+  .map(async realm=>[realm,(await readCurrent(env,realm,site)).state]));
+ return {site,realms:Object.fromEntries(entries)};
 }
 async function history(env){
  try{
@@ -46,7 +67,7 @@ async function history(env){
    .bind("theme_crew.publish").all()).results||[];
   return rows.map(row=>{
    let details={};try{details=JSON.parse(row.details||"{}")}catch{}
-   return {at:row.created_at,actor_id:row.actor_id,from:details.from,to:details.to,revision:details.revision,action:details.action};
+   return {at:row.created_at,actor_id:row.actor_id,realm:details.realm||"site",from:details.from,to:details.to,revision:details.revision,action:details.action};
   }).filter(x=>typeof x.to==="string");
  }catch{return []}
 }
@@ -78,7 +99,8 @@ export async function handleThemeCrew(request,env,url,{requireUser,json,origin,a
  const reply=(value,status=200)=>json(value,status,origin,{"cache-control":respondStatus,"x-robots-tag":"noindex,nofollow"});
  if(isPublic){
   if(request.method!=="GET")return reply({error:"Method not allowed"},405);
-  return reply(publicTheme((await readCurrent(env)).state));
+  const {site,realms}=await readAllCurrent(env);
+  return reply({...publicTheme(site),realms:Object.fromEntries(Object.entries(realms).map(([key,value])=>[key,publicTheme(value)]))});
  }
  const user=await requireUser(request,env);
  if(!user)return reply({error:"Sign in as Knightfall staff."},401);
@@ -89,8 +111,8 @@ export async function handleThemeCrew(request,env,url,{requireUser,json,origin,a
  if(!canPublish&&(path==="/api/god/theme/activate"||path==="/api/god/theme/rollback"))
    return reply({error:"Owner or delegated admin partner approval required."},403);
  if(path==="/api/god/theme/status"&&request.method==="GET"){
-  const state=(await readCurrent(env)).state;
-  return reply({current:state,presets:THEME_CREW_PRESETS,bots:THEME_CREW_BOTS,
+  const {site,realms}=await readAllCurrent(env);
+  return reply({current:site,realms,realmMeta:THEME_CREW_REALMS,presets:THEME_CREW_PRESETS,bots:THEME_CREW_BOTS,
     history:await history(env),workflow:"https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/theme-crew.yml",
     permissions:{can_view:true,can_plan:true,can_preview:true,can_publish:canPublish,can_rollback:canPublish},
     policy:"All administrators can inspect and plan. GOD and the accepted admin partner can publish reviewed presets and roll back. Every update is versioned, audited, and reversible. No arbitrary CSS endpoint."});
@@ -106,8 +128,10 @@ export async function handleThemeCrew(request,env,url,{requireUser,json,origin,a
   return reply({plan,preset:THEME_CREW_PRESETS[plan.preset],published:false});
  }
  if(path!=="/api/god/theme/activate"&&path!=="/api/god/theme/rollback")return reply({error:"Unknown Theme Crew operation."},404);
+ const realm=data.realm??"site";
+ if(!validRealm(realm))return reply({error:"Unknown theme realm."},400);
  if(!Number.isSafeInteger(data.expectedRevision)||data.expectedRevision<0)return reply({error:"Expected revision required. Refresh the console."},400);
- const {state,raw}=await prepareCurrent(env);
+ const {state,raw}=await prepareCurrent(env,realm);
  if(data.expectedRevision!==state.revision)return reply({error:"Theme was updated elsewhere. Refresh before publishing.",current:state},409);
  const rollback=path.endsWith("/rollback");
  const target=rollback?state.previous:data.preset;
@@ -116,10 +140,10 @@ export async function handleThemeCrew(request,env,url,{requireUser,json,origin,a
  const next={preset:target,previous:state.preset,revision:state.revision+1,updated_at:ts()};
  // Compare-and-swap. Two authorized staff commands cannot overwrite each other.
  const result=await env.DB.prepare("UPDATE site_settings SET value=?,updated_by=?,updated_at=? WHERE key=? AND value=?")
-  .bind(JSON.stringify(next),user.id,next.updated_at,STORE_KEY,raw).run();
+  .bind(JSON.stringify(next),user.id,next.updated_at,storeKey(realm),raw).run();
  if(Number(result.meta?.changes||0)!==1)return reply({error:"Theme changed concurrently. Refresh and retry."},409);
  try{await audit(env,user,"theme_crew.publish","site_theme",null,
-  {from:state.preset,to:next.preset,revision:next.revision,action:rollback?"rollback":"activate"})}
+  {realm,from:state.preset,to:next.preset,revision:next.revision,action:rollback?"rollback":"activate"})}
  catch(error){console.warn("theme_crew_audit_failed",String(error))}
- return reply({ok:true,current:next,preset:THEME_CREW_PRESETS[next.preset],rolled_back:rollback});
+ return reply({ok:true,realm,current:next,preset:THEME_CREW_PRESETS[next.preset],rolled_back:rollback});
 }
