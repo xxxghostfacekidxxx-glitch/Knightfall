@@ -75,3 +75,46 @@
 @media(prefers-reduced-motion:reduce){
  #theme-art-collection .kf-theme-art-card{scroll-behavior:auto}
 }
+
+/* The vector gallery uses original SVGs as real, scalable artwork, not PNG crops. */
+#theme-art-collection .kf-theme-art-format-filters{
+ padding:.75rem 0 1rem;border-top:1px solid color-mix(in srgb,var(--art-metal),transparent 72%);
+ margin-top:.1rem;
+}
+#theme-art-collection .kf-theme-art-card[data-collection="egyptian-eclipse"]{--art-item-accent:#40d4c9;--art-item-metal:#e6b56a}
+#theme-art-collection .kf-theme-art-card[data-collection="dark-lord-ascendant"]{--art-item-accent:#ff344d;--art-item-metal:#b5b5c3}
+#theme-art-collection .kf-theme-art-card[data-collection="korriban"]{--art-item-accent:#ee4b55;--art-item-metal:#dba079}
+#theme-art-collection .kf-theme-art-card[data-collection="mustafar"]{--art-item-accent:#ff7625;--art-item-metal:#e6a057}
+#theme-art-collection .kf-theme-art-card[data-collection="theme-selector"]{--art-item-accent:#dba95f;--art-item-metal:#e6bd83}
+#theme-art-collection .kf-theme-art-card{
+ border-color:color-mix(in srgb,var(--art-item-metal,var(--art-metal)),transparent 45%);
+}
+#theme-art-collection .kf-theme-art-card:hover,
+#theme-art-collection .kf-theme-art-card:focus-within{
+ border-color:var(--art-item-accent,var(--art-metal));
+ box-shadow:0 17px 40px #000a,0 0 20px color-mix(in srgb,var(--art-item-accent,var(--art-glow)),transparent 82%);
+}
+#theme-art-collection .kf-theme-art-card .kf-theme-art-eyebrow{color:var(--art-item-metal,var(--art-metal))}
+#theme-art-collection .kf-theme-art-card[data-format="svg"] .kf-theme-art-preview{
+ background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--art-item-accent,var(--art-glow)),transparent 84%),transparent 63%),
+ linear-gradient(135deg,#1d1a20,#080a11);
+}
+#theme-art-collection .kf-theme-art-card[data-format="svg"] .kf-theme-art-preview img{
+ object-fit:contain;padding:clamp(.65rem,2vw,1.7rem);
+}
+#theme-art-collection .kf-theme-art-card[data-format="svg"] .kf-theme-art-preview::after{
+ content:"VECTOR · SCALABLE";position:absolute;left:.8rem;bottom:.7rem;
+ font-size:.67rem;font-weight:850;letter-spacing:.16em;color:#f6e7de;
+ padding:.3rem .55rem;background:#0b0d12c9;border:1px solid #ffffff3f;border-radius:5px;
+}
+#theme-art-collection .kf-theme-art-empty{
+ grid-column:1/-1;padding:1.5rem;border:1px dashed #a79180;border-radius:14px;color:#e1cfbd;
+}
+#theme-art-collection .kf-theme-art-format-filters button[aria-pressed="true"]{
+ background:color-mix(in srgb,var(--art-metal) 27%,#0d0c11);
+}
+@media (max-width:620px){
+ #theme-art-collection .kf-theme-art-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #theme-art-collection .kf-theme-art-button{min-width:0}
+ #theme-art-collection .kf-theme-art-filters button{flex:1 1 140px}
+}
