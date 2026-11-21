@@ -24,14 +24,14 @@
 <script type="module" src="/creator-production-lab.js?v=20261113-creator1"></script>
 </head><body><header class="kf-header"></header><main>
 <a class="back" href="/">← Knightfall</a>
-<section class="hero"><h1>Creator <span data-mc-keep-clear>Foundry</span></h1><p class="lede">One organized home for creative workspaces, developer tools, open-source research, games, art, bots, and publishing.</p></section>
+<section class="hero"><h1>Creator <span data-mc-keep-clear>Foundry</span></h1><p class="lede">Build games and bots. Create artwork. Preview assets. Publish projects.</p></section>
 <div id="status" class="status" role="status" aria-live="polite">Checking Foundry access…</div>
 
 <section id="foundry-public-preview" class="foundry-public-preview" aria-labelledby="foundry-public-heading">
  <div class="foundry-public-heading">
   <p class="foundry-public-eyebrow">KNIGHTFALL / OPEN PORTALS</p>
   <h2 id="foundry-public-heading">Explore the worlds we've built.</h2>
-  <p>Creator Foundry workspaces require staff access. These public realms are real, live destinations anyone can explore.</p>
+  <p>Explore Knightfall's public worlds.</p>
  </div>
  <div class="foundry-public-grid">
   <a class="foundry-public-card" href="/chaos-cartridge.html"><img src="/assets/knightfall/gateway-arcade.svg" width="240" height="240" loading="lazy" alt=""><span>01 / PLAY</span><h3>Chaos Cartridge</h3><p>Games, high scores and arcade chaos.</p><strong>Enter the arcade ›</strong></a>
@@ -860,9 +860,9 @@ async function boot(){
     // Progressive disclosure: keep all existing IDs, events and workspaces intact.
     // Group the existing sections rather than cloning tools or adding another CSS system.
     const workspaceGroups=[
-      {id:"build",title:"🎮 Build Games & Bots",hint:"Game production, bot architecture, sprite workspaces and project builds.",items:["bot-forge","production-workbench","sprite-workshop","developer-bench","arcade-project-resources","original-creations","cinderwild-preview"]},
-      {id:"assets",title:"🎨 Assets & Previews",hint:"Upload, inspect, render and prepare reusable art and visual assets.",items:["site-image-library","theme-art-collection","creation-gallery","knightfall-art-collection","brand-library","original-icon-crops","gravewave-icon-collection","app-icon-choices","gravewave-game-sprites","neon-nuisances","dt-vector-library"]},
-      {id:"collection",title:"✦ Our Collection",hint:"Original Knightfall projects, ideas, catalogs, releases and references.",items:["foundry-catalog","creator-handoff","chaos-card-catalog","developer-arsenal-ci","release-simulator","published-assets"]}
+      {id:"build",title:"🎮 Build Games & Bots",hint:"Build bots, games and sprites.",items:["bot-forge","production-workbench","sprite-workshop","developer-bench","arcade-project-resources","original-creations","cinderwild-preview"]},
+      {id:"assets",title:"🎨 Assets & Previews",hint:"Upload, preview and organize artwork.",items:["site-image-library","theme-art-collection","creation-gallery","knightfall-art-collection","brand-library","original-icon-crops","gravewave-icon-collection","app-icon-choices","gravewave-game-sprites","neon-nuisances","dt-vector-library"]},
+      {id:"collection",title:"✦ Our Collection",hint:"Browse projects, catalogs and releases.",items:["foundry-catalog","creator-handoff","chaos-card-catalog","developer-arsenal-ci","release-simulator","published-assets"]}
     ];
     const overview=document.createElement("nav");overview.className="kf-foundry-portals";overview.setAttribute("aria-label","Creator Foundry sections");
     const container=document.createElement("div");container.className="kf-foundry-zones";
