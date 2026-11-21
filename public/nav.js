@@ -60,7 +60,7 @@
     // covers /admin, /admin.html, /admin-foo and /mascot-pets alike.
     if (path === "/" || path === "/index.html") realm = "home";
     else if (/^\/(?:community|homepage|thread|create-thread|forums|madhouse)(?:-|[./]|$)/.test(path)) realm = "madhouse";
-    else if (/^\/(?:chaos-cartridge|chaos-lab|arcade|arcade-vault)(?:-|[./]|$)/.test(path)) realm = "arcade";
+    else if (/^\/(?:chaos-cartridge|chaos-lab|arcade|arcade-vault|casino|card-room)(?:-|[./]|$)/.test(path)) realm = "arcade";
     else if (/^\/(?:devil-tools|dev-toolkit|creator|open-source-arsenal|cinderwild|cinderwind|personal-bots|bots)(?:-|[./]|$)/.test(path)) realm = "foundry";
     else if (/^\/(?:messages|chaosphere|ruinwire|social|friends|notifications|miss-chaos|bot)(?:-|[./]|$)/.test(path)) realm = "messages";
     else if (/^\/(?:moonology|shadow-work|astrology|birth-chart|cosmic)(?:-|[./]|$)/.test(path)) realm = "moon";
