@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {readFileSync,existsSync,readdirSync} from "node:fs";
 const read=p=>readFileSync(new URL(p,import.meta.url),"utf8");
-const css=read("../public/knightfall-section-foundations.css")+"\n"+read("../public/knightfall-unified-theme.css"),tokens=read("../public/design-system.css");
+const css=read("../public/knightfall-section-foundations.css")+"\n"+read("../public/knightfall-gothic-chrome.css")+"\n"+read("../public/knightfall-illustrated-realms.css")+"\n"+read("../public/knightfall-unified-theme.css"),tokens=read("../public/design-system.css");
 const theme=read("../public/theme.css"),nav=read("../public/nav.js"),home=read("../public/index.html");
 const base=read("../public/theme.css");
 assert.doesNotMatch(base,/255,85,216|#ff55d8|#c6ff45|#e8b5f5/i,"Legacy neon must not return in shared theme");
