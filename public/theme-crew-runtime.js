@@ -1,83 +1,121 @@
 (()=>{
 "use strict";
-// Single source of theme truth: the public Worker endpoint. GOD previews are
-// session-local, never published by an unprivileged browser.
+// Realm Theme Engine v3: each realm may inherit the published site theme, or
+// hold its own allowlisted, revision-guarded recipe. Browser state is NEVER auth.
 const API="https://api.ash-fall.com/api/theme";
 const PREVIEW="kf:theme-crew-preview";
-const LIVE_CACHE="kf:theme-live-cache-v1";
+const LIVE_CACHE="kf:theme-live-cache-v2";
 const PUBLISH_SIGNAL="kf:theme-published-v1";
 const channel=typeof BroadcastChannel==="function"?new BroadcastChannel("kf:theme-published"):null;
 const KNOWN=new Set(["cathedral","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"]);
+const REALMS=new Set(["site","madhouse","arcade","chaosphere","admin"]);
 const enabledHosts=new Set(["ash-fall.com","www.ash-fall.com"]);
 const path=location.pathname.toLowerCase();
-if(/^\/(?:arcade\/hosted\/|games\/|casino\/)/.test(path)||/^\/(?:offline|personal-bots-offline)(?:\.html)?$/.test(path))return;
+// Hosted games and account recovery remain outside the theme orchestration.
+if(/^\\/(?:arcade\\/hosted\\/|games\\/|casino\\/)/.test(path)||/^\\/(?:offline|personal-bots-offline)(?:\\.html)?$/.test(path))return;
 const isLive=enabledHosts.has(location.hostname.toLowerCase());
-const cached=(()=>{try{
- const value=JSON.parse(localStorage.getItem(LIVE_CACHE)||"null");
- return value&&KNOWN.has(value.preset)&&Number.isSafeInteger(value.revision)&&value.revision>=0?value:null;
-}catch{return null}})();
-let lastRevision=cached?.revision??-1,published=cached?.preset??"cathedral";
 const safe=value=>KNOWN.has(value)?value:null;
+const safeRealm=value=>REALMS.has(value)?value:null;
+const routeRealm=()=>{
+ const p=path.replace(/\\.html$/,"");
+ if(/^\\/(?:community|homepage|thread|create-thread|forums|madhouse)(?:-|\\/|$)/.test(p))return "madhouse";
+ if(/^\\/(?:chaos-cartridge|chaos-lab|arcade|arcade-vault)(?:-|\\/|$)/.test(p))return "arcade";
+ if(/^\\/(?:chaosphere|ruinwire|messages|social|friends|notifications)(?:-|\\/|$)/.test(p))return "chaosphere";
+ if(/^\\/(?:admin|eye-of-chaos|eye-of-horus|god|moderation|theme-crew)(?:-|\\/|$)/.test(p))return "admin";
+ return "site";
+};
+const activeScope=routeRealm();
+const validState=value=>value&&safe(value.preset)&&Number.isSafeInteger(value.revision)&&value.revision>=0;
+const fromStorage=()=>{try{
+ const value=JSON.parse(localStorage.getItem(LIVE_CACHE)||"null");
+ return validState(value)?value:null;
+}catch{return null}};
+const cached=fromStorage();
+let live={preset:cached?.preset||"cathedral",revision:cached?.revision??-1,
+ realms:cached?.realms&&typeof cached.realms==="object"?cached.realms:{}};
+let pendingRefresh=null;
+const publishedState=scope=>{
+ const site={preset:live.preset,revision:live.revision};
+ const scoped=scope!=="site"?live.realms[scope]:null;
+ return validState(scoped)?scoped:site;
+};
+const previewKey=scope=>scope==="site"?PREVIEW:PREVIEW+":"+scope;
+const preview=scope=>{try{return safe(sessionStorage.getItem(previewKey(scope)))}catch{return null}};
 const params=new URLSearchParams(location.search);
 const param=safe(params.get("kf_theme_preview"));
-try{if(param)sessionStorage.setItem(PREVIEW,param)}catch{}
-const preview=()=>{try{return safe(sessionStorage.getItem(PREVIEW))}catch{return null}};
+const requestedScope=safeRealm(params.get("kf_theme_scope"))||"site";
+if(param&&requestedScope===activeScope)try{sessionStorage.setItem(previewKey(activeScope),param)}catch{}
 const paint=()=>{
  if(!document.body)return;
- const chosen=preview()||published;
+ const state=publishedState(activeScope),privatePreset=preview(activeScope);
+ const chosen=privatePreset||state.preset;
+ document.body.dataset.kfThemeScope=activeScope;
  document.body.dataset.kfTheme=chosen;
- if(preview())document.body.dataset.kfThemePreview="true";
+ if(privatePreset)document.body.dataset.kfThemePreview="true";
  else delete document.body.dataset.kfThemePreview;
- document.dispatchEvent(new CustomEvent("kf:theme-change",{detail:{preset:chosen,published,preview:!!preview(),revision:lastRevision}}));
+ document.dispatchEvent(new CustomEvent("kf:theme-change",{
+  detail:{scope:activeScope,preset:chosen,published:state.preset,preview:!!privatePreset,revision:state.revision}
+ }));
 };
-let pendingRefresh=null;
 const refresh=()=>{
  if(!isLive||document.visibilityState==="hidden")return Promise.resolve();
  if(pendingRefresh)return pendingRefresh;
  pendingRefresh=(async()=>{
- try{
-  const response=await fetch(API,{credentials:"include",cache:"no-store",headers:{accept:"application/json"}});
-  if(!response.ok)return;
-  const result=await response.json();
-  const key=safe(result.preset);
-  if(!key||!Number.isSafeInteger(result.revision))return;
-  if(lastRevision!==result.revision||published!==key){lastRevision=result.revision;published=key;paint()}
-  try{localStorage.setItem(LIVE_CACHE,JSON.stringify({preset:key,revision:result.revision}))}catch{}
- }catch{/* Safe, offline fallback: use the last known theme. */}
+  try{
+   const response=await fetch(API,{credentials:"include",cache:"no-store",headers:{accept:"application/json"}});
+   if(!response.ok)return;
+   const result=await response.json();
+   if(!validState(result))return;
+   const realms={};
+   for(const scope of REALMS){
+    if(scope==="site")continue;
+    const state=result.realms?.[scope];
+    if(validState(state))realms[scope]={preset:state.preset,revision:state.revision};
+   }
+   const next={preset:result.preset,revision:result.revision,realms};
+   if(JSON.stringify(next)!==JSON.stringify(live)){live=next;paint()}
+   try{localStorage.setItem(LIVE_CACHE,JSON.stringify(next))}catch{}
+  }catch{/* Offline fallback: last known vetted theme, no blank screens. */}
  })().finally(()=>{pendingRefresh=null});
  return pendingRefresh;
 };
 const addFallbackRealm=()=>{
  if(document.body?.dataset.kfRealm)return;
- const p=path.replace(/\.html$/,"");
- if(/^\/(?:admin-bot-archive|moderation-accounts)$/.test(p))document.body.dataset.kfRealm="god";
- else if(/^\/(?:reset-password|verify-email)$/.test(p))document.body.dataset.kfRealm="members";
+ const p=path.replace(/\\.html$/,"");
+ if(/^\\/(?:admin-bot-archive|moderation-accounts|theme-crew)$/.test(p))document.body.dataset.kfRealm="god";
+ else if(/^\\/(?:reset-password|verify-email)$/.test(p))document.body.dataset.kfRealm="members";
  else document.body.dataset.kfRealm="general";
 };
 const start=()=>{
- addFallbackRealm();
- paint();
- refresh();
+ addFallbackRealm();paint();refresh();
  window.addEventListener("storage",event=>{
-  if(event.key===PREVIEW)paint();
+  if(event.key?.startsWith(PREVIEW))paint();
   if(event.key===PUBLISH_SIGNAL)refresh();
  });
  channel?.addEventListener("message",event=>{if(event?.data?.kind==="theme-published")refresh()});
  window.addEventListener("pageshow",()=>{paint();refresh()});
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refresh()});
- // Existing open pages catch sitewide GOD changes without a reload.
  if(isLive)window.setInterval(refresh,20000);
 };
 window.KnightfallThemeCrew=Object.freeze({
- preview(key){if(key!==null&&!safe(key))return false;try{if(key)sessionStorage.setItem(PREVIEW,key);else sessionStorage.removeItem(PREVIEW)}catch{return false}paint();return true},
- refresh(){return refresh()},
- current(){return {preset:preview()||published,published,preview:!!preview(),revision:lastRevision}},
- announcePublished(revision){
-  if(!Number.isSafeInteger(revision)||revision<0)return false;
-  channel?.postMessage({kind:"theme-published",revision});
-  try{localStorage.setItem(PUBLISH_SIGNAL,String(revision)+":"+Date.now())}catch{}
-  refresh();
+ preview(key,realm=activeScope){
+  const scope=safeRealm(realm);if(!scope||(key!==null&&!safe(key)))return false;
+  try{if(key)sessionStorage.setItem(previewKey(scope),key);else sessionStorage.removeItem(previewKey(scope))}
+  catch{return false}
+  if(scope===activeScope)paint();
   return true;
+ },
+ refresh(){return refresh()},
+ current(realm=activeScope){
+  const scope=safeRealm(realm);if(!scope)return null;
+  const state=publishedState(scope),privatePreset=preview(scope);
+  return {scope,preset:privatePreset||state.preset,published:state.preset,preview:!!privatePreset,revision:state.revision};
+ },
+ announcePublished(revision,realm="site"){
+  if(!Number.isSafeInteger(revision)||revision<0||!safeRealm(realm))return false;
+  channel?.postMessage({kind:"theme-published",realm,revision});
+  try{localStorage.setItem(PUBLISH_SIGNAL,realm+":"+revision+":"+Date.now())}catch{}
+  refresh();return true;
  }
 });
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
