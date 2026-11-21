@@ -58,3 +58,23 @@ body.theme-crew-page{background:#0b0d0c;color:#f4e5d0}
 .theme-crew-alert{color:#f4c8b7}
 @media(max-width:900px){.theme-crew-workspace{grid-template-columns:1fr}.theme-crew-header{min-height:205px}}
 @media(max-width:560px){.theme-crew-presets{grid-template-columns:1fr}.theme-crew-choice{min-height:120px}.theme-crew-shell{padding:.75rem}}
+
+/* Compact art realm quick switch: separate from staff publication privileges. */
+body.theme-crew-page .theme-crew-collection-filters{
+ display:flex;flex-wrap:wrap;gap:.6rem;margin:.5rem 0 1.05rem;
+}
+body.theme-crew-page .theme-crew-collection-filters button{
+ min-height:44px;padding:.6rem 1rem;border:1px solid #a98969;
+ border-radius:999px;color:#f3ddc1;background:#221a1f;font-weight:750;cursor:pointer;
+}
+body.theme-crew-page .theme-crew-collection-filters button[aria-pressed="true"]{
+ color:#1a0e13;background:#e8c28f;border-color:#f6dfaa;
+ box-shadow:0 0 17px #e9b56d38;
+}
+body.theme-crew-page .theme-crew-collection-filters button:focus-visible{
+ outline:3px solid #4bd8cf;outline-offset:3px;
+}
+@media(max-width:610px){
+ body.theme-crew-page .theme-crew-collection-filters button{flex:1 1 150px}
+ body.theme-crew-page .theme-crew-presets{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
