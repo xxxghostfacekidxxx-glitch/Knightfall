@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "kind": "knightfall-reviewed-original-art-themes",
+  "description": "Original first-party artwork only. New themes require reviewed server-side preset registration; this manifest grants no publish permissions.",
+  "themes": [
+    {
+      "preset": "egyptian_eclipse",
+      "collection": "egyptian-eclipse",
+      "name": "Egyptian Eclipse",
+      "tag": "Turquoise / gold / obsidian",
+      "accent": "#e7b65c",
+      "glow": "#33e4d9",
+      "metal": "#e7b65c",
+      "ink": "#060d14",
+      "surface": "#15323a",
+      "depth": "#09141a",
+      "highlight": "#ffdf96",
+      "heading": "The Temple of the Eclipse",
+      "description": "Gilded monumental gateways, sacred turquoise fire and an eclipsed kingdom carved from the night.",
+      "hero": "egyptian-eclipse-hero.png",
+      "background": "egyptian-eclipse-throne-hall.png",
+      "showcase": [
+        "egyptian-eclipse-hero.png",
+        "egyptian-eclipse-temple-gateway.png",
+        "egyptian-eclipse-throne-hall.png",
+        "egyptian-eclipse-theme-preview.png"
+      ],
+      "artStyle": "original Egyptian-inspired fantasy, no licensed character art",
+      "legacyStandalone": true
+    },
+    {
+      "preset": "dark_lord_ascendant",
+      "collection": "dark-lord-ascendant",
+      "name": "Dark Lord Ascendant",
+      "tag": "Crimson / gunmetal / obsidian",
+      "accent": "#d5b8c1",
+      "glow": "#fa344c",
+      "metal": "#afb9c9",
+      "ink": "#090811",
+      "surface": "#211925",
+      "depth": "#100c16",
+      "highlight": "#ffb6bd",
+      "heading": "The Crimson Citadel",
+      "description": "An original armoured dark-fantasy citadel, astral command chambers and an uncompromising crimson eclipse.",
+      "hero": "dark-lord-ascendant-throne-room.png",
+      "background": "dark-lord-ascendant-command-chamber.png",
+      "showcase": [
+        "dark-lord-ascendant-throne-room.png",
+        "dark-lord-crimson-eclipse-hall.png",
+        "dark-lord-ascendant-command-chamber.png"
+      ],
+      "artStyle": "original dark-space-fantasy empire, no licensed character art",
+      "legacyStandalone": false
+    },
+    {
+      "preset": "korriban_necropolis",
+      "collection": "korriban",
+      "name": "Korriban · Red Necropolis",
+      "tag": "Crimson / sandstone / iron",
+      "accent": "#d9a078",
+      "glow": "#f04750",
+      "metal": "#c58a62",
+      "ink": "#170d11",
+      "surface": "#392124",
+      "depth": "#1b1118",
+      "highlight": "#f8bd9d",
+      "heading": "The Red Necropolis",
+      "description": "A forbidden desert of carved tombs, ancient red moons, crimson obelisks and restless ironwork.",
+      "hero": "korriban-red-necropolis.png",
+      "background": "korriban-red-necropolis.png",
+      "showcase": [
+        "korriban-red-necropolis.png"
+      ],
+      "artStyle": "original red-desert tomb fantasy, no licensed character art",
+      "legacyStandalone": false
+    },
+    {
+      "preset": "mustafar_forge",
+      "collection": "mustafar",
+      "name": "Mustafar · Obsidian Forge",
+      "tag": "Lava / copper / black glass",
+      "accent": "#edaf65",
+      "glow": "#ff7928",
+      "metal": "#dc9352",
+      "ink": "#100b0b",
+      "surface": "#352017",
+      "depth": "#1a100f",
+      "highlight": "#ffd0a5",
+      "heading": "The Obsidian Forge",
+      "description": "A volcanic stronghold rising above rivers of fire, molten stone and impossible black towers.",
+      "hero": "mustafar-obsidian-lava-citadel.png",
+      "background": "mustafar-obsidian-lava-citadel.png",
+      "showcase": [
+        "mustafar-obsidian-lava-citadel.png"
+      ],
+      "artStyle": "original volcanic fortress fantasy, no licensed character art",
+      "legacyStandalone": false
+    }
+  ]
+}
