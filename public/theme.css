@@ -176,3 +176,8 @@ body>.kf-header,.kf-header{position:fixed!important;inset:0 0 auto 0!important;w
 @keyframes kf-ticker-scroll{to{transform:translateX(-100%)}}
 @media(max-width:650px){.kf-ticker-label{flex-basis:76px;font-size:.55rem}.kf-ticker-track{animation-duration:20s}.kf-leadership-ticker{gap:0}}
 @media(prefers-reduced-motion:reduce){.kf-ticker-track{animation:none;padding-left:0;white-space:normal}.kf-ticker-viewport{white-space:normal}}
+
+/* Signed-in identity replaces the redundant sign-in and profile menu links. */
+.kf-nav .kf-identity-link{display:inline-flex;align-items:center;max-width:min(28vw,230px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid color-mix(in srgb,var(--kf-accent) 40%,transparent);border-radius:999px;padding:.52rem .9rem;background:color-mix(in srgb,var(--kf-accent) 12%,#101017);color:#fff;font-weight:800}
+.kf-nav .kf-identity-link:hover,.kf-nav .kf-identity-link:focus-visible{background:color-mix(in srgb,var(--kf-accent) 24%,#101017);border-color:var(--kf-accent)}
+@media(max-width:760px){.kf-nav .kf-identity-link{max-width:180px}}
