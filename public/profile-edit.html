@@ -67,7 +67,7 @@
 <label class="studio-toggle"><input id="birth-chart-time-unknown" type="checkbox"><span><strong>I don't know my birth time</strong><small>Calculate a provisional noon-UTC chart without a Rising sign, Midheaven, or houses.</small></span></label>
 <label id="birth-chart-date-only-label" hidden>Birth date (time unknown)<input id="birth-chart-date-only" type="date" min="1900-01-01" max="2100-12-31"></label>
 <label>Birth date and local time<input id="birth-chart-local" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
-<details id="birth-chart-advanced" class="cosmic-advanced"><summary>Advanced birth-time settings (only if needed)</summary><p class="cosmic-timezone-help">City selection estimates the time zone. Historical borders and daylight-saving transitions can be tricky. Adjust these only if your birth record requires it.</p><label>UTC offset at birth (manual fallback)<input id="birth-chart-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
+<details id="birth-chart-advanced" class="cosmic-advanced"><summary>Advanced birth-time settings (only if needed)</summary><p class="cosmic-timezone-help">City selection estimates the time zone. Historical borders and daylight-saving transitions can be tricky. Adjust these only if your birth record requires it.</p><label>UTC offset at birth (manual fallback)<input id="birth-chart-offset" type="number" min="-12" max="14" step=".25" value="-5"></label>
 <label>Birth-place time zone (recommended)<input id="birth-chart-timezone" type="text" class="cosmic-timezone-select" placeholder="e.g. America/Chicago" autocomplete="off"></label>
 <p id="birth-chart-timezone-status" class="cosmic-timezone-help" role="status">Select your birth city for an offline estimated time zone. Confirm it against historical records; the estimate may be incorrect near borders.</p>
 <label>Repeated daylight-saving hour<select id="birth-chart-fold"><option value="earlier">First occurrence</option><option value="later">Second occurrence</option></select></label>
@@ -196,7 +196,7 @@ function syncUnknownBirthTime(){
  const unknown=timeUnknown.checked;
  document.querySelector("#birth-chart-date-only-label").hidden=!unknown;
  dateOnly.required=unknown;
- for(const field of ["#birth-chart-local","#birth-chart-offset","#birth-chart-city","#birth-chart-city-results"]){
+ for(const field of ["#birth-chart-local","#birth-chart-city","#birth-chart-city-results"]){
   document.querySelector(field).required=!unknown;
  }
 }
