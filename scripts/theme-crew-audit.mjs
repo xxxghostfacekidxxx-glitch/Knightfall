@@ -19,7 +19,7 @@ function walk(dir){
 }
 walk(root);
 const failures=[],warnings=[];
-const core=new Set(["theme.css","knightfall-section-foundations.css","knightfall-unified-theme.css","theme-crew.css","theme-crew-dashboard.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css","theme-crew-dashboard.css"]);
+const core=new Set(["theme.css","knightfall-section-foundations.css","knightfall-unified-theme.css","theme-crew.css","theme-crew-dashboard.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css"]);
 const legacy=/#(?:ff55d8|c6ff45|a8ff3e)(?:[0-9a-f]{2})?\b|rgba\(\s*255\s*,\s*85\s*,\s*216/i;
 const records=[];
 function balanced(text){
@@ -66,7 +66,7 @@ for(const item of files){
 const read=name=>readFileSync(join(root,name),"utf8");
 for(const name of core)if(!existsSync(join(root,name)))failures.push({type:"missing_shared_css",file:name});
 const nav=read("nav.js"),base=read("theme.css"),sw=read("sw.js");
-const ordered=["design-system.css","visual-refresh.css","knightfall-section-foundations.css","knightfall-unified-theme.css","theme-crew.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css"];
+const ordered=["design-system.css","visual-refresh.css","knightfall-section-foundations.css","knightfall-unified-theme.css","theme-crew.css","theme-crew-dashboard.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css"];
 const positions=ordered.map(x=>base.indexOf('"/'+x));
 for(const retired of ["section-overhaul.css","knightfall-artwork.css","knightfall-cathedral-v2.css"]){
  if(existsSync(join(root,retired))||base.includes('"/'+retired))failures.push({type:"retired_css_layer_returned",file:retired});
