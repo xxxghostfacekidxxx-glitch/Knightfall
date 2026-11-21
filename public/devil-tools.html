@@ -845,6 +845,8 @@ async function boot(){
     }
     workshop.dataset.canPublish = String(administrator);
     workshop.classList.remove('hidden');
+    document.getElementById('foundry-public-preview')?.setAttribute('hidden','');
+    document.getElementById('open-source-reference')?.setAttribute('hidden','');
     note('Signed in as @' + user.username + '.', true);
     for (const [category, panels] of Object.entries({
       art: ['knightfall-art-collection','gravewave-game-sprites','neon-nuisances','dt-vector-library'],
