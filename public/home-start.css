@@ -17,3 +17,10 @@
 .kf-start-card a:hover,.home-explore-link:hover{filter:brightness(1.16)}
 @media(max-width:740px){.kf-start-grid{grid-template-columns:1fr}.kf-start-here{margin-top:1.3rem}.kf-start-card{padding:1rem}.home-intro-actions{flex-direction:column;align-items:stretch}.home-intro-actions>a{width:100%;text-align:center;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.kf-start-card a,.home-explore-link{transition:none}}
+
+/* Newcomer overview: scannable categories, no redundant navigation links. */
+.kf-chaos-intro{padding:clamp(20px,3vw,42px);border-radius:28px}
+.kf-chaos-intro .kf-start-heading{text-align:center}
+.kf-chaos-intro .kf-start-heading h2{font-size:clamp(1.8rem,4vw,3rem)}
+.kf-chaos-categories{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:1.3rem auto 0;max-width:1050px}
+.kf-chaos-categories span{display:inline-flex;align-items:center;padding:.65rem 1rem;border:1px solid #d7b78940;border-radius:999px;background:linear-gradient(130deg,#33262e,#181922);color:#f4e7da;font-size:clamp(.72rem,1.3vw,.88rem);font-weight:650}
