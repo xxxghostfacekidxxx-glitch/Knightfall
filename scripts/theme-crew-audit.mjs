@@ -19,7 +19,7 @@ function walk(dir){
 }
 walk(root);
 const failures=[],warnings=[];
-const core=new Set(["theme.css","knightfall-unified-theme.css","theme-crew.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css"]);
+const core=new Set(["theme.css","knightfall-unified-theme.css","theme-crew.css","theme-crew-dashboard.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css","theme-crew-dashboard.css"]);
 const legacy=/#(?:ff55d8|c6ff45|a8ff3e)(?:[0-9a-f]{2})?\b|rgba\(\s*255\s*,\s*85\s*,\s*216/i;
 const records=[];
 function balanced(text){
@@ -79,7 +79,7 @@ if(!nav.includes("kfCanonicalTheme")||!nav.includes("themes.shift()"))failures.p
 if(positions.some(i=>i<0)||positions.some((p,i)=>i&&p<positions[i-1]))failures.push({type:"incorrect_theme_layer_order",order:ordered});
 if(!base.includes('@import url("/theme-crew.css?'))failures.push({type:"theme_crew_missing_from_base"});
 if(!nav.includes('theme-crew-runtime.js'))failures.push({type:"theme_crew_runtime_not_loaded"});
-for(const name of ["theme-crew.css","realm-theme-engine.css","global-design-controls.css","theme-crew-runtime.js","theme-crew.html","theme-crew-ui.js"])
+for(const name of ["theme-crew.css","theme-crew-dashboard.css","realm-theme-engine.css","global-design-controls.css","theme-crew-runtime.js","theme-crew.html","theme-crew-ui.js"])
  if(!sw.includes('"/'+name+'"'))failures.push({type:"offline_shell_missing",file:name});
 // Preserve the new default-theme artwork without duplicating a stylesheet owner.
 const blackSun=read("knightfall-requiem.css");
