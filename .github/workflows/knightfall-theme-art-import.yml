@@ -1,0 +1,51 @@
+name: Knightfall Creator Foundry Original Theme Artwork Import
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/knightfall-theme-art-sources.json'
+      - 'scripts/knightfall-theme-art-import.mjs'
+      - '.github/workflows/knightfall-theme-art-import.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: knightfall-theme-art-one-time-import-main
+  cancel-in-progress: false
+
+jobs:
+  import-originals:
+    if: github.repository == 'xxxghostfacekidxxx-glitch/Knightfall'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download and verify all six original PNGs by SHA-256
+        run: |
+          node --check scripts/knightfall-theme-art-import.mjs
+          node scripts/knightfall-theme-art-import.mjs --import
+          node scripts/knightfall-theme-art-import.mjs --verify
+      - name: Commit original artwork into Creator Foundry without overwriting history
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/assets/knightfall/theme-collections
+          if git diff --cached --quiet; then
+            echo "Theme originals are already stored in main."
+            exit 0
+          fi
+          git commit -m "assets(foundry): save six verified original Egyptian and Dark Lord theme artworks"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Print manifest and checksums from saved files
+        run: node scripts/knightfall-theme-art-import.mjs --verify
