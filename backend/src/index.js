@@ -31,6 +31,7 @@ import { staffCapabilities, canAccessCreatorFoundry } from "./staff-capabilities
 import { handleEyeOfHorus } from "./eye-of-horus.js";
 import { handleEyeOfChaos, runEyeChaosScheduledResearch } from "./eye-of-chaos.js";
 import {handleThemeCrew} from "./theme-crew.js";
+import {listThemeEntitlements} from "./theme-entitlements.js";
 import { handleGodTrash } from "./god-trash.js";
 import { handleHomeActivityFeed } from "./home-activity-feed.js";
 import { handleBusinessMetrics } from "./business-metrics.js";
@@ -2352,6 +2353,16 @@ For complex questions, organize the answer clearly and provide actionable detail
       console.warn("account_deletion_staff_notification_failed");
     }
     return json({ok:true,requested_at:now,scheduled_for:deadline,message:"Your account deletion request has been recorded. The operator must complete deletion within 30 days. This request is not yet completed."},202,origin);
+  }
+  if(url.pathname==="/api/theme/entitlements"&&request.method==="GET"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to view your themes."},401,origin);
+    try{
+      const owned=await listThemeEntitlements(env.DB,user.id);
+      return json({owned,checkout_enabled:false,preview_is_not_ownership:true},200,origin);
+    }catch{
+      return json({error:"Theme ownership database is not initialized.",checkout_enabled:false},503,origin);
+    }
   }
   if(url.pathname==="/api/leadership-ticker"&&request.method==="PATCH"){
     const user=await requireUser(request,env);
