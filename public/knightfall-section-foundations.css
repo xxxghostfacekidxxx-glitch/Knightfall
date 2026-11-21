@@ -28,6 +28,14 @@
 .cartridge-hero .cartridge-title{text-wrap:balance;line-height:1.03}
 .cartridge-shelf .cartridge-number{color:var(--section-green)}
 .cartridge-shelf :where(.flat-actions,.hero-actions){gap:.55rem;flex-wrap:wrap}
+.messages-shell{
+ /* Realm-owned palette; individual message content and game art stay untouched. */
+ --kf-msg-base:var(--kf-crew-ink,#0b0d1b);
+ --kf-msg-surface:var(--kf-crew-surface,#201d24);
+ --kf-msg-depth:var(--kf-crew-depth,#0d0e1a);
+ --kf-msg-accent:var(--kf-realm-metal,#b25b68);
+ --kf-msg-text:var(--kf-relic-ivory,#ece1d3);
+}
 .messages-shell .messages-hero{align-items:center;margin-bottom:1rem}
 .messages-shell .messages-hero h1,.admin-shell .hero h1{font-size:clamp(2.4rem,6vw,5.4rem);line-height:.98}
 .messages-shell .message-layout{background:#0e0d1a;border:1px solid var(--section-stroke);border-radius:18px;box-shadow:0 22px 54px #0007;min-width:0}
@@ -107,11 +115,13 @@ body:where(:not(.profile-custom-theme)) .profile-shell :where(.action,.friend-re
 .gw-character-crew,.gw-ambient,.gw-panel-mascot{pointer-events:none!important}
 
 
-/* Inbox visual repair: legacy orange !important rules must not override Gothic Creator. */
-body:not(.profile-custom-theme) .messages-shell .composer{background:linear-gradient(180deg,#201d24,#0d0e1a)!important;border-top:1px solid #b25b6855!important;padding-bottom:max(.75rem,env(safe-area-inset-bottom))!important}
-body:not(.profile-custom-theme) .messages-shell .composer textarea{background:#0b0d1b!important;border:1px solid #b25b6866!important;color:#ece1d3!important;min-width:0;max-width:100%;font-size:16px}
-body:not(.profile-custom-theme) .messages-shell .composer textarea:focus{outline:2px solid #c7a77c!important;border-color:#c7a77c!important}
-body:not(.profile-custom-theme) .messages-shell :where(.composer button.primary,.messages-hero button.primary){background:linear-gradient(125deg,#b25b68,#874356)!important;border-color:#b25b68!important;color:#130919!important}
+/* Canonical composer chrome. Older page CSS retains layout ownership, but the
+   approved Chaosphere realm supplies its palette. Forced declarations are
+   temporary until the message stylesheet is migrated into local components. */
+body:not(.profile-custom-theme) .messages-shell .composer{background:linear-gradient(180deg,var(--kf-msg-surface),var(--kf-msg-depth))!important;border-top:1px solid color-mix(in srgb,var(--kf-msg-accent) 34%,transparent)!important;padding-bottom:max(.75rem,env(safe-area-inset-bottom))!important}
+body:not(.profile-custom-theme) .messages-shell .composer textarea{background:var(--kf-msg-base)!important;border:1px solid color-mix(in srgb,var(--kf-msg-accent) 40%,transparent)!important;color:var(--kf-msg-text)!important;min-width:0;max-width:100%;font-size:16px}
+body:not(.profile-custom-theme) .messages-shell .composer textarea:focus{outline:2px solid var(--kf-msg-accent)!important;border-color:var(--kf-msg-accent)!important}
+body:not(.profile-custom-theme) .messages-shell :where(.composer button.primary,.messages-hero button.primary){background:linear-gradient(125deg,var(--kf-msg-accent),var(--kf-msg-depth))!important;border-color:var(--kf-msg-accent)!important;color:var(--kf-msg-text)!important}
 .messages-shell .composer-main,.messages-shell .composer-actions{min-width:0;max-width:100%}
 .messages-shell .composer-main{display:flex;flex-wrap:wrap;gap:.5rem}
 .messages-shell .composer textarea{flex:1 1 220px}
