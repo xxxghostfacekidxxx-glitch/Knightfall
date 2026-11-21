@@ -136,7 +136,7 @@ async function run(name,width,height){
     'Standard users must not see owner mission prompts');
   await page.locator('#mc-input').fill('Preserve my original draft');
   await page.locator('#mc-field-kit .mc-field-kit-chip').filter({hasText:'⌘ Debug'}).click();
-  assert.match(await page.locator('#mc-input').inputValue(),/^Preserve my original draft\\n\\nHelp me debug/);
+  assert.match(await page.locator('#mc-input').inputValue(),/^Preserve my original draft\n\nHelp me debug/);
   assert.equal(aiRequests.length,0,'Quick tools only prepare drafts; they must never auto-send');
   await page.locator('#mc-send').click();
   await page.locator('#mc-reply-actions,.mc-reply-actions').first().waitFor();
