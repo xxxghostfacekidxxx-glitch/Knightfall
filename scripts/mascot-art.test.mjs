@@ -72,7 +72,7 @@ for (const { id, name } of characters) {
 
 test('legacy optional mascot crew keeps featured artwork without globally replacing the Gothic site theme', () => {
   const gallery = read('public/devil-tools.html');
-  const css = read('public/knightfall-section-foundations.css')+'\n'+read('public/knightfall-unified-theme.css');
+  const css = read('public/knightfall-section-foundations.css')+'\n'+read('public/knightfall-gothic-chrome.css')+'\n'+read('public/knightfall-illustrated-realms.css')+'\n'+read('public/knightfall-unified-theme.css');
   const nav = read('public/nav.js');
   const theme = read('public/theme.css');
   for (const { id } of characters) {
