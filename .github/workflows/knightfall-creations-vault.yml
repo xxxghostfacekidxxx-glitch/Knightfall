@@ -44,6 +44,7 @@ jobs:
           node --check scripts/knightfall-creation-preserve.mjs
           node --test scripts/knightfall-creation-preserve.test.mjs
           node --test scripts/knightfall-theme-art.test.mjs
+          node --test scripts/egyptian-eclipse-theme.test.mjs
           node scripts/knightfall-theme-art-import.mjs --verify
           node scripts/knightfall-theme-art-expansion-import.mjs --verify
           node --check public/creator-foundry.js
