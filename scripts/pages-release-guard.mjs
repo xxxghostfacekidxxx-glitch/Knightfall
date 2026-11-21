@@ -15,7 +15,7 @@ const jobs=[
  ["Internal navigation and duplicate links",["scripts/site-link-integrity.mjs"]],
  ["Approved Gothic colors, assets and PWA invariants",["scripts/site-theme-audit.mjs"]],
  ["Messaging theme regression",["scripts/messaging-theme-audit.mjs"]],
- ["Chaosphere visual design and composer controls",["--test","scripts/chaosphere-polish.test.mjs","scripts/chaosphere-viewport.test.mjs"]],
+ ["Chaosphere visual design and composer controls",["--test","scripts/chaosphere-polish.test.mjs","scripts/chaosphere-viewport.test.mjs","scripts/chaosphere-creator-messaging.test.mjs","scripts/messaging-quality.test.mjs"]],
  ["Chaosphere extras syntax",["--check","public/chaosphere-extras.js"]],
  ["Sitewide art, responsive safety and realm routing",["--test","scripts/cathedral-overhaul.test.mjs","scripts/knightfall-sitewide-artwork.test.mjs","scripts/theme-crew-route.test.mjs"]],
  ["GOD-only publisher, revisions and rollback",["--test","backend/src/theme-crew.test.mjs"]],
