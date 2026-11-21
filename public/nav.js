@@ -471,13 +471,13 @@
         ["ANNOUNCEMENT",siteSettings.announcements_enabled==="true"?(siteSettings.announcement_title||"Knightfall")+" · "+(siteSettings.announcement_body||""):"",null],
         ["OSIRIS",siteSettings.ticker_osiris||"","osiris"],
         ["ISIS",siteSettings.ticker_isis||"","isis"]
-      ].filter(row=>row[1].trim());
-      if(tickerRows.length){
+      ];
+      {
         const ticker=document.createElement("aside");
         ticker.id="kf-shared-announcement";ticker.className="kf-leadership-ticker";
         ticker.setAttribute("aria-label","Knightfall announcements");
         for(const [label,message,owner] of tickerRows){
-          const row=document.createElement("div");row.className="kf-ticker-row";if(owner)row.dataset.tickerOwner=owner;
+          const row=document.createElement("div");row.className="kf-ticker-row";if(owner)row.dataset.tickerOwner=owner;if(!message.trim())row.hidden=true;
           const tag=document.createElement("strong");tag.className="kf-ticker-label";tag.textContent=label;
           const viewport=document.createElement("div");viewport.className="kf-ticker-viewport";
           const track=document.createElement("div");track.className="kf-ticker-track";
