@@ -1,5 +1,5 @@
 # Knightfall Theme Forge: independently switching and adding realm themes
-Updated 2026-11-20.
+Updated 2026-11-20. CSS ownership migration reviewed in the 2026-11-21 UTC deployment window.
 
 ## Switch a published theme (no redeploy)
 
@@ -42,6 +42,9 @@ This adds a bounded new global design layer, not a license to keep adding forced
 | Realm-specific chrome tokens and staff selector | `public/realm-theme-engine.css`, `public/theme-crew.html`, `public/theme-crew-ui.js` |
 | Approved Egyptian Black Sun art and homepage visual | `public/assets/knightfall/black-sun-hero-illustration.webp`, `public/index.html`, `public/knightfall-requiem.css` |
 | Scoped shared section foundations | `public/knightfall-section-foundations.css` |
+| Gothic base, navigation and shared visual primitives | `public/knightfall-gothic-chrome.css` |
+| Original illustrated public realms and page art | `public/knightfall-illustrated-realms.css` |
+| Retained architectural section surfaces (historical compatibility filename) | `public/knightfall-unified-theme.css` |
 | Canonical root stylesheet, cascade ordering | `public/theme.css`, `public/nav.js` |
 | Installable offline cache | `public/sw.js` |
 | Static source checks before release | `scripts/theme-forge-fast-switch.test.mjs`, `scripts/pages-release-guard.mjs` |
@@ -71,4 +74,15 @@ There are five selectors: `site` (shared site), `madhouse`, `arcade`, `chaospher
 
 Authorized staff POST the chosen `realm` and `expectedRevision` to the existing `/api/god/theme/activate` or `/rollback` API. The backend still enforces the original GOD or verified delegated admin partner permission, allowed origins, vetted preset names, compare-and-swap, and audit log. The admin **appearance** is shared by Osiris and Isis; this is not a new authorization role.
 
-`public/theme-crew-runtime.js` chooses the known realm from the current route, not from user-supplied custom CSS, and applies one active preset. Preview state is per-realm and session-only, and preview URLs are accepted only on matching realm routes. Hosted arcade games, individual profile palettes, and offline pages remain isolated. The small new `realm-theme-engine.css` adds scoped chrome identity without adding `!important` rules. The older shared theme files are still being migrated to simpler component ownership, so this rollout is not yet a complete CSS rewrite.
+`public/theme-crew-runtime.js` chooses the known realm from the current route, not from user-supplied custom CSS, and applies one active preset. Preview state is per-realm and session-only, and preview URLs are accepted only on matching realm routes. Hosted arcade games, individual profile palettes, and offline pages remain isolated. The small new `realm-theme-engine.css` adds scoped chrome identity without adding `!important` rules. ### Current stylesheet migration and rollback
+
+The original ~103 KB `knightfall-unified-theme.css` monolith was separated in its historical cascade order. The active root now imports:
+`design-system.css` → `visual-refresh.css` → `knightfall-section-foundations.css` → `knightfall-gothic-chrome.css` → `knightfall-illustrated-realms.css` → `knightfall-unified-theme.css` → `theme-crew.css` → `theme-crew-dashboard.css` → `knightfall-requiem.css` → `realm-theme-engine.css` → `global-design-controls.css`.
+
+The retained compatibility CSS file is now about 52 KB, but older rules have *not* all been removed: the four extracted architecture layers still contain forced declarations. They are tracked independently, with a combined non-increasing override budget enforced by `scripts/theme-style-ownership.test.mjs`. The staff editor's appearance is owned only by `theme-crew-dashboard.css`, no longer by theme presets. The old hardcoded Chaosphere composer colors were replaced with scoped preset tokens, and the distinct Chaosphere polish stylesheet inherits those tokens for major surfaces. Message text and gameplay rendering remain separately owned.
+
+The Pages `_headers` file uses a single `/knightfall-*` revalidation rule for the Knightfall-named root assets to remain under the 100-rule Cloudflare limit; all four split CSS files still appear explicitly in the PWA shell. Realm routing maps Casino to the arcade realm, Miss Chaos pages to Chaosphere, and continues to exclude hosted game routes.
+
+**Deployment checklist:** run `node scripts/pages-release-guard.mjs`, `node --test scripts/theme-style-ownership.test.mjs scripts/realm-theme-engine.test.mjs`, the Theme Crew Playwright visual matrix (mobile, tablet, desktop), and inspect Cloudflare Pages' production deployment SHA and Worker theme endpoints. The release gate runs automatically; code committed to main is not proof that production published the latest revision. If a regression appears, revert the specific migration commits to restore the previous ordered CSS blocks, rather than loading old CSS and new CSS simultaneously.
+
+The older shared theme rules continue to be consolidated, so this migration is **not yet a complete CSS rewrite**. Do not claim that the entire historical override inventory has been removed.
