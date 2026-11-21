@@ -1,3 +1,4 @@
+import { readWorkerTraffic } from "./quota-telemetry.js";
 // Read-only resource guardian. Never exposes provider credentials or claims live usage
 // without a Cloudflare analytics integration.
 export const FREE_TIER_BUDGETS = Object.freeze({
@@ -23,8 +24,10 @@ export async function handleQuotaGuardian(request, env, url, { requireUser, json
   // GOD alone. ISIS/admin/staff cannot inspect the private infrastructure panel.
   if (!user || user.role !== "god") return json({ error: "Forbidden." }, 403, origin);
   const rows = await env.DB.prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN reset_at <= ? THEN 1 ELSE 0 END) AS expired FROM request_rate_limits").bind(Date.now()).first();
+  const workerTraffic = await readWorkerTraffic(env);
   return json({
     ok: true,
+    worker_traffic: workerTraffic,
     collected_at: new Date().toISOString(),
     provider_usage_available: false,
     provider_usage_note: "Daily Cloudflare account usage is not connected. Limits are reference values, not consumption measurements.",
