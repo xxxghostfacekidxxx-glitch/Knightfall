@@ -18,6 +18,7 @@ on:
       - 'public/knightfall-*.css'
       - 'backend/src/creator-*'
       - 'scripts/knightfall-creation-preserve*'
+      - 'scripts/knightfall-theme-art-*'
       - '.github/workflows/knightfall-creations-vault.yml'
 permissions:
   contents: read
@@ -42,6 +43,8 @@ jobs:
         run: |
           node --check scripts/knightfall-creation-preserve.mjs
           node --test scripts/knightfall-creation-preserve.test.mjs
+          node --test scripts/knightfall-theme-art.test.mjs
+          node scripts/knightfall-theme-art-import.mjs --verify
           node --check public/creator-foundry.js
           node --check public/creator-foundry-workspaces.js
           node --check public/creator-art-studio.js
