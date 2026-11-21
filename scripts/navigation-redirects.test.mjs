@@ -115,7 +115,7 @@ test("global navigation exposes only one arcade directory", () => {
 test("mobile drawer toggles scroll lock and keeps section context", () => {
   const theme = readFileSync(join(publicDir, "theme.css"), "utf8");
   const design = readFileSync(join(publicDir, "design-system.css"), "utf8");
-  const unified = readFileSync(join(publicDir, "knightfall-unified-theme.css"), "utf8");
+  const unified = readFileSync(join(publicDir, "knightfall-section-foundations.css"), "utf8")+"\n"+readFileSync(join(publicDir, "knightfall-unified-theme.css"), "utf8");
   assert.match(nav, /const mobileNavViewport = window\.matchMedia\("\(max-width: 1080px\)"\)/);
   assert.match(nav, /document\.body\.classList\.toggle\("kf-navigation-open", visible\)/);
   assert.match(theme, /body\.kf-navigation-open\{overflow:hidden\}/);
