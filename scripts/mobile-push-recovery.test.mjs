@@ -135,7 +135,7 @@ test("phone test has a short-lived receipt token only the subscribed worker can 
 
 
 test("Android service worker installation survives a failed optional offline asset",()=>{
-  assert.match(sw,/Promise\.allSettled\(APP_SHELL\.map\(resource=>cache\.add\(resource\)\)\)/);
+  assert.match(sw,/Promise\\.allSettled\\(\\s*ESSENTIAL_SHELL\\.slice\\(i, i \\+ 2\\)\\.map\\(resource => cache\\.add\\(resource\\)\\)/);
   assert.doesNotMatch(sw,/cache\.addAll\(APP_SHELL\)/);
 });
 
