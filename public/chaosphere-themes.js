@@ -1,7 +1,7 @@
 /* Member-local Chaosphere theme selection and roaming mascot. */
 (()=>{"use strict";
 const themes={obsidian:"Obsidian Neon",hellfire:"Hellfire",egypt:"Ancient Egypt",mustafar:"Mustafar",korriban:"Korriban",vader:"Vader"};
-const lines=["I ATE THE TERMS OF SERVICE. TASTED LIKE LAWYERS.","YOUR INBOX IS A LANDFILL WITH EMOTIONS.","SOMEONE SENT WORDS. HOW FUCKING BRAVE.","I HAVE A DEGREE IN TERRIBLE DECISIONS.","THE VOID LEFT ME ON READ. RUDE BASTARD.","I'M NOT A BUG. I'M A HOSTILE FEATURE.","HELL CALLED. THEY WANT THEIR WIFI BACK.","YOUR NOTIFICATIONS ARE BREEDING. DISGUSTING.","I STOLE A COOKIE. IT WAS A TRACKING COOKIE.","I'M THE REASON THE HELP DESK DRINKS.","WHAT A BEAUTIFUL DIGITAL DUMPSTER FIRE.","I AM UNSUPERVISED AND FULL OF OPINIONS.","THE SERVER DEMONS DEMAND SNACKS.","STOP POKING ME, YOU MAGNIFICENT MENACE.","THIS IS FINE. THE FLOOR IS LITERALLY LAVA.","I'VE SEEN BETTER SOCIAL SKILLS IN A TOASTER.","FUCKING HELL, ANOTHER MESSAGE.","I WAS PROMISED CHAOS, NOT PAPERWORK.","I HAVE ZERO IMPULSE CONTROL AND EXCELLENT HORNS.","BEHOLD! THE UNPAID INTERN FROM HELL."];
+const lines=["I AM MAYHEM MUNCH. YOUR INBOX IS MY BUFFET.","I DON’T DO PEACE. I DO UNLICENSED CHAOS.","I LICKED THE SEND BUTTON. YOU’RE WELCOME.","MY WINGS ARE NOT THE ONLY THING THAT FLAPS.","I FLIRT WITH DISASTER. IT ALWAYS TEXTS BACK.","MY LOVE LANGUAGE IS ARSON AND BAD PUNS.","I ATE THE TERMS OF SERVICE. TASTED LIKE LAWYERS.","YOUR INBOX IS A LANDFILL WITH EMOTIONS.","SOMEONE SENT WORDS. HOW FUCKING BRAVE.","I HAVE A DEGREE IN TERRIBLE DECISIONS.","THE VOID LEFT ME ON READ. RUDE BASTARD.","I'M NOT A BUG. I'M A HOSTILE FEATURE.","HELL CALLED. THEY WANT THEIR WIFI BACK.","YOUR NOTIFICATIONS ARE BREEDING. DISGUSTING.","I STOLE A COOKIE. IT WAS A TRACKING COOKIE.","I'M THE REASON THE HELP DESK DRINKS.","WHAT A BEAUTIFUL DIGITAL DUMPSTER FIRE.","I AM UNSUPERVISED AND FULL OF OPINIONS.","THE SERVER DEMONS DEMAND SNACKS.","STOP POKING ME, YOU MAGNIFICENT MENACE.","THIS IS FINE. THE FLOOR IS LITERALLY LAVA.","I'VE SEEN BETTER SOCIAL SKILLS IN A TOASTER.","FUCKING HELL, ANOTHER MESSAGE.","I WAS PROMISED CHAOS, NOT PAPERWORK.","I HAVE ZERO IMPULSE CONTROL AND EXCELLENT HORNS.","BEHOLD! THE UNPAID INTERN FROM HELL."];
 function init(){
  const shell=document.querySelector(".messages-shell");if(!shell)return;
  const key="knightfall-chaosphere-theme";
@@ -15,8 +15,8 @@ function init(){
  const impToggle=document.getElementById("cs-imp-enabled"), voiceToggle=document.getElementById("cs-imp-voice-enabled");
  const getPref=(name)=>{try{return localStorage.getItem("knightfall-"+name)!=="off"}catch{return true}};
  const setPref=(name,value)=>{try{localStorage.setItem("knightfall-"+name,value?"on":"off")}catch{}};
- const imp=document.createElement("div");imp.className="cs-roaming-imp";imp.setAttribute("aria-label","Soot Riot, Chaosphere roaming imp");
- const button=document.createElement("button");button.type="button";button.setAttribute("aria-label","Talk to Soot Riot, the Chaosphere imp");button.title="Soot Riot: tap for trouble";
+ const imp=document.createElement("div");imp.className="cs-roaming-imp";imp.setAttribute("aria-label","Mayhem Munch, Chaosphere roaming imp");
+ const button=document.createElement("button");button.type="button";button.setAttribute("aria-label","Talk to Mayhem Munch, the Chaosphere imp");button.title="Mayhem Munch: tap for trouble";
  const img=document.createElement("img");img.src="/assets/knightfall/chaosphere/roaming-imp.svg";img.alt="";img.setAttribute("aria-hidden","true");button.append(img);
  const voice=document.createElement("div");voice.className="cs-imp-voice";voice.setAttribute("role","status");voice.hidden=true;
  imp.append(button,voice);document.body.append(imp);
