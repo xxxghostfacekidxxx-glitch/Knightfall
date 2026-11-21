@@ -19,6 +19,8 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+/theme-crew-dashboard.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew-runtime.js
   Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew-ui.js
