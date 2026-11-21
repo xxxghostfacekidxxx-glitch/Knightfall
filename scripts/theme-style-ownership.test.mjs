@@ -77,10 +77,10 @@ test("Moonology no longer forces an obsolete palette over published site themes"
  const end=lunar.indexOf("/* The Diary:",start);
  assert.ok(start>=0&&end>start);
  const block=lunar.slice(start,end);
- assert.doesNotMatch(block,/!important\\b/);
- assert.match(block,/var\\(--kf-realm-metal/);
- assert.match(block,/var\\(--kf-realm-glow/);
- assert.match(block,/var\\(--kf-global-panel-corner/);
+ assert.doesNotMatch(block,/!important\b/);
+ assert.match(block,/var\(--kf-realm-metal/);
+ assert.match(block,/var\(--kf-realm-glow/);
+ assert.match(block,/var\(--kf-global-panel-corner/);
 });
 
 test("Chaosphere owns its switched composer palette, without old global color overrides",()=>{
