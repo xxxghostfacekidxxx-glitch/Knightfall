@@ -29,6 +29,21 @@ async function loadQuotaGuardian(){
   for(const [label,value] of [["Active and expired counters",diagnostics.rate_limit_counter_rows],["Expired counters",diagnostics.expired_rate_limit_counter_rows],["Cleanup batch size",diagnostics.rate_limit_cleanup_batch_size]]){
    const card=node("article","chaos-card");card.append(node("strong","",value??"Unknown"),node("p","",label));summary.append(card);
   }
+  const traffic=data.worker_traffic||{};
+  if(traffic.available){
+   for(const [label,value] of [["Worker requests today",traffic.requests],["Worker errors today",traffic.errors],["Worker subrequests today",traffic.subrequests]]){
+    const card=node("article","chaos-card");card.append(node("strong","",Number(value||0).toLocaleString()),node("p","",label));summary.append(card);
+   }
+   const allowance=Number(data.free_tier_reference?.worker_requests_daily||0);
+   if(allowance>0){
+    const ratio=Number(traffic.requests||0)/allowance;
+    const card=node("article","chaos-card");
+    card.append(node("strong","",Math.round(ratio*100)+"%"),node("p","",ratio>=.9?"Critical: API Worker approaching free daily request reference":ratio>=.7?"Warning: API Worker above 70% of daily request reference":"API Worker daily request reference usage"));
+    summary.append(card);
+   }
+  }else{
+   const card=node("article","chaos-card");card.append(node("strong","","Not connected"),node("p","",traffic.reason||"Live Worker telemetry unavailable"));summary.append(card);
+  }
   for(const [key,value] of Object.entries(data.free_tier_reference||{})){
    const card=node("article","chaos-agent");card.append(node("h3","",key.replaceAll("_"," ")),node("p","",Number(value).toLocaleString()+" daily allowance"));limits.append(card);
   }
