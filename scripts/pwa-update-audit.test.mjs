@@ -78,7 +78,7 @@ test("iOS install precaches only essential files and survives storage/download f
   await assert.doesNotReject(installPromise);
   assert.deepEqual(fetched,[
     "/","/offline.html","/theme.css","/design-system.css",
-    "/homepage.css","/nav.js","/icons/knightfall-crest-192.png"
+    "/homepage.css","/home-responsive.css","/nav.js","/icons/knightfall-crest-192.png"
   ]);
   assert.ok(warnings.some(args=>args[0]==="offline_shell_partial_cache"));
   assert.ok(sw.includes("APP_SHELL.includes(url.pathname)"),"other shell files still cache on demand");
