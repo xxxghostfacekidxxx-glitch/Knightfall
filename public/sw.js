@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v93";
+const CACHE_NAME = "knightfall-shell-v94";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -106,15 +106,38 @@ const APP_SHELL = [
   "/branding/chaos-cartridge-logo.svg"
 ];
 
+// Precache only what makes an offline launch useful. The rest of APP_SHELL is
+// cached on demand during normal browsing, not downloaded in one huge burst.
+// iOS WebKit may terminate service workers during memory-heavy installations.
+const ESSENTIAL_SHELL = [
+  "/",
+  "/offline.html",
+  "/theme.css",
+  "/design-system.css",
+  "/homepage.css",
+  "/nav.js",
+  "/icons/knightfall-crest-192.png"
+];
+
 self.addEventListener("install", event => {
-  // A single optional asset failing over a mobile connection must not prevent
-  // the push service worker from installing. cache.addAll rejected the entire
-  // install when any one of these resources failed to download.
-  event.waitUntil(caches.open(CACHE_NAME).then(async cache => {
-    const results=await Promise.allSettled(APP_SHELL.map(resource=>cache.add(resource)));
-    const failures=results.filter(result=>result.status==="rejected").length;
-    if(failures)console.warn("offline_shell_partial_cache",failures);
-  }));
+  event.waitUntil((async () => {
+    try {
+      const cache = await caches.open(CACHE_NAME);
+      // Fetch in small batches to avoid exhausting mobile network/memory limits.
+      let failures = 0;
+      for (let i = 0; i < ESSENTIAL_SHELL.length; i += 2) {
+        const results = await Promise.allSettled(
+          ESSENTIAL_SHELL.slice(i, i + 2).map(resource => cache.add(resource))
+        );
+        failures += results.filter(result => result.status === "rejected").length;
+      }
+      if (failures) console.warn("offline_shell_partial_cache", failures);
+    } catch (error) {
+      // Offline storage can be disabled, full, or evicted on iOS. Do not leave
+      // the application unusable just because its optional cache is unavailable.
+      console.warn("offline_shell_cache_unavailable", String(error));
+    }
+  })());
 });
 self.addEventListener("message", event => {
   if (event.data?.type === "SKIP_WAITING") event.waitUntil(self.skipWaiting());
