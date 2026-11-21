@@ -87,13 +87,18 @@ function audit(){
 }
 function verify(){
  const originals=tree(BASELINE_COMMIT).filter(isProtectedCreationPath);
+ const changedSinceBaseline=runGit(["log","--no-renames","--format=","--name-only",
+  BASELINE_COMMIT+"..HEAD","--","public","backend/src","docs"]).split(/\\r?\\n/).map(x=>x.trim())
+  .filter(isProtectedCreationPath);
+ const allEverProtected=new Set([...originals,...changedSinceBaseline]);
  const current=new Set(tree("HEAD"));
- const missing=originals.filter(path=>!current.has(path));
+ const missing=[...allEverProtected].filter(path=>!current.has(path)).sort();
  if(missing.length)throw new Error("Artwork / Creator Foundry DELETION BLOCKED ("+missing.length+"):\n"+
   missing.slice(0,100).join("\n")+
   (missing.length>100?"\n...additional missing files omitted":"")+
-  "\nKeep an archival copy and require explicit human review before any retirement.");
- return {baseline:BASELINE_COMMIT,protectedOriginals:originals.length,removed:0};
+  "\nRestore from git history, then request explicit review before retiring any creation.");
+ return {baseline:BASELINE_COMMIT,protectedAtBaseline:originals.length,
+  protectedAcrossHistory:allEverProtected.size,removed:0};
 }
 function archive(){
  const paths=tree("HEAD").filter(isProtectedCreationPath).sort();
