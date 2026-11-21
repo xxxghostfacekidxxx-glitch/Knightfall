@@ -33,12 +33,13 @@ export async function beginEmailSignup(env, signup) {
   try {
     const sent = await fetch("https://api.resend.com/emails", {
       method: "POST",
+      signal: AbortSignal.timeout(10000),
       headers: { authorization: "Bearer " + env.RESEND_API_KEY, "content-type": "application/json" },
       body: JSON.stringify({
         from: env.PASSWORD_RESET_FROM,
         to: [signup.email],
-        subject: "Verify your Ash-Fall email",
-        text: "Finish creating your Ash-Fall account using this link within 30 minutes. You’ll need the password you chose at signup. If you didn’t request an account, ignore this email.\n\n" + link
+        subject: "Verify your Knightfall email",
+        text: "Finish creating your Knightfall account using this link within 30 minutes. You’ll need the password you chose at signup. If you didn’t request an account, ignore this email.\n\n" + link
       })
     });
     if (sent.ok) return true;
