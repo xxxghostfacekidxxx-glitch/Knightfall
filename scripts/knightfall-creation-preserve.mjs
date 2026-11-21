@@ -48,7 +48,12 @@ const ART_CHROME=new Set([
  "public/knightfall-art-runtime.js","public/knightfall-arcade-covers.js",
  "public/knightfall-gothic-chrome.css","public/knightfall-illustrated-realms.css",
  "public/knightfall-requiem.css","public/theme-crew.css",
- "public/realm-theme-engine.css"
+ "public/realm-theme-engine.css",
+ "public/realm-hubs.css",
+ "public/celestial-sanctum.html",
+ "public/music.html",
+ "public/music-rhythm-lab.js",
+ "public/chatbots.html"
 ]);
 
 export function isProtectedCreationPath(path){
