@@ -50,3 +50,20 @@ body.theme-crew-page .theme-crew-scope:disabled{opacity:.65}
 body.theme-crew-page .theme-crew-hint{max-width:76ch;line-height:1.5}
 @media(max-width:600px){body.theme-crew-page .theme-crew-scope{max-width:100%}}
 @media(forced-colors:active){body.theme-crew-page .theme-crew-scope{border-color:CanvasText}}
+
+/* Miss Chaos visual subthemes are part of the canonical realm engine.
+   Each choice only affects her surfaces, never site chrome or member content. */
+#miss-chaos-presence{--mc-realm-accent:#b49aff;--mc-realm-glow:#aa64ff55;--mc-realm-font:system-ui,sans-serif;--mc-realm-art:url("/assets/knightfall/chaosphere/obsidian-panel.svg")}
+#miss-chaos-presence[data-mc-theme="hellfire"]{--mc-realm-accent:#ff8b4a;--mc-realm-glow:#fa4c3455;--mc-realm-font:Impact,"Arial Narrow",sans-serif;--mc-realm-art:url("/assets/knightfall/chaosphere/hellfire-panel.svg")}
+#miss-chaos-presence[data-mc-theme="egypt"]{--mc-realm-accent:#e9c477;--mc-realm-glow:#2dc6b455;--mc-realm-font:Georgia,serif;--mc-realm-art:url("/assets/knightfall/chaosphere/egypt-panel.svg")}
+#miss-chaos-presence[data-mc-theme="mustafar"]{--mc-realm-accent:#f36d42;--mc-realm-glow:#ff3e2255;--mc-realm-font:Impact,"Arial Narrow",sans-serif;--mc-realm-art:url("/assets/knightfall/chaosphere/mustafar-panel.svg")}
+#miss-chaos-presence[data-mc-theme="korriban"]{--mc-realm-accent:#d6a76f;--mc-realm-glow:#c9365455;--mc-realm-font:"Arial Black",system-ui,sans-serif;--mc-realm-art:url("/assets/knightfall/chaosphere/korriban-panel.svg")}
+#miss-chaos-presence[data-mc-theme="vader"]{--mc-realm-accent:#ed626c;--mc-realm-glow:#b2203555;--mc-realm-font:"Arial Black",system-ui,sans-serif;--mc-realm-art:url("/assets/knightfall/chaosphere/vader-panel.svg")}
+#miss-chaos-presence #miss-chaos-window{border-color:var(--mc-realm-accent)!important;box-shadow:0 12px 60px var(--mc-realm-glow),0 24px 70px #0009!important;background-image:linear-gradient(150deg,#0b0913ed,#120d18f5),var(--mc-realm-art)!important;background-size:cover!important;border-radius:26px!important}
+#miss-chaos-presence .mc-head{background-image:var(--mc-realm-art)!important;background-size:cover!important;border-radius:23px 23px 12px 12px!important}
+#miss-chaos-presence .mc-head-copy strong{font-family:var(--mc-realm-font)!important;letter-spacing:.04em;color:var(--mc-realm-accent)!important}
+#miss-chaos-presence .mc-realm-entry{display:inline-flex;align-items:center;justify-content:center;padding:.55rem .85rem;border:1px solid var(--mc-realm-accent);border-radius:999px;color:var(--mc-realm-accent);background:#11121c;text-decoration:none;font-size:.78rem;font-weight:800}
+#miss-chaos-presence .mc-realm-dock{max-width:110px}
+#miss-chaos-presence #mc-settings select{border-radius:14px}
+@media(max-width:520px){#miss-chaos-presence .mc-realm-dock{font-size:.68rem;padding:.45rem}}
+@media(prefers-reduced-motion:reduce){#miss-chaos-presence .mc-realm-entry{transition:none}}
