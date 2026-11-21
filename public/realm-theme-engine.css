@@ -124,3 +124,13 @@ body[data-mc-realm-theme] .mc-realm-theme-picker select{padding:.65rem 1rem;bord
 #miss-chaos-presence .mc-portrait-frame{position:relative;display:inline-grid;place-items:center;flex:0 0 auto;width:64px;height:64px;isolation:isolate}
 #miss-chaos-presence .mc-portrait-frame>img{width:72%;height:72%;object-fit:cover;border-radius:50%;position:relative;z-index:1}
 #miss-chaos-presence .mc-portrait-frame::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:var(--mc-realm-frame,url("/assets/knightfall/miss-chaos/hex-portrait-frame.svg")) center/contain no-repeat;filter:drop-shadow(0 0 5px var(--mc-realm-glow,#aa64ff55))}
+
+/* Full Miss Chaos chat shares the same scoped theme selection as her realm. */
+body.chaos-page[data-mc-realm-theme] .chaos-shell{--mc-chat-accent:var(--mc-realm-accent,#b49aff)}
+body.chaos-page[data-mc-realm-theme] .chaos-sidebar{border-color:var(--mc-chat-accent);background-image:linear-gradient(150deg,#0b0e16f7,#110d18ef),var(--mc-realm-art);background-position:center;background-size:cover,240px}
+body.chaos-page[data-mc-realm-theme] .chaos-shell button:focus-visible,body.chaos-page[data-mc-realm-theme] .chaos-shell a:focus-visible{outline:2px solid var(--mc-chat-accent);outline-offset:3px}
+body.chaos-page[data-mc-realm-theme] .chaos-shell .archive-toggle{border-radius:14px}
+body.chaos-page[data-mc-realm-theme] .chaos-shell .new-chat{border:1px solid var(--mc-chat-accent);border-radius:16px;box-shadow:0 4px 22px var(--mc-realm-glow,#aa64ff55)}
+body.chaos-page[data-mc-realm-theme] .mc-full-theme-label{display:grid;gap:.35rem;margin:.7rem 0;color:var(--mc-chat-accent);font-size:.8rem;font-weight:800}
+body.chaos-page[data-mc-realm-theme] .mc-full-theme-label select{min-height:42px;border:1px solid var(--mc-chat-accent);border-radius:12px;background:#10131b;color:#f6f6f6;padding:.5rem}
+body.chaos-page[data-mc-realm-theme] .chaos-shell .message{border-radius:18px}
