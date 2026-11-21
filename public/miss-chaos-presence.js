@@ -21,7 +21,7 @@
         <a href="/eye-of-chaos.html" id="mc-private-eye" hidden>𓂀 Eye of Chaos</a>
       </nav>
       <label for="mc-visual-theme">Miss Chaos theme
-        <select id="mc-visual-theme"><option value="obsidian">Obsidian Neon</option><option value="hellfire">Hellfire</option><option value="egypt">Egyptian Eclipse</option><option value="mustafar">Mustafar</option><option value="korriban">Korriban</option><option value="vader">Dark Lord</option></select>
+        <select id="mc-visual-theme"><option value="obsidian">Obsidian Neon</option><option value="hellfire">Hellfire</option><option value="egypt">Egyptian Eclipse</option><option value="mustafar">Mustafar</option><option value="korriban">Korriban</option><option value="vader">Dark Lord</option><option value="hex">Hex Signal · Cyan</option><option value="anarchy">Anarchy · Red/Black</option><option value="chaos">Chaos Star · Lime/Black</option><option value="blood">Blood &amp; Ink</option></select>
       </label>
       <a class="mc-realm-entry" href="/miss-chaos-realm.html">✦ Visit her realm · Tools &amp; creative workspaces</a>
       <label class="sr-only" for="mc-mood">Miss Chaos mood</label><select id="mc-mood"><option value="default">Mood: Default</option><option value="playful">Playful</option><option value="dark">Dark humor</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option></select>
@@ -37,7 +37,7 @@
       <div id="mc-memo-host" aria-live="off"></div>
     </section>
     <div id="mc-dock" role="group" aria-label="Miss Chaos floating tools">
-      <button id="miss-chaos-launcher" type="button" aria-label="Chat with Miss Chaos" title="Chat with Miss Chaos" aria-expanded="false" aria-controls="miss-chaos-window"><span style="position:relative"><img src="${AVATAR}" alt=""><i class="mc-status-dot" aria-hidden="true"></i></span><span class="mc-launch-copy"><strong>Miss Chaos</strong><small>Need me? I'm right here.</small></span></button>
+      <button id="miss-chaos-launcher" type="button" aria-label="Chat with Miss Chaos" title="Chat with Miss Chaos" aria-expanded="false" aria-controls="miss-chaos-window"><span style="position:relative"><img src="/assets/knightfall/miss-chaos/hex-sigil.svg" class="mc-minimized-sigil" alt=""><i class="mc-status-dot" aria-hidden="true"></i></span><span class="mc-launch-copy"><strong>Miss Chaos</strong><small>Need me? I'm right here.</small></span></button>
       <a class="mc-realm-entry mc-realm-dock" href="/miss-chaos-realm.html" title="Visit Miss Chaos realm">✦ Her Realm</a>
       <button id="mc-private-switch" type="button" aria-label="Switch Miss Chaos between standard and private workspace" title="Switch private assistant" hidden>𓂀 Private</button>
       <button id="mc-memo-toggle" type="button" aria-label="Open Memo Pad" aria-expanded="false" aria-controls="mc-memo-panel" title="Open Memo Pad">📝</button>
@@ -96,12 +96,17 @@
   $("#mc-memo-close").addEventListener('click',()=>{closeMemo();memoToggle.focus({preventScroll:true})});
 
   // Shared theme selection; visuals are client preferences, never purchase entitlements.
-  const visualThemes=new Set(["obsidian","hellfire","egypt","mustafar","korriban","vader"]);
+  const visualThemes=new Set(["obsidian","hellfire","egypt","mustafar","korriban","vader","hex","anarchy","chaos","blood"]);
   const themeKey="kf:miss-chaos-theme";
   const themeControl=root.querySelector("#mc-visual-theme");
+  const themeArt={
+    hex:"hex",anarchy:"anarchy",chaos:"chaos",blood:"blood",
+    obsidian:"hex",hellfire:"anarchy",egypt:"hex",mustafar:"anarchy",korriban:"chaos",vader:"blood"
+  };
   const setVisualTheme=value=>{
     const theme=visualThemes.has(value)?value:"obsidian";
     root.dataset.mcTheme=theme;
+    const sigil=root.querySelector(".mc-minimized-sigil");if(sigil)sigil.src="/assets/knightfall/miss-chaos/"+themeArt[theme]+"-sigil.svg";
     if(themeControl)themeControl.value=theme;
     try{localStorage.setItem(themeKey,theme)}catch{}
   };
