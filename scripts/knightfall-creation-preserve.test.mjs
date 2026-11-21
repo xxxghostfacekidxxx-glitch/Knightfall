@@ -29,7 +29,12 @@ test("all original artwork formats and asset libraries are preserved regardless 
   "public/arcade/hosted/unknown/game-art.glb",
   "public/creator-production-core.mjs",
   "public/creator-art-studio.js",
-  "public/knightfall-illustrated-realms.css"
+  "public/knightfall-illustrated-realms.css",
+  "public/realm-hubs.css",
+  "public/celestial-sanctum.html",
+  "public/music.html",
+  "public/music-rhythm-lab.js",
+  "public/chatbots.html"
  ])assert.equal(isProtectedCreationPath(path),true,"Artwork path must survive "+path);
  assert.equal(isProtectedCreationPath("public/index.html"),false);
 });
