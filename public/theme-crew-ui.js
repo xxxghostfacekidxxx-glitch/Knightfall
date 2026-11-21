@@ -28,6 +28,7 @@ const paintGlobal=()=>{
   (globalCurrent.updated_at?" · "+new Date(globalCurrent.updated_at).toLocaleString():"");
 };
 const PREVIEW_ART=Object.freeze({
+ egyptian_eclipse:"/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-temple-gateway.png",
  cathedral:"/assets/knightfall/black-sun-hero-illustration.webp",
  blood_moon:"/assets/knightfall/obsidian-cathedral.svg",
  verdant_crypt:"/assets/knightfall/realm-pets.svg",
