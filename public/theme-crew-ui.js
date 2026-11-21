@@ -6,7 +6,7 @@ const status=$("theme-crew-status");
 const workspace=$("theme-crew-workspace");
 const denied=$("theme-crew-denied");
 let current=null,presets={},selected="cathedral",busy=false,initialized=false,canPublish=false;
-let scope="site",states={},realmMeta={},allHistory=[];
+let scope="site",states={},realmMeta={},allHistory=[],realmApiReady=false;
 const PREVIEW_ART=Object.freeze({
  cathedral:"/assets/knightfall/black-sun-hero-illustration.webp",
  blood_moon:"/assets/knightfall/obsidian-cathedral.svg",
@@ -33,7 +33,7 @@ async function req(path,method="GET",payload){
 const lock=value=>{
  busy=value;
  for(const id of ["theme-crew-preview","theme-crew-copy-preview","theme-crew-publish","theme-crew-revert-preview","theme-crew-rollback","theme-crew-refresh"]){
-  $(id).disabled=busy||((id==="theme-crew-publish"||id==="theme-crew-rollback")&&!canPublish);
+  $(id).disabled=busy||((id==="theme-crew-publish"||id==="theme-crew-rollback")&&(!canPublish||(scope!=="site"&&!realmApiReady)));
  }
  $("theme-crew-scope").disabled=busy;
  for(const choice of document.querySelectorAll(".theme-crew-choice"))choice.disabled=busy;
@@ -80,8 +80,9 @@ function drawBots(bots,workflow){
 }
 function drawHistory(rows){
  const list=$("theme-crew-history");list.replaceChildren();
- if(!rows?.length){list.append(textNode("li","No theme changes have been published yet."));return;}
- for(const h of rows.filter(item=>(item.realm||"site")===scope)){
+ const filtered=(rows||[]).filter(item=>(item.realm||"site")===scope);
+ if(!filtered.length){list.append(textNode("li","No theme changes in this realm yet."));return;}
+ for(const h of filtered){
   const time=h.at?new Date(h.at):null;
   const stamp=time&&Number.isFinite(time.getTime())?time.toLocaleString():"Unknown";
   list.append(textNode("li",stamp+" · "+String(h.from||"?")+" → "+String(h.to||"?")+" (v"+h.revision+")"));
@@ -99,6 +100,7 @@ function displayScope(){
 async function load(){
  const data=await req("/status");
  presets=data.presets;realmMeta=data.realmMeta||{};
+ realmApiReady=Boolean(data.realmMeta&&data.realms&&["madhouse","arcade","chaosphere","admin"].every(key=>data.realmMeta[key]&&data.realms[key]));
  states={site:data.current,...data.realms};allHistory=data.history||[];
  canPublish=data.permissions?.can_publish===true;
  for(const id of ["theme-crew-publish","theme-crew-rollback"])$(id).hidden=!canPublish;
@@ -106,13 +108,14 @@ async function load(){
  if(!busy)lock(false);
  displayScope();drawBots(data.bots||[],data.workflow);
  workspace.hidden=false;denied.hidden=true;
- announce((canPublish?"Verified theme publishing available.":"Staff preview controls available.")+" Editing "+realmName()+" only.");
+ announce(!realmApiReady?"The API Worker has not confirmed independent realm support. Realm publishing is locked until it is deployed.":(canPublish?"Verified theme publishing available.":"Staff preview controls available.")+" Editing "+realmName()+" only.");
 }
 async function boot(){
  try{await load()}catch(e){workspace.hidden=true;denied.hidden=false;announce("Theme Crew unavailable: "+e.message)}
 }
 async function publish(undo=false){
  if(busy||!current||!canPublish){if(!canPublish)announce("Only GOD or the accepted admin partner can publish or roll back theme changes.");return;}
+ if(scope!=="site"&&!realmApiReady){announce("Realm publishing is locked until the upgraded API Worker confirms realm support.");return;}
  const desired=undo?current.previous:selected;
  if(!Object.hasOwn(presets,desired)){announce("Select a reviewed preset.");return}
  if(desired===current.preset){announce("That theme is already live.");return}
@@ -151,7 +154,8 @@ $("theme-crew-scope").addEventListener("change",event=>{
  if(!["site","madhouse","arcade","chaosphere","admin"].includes(scope)){scope="site";event.target.value="site"}
  selected=states[scope]?.preset||states.site?.preset||"cathedral";
  displayScope();
- announce("Now controlling "+realmName()+". Preview and publish actions target this realm exclusively.");
+ if(!busy)lock(false);
+ announce(scope!=="site"&&!realmApiReady?"Realm publishing is locked until the upgraded API Worker is live.":"Now controlling "+realmName()+". Preview and publish actions target this realm exclusively.");
 });
 $("theme-crew-presets").addEventListener("keydown",event=>{
  const choice=event.target.closest(".theme-crew-choice");
