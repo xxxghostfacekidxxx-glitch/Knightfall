@@ -61,3 +61,13 @@ test("recovery provider configuration requires sender and a delivery channel", (
   assert.equal(resetEmailConfigured({EMAIL:{send(){}}}),false);
   assert.equal(resetEmailConfigured({PASSWORD_RESET_FROM:"accounts@ash-fall.com",RESEND_API_KEY:"fixture"}),true);
 });
+
+test("Resend recovery requests have a bounded network timeout", () => {
+  const source = readFileSync(new URL("../backend/src/password-reset-email.js", import.meta.url), "utf8");
+  assert.match(source, /signal:\s*AbortSignal\.timeout\(10000\)/);
+});
+
+test("Signup verification requests have a bounded network timeout", () => {
+  const source = readFileSync(new URL("../backend/src/email-signup.js", import.meta.url), "utf8");
+  assert.match(source, /signal:\s*AbortSignal\.timeout\(10000\)/);
+});
