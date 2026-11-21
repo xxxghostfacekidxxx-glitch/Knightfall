@@ -57,6 +57,28 @@ test("each of five routes paints its own persisted theme, without cross-realm le
   assert.equal(b.body.dataset.kfTheme,expected,path+" must not inherit other domain's published preset");
  }
 });
+test("Casino and Miss Chaos pages inherit their owning realm, not the global default",async()=>{
+ const routes=[
+  ["/casino.html","arcade","iron_eclipse"],
+  ["/casino","arcade","iron_eclipse"],
+  ["/arcade-card-room.html","arcade","iron_eclipse"],
+  ["/miss-chaos-guide.html","chaosphere","royal_abyss"],
+  ["/miss-chaos.html","chaosphere","royal_abyss"],
+  ["/notifications.html","chaosphere","royal_abyss"],
+  ["/moderation-accounts.html","admin","cathedral"],
+  ["/community-topic.html","madhouse","verdant_crypt"]
+ ];
+ for(const [path,scope,preset] of routes){
+  const b=browser(path,published);
+  await b.window.KnightfallThemeCrew.refresh();
+  assert.equal(b.body.dataset.kfThemeScope,scope,path);
+  assert.equal(b.body.dataset.kfTheme,preset,path);
+ }
+ for(const path of ["/arcade/hosted/imp-inferno/index.html","/casino/classic-floor.html"]){
+  const b=browser(path,published);
+  assert.equal(b.window.KnightfallThemeCrew,undefined,"Independent hosted games must remain untouched: "+path);
+ }
+});
 test("previews are session-scoped, never become server state, and reject unknown presets",async()=>{
  const session=new Map();
  const madhouse=browser("/community.html",published,session);
