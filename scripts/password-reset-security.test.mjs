@@ -105,3 +105,12 @@ test("Resend recovery rejects provider failures without throwing or exposing cre
   },{to:"member@example.test",subject:"Recovery",text:"Recovery",html:"<p>Recovery</p>"});
   assert.deepEqual(result,{ok:false,status:429});
 });
+
+test("Resend recovery handles network outages without exposing reset contents", async t => {
+  t.mock.method(globalThis,"fetch",async () => { throw new Error("simulated network outage"); });
+  const result=await deliverPasswordResetEmail({
+    PASSWORD_RESET_FROM:"accounts@ash-fall.com",
+    RESEND_API_KEY:"test-only"
+  },{to:"member@example.test",subject:"Recovery",text:"Sensitive reset URL",html:"<p>Sensitive reset URL</p>"});
+  assert.deepEqual(result,{ok:false,status:502});
+});
