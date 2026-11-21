@@ -9,7 +9,7 @@ export function staffCapabilities(user) {
   const moderator=role==="moderator";
   const digitalCreator=role==="member" && title==="digital creator";
   const canModerate=admin||moderator;
-  const canCreate=admin||digitalCreator;
+  const canCreate=admin||moderator||digitalCreator;
   const level=god?4:isis?3:admin?2:moderator||digitalCreator?1:0;
   const track=god?"osiris":isis?"isis":admin?"admin":moderator?"moderation":digitalCreator?"creation":"member";
   const rank_name=god?"Osiris":isis?"Isis":admin?"Administrator":moderator?"Moderator":digitalCreator?"Digital Creator":"Member";
