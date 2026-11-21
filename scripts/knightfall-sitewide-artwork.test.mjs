@@ -5,7 +5,7 @@ import {readFileSync,existsSync} from 'node:fs';
 
 const read = name => readFileSync(new URL('../public/' + name, import.meta.url),'utf8');
 const nav=read('nav.js');
-const art=read('knightfall-unified-theme.css');
+const art=read('knightfall-section-foundations.css')+'\n'+read('knightfall-unified-theme.css');
 const theme=read('theme.css');
 const sw=read('sw.js');
 const headings=[
@@ -49,7 +49,7 @@ test('shared nav discovers the actual public page headers',()=>{
  assert.match(nav,/document\.body\.dataset\.kfRealm/);
 });
 test('artwork is mounted last, kept in cache, and does not skin private profile themes or gameplay',()=>{
- const source=read('knightfall-unified-theme.css');
+ const source=read('knightfall-section-foundations.css')+'\n'+read('knightfall-unified-theme.css');
  assert.doesNotMatch(source,/:where\(\.home-intro,\.cartridge-hero\)\s*\{[^}]*\bbackground\s*:/s,'global Gothic palette must not override home artwork');
  assert.ok(art.includes('Account entry is part of Knightfall'),'auth artwork must be integrated');
  assert.match(nav,/kfCanonicalTheme/);
