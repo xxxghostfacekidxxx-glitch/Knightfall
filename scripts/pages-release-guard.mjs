@@ -8,6 +8,8 @@ const jobs=[
  ["Original Textract PDF syntax",["--check","public/chaos-textract-native-pdf.mjs"]],
  ["Original Textract OCR syntax",["--check","public/chaos-textract-native-ocr.mjs"]],
  ["Textract lab syntax",["--check","public/chaos-textract.mjs"]],
+ ["Protected artwork and Creator Foundry static audit",["scripts/knightfall-creation-preserve.mjs","--audit"]],
+ ["Protected artwork and Creator Foundry workspace regressions",["--test","scripts/knightfall-creation-preserve.test.mjs"]],
  ["Global CSS integrity",["scripts/theme-crew-audit.mjs"]],
  ["CSS ownership, duplicate imports and legacy debt budget",["--test","scripts/theme-style-ownership.test.mjs"]],
  ["Canonical theme asset URLs and single loader",["--test","scripts/theme-asset-url-integrity.test.mjs"]],
