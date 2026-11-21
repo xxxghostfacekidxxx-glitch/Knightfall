@@ -12,6 +12,7 @@ on:
       - 'public/sw.js'
       - 'backend/src/theme-crew*'
       - 'scripts/theme-crew-audit.mjs'
+      - 'scripts/theme-style-ownership.test.mjs'
       - 'scripts/pages-release-guard.mjs'
       - 'scripts/theme-crew-route.test.mjs'
       - 'scripts/theme-crew-browser-smoke.mjs'
