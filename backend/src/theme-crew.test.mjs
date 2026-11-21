@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {handleThemeCrew,normalizeThemeState,themePlan,THEME_CREW_PRESETS,THEME_CREW_BOTS} from "./theme-crew.js";
+import {handleThemeCrew,normalizeThemeState,normalizeGlobalControls,themePlan,THEME_CREW_PRESETS,THEME_CREW_BOTS,THEME_GLOBAL_OPTIONS} from "./theme-crew.js";
 const json=(obj,status=200)=>new Response(JSON.stringify(obj),{status,headers:{"content-type":"application/json"}});
 function fixture(user={id:1,role:"god"},delegated=false){
  const saved=new Map(),logged=[];
@@ -178,4 +178,62 @@ test("realm selectors are allowlisted and admin/Isis editing cannot bypass autho
  const delegated=fixture({id:42,role:"admin"},true);
  assert.equal((await delegated.call("/api/god/theme/activate","POST",{realm:"admin",preset:"royal_abyss",expectedRevision:0})).status,200);
  assert.equal((await delegated.call("/api/theme")).body.realms.admin.preset,"royal_abyss");
+});
+
+test("global controls have fixed independent defaults and reject unsafe payloads",async()=>{
+ assert.deepEqual(normalizeGlobalControls({density:"compact",corners:"rounded",typography:"large",effects:"subtle"}),
+  {density:"compact",corners:"rounded",typography:"large",effects:"subtle"});
+ assert.equal(normalizeGlobalControls({density:"javascript:evil"}).density,"balanced");
+ assert.deepEqual(Object.keys(THEME_GLOBAL_OPTIONS).sort(),["corners","density","effects","typography"]);
+ const f=fixture();
+ const initial=(await f.call("/api/theme")).body;
+ assert.equal(initial.globalControls.density,"balanced");
+ assert.equal(initial.globalControls.corners,"soft");
+ for(const controls of [
+  {density:"custom",corners:"soft",typography:"standard",effects:"ceremonial"},
+  {density:"compact",corners:"soft",typography:"standard",effects:"ceremonial",css:"body{display:none}"},
+  {density:"compact",corners:"soft",typography:"standard"},
+  "body{display:none}",null
+ ]){
+  assert.equal((await f.call("/api/god/theme/global","POST",{controls,expectedRevision:0})).status,400);
+ }
+ assert.equal((await f.call("/api/god/theme/global","POST",{controls:{density:"compact",corners:"soft",typography:"standard",effects:"subtle"},expectedRevision:0},"https://evil.example")).status,403);
+ assert.equal((await f.call("/api/theme")).body.globalControls.revision,0);
+});
+test("GOD can publish global chrome without changing any realm, independently roll it back",async()=>{
+ const f=fixture();
+ const palette=await f.call("/api/god/theme/activate","POST",{realm:"chaosphere",preset:"iron_eclipse",expectedRevision:0});
+ assert.equal(palette.status,200);
+ const chosen={density:"compact",corners:"rounded",typography:"large",effects:"subtle"};
+ const post=await f.call("/api/god/theme/global","POST",{controls:chosen,expectedRevision:0});
+ assert.equal(post.status,200);
+ assert.equal(post.body.current.revision,1);
+ assert.equal(post.body.current.corners,"rounded");
+ const pub=(await f.call("/api/theme")).body;
+ assert.equal(pub.globalControls.density,"compact");
+ assert.equal(pub.realms.chaosphere.preset,"iron_eclipse");
+ assert.equal(pub.realms.chaosphere.revision,1);
+ assert.equal(pub.realms.madhouse.preset,"cathedral");
+ assert.equal((await f.call("/api/god/theme/global","POST",{controls:chosen,expectedRevision:0})).status,409);
+ assert.equal((await f.call("/api/god/theme/global","POST",{controls:chosen,expectedRevision:1})).status,409);
+ const history=(await f.call("/api/god/theme/status")).body.history;
+ assert.equal(history[0].realm,"global");
+ const rolled=await f.call("/api/god/theme/global/rollback","POST",{expectedRevision:1});
+ assert.equal(rolled.status,200);
+ assert.equal(rolled.body.current.density,"balanced");
+ assert.equal(rolled.body.current.revision,2);
+ assert.equal((await f.call("/api/theme")).body.realms.chaosphere.preset,"iron_eclipse");
+ assert.equal(f.logs[0].details.action,"global_rollback");
+});
+test("global publishing requires GOD or a verified accepted admin partner",async()=>{
+ const blocked=fixture({id:3,role:"admin"});
+ const controls={density:"relaxed",corners:"square",typography:"extra_large",effects:"minimal"};
+ assert.equal((await blocked.call("/api/god/theme/status")).body.permissions.can_publish,false);
+ assert.equal((await blocked.call("/api/god/theme/global","POST",{controls,expectedRevision:0})).status,403);
+ assert.equal((await blocked.call("/api/god/theme/global/rollback","POST",{expectedRevision:0})).status,403);
+ const allowed=fixture({id:42,role:"admin"},true);
+ assert.equal((await allowed.call("/api/god/theme/global","POST",{controls,expectedRevision:0})).status,200);
+ assert.equal((await allowed.call("/api/theme")).body.globalControls.typography,"extra_large");
+ const outsider=fixture({id:9,role:"member"},true);
+ assert.equal((await outsider.call("/api/god/theme/global","POST",{controls,expectedRevision:0})).status,403);
 });
