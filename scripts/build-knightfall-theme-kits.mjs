@@ -51,7 +51,7 @@ for(const kit of catalog.themes){
   if(typeof kit[color]!=="string"||!/^#[0-9a-fA-F]{6}$/.test(kit[color]))throw Error("Unreviewed theme color: "+kit.preset);
  if(!Array.isArray(kit.showcase)||kit.showcase.length<1||kit.showcase.length>8||!kit.showcase.includes(kit.hero))throw Error("Invalid artwork lineup");
  for(const file of [kit.hero,kit.background,...kit.showcase]){
-  if(typeof file!=="string"||!/^[a-z0-9-]+\\.png$/.test(file))throw Error("Unsafe picture path");
+  if(typeof file!=="string"||!/^[a-z0-9-]+\.png$/.test(file))throw Error("Unsafe picture path");
   const p="/assets/knightfall/theme-collections/"+kit.collection+"/"+file;
   if(!paintings.assets.some(x=>x.path===p)||!existsSync(path("public"+p)))throw Error("Unpreserved original PNG: "+p);
  }
