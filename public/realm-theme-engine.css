@@ -120,3 +120,7 @@ body[data-mc-realm-theme] .mc-realm-card{border-color:var(--mc-realm-accent,#b49
 body[data-mc-realm-theme] .mc-realm-card:hover{box-shadow:0 10px 28px var(--mc-realm-glow,#aa64ff55)}
 body[data-mc-realm-theme] .mc-realm-theme-picker{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:1rem}
 body[data-mc-realm-theme] .mc-realm-theme-picker select{padding:.65rem 1rem;border:1px solid var(--mc-realm-accent);border-radius:14px;background:#10131a;color:#fff}
+
+#miss-chaos-presence .mc-portrait-frame{position:relative;display:inline-grid;place-items:center;flex:0 0 auto;width:64px;height:64px;isolation:isolate}
+#miss-chaos-presence .mc-portrait-frame>img{width:72%;height:72%;object-fit:cover;border-radius:50%;position:relative;z-index:1}
+#miss-chaos-presence .mc-portrait-frame::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:var(--mc-realm-frame,url("/assets/knightfall/miss-chaos/hex-portrait-frame.svg")) center/contain no-repeat;filter:drop-shadow(0 0 5px var(--mc-realm-glow,#aa64ff55))}
