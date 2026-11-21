@@ -1,93 +1,134 @@
-/* Creator Foundry: reviewed original theme artwork, never a second image API. */
+/* Creator Foundry: original PNG paintings + independently reusable vector ornaments.
+ * Safe DOM composition only. All gallery assets stay on Knightfall's own origin.
+ */
 (()=>{
 "use strict";
-const panel=document.getElementById("theme-art-collection");
+const root=document.getElementById("theme-art-collection");
 const grid=document.getElementById("kf-theme-art-gallery");
 const status=document.getElementById("kf-theme-art-status");
-if(!panel||!grid||!status)return;
-const menu=panel.querySelector(".kf-theme-art-filters");
-const manifestUrl="/assets/knightfall/theme-collections/manifest.json";
-const collectionNames=Object.freeze({
+if(!root||!grid||!status)return;
+const names=Object.freeze({
  "egyptian-eclipse":"Egyptian Eclipse",
  "dark-lord-ascendant":"Dark Lord Ascendant",
- "theme-selector":"Theme selector concepts"
+ "korriban":"Korriban · Red Necropolis",
+ "mustafar":"Mustafar · Obsidian Forge",
+ "theme-selector":"Theme Forge concepts"
 });
-let entries=[],active="all",loaded=false;
+const pngUrl="/assets/knightfall/theme-collections/manifest.json";
+const svgUrl="/assets/knightfall/theme-collections/ornaments.json";
+const formats=new Set(["png","svg"]);
+const pngRoles=new Set(["hero","background","concept"]);
+const svgRoles=new Set(["header","frame","divider","corner","emblem","panel","button","side-rail"]);
+let items=[],collection="all",format="all",inFlight=null;
 const tag=(name,cls,text)=>{
  const el=document.createElement(name);
  if(cls)el.className=cls;
  if(text!==undefined)el.textContent=String(text);
  return el;
 };
-const statusText=s=>{status.textContent=s};
-const safeEntry=item=>item&&
- typeof item.path==="string"&&
- /^\/assets\/knightfall\/theme-collections\/[a-z0-9-]+\/[a-z0-9-]+\.png$/.test(item.path)&&
- item.collection in collectionNames&&
- typeof item.sha256==="string"&&/^[0-9a-f]{64}$/.test(item.sha256);
+const report=text=>{status.textContent=text};
+const approved=item=>{
+ if(!item||typeof item!=="object"||!Object.hasOwn(names,item.collection)||typeof item.path!=="string")return false;
+ const match=/^\/assets\/knightfall\/theme-collections\/([a-z0-9-]+)\/(?:svg\/)?([a-z0-9-]+)\.(png|svg)$/.exec(item.path);
+ if(!match||match[1]!==item.collection)return false;
+ const kind=match[3];
+ if(kind==="png"){
+  return pngRoles.has(item.role)&&typeof item.sha256==="string"&&/^[a-f0-9]{64}$/.test(item.sha256)&&
+   Number.isInteger(item.bytes)&&item.bytes>0&&Number.isInteger(item.width)&&Number.isInteger(item.height);
+ }
+ return item.path.includes("/svg/")&&svgRoles.has(item.role)&&item.format==="svg";
+};
 function render(){
  grid.replaceChildren();
- for(const item of entries.filter(a=>active==="all"||a.collection===active)){
+ const shown=items.filter(item=>(collection==="all"||item.collection===collection)&&
+  (format==="all"||item.format===format));
+ for(const item of shown){
   const card=tag("article","kf-theme-art-card");
-  const imageLink=tag("a","kf-theme-art-preview");
-  imageLink.href=item.path;imageLink.target="_blank";imageLink.rel="noopener noreferrer";
-  imageLink.setAttribute("aria-label","View full original: "+item.title);
+  card.dataset.collection=item.collection;
+  card.dataset.format=item.format;
+  const art=tag("a","kf-theme-art-preview");
+  art.href=item.path;art.target="_blank";art.rel="noopener noreferrer";
+  art.setAttribute("aria-label","Inspect original asset: "+item.title);
   const image=tag("img");
-  image.src=item.path;image.alt=item.title;
-  image.loading="lazy";image.decoding="async";
-  image.width=item.width;image.height=item.height;
-  imageLink.append(image);
-  const content=tag("div","kf-theme-art-card-body");
-  content.append(
-   tag("span","kf-theme-art-eyebrow",collectionNames[item.collection]+" · "+item.role),
+  image.src=item.path;image.alt=item.title;image.loading="lazy";image.decoding="async";
+  if(item.width&&item.height){image.width=item.width;image.height=item.height}
+  else{image.width=1200;image.height=720}
+  art.append(image);
+  const info=tag("div","kf-theme-art-card-body");
+  const details=item.format==="svg"
+   ?"Original editable SVG · "+item.role.replace("-"," ")+" · Scales without pixelation."
+   :"Original "+item.width+" × "+item.height+" PNG · SHA-256 verified.";
+  info.append(
+   tag("span","kf-theme-art-eyebrow",names[item.collection]+" / "+item.format.toUpperCase()),
    tag("h3","",item.title),
-   tag("p","","Original "+item.width+" × "+item.height+" PNG preserved in Knightfall's repository.")
+   tag("p","",details)
   );
   const actions=tag("div","kf-theme-art-actions");
-  const download=tag("a","kf-theme-art-button","Download original");
+  const download=tag("a","kf-theme-art-button","Download "+item.format.toUpperCase());
   download.href=item.path;download.download=item.path.split("/").pop();
-  const copy=tag("button","kf-theme-art-button kf-theme-art-copy","Copy asset path");
+  const copy=tag("button","kf-theme-art-button kf-theme-art-copy","Copy path");
   copy.type="button";
   copy.addEventListener("click",async()=>{
-   try{
-    await navigator.clipboard.writeText(item.path);
-    statusText("Copied "+item.path);
-   }catch{statusText("Asset path: "+item.path)}
+   try{await navigator.clipboard.writeText(item.path);report("Copied "+item.path)}
+   catch{report("Asset path: "+item.path)}
   });
-  actions.append(download,copy);
-  content.append(actions);card.append(imageLink,content);grid.append(card);
+  const css=tag("button","kf-theme-art-button kf-theme-art-copy","Copy CSS");
+  css.type="button";css.setAttribute("aria-label","Copy CSS background URL for "+item.title);
+  css.addEventListener("click",async()=>{
+   const text='background-image: url("'+item.path+'");';
+   try{await navigator.clipboard.writeText(text);report("Copied CSS for "+item.title)}
+   catch{report("CSS: "+text)}
+  });
+  actions.append(download,copy,css);
+  info.append(actions);card.append(art,info);grid.append(card);
  }
- const count=grid.childElementCount;
- statusText(count+" original artwork asset"+(count===1?"":"s")+" available. No sample franchise characters or external image URLs are required.");
+ if(!shown.length)grid.append(tag("p","kf-theme-art-empty","No matching artwork. Choose another collection or format."));
+ const png=items.filter(i=>i.format==="png").length,svg=items.filter(i=>i.format==="svg").length;
+ report(shown.length+" shown · "+png+" preserved paintings · "+svg+" custom SVG ornaments. Originals are stored in the Knightfall repository.");
 }
-function choose(value){
- active=value;
- for(const button of menu?.querySelectorAll("button[data-collection]")||[]){
-  button.setAttribute("aria-pressed",String(button.dataset.collection===value));
+root.addEventListener("click",event=>{
+ const button=event.target.closest("button[data-collection],button[data-format]");
+ if(!button||!root.contains(button))return;
+ if(button.hasAttribute("data-collection")){
+  const val=button.dataset.collection;
+  if(val!=="all"&&!Object.hasOwn(names,val))return;
+  collection=val;
+  for(const node of root.querySelectorAll("button[data-collection]"))
+   node.setAttribute("aria-pressed",String(node.dataset.collection===val));
+ }else{
+  const val=button.dataset.format;
+  if(val!=="all"&&!formats.has(val))return;
+  format=val;
+  for(const node of root.querySelectorAll("button[data-format]"))
+   node.setAttribute("aria-pressed",String(node.dataset.format===val));
  }
  render();
-}
-menu?.addEventListener("click",event=>{
- const button=event.target.closest("button[data-collection]");
- if(button&&button.dataset.collection in collectionNames||button?.dataset.collection==="all")choose(button.dataset.collection);
 });
 async function load(){
- if(loaded)return;
- loaded=true;
- try{
-  const response=await fetch(manifestUrl,{credentials:"same-origin",cache:"no-store"});
-  if(!response.ok)throw Error("The repository artwork import is not published yet (HTTP "+response.status+").");
-  const body=await response.json();
-  if(body.id!=="knightfall-2026-11-20-premium-theme-art"||!Array.isArray(body.assets)||body.assets.length!==6)
-   throw Error("Unexpected artwork manifest; refusing to show unreviewed files.");
-  const approved=body.assets.filter(safeEntry);
-  if(approved.length!==6)throw Error("Original artwork manifest failed path or checksum validation.");
-  entries=approved;render();
- }catch(error){
-  loaded=false;
-  statusText(error.message||"Original theme artwork could not load.");
- }
+ if(inFlight)return inFlight;
+ inFlight=(async()=>{
+  try{
+   const [pngResponse,svgResponse]=await Promise.all([
+    fetch(pngUrl,{credentials:"same-origin",cache:"no-store"}),
+    fetch(svgUrl,{credentials:"same-origin",cache:"no-store"})
+   ]);
+   if(!pngResponse.ok||!svgResponse.ok)throw Error("The artwork inventory is not fully published yet.");
+   const [p,s]=await Promise.all([pngResponse.json(),svgResponse.json()]);
+   if(p.id!=="knightfall-2026-11-20-premium-theme-art"||
+      s.id!=="knightfall-original-theme-ornaments"||
+      !Array.isArray(p.assets)||p.assets.length<6||!Array.isArray(s.assets)||s.assets.length!==32)
+    throw Error("The original artwork inventory was not recognized.");
+   const candidate=[
+    ...p.assets.map(item=>({...item,format:"png"})),
+    ...s.assets.map(item=>({...item,format:"svg"}))
+   ];
+   if(!candidate.every(approved)||new Set(candidate.map(i=>i.path)).size!==candidate.length)
+    throw Error("Artwork inventory contains an unreviewed asset path.");
+   items=candidate;render();
+  }catch(error){report(error.message||"Artwork could not be loaded.");}
+  finally{inFlight=null}
+ })();
+ return inFlight;
 }
-const workshop=document.getElementById("workshop");
-workshop?.addEventListener("foundry:ready",load);
+document.getElementById("workshop")?.addEventListener("foundry:ready",load);
 })();
