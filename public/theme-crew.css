@@ -1,6 +1,6 @@
 /* Knightfall Theme Crew / approved, reversible presentation recipes.
  * Only site chrome changes. Never modify game pixels, member-defined profile
- * palettes, private content or application layout. Final layer in nav.js. */
+ * palettes, private content or application layout. Staff editor lives in theme-crew-dashboard.css. */
 :root{--kf-crew-version:1}
 html body[data-kf-realm][data-kf-theme="blood_moon"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page){
  --kf-realm-metal:#edb8bf;--kf-realm-glow:#d54372;--kf-realm-tint:#431926;
@@ -79,59 +79,3 @@ html body[data-kf-theme="blood_moon"]{--kf-crew-hue:320deg}
 }
 @media(prefers-reduced-motion:reduce){html body[data-kf-realm][data-kf-theme] :is(.kf-atlas-card,.foundry-card){transition:none!important}}
 @media(forced-colors:active){html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]) :is(.kf-atlas-card,.home-intro,[data-kf-art-hero]){border-color:CanvasText!important}}
-/* GOD command interface, styled independently of current live recipe. */
-body.theme-crew-page{background:#0b0d0c;color:#f4e5d0}
-.theme-crew-shell{max-width:1320px;margin:0 auto;padding:clamp(1rem,3vw,2.75rem)}
-.theme-crew-header{position:relative;isolation:isolate;overflow:hidden;min-height:260px;padding:clamp(1.5rem,4vw,3rem);display:flex;flex-direction:column;justify-content:flex-end;border:1px solid #c6984d;border-radius:24px;background:linear-gradient(95deg,#090b0cf8,#15120ec9 54%,#29171080),url('/assets/knightfall/black-sun-hero-illustration.webp') center/cover no-repeat;box-shadow:0 26px 70px #000b,0 0 42px #a35b2930}
-.theme-crew-header::after{content:"";pointer-events:none;position:absolute;inset:auto 7% 0;height:36px;background:url('/assets/knightfall/royal-cartouche.svg') center/contain no-repeat;opacity:.65}
-.theme-crew-header>div{position:relative;z-index:1}
-.theme-crew-header .eyebrow{color:#e9bd78;font-size:.76rem;letter-spacing:.2em;font-weight:900}
-.theme-crew-header h1{font:700 clamp(2.5rem,6vw,5rem)/1 Georgia,serif;letter-spacing:-.05em;margin:.45rem 0;color:#f4dfd0}
-.theme-crew-header p{max-width:65ch;color:#e1cbd6;line-height:1.65}
-.theme-crew-breadcrumb{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.25rem;font-size:.85rem}
-.theme-crew-breadcrumb a{color:#eac47f}
-.theme-crew-status{margin:1rem 0;padding:1rem;border:1px solid #b78e5780;border-radius:12px;background:#211810;color:#f0dfc4}
-.theme-crew-workspace[hidden],.theme-crew-denied[hidden]{display:none!important}
-.theme-crew-workspace{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,.95fr);gap:1.15rem;align-items:start}
-.theme-crew-panel{border:1px solid #b58a5585;border-radius:19px;padding:clamp(1rem,2.5vw,1.7rem);background:linear-gradient(140deg,#292018f5,#111615f4);box-shadow:0 16px 42px #0009,inset 0 1px #efc1ca27;min-width:0}
-.theme-crew-panel h2{font:700 clamp(1.4rem,3vw,2rem)/1.2 Georgia,serif;margin:0 0 .75rem;color:#f3dfcf}
-.theme-crew-panel p{color:#dfcdd3;line-height:1.55}
-.theme-crew-presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
-.theme-crew-choice{display:flex;flex-direction:column;text-align:left;gap:.45rem;min-height:160px;padding:.75rem;border:1px solid #b58c5988;border-radius:13px;background:linear-gradient(140deg,#271a14,#121916);color:#f1e1c9;cursor:pointer}
-.theme-crew-scene{display:block;width:100%;height:clamp(90px,11vw,142px);border:1px solid #a8784570;border-radius:9px;background-image:linear-gradient(180deg,#080b0b0a,#080b0b45),var(--kf-choice-art);background-position:center;background-size:cover;background-repeat:no-repeat;pointer-events:none}
-.theme-crew-live-label{color:#e7bd74!important;font-weight:800;letter-spacing:.09em}
-.theme-crew-selected{margin:.85rem 0 .25rem;padding:.55rem .8rem;border-left:3px solid #e3af60;background:#2b2018;color:#f1d8a4;font-weight:900}
-.theme-crew-hint{font-size:.85rem}
-.theme-crew-choice:focus-visible{outline:3px solid #f0c777;outline-offset:2px}
-.theme-crew-choice[data-current="true"]{outline:2px solid #dfc09c;outline-offset:2px}
-.theme-crew-choice[aria-pressed="true"]{border-color:#f2c977;box-shadow:0 0 24px #b67a3c50,inset 0 1px #eed5a03d}
-.theme-crew-choice strong{font:700 1.2rem Georgia,serif}.theme-crew-choice small{color:#ddc5d0}
-.theme-crew-choice .theme-crew-chip{width:28px;height:28px;border-radius:50%;background:var(--kf-choice-accent,#a77a97);border:2px solid #eed8c4;box-shadow:0 0 15px var(--kf-choice-accent,#a77a97)}
-.theme-crew-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin:1.2rem 0 .4rem}
-.theme-crew-actions button,.theme-crew-action{min-height:44px;border:1px solid #d7ac6b;border-radius:10px;padding:.7rem 1rem;background:linear-gradient(145deg,#684122,#342216);color:#fff1d5;font-weight:800;cursor:pointer}
-/* Action styling uses stable IDs, not a position that changes whenever a new control is inserted. */
-#theme-crew-preview,#theme-crew-copy-preview{background:#25352e}
-#theme-crew-rollback{background:#381d1a;border-color:#c6886b}
-.theme-crew-choice:disabled{opacity:.64;cursor:wait}
-.theme-crew-choice small{color:#e1cbb0}
-.theme-crew-bot{border-color:#aa824b80;background:linear-gradient(145deg,#251d17,#101918)}
-.theme-crew-bot small{color:#e6bc79}
-.theme-crew-plan label{color:#e4c68e}
-.theme-crew-plan textarea{background:#111713;border-color:#aa8458;color:#f1e4d0}
-.theme-crew-actions button:disabled{opacity:.45;cursor:not-allowed}
-.theme-crew-actions button:is(:hover,:focus-visible){filter:brightness(1.18)}
-.theme-crew-bot-grid{display:grid;gap:.7rem}
-.theme-crew-bot{border:1px solid #9d829180;border-radius:12px;padding:1rem;background:linear-gradient(145deg,#211b2b,#12151b)}
-.theme-crew-bot h3{margin:0;color:#eed6d2;font:700 1.2rem Georgia,serif}
-.theme-crew-bot small{color:#eab8cb;font-size:.78rem;letter-spacing:.05em}
-.theme-crew-bot p{font-size:.86rem;margin:.45rem 0}
-.theme-crew-bot a{color:#f4cba9}
-.theme-crew-history{padding-left:1.2rem;max-height:240px;overflow:auto;color:#e4d6de}
-.theme-crew-history li{padding:.45rem 0;border-bottom:1px solid #ac83933e}
-.theme-crew-plan{margin-top:1rem}
-.theme-crew-plan label{display:block;margin-bottom:.45rem;color:#e8c7cf;font-weight:700}
-.theme-crew-plan textarea{width:100%;min-height:88px;resize:vertical;border:1px solid #a88aa0;background:#12121b;border-radius:9px;padding:.7rem;color:white}
-.theme-crew-plan button{margin-top:.55rem}
-.theme-crew-alert{color:#f4c8b7}
-@media(max-width:900px){.theme-crew-workspace{grid-template-columns:1fr}.theme-crew-header{min-height:205px}}
-@media(max-width:560px){.theme-crew-presets{grid-template-columns:1fr}.theme-crew-choice{min-height:120px}.theme-crew-shell{padding:.75rem}}
