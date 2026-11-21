@@ -7,6 +7,7 @@ const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
 const runtime=read("public/theme-crew-runtime.js");
 const css=read("public/realm-theme-engine.css");
 const root=read("public/theme.css");
+const globalCss=read("public/global-design-controls.css");
 const deck=read("public/theme-crew.html");
 const ui=read("public/theme-crew-ui.js");
 
@@ -94,4 +95,56 @@ test("scope styling is independently owned, no canvas overrides or new important
  assert.doesNotMatch(css,/\bcanvas\s*\{/);
  assert.match(css,/:not\(\.profile-custom-theme\)/);
  assert.match(css,/:not\(\.kf-gameplay-page\)/);
+});
+
+test("global controls follow all realms without touching independent published presets",async()=>{
+ const pub={preset:"blood_moon",revision:9,realms:{
+  madhouse:{preset:"verdant_crypt",revision:2},
+  arcade:{preset:"iron_eclipse",revision:3},
+  chaosphere:{preset:"royal_abyss",revision:1},
+  admin:{preset:"cathedral",revision:4}
+ },globalControls:{density:"compact",corners:"square",typography:"large",effects:"subtle",revision:5}};
+ for(const [path,preset] of [
+  ["/community.html","verdant_crypt"],["/chaos-cartridge.html","iron_eclipse"],
+  ["/chaosphere.html","royal_abyss"],["/eye-of-chaos.html","cathedral"]
+ ]){
+  const b=browser(path,pub);
+  await b.window.KnightfallThemeCrew.refresh();
+  assert.equal(b.body.dataset.kfTheme,preset);
+  assert.equal(b.body.dataset.kfGlobalDensity,"compact");
+  assert.equal(b.body.dataset.kfGlobalCorners,"square");
+  assert.equal(b.body.dataset.kfGlobalTypography,"large");
+  assert.equal(b.body.dataset.kfGlobalEffects,"subtle");
+ }
+ const madhouse=browser("/community.html",pub);
+ await madhouse.window.KnightfallThemeCrew.refresh();
+ const before=madhouse.body.dataset.kfTheme;
+ const sample={density:"relaxed",corners:"rounded",typography:"extra_large",effects:"minimal"};
+ assert.equal(madhouse.window.KnightfallThemeCrew.previewGlobal(sample),true);
+ assert.equal(madhouse.body.dataset.kfGlobalDensity,"relaxed");
+ assert.equal(madhouse.body.dataset.kfTheme,before,"Shared preview cannot override the forum preset");
+ assert.equal(madhouse.window.KnightfallThemeCrew.currentGlobal().published.corners,"square");
+ assert.equal(madhouse.window.KnightfallThemeCrew.currentGlobal().preview,true);
+ assert.equal(madhouse.window.KnightfallThemeCrew.previewGlobal({...sample,css:"*{display:none}"}),false);
+ assert.equal(madhouse.window.KnightfallThemeCrew.previewGlobal({...sample,typography:"script"}),false);
+ assert.equal(madhouse.window.KnightfallThemeCrew.previewGlobal(null),true);
+ assert.equal(madhouse.body.dataset.kfGlobalCorners,"square");
+ assert.equal(madhouse.window.KnightfallThemeCrew.currentGlobal().preview,false);
+});
+test("shared chrome controls preserve gameplay, profile themes, and zero important battles",()=>{
+ assert.match(root,/global-design-controls\.css\?/);
+ assert.match(globalCss,/data-kf-global-density="compact"/);
+ assert.match(globalCss,/data-kf-global-corners="rounded"/);
+ assert.match(globalCss,/data-kf-global-typography="extra_large"/);
+ assert.match(globalCss,/data-kf-global-effects="minimal"/);
+ assert.match(globalCss,/:not\(\.profile-custom-theme\)/);
+ assert.match(globalCss,/:not\(\.kf-gameplay-page\)/);
+ assert.match(globalCss,/:not\(\.chaos-glitch-arcade\)/);
+ assert.doesNotMatch(globalCss,/!important\b/);
+ assert.doesNotMatch(globalCss,/\bcanvas\s*\{/);
+ for(const id of ["kf-global-density","kf-global-corners","kf-global-typography","kf-global-effects",
+  "theme-crew-global-publish","theme-crew-global-rollback"])
+  assert.ok(deck.includes('id="'+id+'"'),"Missing global control "+id);
+ assert.match(ui,/announceGlobalPublished/);
+ assert.match(ui,/\/global\/rollback/);
 });
