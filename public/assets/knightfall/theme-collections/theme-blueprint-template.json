@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "templateVersion": 1,
+  "instructions": "Clone this object, replace placeholders, add an original PNG scene plus the required eight SVG ornaments into the Foundry inventory, then run scripts/scaffold-knightfall-theme.mjs. The scaffold previews by default; --write adds the recipe only. Theme publishing remains GOD/Isis authorized.",
+  "preset": "your_original_theme",
+  "collection": "your-original-theme",
+  "name": "Your Original Theme",
+  "tag": "Metal / glow / stone",
+  "accent": "#d6ac78",
+  "glow": "#a84ce8",
+  "metal": "#b4a5c8",
+  "ink": "#0b0a11",
+  "surface": "#292039",
+  "depth": "#15111e",
+  "highlight": "#f5d7f3",
+  "heading": "The Realm You Will Build",
+  "description": "A short atmospheric description used beneath the homepage artwork.",
+  "hero": "your-original-hero.png",
+  "background": "your-original-hero.png",
+  "showcase": [
+    "your-original-hero.png"
+  ],
+  "artStyle": "Only artwork you own or have permission to use. Do not copy licensed characters.",
+  "legacyStandalone": false,
+  "requiredSvgRoles": [
+    "header",
+    "frame",
+    "divider",
+    "corner",
+    "emblem",
+    "panel",
+    "button",
+    "side-rail"
+  ],
+  "publication": "Stage and review before registering with the authorized Theme Forge API"
+}
