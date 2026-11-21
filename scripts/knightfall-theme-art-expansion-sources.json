@@ -1,0 +1,91 @@
+{
+  "id": "knightfall-new-theme-originals",
+  "version": "2026-11-20",
+  "notes": "Seven original cinematic environment images and original visual design references, for append-only import alongside the six earlier originals. These are not official franchise artworks or logos.",
+  "assets": [
+    {
+      "id": "egyptian-eclipse-temple-gateway",
+      "collection": "egyptian-eclipse",
+      "file": "egyptian-eclipse-temple-gateway.png",
+      "title": "Egyptian Eclipse / Temple Gateway",
+      "role": "hero",
+      "url": "https://gcdn.picsart.com/picsart-mcp/a4ab917c-7528-4484-919f-d772843a5191.png",
+      "bytes": 2851170,
+      "width": 1672,
+      "height": 941,
+      "sha256": "aa55cdf15e6992b5c55e09012183edb7fa454364de4fd710ea2b4065d5b60750"
+    },
+    {
+      "id": "dark-lord-crimson-eclipse-hall",
+      "collection": "dark-lord-ascendant",
+      "file": "dark-lord-crimson-eclipse-hall.png",
+      "title": "Dark Lord Ascendant / Crimson Eclipse Hall",
+      "role": "hero",
+      "url": "https://gcdn.picsart.com/picsart-mcp/d6a4d7d3-3c85-4344-bbfd-a86ffb4cd8ec.png",
+      "bytes": 2422981,
+      "width": 1774,
+      "height": 887,
+      "sha256": "289bcb057cc8faf2660eafc101da42e5e7a9e61db873cbc6140ac34eeb7f7928"
+    },
+    {
+      "id": "korriban-red-necropolis",
+      "collection": "korriban",
+      "file": "korriban-red-necropolis.png",
+      "title": "Korriban / Red Necropolis",
+      "role": "hero",
+      "url": "https://gcdn.picsart.com/picsart-mcp/ae725684-7d18-40e8-8233-b8af1d76e181.png",
+      "bytes": 2738583,
+      "width": 1672,
+      "height": 941,
+      "sha256": "15dc44c8532432df454567390239c682aa22b6b1569550ef9efe18f353d6e57a"
+    },
+    {
+      "id": "mustafar-obsidian-lava-citadel",
+      "collection": "mustafar",
+      "file": "mustafar-obsidian-lava-citadel.png",
+      "title": "Mustafar / Obsidian Lava Citadel",
+      "role": "hero",
+      "url": "https://gcdn.picsart.com/picsart-mcp/0d329fa9-81f2-424d-a1d4-7692b46cfb35.png",
+      "bytes": 2624423,
+      "width": 1672,
+      "height": 941,
+      "sha256": "d761116511626bbec13a753fe6addc5186a1daa2a94373842457c80a9fd3fa5d"
+    },
+    {
+      "id": "theme-forge-four-realm-concept",
+      "collection": "theme-selector",
+      "file": "theme-forge-four-realm-concept.png",
+      "title": "Theme Forge / Four Realms Design Concept",
+      "role": "concept",
+      "url": "https://gcdn.picsart.com/picsart-mcp/b7578129-d8d1-4c51-b455-0c9b33196c3b.png",
+      "bytes": 2532340,
+      "width": 1536,
+      "height": 1024,
+      "sha256": "8ff702b9e5f05fd5871ece156cec22840b4220e567ef23a983a8457e108d882d"
+    },
+    {
+      "id": "theme-art-ornaments-concept",
+      "collection": "theme-selector",
+      "file": "theme-art-ornaments-concept.png",
+      "title": "Theme Forge / Ornament Sheet Concept",
+      "role": "concept",
+      "url": "https://gcdn.picsart.com/picsart-mcp/247c8c97-09a8-4eb7-90b6-c903a6be0567.png",
+      "bytes": 2414746,
+      "width": 1536,
+      "height": 1024,
+      "sha256": "8eeab615fa8c6461456f79df926f63188df29da6be16ae5f6a82463c6ac0151c"
+    },
+    {
+      "id": "creator-foundry-collection-showcase",
+      "collection": "theme-selector",
+      "file": "creator-foundry-collection-showcase.png",
+      "title": "Creator Foundry / Four-Collection Showcase",
+      "role": "concept",
+      "url": "https://gcdn.picsart.com/picsart-mcp/5096f4a4-4f99-48dc-b124-a4b9e3c59a68.png",
+      "bytes": 2769892,
+      "width": 1672,
+      "height": 941,
+      "sha256": "1a1c767d5b3e9c20ee93bcfbaac98b0991d0d02f09c95c648fbfd3a03d042bea"
+    }
+  ]
+}
