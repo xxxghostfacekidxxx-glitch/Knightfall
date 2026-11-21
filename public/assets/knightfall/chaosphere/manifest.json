@@ -103,14 +103,30 @@
     }
   ],
   "mascot": {
-    "name": "Soot Riot",
+    "name": "Mayhem Munch",
     "asset": "/assets/knightfall/chaosphere/roaming-imp.svg",
     "features": [
       "roaming",
       "tap speech",
       "cackling",
       "direction changes",
-      "member mute and visibility preferences"
+      "member mute and visibility preferences",
+      "SVG wingbeat",
+      "blinking",
+      "walking bounce",
+      "reduced-motion support"
     ]
+  },
+  "catalog": {
+    "status": "foundation",
+    "freeThemes": [
+      "obsidian",
+      "hellfire",
+      "egypt",
+      "mustafar",
+      "korriban",
+      "vader"
+    ],
+    "futurePaidThemes": "not yet implemented; server-side entitlement checks and checkout required before sales"
   }
 }
