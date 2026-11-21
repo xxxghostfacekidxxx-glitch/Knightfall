@@ -22,7 +22,7 @@ html body[data-kf-realm][data-kf-theme="royal_abyss"]:not(.profile-custom-theme)
  --kf-crew-ink:#0e0b0e;--kf-crew-surface:#302224;--kf-crew-depth:#1a111b;
  --kf-crew-highlight:#f2d4a9;--kf-crew-shadow:#bb805d75;--kf-crew-accent:#946745;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
  background-image:linear-gradient(180deg,color-mix(in srgb,var(--kf-crew-ink) 93%,transparent),color-mix(in srgb,var(--kf-crew-ink) 88%,transparent) 53%,var(--kf-crew-ink)),
  radial-gradient(ellipse at 78% 6%,color-mix(in srgb,var(--kf-realm-glow) 40%,transparent),transparent 62%),
  var(--kf-vault-art,url('/assets/knightfall/vaulted-cathedral.svg'))!important;
@@ -30,42 +30,42 @@ html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([da
  background-size:cover,cover,cover!important;
  color:#efe4dd!important;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header{
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header{
  background:linear-gradient(100deg,var(--kf-crew-depth),#080a10d9 55%,var(--kf-crew-surface)),var(--kf-vault-art) center/cover!important;
  border-bottom:1px solid var(--kf-realm-metal)!important;
  box-shadow:0 12px 37px #000d,inset 0 -2px var(--kf-crew-shadow)!important;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is([data-kf-art-hero],.home-intro,.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section,.admin-panel,.chaos-panel,.foundry-card,.builder-panel,.moon-panel,.diary-card,.directory-group,.kf-atlas-card,.sanctuary-shell>section,.sanctuary-directory){
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is([data-kf-art-hero],.home-intro,.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section,.admin-panel,.chaos-panel,.foundry-card,.builder-panel,.moon-panel,.diary-card,.directory-group,.kf-atlas-card,.sanctuary-shell>section,.sanctuary-directory){
  border-color:color-mix(in srgb,var(--kf-realm-metal) 76%,transparent)!important;
  box-shadow:0 23px 65px #000b,0 0 26px var(--kf-crew-shadow),inset 0 1px color-mix(in srgb,var(--kf-realm-metal) 38%,transparent)!important;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section,.admin-panel,.chaos-panel,.foundry-card,.builder-panel,.moon-panel,.diary-card,.directory-group,.kf-atlas-card){
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section,.admin-panel,.chaos-panel,.foundry-card,.builder-panel,.moon-panel,.diary-card,.directory-group,.kf-atlas-card){
  background-color:var(--kf-crew-depth)!important;
  background-image:linear-gradient(145deg,var(--kf-crew-surface),var(--kf-crew-depth) 64%,var(--kf-crew-ink)),var(--kf-vault-art)!important;
  background-position:center,center!important;background-size:cover,cover!important;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(h1,h2,h3){
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(h1,h2,h3){
  text-shadow:0 3px 19px #000e,0 0 19px var(--kf-crew-shadow)!important;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-start-eyebrow,.kf-atlas-eyebrow,.chaos-eyebrow,.eyebrow,.arcade-kicker){
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-start-eyebrow,.kf-atlas-eyebrow,.chaos-eyebrow,.eyebrow,.arcade-kicker){
  color:var(--kf-crew-highlight)!important;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.home-sign-in,.home-explore-link,.kf-atlas-copy a,.button-primary,.primary-button,.foundry-link-main){
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.home-sign-in,.home-explore-link,.kf-atlas-copy a,.button-primary,.primary-button,.foundry-link-main){
  background:linear-gradient(145deg,var(--kf-crew-accent),var(--kf-crew-depth))!important;
  border-color:var(--kf-realm-metal)!important;color:#fef2e5!important;
  box-shadow:0 10px 26px #0009,0 0 14px var(--kf-crew-shadow)!important;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .home-intro{
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .home-intro{
  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),
  linear-gradient(90deg,var(--kf-crew-ink),color-mix(in srgb,var(--kf-crew-surface) 81%,transparent) 52%,transparent 95%),
  url('/assets/knightfall/obsidian-cathedral.svg')!important;
  background-size:100% 100%,cover,cover!important;
  background-position:center,center,center!important;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) [data-kf-art-hero]{
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) [data-kf-art-hero]{
  border-color:var(--kf-realm-metal)!important;
 }
-html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .kf-realm-atlas::before{
+html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .kf-realm-atlas::before{
  opacity:.42;filter:drop-shadow(0 0 35px var(--kf-crew-shadow)) hue-rotate(var(--kf-crew-hue,0deg));
 }
 html body[data-kf-theme="verdant_crypt"]{--kf-crew-hue:135deg}
@@ -73,9 +73,9 @@ html body[data-kf-theme="iron_eclipse"]{--kf-crew-hue:75deg}
 html body[data-kf-theme="royal_abyss"]{--kf-crew-hue:24deg}
 html body[data-kf-theme="blood_moon"]{--kf-crew-hue:320deg}
 @media(max-width:700px){
- html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not(.profile-custom-theme):not(.kf-gameplay-page) :is(.kf-atlas-card,.home-intro,[data-kf-art-hero]){
+ html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]):not(.profile-custom-theme):not(.kf-gameplay-page) :is(.kf-atlas-card,.home-intro,[data-kf-art-hero]){
   box-shadow:0 12px 38px #000b,0 0 14px var(--kf-crew-shadow)!important;
  }
 }
 @media(prefers-reduced-motion:reduce){html body[data-kf-realm][data-kf-theme] :is(.kf-atlas-card,.foundry-card){transition:none!important}}
-@media(forced-colors:active){html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]) :is(.kf-atlas-card,.home-intro,[data-kf-art-hero]){border-color:CanvasText!important}}
+@media(forced-colors:active){html body[data-kf-realm][data-kf-theme]:not([data-kf-theme="cathedral"]):not([data-kf-theme="egyptian_eclipse"]):not([data-kf-theme="dark_lord_ascendant"]):not([data-kf-theme="korriban_necropolis"]):not([data-kf-theme="mustafar_forge"]) :is(.kf-atlas-card,.home-intro,[data-kf-art-hero]){border-color:CanvasText!important}}
