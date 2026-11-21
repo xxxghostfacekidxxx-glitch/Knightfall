@@ -46,6 +46,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Validate KV-free rate-limit regression tests before deployment
+        run: |
+          node --check backend/src/index.js
+          node --test backend/src/database-rate-limit.test.mjs
+
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
 
