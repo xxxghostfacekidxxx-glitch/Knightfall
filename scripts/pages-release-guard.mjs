@@ -9,6 +9,7 @@ const jobs=[
  ["Original Textract OCR syntax",["--check","public/chaos-textract-native-ocr.mjs"]],
  ["Textract lab syntax",["--check","public/chaos-textract.mjs"]],
  ["Global CSS integrity",["scripts/theme-crew-audit.mjs"]],
+ ["CSS ownership, duplicate imports and legacy debt budget",["--test","scripts/theme-style-ownership.test.mjs"]],
  ["Canonical theme asset URLs and single loader",["--test","scripts/theme-asset-url-integrity.test.mjs"]],
  ["Black Sun navigation and theme regression checks",["--test","scripts/black-sun-cleanup.test.mjs"]],
  ["Theme Forge artwork and rapid preset switching",["--test","scripts/theme-forge-fast-switch.test.mjs"]],
