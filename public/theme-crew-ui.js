@@ -7,7 +7,7 @@ const workspace=$("theme-crew-workspace");
 const denied=$("theme-crew-denied");
 let current=null,presets={},selected="cathedral",busy=false,initialized=false,canPublish=false;
 let scope="site",states={},realmMeta={},allHistory=[],realmApiReady=false;
-let globalCurrent=null,globalApiReady=false,globalInitialized=false;
+let globalCurrent=null,globalApiReady=false,globalInitialized=false,globalDirty=false;
 const GLOBAL_FIELDS=Object.freeze(["density","corners","typography","effects"]);
 const GLOBAL_CHOICES=Object.freeze({
  density:["balanced","compact","relaxed"],
@@ -130,7 +130,7 @@ async function load(){
   GLOBAL_FIELDS.every(key=>Array.isArray(data.globalOptions[key])&&
    GLOBAL_CHOICES[key].every(value=>data.globalOptions[key].includes(value))));
  globalCurrent=globalApiReady?data.globalControls:null;
- if(globalApiReady&&!globalInitialized){assignGlobal(globalCurrent);globalInitialized=true}
+ if(globalApiReady&&(!globalInitialized||!globalDirty)){assignGlobal(globalCurrent);globalInitialized=true}
  paintGlobal();
  canPublish=data.permissions?.can_publish===true;
  for(const id of ["theme-crew-publish","theme-crew-rollback","theme-crew-global-publish","theme-crew-global-rollback"])$(id).hidden=!canPublish;
@@ -153,7 +153,7 @@ async function publishGlobal(undo=false){
  try{
   const result=await req(undo?"/global/rollback":"/global","POST",
    undo?{expectedRevision:globalCurrent.revision}:{controls:target,expectedRevision:globalCurrent.revision});
-  globalCurrent=result.current;published=true;assignGlobal(globalCurrent);
+  globalCurrent=result.current;published=true;globalDirty=false;assignGlobal(globalCurrent);
   window.KnightfallThemeCrew?.previewGlobal?.(null);
   window.KnightfallThemeCrew?.announceGlobalPublished?.(globalCurrent.revision);
   try{await load()}catch(error){announceGlobal("Global settings saved, but status refresh failed: "+error.message)}
@@ -163,6 +163,9 @@ async function publishGlobal(undo=false){
   announceGlobal(published?"Saved globally but confirmation was interrupted. Refresh to verify.":"Global settings NOT published: "+error.message);
  }finally{lock(false)}
 }
+for(const key of GLOBAL_FIELDS)$("kf-global-"+key).addEventListener("change",()=>{
+ globalDirty=true;announceGlobal("Unpublished shared-chrome changes. Preview them or publish after review.");
+});
 $("theme-crew-global-preview").addEventListener("click",()=>{
  const values=readGlobal();
  if(!validGlobal(values)||window.KnightfallThemeCrew?.previewGlobal?.(values)!==true){
@@ -173,6 +176,7 @@ $("theme-crew-global-preview").addEventListener("click",()=>{
 $("theme-crew-global-clear").addEventListener("click",()=>{
  window.KnightfallThemeCrew?.previewGlobal?.(null);
  if(globalCurrent)assignGlobal(globalCurrent);
+ globalDirty=false;
  announceGlobal("Global preview cleared. Showing the published shared appearance.");
 });
 $("theme-crew-global-publish").addEventListener("click",()=>publishGlobal(false));
