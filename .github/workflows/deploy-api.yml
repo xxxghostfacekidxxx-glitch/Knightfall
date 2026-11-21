@@ -50,6 +50,7 @@ jobs:
         run: |
           node --check backend/src/index.js
           node --test backend/src/database-rate-limit.test.mjs
+          node --test backend/src/quota-guardian.test.mjs
 
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
