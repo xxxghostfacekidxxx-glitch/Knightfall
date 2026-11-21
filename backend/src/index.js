@@ -1,3 +1,4 @@
+import { databaseRateLimit } from "./database-rate-limit.js";
 import { beginEmailSignup, canSendVerification, expiredEmailSignups, finishEmailSignup, verificationDigest } from "./email-signup.js";
 import { deliverPasswordResetEmail, resetEmailConfigured } from "./password-reset-email.js";
 import { authDestination } from "../../public/auth-destination.mjs";
@@ -98,11 +99,14 @@ async function rateLimit(env, request, bucket, limit, windowSeconds, subject = n
       const outcome = await env.MESSAGE_RATE_LIMITER.limit({key:"member:"+String(subject)});
       return outcome.success === true;
     } catch {
-      // Retain existing protection if the platform limiter is temporarily unavailable.
       console.warn("native_message_rate_limit_fallback");
     }
   }
-  const identity=subject!==null&&subject!==undefined ? "user:"+String(subject) : "ip:"+(request.headers.get("CF-Connecting-IP") || "unknown"); const key="rate:"+bucket+":"+identity; const now=Date.now(); const current=await env.SESSIONS.get(key,"json"); if(!current || current.reset_at<=now){await env.SESSIONS.put(key,JSON.stringify({count:1,reset_at:now+windowSeconds*1000}),{expirationTtl:windowSeconds});return true;} if(current.count>=limit)return false; await env.SESSIONS.put(key,JSON.stringify({count:current.count+1,reset_at:current.reset_at}),{expirationTtl:Math.max(1,Math.ceil((current.reset_at-now)/1000))}); return true; }
+  const identity = subject !== null && subject !== undefined
+    ? "user:" + String(subject)
+    : "ip:" + (request.headers.get("CF-Connecting-IP") || "unknown");
+  return databaseRateLimit(env.DB, "rate:" + bucket + ":" + identity, limit, windowSeconds);
+}
 function getCookie(request, name) { const cookies = request.headers.get("Cookie") || ""; for (const part of cookies.split(";")) { const [key, ...value] = part.trim().split("="); if (key === name) return value.join("="); } return null; }
 function sessionCookie(token, maxAge = SESSION_TTL_SECONDS) { return `${SESSION_COOKIE}=${token}; Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Lax`; }
 async function createSession(userId, env) { const token = randomToken(32); await env.SESSIONS.put(`session:${token}`, JSON.stringify({ user_id: userId, expires_at: Date.now() + SESSION_TTL_SECONDS * 1000 }), { expirationTtl: SESSION_TTL_SECONDS }); return token; }
