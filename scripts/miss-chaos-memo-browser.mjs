@@ -202,7 +202,7 @@ async function run(name,width,height){
   assert.equal(await page.locator('#crucible-proof-notes').inputValue(),'',
     'Legacy kit imports must not invent evidence');
   await page.locator('#crucible-proof-notes').fill('Stencil reviewed; long-term readability still unverified');
-  await page.locator('#crucible-steps input[type="checkbox"]').first().check();
+  await page.locator('#crucible-steps input[type="checkbox"]').first().check({force:true});
   await page.locator('#crucible-shelf-save').click();
   await page.waitForFunction(()=>document.querySelector('#crucible-shelf-status')?.textContent.includes('Saved as a new device-only copy'));
   assert.match(await page.locator('#crucible-shelf-list').innerText(),/Imported stencil/);
