@@ -12,6 +12,23 @@ Updated 2026-11-20.
 
 Never make theme changes by editing generated HTML or pasting arbitrary CSS into member profiles. The backend has no arbitrary CSS publishing endpoint. The internal preset key `cathedral` remains the stable compatibility alias for **Black Sun Temple** until a data migration is designed and tested.
 
+## Global Design Controls (sitewide shared elements)
+
+The **Global Design Controls** panel appears above independent realm presets. It changes the shared interface *in every realm*, not each realm's chosen colors, identity or artwork. Its currently allowlisted options are:
+
+| Global control | Approved choices | Intended ownership |
+| --- | --- | --- |
+| Interface spacing | Balanced, Compact, Relaxed | Shared header and navigation spacing |
+| Corners | Soft, Angular, Rounded | Shared menus, UI panels and staff controls |
+| Shared UI text | Standard, Large, Extra large | Shared navigation labels and staff controls |
+| Shared atmosphere | Ceremonial, Subtle, Minimal | Shared panel and chrome shadows |
+
+The controls are stored independently under D1 `site_settings.theme_crew_global_controls`, with their own revision and previous values. The public `GET /api/theme` provides the reviewed `globalControls` map alongside the existing realm presets. The staff `GET /api/god/theme/status` exposes published control state, approved choices, and previous settings for rollback. Authorized staff publish with `POST /api/god/theme/global` using `{controls,expectedRevision}`, or rollback with `POST /api/god/theme/global/rollback` using `{expectedRevision}`. The same Origin, GOD/delegated admin role, CSRF-origin and compare-and-swap guards apply. Writes are audited.
+
+**Preview** changes only the current browser tab's approved chrome values, using a separate sessionStorage key. Neither preview nor global publication changes realm-specific presets; users retain their custom profile palettes and hosted game rendering stays out of scope. Reduced-motion OS preferences remain authoritative. Unknown values, extra CSS properties, or stale revisions are rejected. When the Worker has not yet deployed this contract, the UI disables global publication instead of silently sending an unsupported write.
+
+This adds a bounded new global design layer, not a license to keep adding forced global overrides. The older legacy CSS remains to be migrated. New shared components should consume the four `--kf-global-*` tokens from `public/global-design-controls.css` and guard their selectors from user content/gameplay.
+
 ## Architecture and ownership
 
 | Responsibility | Owner |
@@ -19,6 +36,7 @@ Never make theme changes by editing generated HTML or pasting arbitrary CSS into
 | Independent realm theme state, role checks, revision guard, audit log | `backend/src/theme-crew.js`, D1 `site_settings` |
 | Live preview and same-device publish broadcast | `public/theme-crew-runtime.js` |
 | Staff Theme Forge UI | `public/theme-crew.html`, `public/theme-crew-ui.js` |
+| Global shared chrome controls | `backend/src/theme-crew.js`, `public/global-design-controls.css`, `public/theme-crew-ui.js` |
 | Preset color and shared presentation recipes | `public/theme-crew.css` |
 | Realm-specific chrome tokens and staff selector | `public/realm-theme-engine.css`, `public/theme-crew.html`, `public/theme-crew-ui.js` |
 | Approved Egyptian Black Sun art and homepage visual | `public/assets/knightfall/black-sun-hero-illustration.webp`, `public/index.html`, `public/knightfall-requiem.css` |
