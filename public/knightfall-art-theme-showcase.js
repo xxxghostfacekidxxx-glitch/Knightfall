@@ -8,6 +8,7 @@ if(!root)return;
 const title=document.getElementById("kf-theme-art-heading");
 const intro=document.getElementById("kf-theme-art-description");
 const gallery=document.getElementById("kf-theme-art-showcase-grid");
+const links=document.getElementById("kf-theme-art-showcase-links");
 if(!title||!intro||!gallery)return;
 const source="/assets/knightfall/theme-collections/theme-recipes.json";
 let catalog=null,loading=null,rendered=null;
@@ -55,7 +56,15 @@ function draw(kit){
   description.textContent=index===0?"Main original environment illustration for this realm.":"Saved first-party environment or concept art.";
   item.append(picture,heading,description);fragment.append(item);
  }
- gallery.replaceChildren(fragment);rendered=kit.preset;
+ gallery.replaceChildren(fragment);
+ if(links){
+  const a=document.createElement("a");a.href="/devil-tools.html#theme-art-collection";
+  a.textContent="Explore original art in Creator's Foundry";
+  const b=document.createElement("a");b.href="/celestial-sanctum.html";
+  b.textContent="Visit the Celestial Sanctum";
+  links.replaceChildren(a,b);
+ }
+ rendered=kit.preset;
 }
 async function sync(){
  const preset=document.body?.dataset.kfTheme;
