@@ -15,6 +15,8 @@
 @import url("/realm-theme-engine.css?v=20261120-realms1");
 @import url("/global-design-controls.css?v=20261120-global-design2");
 @import url("/egyptian-eclipse-theme.css?v=20261121-complete1");
+@import url("/knightfall-art-theme-variables.css?v=20261121-kit1");
+@import url("/knightfall-art-theme-template.css?v=20261121-kit1");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
