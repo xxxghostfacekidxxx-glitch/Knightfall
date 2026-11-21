@@ -2360,7 +2360,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
     const message=String(body?.message??"").trim();
     if(message.length>240)return json({error:"Ticker line must be 240 characters or fewer."},400,origin);
-    await env.DB.prepare("INSERT INTO site_settings (key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind(key,message).run();
+    await env.DB.prepare("INSERT INTO site_settings (key,value,updated_by,updated_at) VALUES (?,?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_by=excluded.updated_by,updated_at=excluded.updated_at").bind(key,message,user.id,new Date().toISOString()).run();
     return json({ok:true,key,message},200,origin);
   }
   if(url.pathname==="/api/site-settings"&&request.method==="GET"){const keys=["site_name","maintenance_mode","registration_enabled","forum_enabled","announcements_enabled","announcement_title","announcement_body","ticker_osiris","ticker_isis","feature_miss_chaos","feature_profiles"],settings={};for(const key of keys)settings[key]=await getSetting(env,key);return json({settings},200,origin);}
