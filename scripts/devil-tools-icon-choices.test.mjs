@@ -37,7 +37,7 @@ test("eight original vector icon options are complete and available",async()=>{
  }
 });
 test("mobile message controls use realm palette and avoid mascot overlay",async()=>{
- const css=(await archivedRead("knightfall-section-foundations.css"))+"\n"+(await archivedRead("knightfall-unified-theme.css"));
+ const css=(await archivedRead("knightfall-section-foundations.css"))+"\n"+(await archivedRead("knightfall-gothic-chrome.css"))+"\n"+(await archivedRead("knightfall-illustrated-realms.css"))+"\n"+(await archivedRead("knightfall-unified-theme.css"));
  assert.match(css,/\.messages-shell \.composer textarea\{background:var\(--kf-msg-base\)!important/);
  assert.match(css,/body:has\(\.messages-shell\) \.gw-character-crew\{display:none!important\}/);
  assert.match(css,/\.messages-shell \.composer-actions\{justify-content:flex-end\}/);
