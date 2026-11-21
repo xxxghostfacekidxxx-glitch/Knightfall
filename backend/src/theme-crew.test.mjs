@@ -33,14 +33,17 @@ function fixture(user={id:1,role:"god"},delegated=false){
  }
  return {call,read:()=>saved.get("theme_crew_current")??null,readRealm:realm=>saved.get("theme_crew_realm_"+realm)??null,logs:logged};
 }
-test("Theme Crew has six reviewed presets and four real worker roles",()=>{
- assert.equal(Object.keys(THEME_CREW_PRESETS).length,6);
+test("Theme Crew has nine reviewed presets and four real worker roles",()=>{
+ assert.equal(Object.keys(THEME_CREW_PRESETS).length,9);
  assert.equal(THEME_CREW_BOTS.length,4);
  assert.equal(themePlan("poison emerald forest").preset,"verdant_crypt");
  assert.equal(themePlan("old blood red vampire").preset,"blood_moon");
  assert.equal(themePlan("gold black royal").preset,"royal_abyss");
  assert.equal(themePlan("Ancient Egypt with Anubis, gold and scarabs").preset,"egyptian_eclipse");
  assert.equal(themePlan("Black Sun Temple classic").preset,"cathedral");
+ assert.equal(themePlan("dark lord crimson citadel").preset,"dark_lord_ascendant");
+ assert.equal(themePlan("ancient Korriban tomb city").preset,"korriban_necropolis");
+ assert.equal(themePlan("Mustafar volcanic fortress").preset,"mustafar_forge");
  assert.equal(themePlan("industrial moonsteel").preset,"iron_eclipse");
  assert.equal(themePlan("a classic cathedral").preset,"cathedral");
  assert.equal(themePlan("x".repeat(201)),null);
