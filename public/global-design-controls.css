@@ -79,3 +79,25 @@ html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data
   transition-duration:0.01ms;
  }
 }
+
+/* Theme Forge editor layout, kept independent from realm art and styles. */
+.theme-crew-global-controls{
+ margin:0 0 2rem;
+ padding:clamp(1rem,2.5vw,1.5rem);
+ border:1px solid color-mix(in srgb,var(--kf-realm-metal,#d2a96c) 48%,transparent);
+ border-radius:var(--kf-global-panel-corner,18px);
+ background:linear-gradient(145deg,#181515,#111417);
+}
+.theme-crew-global-controls .eyebrow{letter-spacing:.13em;color:var(--kf-realm-metal,#e5ba74)}
+.theme-crew-global-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;margin:1rem 0}
+.theme-crew-global-grid label{display:grid;gap:.4rem;font-weight:700}
+.theme-crew-global-grid select{
+ width:100%;min-width:0;min-height:46px;padding:.6rem .75rem;
+ color:#fff2df;background:#101317;border:1px solid #ab8e6a;
+ border-radius:var(--kf-global-corner,12px);font:inherit;
+}
+.theme-crew-global-grid select:focus-visible{outline:3px solid #f5c87f;outline-offset:2px}
+.theme-crew-global-controls .theme-crew-actions{display:flex;flex-wrap:wrap;gap:.55rem}
+.theme-crew-global-controls button{min-height:44px}
+@media(max-width:620px){.theme-crew-global-grid{grid-template-columns:1fr}}
+@media(forced-colors:active){.theme-crew-global-controls,.theme-crew-global-grid select{border-color:CanvasText}}
