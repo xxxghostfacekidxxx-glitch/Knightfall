@@ -72,3 +72,14 @@ test("new features stay locked when storage migration is absent",()=>{
  assert.ok(html.includes('href="/theme-crew.html" class="chaos-quiet"'));
  assert.match(js,/state\.canApprove=data\.permissions\?\.can_approve===true/);
 });
+
+test("Quota Guardian provides GOD-only official Cloudflare analytics access without exposing tokens",()=>{
+ assert.match(html,/data-panel="quota" hidden data-chaos-god-only/);
+ assert.match(html,/Cloudflare account overview/);
+ assert.match(html,/Workers &amp; Pages/);
+ assert.match(html,/Analytics &amp; Logs/);
+ assert.match(html,/Storage &amp; databases/);
+ assert.match(js,/loadQuotaGuardian/);
+ assert.match(js,/provider_usage_note/);
+ assert.doesNotMatch(html,/api[_-]?token/i);
+});
