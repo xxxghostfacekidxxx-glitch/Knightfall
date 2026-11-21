@@ -71,16 +71,20 @@ const publicManifest={
  usage:"Reusable Creator Foundry artwork. Concept images are reference art, not functional interfaces or proof of installed themes.",
  assets:report
 };
+// The six immutable 2026-11-20 originals must remain byte-for-byte identical.
+// New theme collections are append-only and MUST NOT make the old backup fail.
+const verifyOriginals=committed=>
+ committed?.id===publicManifest.id&&Array.isArray(committed.assets)&&
+ committed.assets.length>=report.length&&
+ report.every((item,i)=>JSON.stringify(committed.assets[i])===JSON.stringify(item));
 if(mode==="import"){
  mkdirSync(base,{recursive:true});
- const text=JSON.stringify(publicManifest,null,2)+"\n";
- if(existsSync(manifestPath)&&readFileSync(manifestPath,"utf8")!==text)
-  throw Error("Existing public manifest differs: review before replacing");
- if(!existsSync(manifestPath))writeFileSync(manifestPath,text,{flag:"wx"});
+ if(!existsSync(manifestPath))writeFileSync(manifestPath,JSON.stringify(publicManifest,null,2)+"\n",{flag:"wx"});
+ else if(!verifyOriginals(JSON.parse(readFileSync(manifestPath,"utf8"))))
+  throw Error("Original six assets changed or were reordered: explicit review required");
 }else{
  if(!existsSync(manifestPath))throw Error("First-party theme artwork manifest missing");
- const committed=JSON.parse(readFileSync(manifestPath,"utf8"));
- if(JSON.stringify(committed)!==JSON.stringify(publicManifest))
-  throw Error("Theme artwork manifest does not match actual original images");
+ if(!verifyOriginals(JSON.parse(readFileSync(manifestPath,"utf8"))))
+  throw Error("Original six assets changed or were reordered: integrity failure");
 }
 console.log("KNIGHTFALL THEME ART "+mode.toUpperCase()+" PASS: "+report.length+" originals, "+report.reduce((n,a)=>n+a.bytes,0)+" verified bytes.");
