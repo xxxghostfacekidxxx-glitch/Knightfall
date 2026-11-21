@@ -21,6 +21,10 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew-dashboard.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+/realm-theme-engine.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/global-design-controls.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew-runtime.js
   Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew-ui.js
