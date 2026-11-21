@@ -35,8 +35,8 @@ const safeRealm=value=>REALMS.has(value)?value:null;
 const routeRealm=()=>{
  const p=path.replace(/\.html$/,"");
  if(/^\/(?:community|homepage|thread|create-thread|forums|madhouse)(?:-|\/|$)/.test(p))return "madhouse";
- if(/^\/(?:chaos-cartridge|chaos-lab|arcade|arcade-vault)(?:-|\/|$)/.test(p))return "arcade";
- if(/^\/(?:chaosphere|ruinwire|messages|social|friends|notifications)(?:-|\/|$)/.test(p))return "chaosphere";
+ if(/^\/(?:chaos-cartridge|chaos-lab|arcade|arcade-vault|casino|card-room)(?:-|\/|$)/.test(p))return "arcade";
+ if(/^\/(?:chaosphere|ruinwire|messages|social|friends|notifications|miss-chaos)(?:-|\/|$)/.test(p))return "chaosphere";
  if(/^\/(?:admin|eye-of-chaos|eye-of-horus|god|moderation|theme-crew)(?:-|\/|$)/.test(p))return "admin";
  return "site";
 };
