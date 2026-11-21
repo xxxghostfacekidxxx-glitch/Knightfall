@@ -103,7 +103,8 @@ test('canonical and hyphenated URLs execute the right realm styling',()=>{
   ['/chaos-cartridge','arcade'],['/arcade-progress','arcade'],['/casino','arcade'],['/card-room','arcade'],
   ['/devil-tools','foundry'],['/personal-bots','foundry'],['/bots','foundry'],['/creator-studio','foundry'],
   ['/messages','messages'],['/ruinwire','messages'],['/miss-chaos','messages'],['/chaosphere','messages'],['/notifications','messages'],['/miss-chaos','messages'],
-  ['/moonology','moon'],['/shadow-work','moon'],
+  ['/moonology','moon'],['/shadow-work','moon'],['/celestial-sanctum','moon'],
+  ['/music','music'],['/chatbots','foundry'],
   ['/shops','market'],['/shop-builder','market'],['/my-shop','market'],
   ['/members','members'],['/auth','members'],['/profile','members'],
   ['/admin','god'],['/admin.html','god'],['/admin-offline','god'],['/eye-of-horus','god'],['/god-bot-control','god'],
@@ -111,7 +112,7 @@ test('canonical and hyphenated URLs execute the right realm styling',()=>{
   ['/die-ary','diary'],['/memo-pad','diary']
  ];
  const run=(path,hasCanvas=false)=>{
-  const hero={dataset:{}},classes=new Set();
+  const hero={dataset:{}},classes=new Set(/^\/(?:celestial-sanctum|music|chatbots)(?:\.html)?$/.test(path)?['kf-hub-page']:[]);
   const main={dataset:{},contains:node=>node===hero,querySelector:()=>hasCanvas?{}:null};
   const body={dataset:{},classList:{add:value=>classes.add(value),contains:value=>classes.has(value)}};
   const document={body,querySelector:selector=>selector==='main'?main:hero};
@@ -121,7 +122,8 @@ test('canonical and hyphenated URLs execute the right realm styling',()=>{
  for(const [path,realm] of cases){
   const {body,hero}=run(path);
   assert.equal(body.dataset.kfRealm,realm,path+' must map to '+realm);
-  if(realm!=='home')assert.equal(hero.dataset.kfArtHero,realm,path+' must mount hero');
+  if(realm!=='home'&&!body.classList.contains('kf-hub-page'))assert.equal(hero.dataset.kfArtHero,realm,path+' must mount hero');
+  if(body.classList.contains('kf-hub-page'))assert.equal(hero.dataset.kfArtHero,undefined,path+' keeps its own hero artwork');
  }
  const hosted=run('/arcade/hosted/asteroids/');
  assert.equal(hosted.body.dataset.kfRealm,undefined,'hosted games are excluded');
