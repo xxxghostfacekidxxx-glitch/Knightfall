@@ -10,7 +10,7 @@ const extras=source("chaosphere-extras.js");
 const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean).pop();
 
 test("Chaosphere's polished surface is scoped, accessible and retains existing security paths",()=>{
- assert.match(html,/href="\/chaosphere-polish\.css\?v=20261120-messenger1"/);
+ assert.match(html,/href="\/chaosphere-polish\.css\?v=20261120-realm2"/);
  assert.match(html,/src="\/chaosphere-extras\.js\?v=20261120-messenger1"/);
  assert.match(html,/data-quote-message="'\+m\.id\+'"/);
  assert.match(html,/id="cs-emoji-toggle"[^>]+aria-expanded="false"/);
@@ -41,6 +41,18 @@ test("New appearance preserves existing layout and member theme constraints",()=
  assert.match(old,/\.chat-panel>#messages\{grid-row:5/);
  assert.match(old,/--messages-chat-top/);
 });
+test("Chaosphere chrome follows realm and global tokens instead of obsolete fixed paint",()=>{
+ for(const token of [
+  "--cs-wine:var(--kf-realm-glow",
+  "--cs-gold:var(--kf-realm-metal",
+  "--cs-shadow:var(--kf-global-ambient-shadow",
+  "background:var(--kf-msg-base",
+  "background:var(--cs-glass)"
+ ])assert.ok(css.includes(token),"Missing inherited design token: "+token);
+ assert.ok(!css.includes("background:#11151c!important"),"Old composer field override returned");
+ assert.ok(!css.includes("background:#14181f!important"),"Old fixed chat panel returned");
+});
+
 test("Quote and emoji actions update the existing draft without sending or storing private text",()=>{
  const controls=new Map(),listeners=new Map();
  const elem=(name,props={})=>({
