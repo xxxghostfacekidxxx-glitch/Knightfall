@@ -140,12 +140,7 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .messages-shell 
  border-color:#b7a080!important;background:linear-gradient(105deg,#342430,#201f26)!important;
  box-shadow:inset 3px 0 var(--kf-oxblood)!important
 }
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .messages-shell .composer{
- border-top-color:#8e7372!important;background:linear-gradient(180deg,#211d25,#14171c)!important
-}
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .messages-shell .composer textarea{
- color:var(--kf-bone)!important;background:#16181e!important;border-color:#806d72!important
-}
+/* Chaosphere composer paint is now owned by knightfall-section-foundations.css. */
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-shelf .cartridge-number{color:var(--kf-antique-gold)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-cabinet{border-top:1px solid #a18876!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .directory-group li+li{border-color:rgba(199,167,124,.18)}
