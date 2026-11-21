@@ -52,3 +52,16 @@
 .messages-shell[data-cs-theme] .chat-panel{background:var(--cs-back)!important}
 .messages-shell[data-cs-theme] .cs-imp-voice{border-color:var(--cs-glow)}
 @media(max-width:700px){.messages-shell .cs-settings-content{align-items:stretch;flex-direction:column}.messages-shell .cs-settings-content>div:first-child{flex:auto}}
+
+/* Theme ornaments share the same asset contract, not six separate stylesheets. */
+.messages-shell[data-cs-theme="obsidian"]{--cs-panel-art:url("/assets/knightfall/chaosphere/obsidian-panel.svg")}
+.messages-shell[data-cs-theme="hellfire"]{--cs-panel-art:url("/assets/knightfall/chaosphere/hellfire-panel.svg")}
+.messages-shell[data-cs-theme="egypt"]{--cs-panel-art:url("/assets/knightfall/chaosphere/egypt-panel.svg")}
+.messages-shell[data-cs-theme="mustafar"]{--cs-panel-art:url("/assets/knightfall/chaosphere/mustafar-panel.svg")}
+.messages-shell[data-cs-theme="korriban"]{--cs-panel-art:url("/assets/knightfall/chaosphere/korriban-panel.svg")}
+.messages-shell[data-cs-theme="vader"]{--cs-panel-art:url("/assets/knightfall/chaosphere/vader-panel.svg")}
+.messages-shell[data-cs-theme] .chat-head,.messages-shell[data-cs-theme] .panel-title,.messages-shell[data-cs-theme] .cs-settings>summary{background-image:var(--cs-panel-art)!important;background-position:top center!important;background-size:100% 100%!important;background-repeat:no-repeat!important}
+.cs-roaming-imp[data-mood="cackling"] img{animation:cs-imp-cackle .34s ease-in-out 3}
+.cs-roaming-imp[data-mood="turning"] img{filter:drop-shadow(0 0 16px #ff9e44)}
+@keyframes cs-imp-cackle{25%{transform:rotate(-12deg) scale(1.06)}75%{transform:rotate(12deg) scale(.98)}}
+@media(prefers-reduced-motion:reduce){.cs-roaming-imp[data-mood] img{animation:none}}
