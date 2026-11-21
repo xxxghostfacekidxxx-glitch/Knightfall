@@ -10,6 +10,19 @@ const captions=Object.freeze({
  failed:["THE WORDS FELL DOWN.","I BROKE THE PIGEON.","ERROR: DEMON PANICKING!"],
  invite:["SUMMON THE GREMLINS!","PARTY TIME! WHERE'S THE FIRE?","FRIENDS! MINIONS! ACQUAINTANCES!"]
 });
+const spiceLevels=Object.freeze(["Sweet","Sassy","Spicy","Unhinged"]);
+const spicyCaptions=Object.freeze({
+ wake:["Who woke me up? I was committing crimes against boredom.","Well, shit. The tiny demon is on duty.","THE CHAOS HAS CLOCKED IN, YOU BEAUTIFUL DISASTERS."],
+ incoming:["A message! Somebody's got nerve.","Holy shit, the inbox is alive.","SOMEONE'S TALKING. LET'S FUCKING GO."],
+ sending:["Sending that little menace.","Yeet that shit into the void.","FIRE THE FUCKING MESSAGE CANNON."],
+ sent:["Delivered. Miracles do happen.","Hell yes, it landed.","FUCK YES. CHAOS DELIVERED."],
+ failed:["Whoops. That didn't work.","Well, shit. Try again.","THE MACHINE ATE OUR FUCKING MESSAGE."],
+ invite:["More minions? I'm listening.","Bring the weirdos. Hell yes.","SUMMON THE WHOLE DAMN CIRCUS."]
+});
+const spiceKey="kf:trouble-spice";
+const getSpice=()=>{try{return Math.max(0,Math.min(3,Number(localStorage.getItem(spiceKey))||0))}catch{return 0}};
+const setSpice=value=>{const n=Math.max(0,Math.min(3,Math.floor(Number(value)||0)));try{localStorage.setItem(spiceKey,String(n))}catch{}return n};
+const linesFor=(mood,level)=>level===0?captions[mood]:spicyCaptions[mood]||captions[mood];
 const id=row=>Number.isSafeInteger(Number(row?.id))&&Number(row.id)>0?Number(row.id):0;
 const unread=row=>Math.max(0,Math.floor(Number(row?.unread_count)||0));
 function newUnread(before,after){
@@ -47,7 +60,7 @@ function mount(root,userId){
  function react(mood){
   if(!enabled||document.hidden||!Object.prototype.hasOwnProperty.call(captions,mood))return false;
   reset();
-  const lines=captions[mood],line=lines[sequence++%lines.length];
+  const lines=linesFor(mood,getSpice()),line=lines[sequence++%lines.length];
   root.dataset.kfImpMood=mood;speech.textContent=line;inline.textContent=line;
   syncVisibility();timeout=setTimeout(reset,3100);return true;
  }
@@ -63,7 +76,7 @@ function mountInbox(){
  button.dataset.ready="1";
  let index=0,timeout=null;
  button.addEventListener("click",()=>{
-  line.textContent=captions.wake[index++%captions.wake.length];line.hidden=false;
+  const lines=linesFor("wake",getSpice());line.textContent=lines[index++%lines.length];line.hidden=false;
   button.classList.remove("cs-imp-poked");
   void button.offsetWidth;
   button.classList.add("cs-imp-poked");
@@ -72,7 +85,7 @@ function mountInbox(){
  });
  window.addEventListener("pagehide",()=>{if(timeout!==null)clearTimeout(timeout);},{once:true});
 }
-window.ChaosphereImp=Object.freeze({newUnread,mount,mountInbox});
+window.ChaosphereImp=Object.freeze({newUnread,mount,mountInbox,getSpice,setSpice,spiceLevels});
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mountInbox,{once:true});
 else mountInbox();
 window.dispatchEvent(new Event("kf:chaosphere-imp-ready"));
