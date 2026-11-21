@@ -46,7 +46,7 @@ html body[data-kf-theme-scope][data-kf-global-effects="subtle"]:not(.profile-cus
 html body[data-kf-theme-scope][data-kf-global-effects="minimal"]:not(.profile-custom-theme):not(.kf-gameplay-page){
  --kf-global-ambient-shadow:none;
 }
-/* Reusable shell components. Use normal cascade rules, never !important. */
+/* Reusable shell components. Use normal cascade rules, never forced declarations. */
 html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) > .kf-header{
  padding-block:var(--kf-global-header-pad);
  gap:var(--kf-global-nav-gap);
