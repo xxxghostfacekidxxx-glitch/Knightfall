@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 
 const read=(p)=>readFileSync(new URL('../public/'+p,import.meta.url),'utf8');
-const chrome=read('knightfall-section-foundations.css')+'\n'+read('knightfall-unified-theme.css');
+const chrome=read('knightfall-section-foundations.css')+'\n'+read('knightfall-gothic-chrome.css')+'\n'+read('knightfall-illustrated-realms.css')+'\n'+read('knightfall-unified-theme.css');
 const theme=read('theme.css');
 const nav=read('nav.js');
 const sw=read('sw.js');
 
 test('Egyptian Black Sun art has one owner and realm artwork remains in the cascade',()=>{
  const requiem=read('knightfall-requiem.css');
- const shared=read('knightfall-section-foundations.css')+'\n'+read('knightfall-unified-theme.css');
+ const shared=read('knightfall-section-foundations.css')+'\n'+read('knightfall-gothic-chrome.css')+'\n'+read('knightfall-illustrated-realms.css')+'\n'+read('knightfall-unified-theme.css');
  assert.ok(!chrome.includes('height:52px;width:min(640px,88%)'),'Old tiny cathedral divider must stay deleted');
  assert.ok(!shared.includes(':where(.home-intro,.cartridge-hero)::after'),'Legacy crest cannot obscure the hero');
  assert.ok(!requiem.includes('REQUIEM STAINED-GLASS CASCADE REPAIR'),'No layered emergency repair');
