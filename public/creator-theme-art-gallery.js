@@ -38,6 +38,21 @@ const approved=item=>{
  }
  return item.path.includes("/svg/")&&svgRoles.has(item.role)&&item.format==="svg";
 };
+function previewKit(){
+ const chosen=["egyptian-eclipse","dark-lord-ascendant","korriban","mustafar"].includes(collection)
+  ?collection:"egyptian-eclipse";
+ const kit=document.getElementById("kf-theme-kit-stage");
+ if(!kit)return;
+ kit.dataset.collection=chosen;
+ const roles={"header":"kf-theme-kit-header","frame":"kf-theme-kit-frame","emblem":"kf-theme-kit-emblem","divider":"kf-theme-kit-divider"};
+ for(const [role,id] of Object.entries(roles)){
+  const asset=items.find(item=>item.collection===chosen&&item.format==="svg"&&item.role===role);
+  const node=document.getElementById(id);
+  if(asset&&node)node.src=asset.path;
+ }
+ const label=document.getElementById("kf-theme-kit-caption");
+ if(label)label.textContent=names[chosen]+" · Original Vector Kit";
+}
 function render(){
  grid.replaceChildren();
  const shown=items.filter(item=>(collection==="all"||item.collection===collection)&&
@@ -85,6 +100,7 @@ function render(){
  if(!shown.length)grid.append(tag("p","kf-theme-art-empty","No matching artwork. Choose another collection or format."));
  const png=items.filter(i=>i.format==="png").length,svg=items.filter(i=>i.format==="svg").length;
  report(shown.length+" shown · "+png+" preserved paintings · "+svg+" custom SVG ornaments. Originals are stored in the Knightfall repository.");
+ previewKit();
 }
 root.addEventListener("click",event=>{
  const button=event.target.closest("button[data-collection],button[data-format]");
