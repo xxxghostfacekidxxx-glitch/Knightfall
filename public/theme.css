@@ -17,6 +17,7 @@
 @import url("/egyptian-eclipse-theme.css?v=20261121-complete1");
 @import url("/knightfall-art-theme-variables.css?v=20261121-kit1");
 @import url("/knightfall-art-theme-template.css?v=20261121-kit1");
+@import url("/home-responsive.css?v=20261121-mobile1");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
