@@ -30,3 +30,25 @@
 .messages-shell[data-cs-theme="mustafar"] .messages-list{background-image:linear-gradient(#0c0d19c9,#0c0d19dd),url("/assets/knightfall/chaosphere/mustafar-chat.svg")!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
 .messages-shell[data-cs-theme="korriban"] .messages-list{background-image:linear-gradient(#0c0d19c9,#0c0d19dd),url("/assets/knightfall/chaosphere/korriban-chat.svg")!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
 .messages-shell[data-cs-theme="vader"] .messages-list{background-image:linear-gradient(#0c0d19c9,#0c0d19dd),url("/assets/knightfall/chaosphere/vader-chat.svg")!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+
+/* Single swappable styling layer: settings, ornamental panels, buttons and cards. */
+.messages-shell .cs-settings{margin:.4rem 0 .9rem;border:1px solid #a28ab74f;border-radius:22px;background:linear-gradient(130deg,#21192f,#141827);color:#f5edff;overflow:hidden}
+.messages-shell .cs-settings>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:.75rem 1.1rem;font-weight:800;letter-spacing:.015em}
+.messages-shell .cs-settings>summary::-webkit-details-marker{display:none}
+.messages-shell .cs-settings[open]>summary{border-bottom:1px solid #ffffff1c}
+.messages-shell .cs-settings-content{display:flex;gap:1rem 1.5rem;align-items:center;flex-wrap:wrap;padding:1rem 1.2rem}
+.messages-shell .cs-settings-content>div:first-child{flex:1 1 220px}
+.messages-shell .cs-settings-content p{margin:.2rem 0;color:#c5bdd1;font-size:.8rem}
+.messages-shell .cs-imp-setting{display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.84rem}
+.messages-shell .cs-imp-setting input{accent-color:#ef79b3;width:18px;height:18px}
+.cs-roaming-imp[hidden]{display:none!important}
+.messages-shell[data-cs-theme] .cs-settings{border-color:var(--cs-glow)!important;background:linear-gradient(130deg,var(--cs-side),var(--cs-back))!important}
+.messages-shell[data-cs-theme] .chat-head{border-bottom:1px solid var(--cs-glow)!important;background:linear-gradient(125deg,var(--cs-side),var(--cs-back))!important}
+.messages-shell[data-cs-theme] .composer{border-top:1px solid var(--cs-glow)!important;background:linear-gradient(125deg,var(--cs-side),var(--cs-back))!important}
+.messages-shell[data-cs-theme] .conversation.active{box-shadow:inset 3px 0 var(--cs-glow)!important}
+.messages-shell[data-cs-theme] :is(.compose-dialog,.history-search-dialog){border-color:var(--cs-glow)!important}
+.messages-shell[data-cs-theme] :is(.inbox-filter.active,.message-actions button:hover){border-color:var(--cs-glow)!important}
+.messages-shell[data-cs-theme] .panel-title{border-bottom:1px solid var(--cs-glow)}
+.messages-shell[data-cs-theme] .chat-panel{background:var(--cs-back)!important}
+.messages-shell[data-cs-theme] .cs-imp-voice{border-color:var(--cs-glow)}
+@media(max-width:700px){.messages-shell .cs-settings-content{align-items:stretch;flex-direction:column}.messages-shell .cs-settings-content>div:first-child{flex:auto}}
