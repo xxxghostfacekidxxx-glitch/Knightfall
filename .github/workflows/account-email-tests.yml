@@ -1,0 +1,43 @@
+name: Knightfall Account Email Tests
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'backend/src/email-signup.js'
+      - 'backend/src/email-signup.test.mjs'
+      - 'backend/src/password-reset-email.js'
+      - 'backend/src/index.js'
+      - 'backend/migrations/**'
+      - 'public/reset-password.html'
+      - 'public/verify-email.html'
+      - 'scripts/password-reset-security.test.mjs'
+      - '.github/workflows/account-email-tests.yml'
+  pull_request:
+    paths:
+      - 'backend/src/email-signup.js'
+      - 'backend/src/email-signup.test.mjs'
+      - 'backend/src/password-reset-email.js'
+      - 'backend/src/index.js'
+      - 'backend/migrations/**'
+      - 'public/reset-password.html'
+      - 'public/verify-email.html'
+      - 'scripts/password-reset-security.test.mjs'
+      - '.github/workflows/account-email-tests.yml'
+permissions:
+  contents: read
+jobs:
+  account-email:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate syntax
+        run: |
+          node --check backend/src/email-signup.js
+          node --check backend/src/password-reset-email.js
+          node --check backend/src/index.js
+      - name: Run signup and password recovery security tests
+        run: node --test backend/src/email-signup.test.mjs scripts/password-reset-security.test.mjs
