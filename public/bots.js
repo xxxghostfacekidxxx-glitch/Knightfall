@@ -4,7 +4,13 @@ const $=selector=>document.querySelector(selector);
 const root=$("#public-bots"),total=$("#bot-total"),form=$("#bot-search"),input=$("#bot-query");
 const categories=$("#bot-categories"),summary=$("#bot-feature-count");
 const categoryOptions=["All","Community","Art & Design","Writing","Music","Coding","Gaming","Learning","Research","DIY & Tech","Business & Ideas","Everyday","Community-built"];
-let allBots=[],activeCategory="All",request=0;
+// Allow the Music hub and other future thematic hubs to open the existing
+// public directory at one vetted category, without spawning duplicate listings.
+const categoryParam=new URLSearchParams(location.search).get("category");
+const initialCategory=categoryOptions.includes(categoryParam)?categoryParam:"All";
+const searchParam=new URLSearchParams(location.search).get("q");
+if(input&&searchParam)input.value=searchParam.slice(0,80);
+let allBots=[],activeCategory=initialCategory,request=0;
 function make(tag,className,text){
  const element=document.createElement(tag);if(className)element.className=className;
  if(text!==undefined)element.textContent=String(text);
