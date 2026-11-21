@@ -61,9 +61,10 @@
     if (path === "/" || path === "/index.html") realm = "home";
     else if (/^\/(?:community|homepage|thread|create-thread|forums|madhouse)(?:-|[./]|$)/.test(path)) realm = "madhouse";
     else if (/^\/(?:chaos-cartridge|chaos-lab|arcade|arcade-vault|casino|card-room)(?:-|[./]|$)/.test(path)) realm = "arcade";
-    else if (/^\/(?:devil-tools|dev-toolkit|creator|open-source-arsenal|cinderwild|cinderwind|personal-bots|bots)(?:-|[./]|$)/.test(path)) realm = "foundry";
+    else if (/^\/(?:devil-tools|dev-toolkit|creator|open-source-arsenal|cinderwild|cinderwind|personal-bots|bots|chatbots)(?:-|[./]|$)/.test(path)) realm = "foundry";
     else if (/^\/(?:messages|chaosphere|ruinwire|social|friends|notifications|miss-chaos|bot)(?:-|[./]|$)/.test(path)) realm = "messages";
-    else if (/^\/(?:moonology|shadow-work|astrology|birth-chart|cosmic)(?:-|[./]|$)/.test(path)) realm = "moon";
+    else if (/^\/(?:moonology|shadow-work|astrology|birth-chart|cosmic|celestial-sanctum)(?:-|[./]|$)/.test(path)) realm = "moon";
+    else if (/^\/music(?:-|[./]|$)/.test(path)) realm = "music";
     else if (/^\/(?:shops|shop-builder|cinder-shop|my-shop|store|support|billing|stripe-invoicing)(?:-|[./]|$)/.test(path)) realm = "market";
     else if (/^\/(?:members|profile|account|auth|login|register)(?:-|[./]|$)/.test(path)) realm = "members";
     else if (/^\/(?:admin|eye-of-chaos|eye-of-horus|god|moderation|theme-crew)(?:-|[./]|$)/.test(path)) realm = "god";
@@ -81,9 +82,10 @@
     const selectors = {
       madhouse: ".community-directory > .hero, .forum-hero, main > .hero",
       arcade: ".arcade-directory > .cartridge-hero, .lab > .hero, main > .hero",
-      foundry: ".bots-shell > .bots-hero, .directory-shell > .directory-hero, main > .hero, .foundry-hero, .creator-hero",
+      foundry: ".bots-shell > .bots-hero, .directory-shell > .directory-hero, main > .hero, .foundry-hero, .creator-hero, .kf-hub-chatbots > .kf-hub-hero",
       messages: ".messages-shell > .messages-hero, .rw-install-hero, .social-hero, .notifications-hero, .friends-hero",
-      moon: ".moon-shell > .moon-intro, .moon-hero",
+      moon: ".moon-shell > .moon-intro, .moon-hero, .kf-hub-celestial > .kf-hub-hero",
+      music: ".kf-hub-music > .kf-hub-hero",
       market: ".directory-shell > .directory-hero, .market-hero, .builder-hero, main > .hero",
       members: ".members-page > .members-hero, .profile-hero, .account-hero",
       god: ".admin-shell > .hero, .chaos-shell > .chaos-hero, .eye-shell > .eye-hero, main > .hero",
@@ -276,6 +278,14 @@
       </details>
       <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
       <a class="kf-nav-primary" href="/devil-tools.html">Foundry</a>
+      <details class="kf-nav-group kf-worlds-group">
+        <summary>Explore <span aria-hidden="true">⌄</span></summary>
+        <div class="kf-nav-menu">
+          <a href="/celestial-sanctum.html">☾ Celestial Sanctum</a>
+          <a href="/music.html">♫ Music · Serrated Signal</a>
+          <a href="/chatbots.html">✳ Chatbots · Chaos Collective</a>
+        </div>
+      </details>
       <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Chaosphere</a>
       <a class="kf-nav-primary kf-handoff-link" href="/ai-handoff.html" hidden>🔥 Between the Flames</a>
       <a class="kf-nav-primary kf-eye-chaos-link" href="/eye-of-chaos.html" hidden>𓂀 Eye of Chaos</a>
@@ -329,7 +339,12 @@
       ["/profile-edit", "/profile"],
       ["/thread", "/community"],
       ["/community-topic", "/community"],
-      ["/create-thread", "/community"]
+      ["/create-thread", "/community"],
+      ["/moonology", "/celestial-sanctum"],
+      ["/shadow-work", "/celestial-sanctum"],
+      ["/bots", "/chatbots"],
+      ["/personal-bots", "/chatbots"],
+      ["/miss-chaos", "/chatbots"]
     ]);
     const sectionPath = sectionAliases.get(currentPath) ||
       (currentPath.startsWith("/arcade/") || currentPath.startsWith("/arcade-") ? "/chaos-cartridge" : currentPath);
