@@ -19,7 +19,7 @@ function walk(dir){
 }
 walk(root);
 const failures=[],warnings=[];
-const core=new Set(["theme.css","knightfall-unified-theme.css","theme-crew.css","theme-crew-dashboard.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css","theme-crew-dashboard.css"]);
+const core=new Set(["theme.css","knightfall-section-foundations.css","knightfall-unified-theme.css","theme-crew.css","theme-crew-dashboard.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css","theme-crew-dashboard.css"]);
 const legacy=/#(?:ff55d8|c6ff45|a8ff3e)(?:[0-9a-f]{2})?\b|rgba\(\s*255\s*,\s*85\s*,\s*216/i;
 const records=[];
 function balanced(text){
@@ -66,20 +66,21 @@ for(const item of files){
 const read=name=>readFileSync(join(root,name),"utf8");
 for(const name of core)if(!existsSync(join(root,name)))failures.push({type:"missing_shared_css",file:name});
 const nav=read("nav.js"),base=read("theme.css"),sw=read("sw.js");
-const ordered=["design-system.css","visual-refresh.css","knightfall-unified-theme.css","theme-crew.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css"];
+const ordered=["design-system.css","visual-refresh.css","knightfall-section-foundations.css","knightfall-unified-theme.css","theme-crew.css","knightfall-requiem.css","realm-theme-engine.css","global-design-controls.css"];
 const positions=ordered.map(x=>base.indexOf('"/'+x));
 for(const retired of ["section-overhaul.css","knightfall-artwork.css","knightfall-cathedral-v2.css"]){
  if(existsSync(join(root,retired))||base.includes('"/'+retired))failures.push({type:"retired_css_layer_returned",file:retired});
 }
 const shared=read("knightfall-unified-theme.css");
-for(const marker of ["SECTION FOUNDATIONS","GOTHIC CHROME","ORIGINAL ARTWORK","CATHEDRAL ARCHITECTURE"]){
+if(!read("knightfall-section-foundations.css").includes("/* === CANONICAL KNIGHTFALL CHROME: SECTION FOUNDATIONS === */"))failures.push({type:"missing_section_foundations_block"});
+for(const marker of ["GOTHIC CHROME","ORIGINAL ARTWORK","CATHEDRAL ARCHITECTURE"]){
  if(!shared.includes("/* === CANONICAL KNIGHTFALL CHROME: "+marker+" === */"))failures.push({type:"missing_canonical_block",marker});
 }
 if(!nav.includes("kfCanonicalTheme")||!nav.includes("themes.shift()"))failures.push({type:"duplicate_theme_loader_guard_missing"});
 if(positions.some(i=>i<0)||positions.some((p,i)=>i&&p<positions[i-1]))failures.push({type:"incorrect_theme_layer_order",order:ordered});
 if(!base.includes('@import url("/theme-crew.css?'))failures.push({type:"theme_crew_missing_from_base"});
 if(!nav.includes('theme-crew-runtime.js'))failures.push({type:"theme_crew_runtime_not_loaded"});
-for(const name of ["theme-crew.css","theme-crew-dashboard.css","realm-theme-engine.css","global-design-controls.css","theme-crew-runtime.js","theme-crew.html","theme-crew-ui.js"])
+for(const name of ["knightfall-section-foundations.css","theme-crew.css","theme-crew-dashboard.css","realm-theme-engine.css","global-design-controls.css","theme-crew-runtime.js","theme-crew.html","theme-crew-ui.js"])
  if(!sw.includes('"/'+name+'"'))failures.push({type:"offline_shell_missing",file:name});
 // Preserve the new default-theme artwork without duplicating a stylesheet owner.
 const blackSun=read("knightfall-requiem.css");
