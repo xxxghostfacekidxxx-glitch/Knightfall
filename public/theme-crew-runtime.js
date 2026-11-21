@@ -9,6 +9,8 @@ const GLOBAL_PREVIEW="kf:global-design-preview";
 const PUBLISH_SIGNAL="kf:theme-published-v1";
 const channel=typeof BroadcastChannel==="function"?new BroadcastChannel("kf:theme-published"):null;
 const KNOWN=new Set(["cathedral","egyptian_eclipse","dark_lord_ascendant","korriban_necropolis","mustafar_forge","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"]);
+// Separate visual flag; trusted preset keys remain server-allowlisted.
+const ART_KITS=new Set(["dark_lord_ascendant","korriban_necropolis","mustafar_forge"]);
 const REALMS=new Set(["site","madhouse","arcade","chaosphere","admin"]);
 const GLOBAL_OPTIONS=Object.freeze({
  density:["balanced","compact","relaxed"],
@@ -73,6 +75,7 @@ const paint=()=>{
  document.body.dataset.kfGlobalEffects=global.effects;
  document.body.dataset.kfThemeScope=activeScope;
  document.body.dataset.kfTheme=chosen;
+ document.body.dataset.kfArtTheme=String(ART_KITS.has(chosen));
  if(privatePreset)document.body.dataset.kfThemePreview="true";
  else delete document.body.dataset.kfThemePreview;
  document.dispatchEvent(new CustomEvent("kf:theme-change",{
