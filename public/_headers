@@ -13,6 +13,8 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /design-system.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+/knightfall-section-foundations.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
 /knightfall-unified-theme.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 /knightfall-requiem.css
