@@ -17,7 +17,8 @@ const ordered=[
  "theme-crew-dashboard.css",
  "knightfall-requiem.css",
  "realm-theme-engine.css",
- "global-design-controls.css"
+ "global-design-controls.css",
+ "egyptian-eclipse-theme.css"
 ];
 const important=css=>(css.match(/!important\b/g)||[]).length;
 
@@ -56,6 +57,7 @@ test("new global and realm architecture does not grow fresh forced overrides",()
  const global=read("global-design-controls.css"),realm=read("realm-theme-engine.css");
  assert.equal(important(global),0,"Global controls should use ordinary scoped declarations");
  assert.equal(important(realm),0,"Realm boundaries should not become a new important war");
+ assert.equal(important(read("egyptian-eclipse-theme.css")),0,"Egyptian Eclipse must not create forced override debt");
  assert.ok(important(read("theme-crew.css"))<=28,"Approved preset specificity must not grow");
  assert.ok(important(read("theme-crew-dashboard.css"))<=2,"Staff CSS should avoid forced declarations");
  assert.ok(important(read("knightfall-section-foundations.css"))<=14,"Foundation forced styles may only shrink");
