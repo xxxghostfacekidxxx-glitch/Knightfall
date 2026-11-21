@@ -46,7 +46,7 @@ for(const kit of catalog.themes){
  if(!/^[a-z][a-z0-9_]{2,39}$/.test(kit.preset)||seen.has(kit.preset))throw Error("Invalid duplicate preset identifier");
  seen.add(kit.preset);
  if(!/^[a-z][a-z0-9-]{2,45}$/.test(kit.collection))throw Error("Unsafe art collection");
- if(typeof kit.name!=="string"||kit.name.length<3||kit.name.length>80||/[<>{}/*\\r\\n]/.test(kit.name)||typeof kit.heading!=="string"||kit.heading.length>100||typeof kit.description!=="string"||kit.description.length>240||typeof kit.tag!=="string"||kit.tag.length>100)throw Error("Theme title or copy outside safe bounds");
+ if(typeof kit.name!=="string"||kit.name.length<3||kit.name.length>80||!/^[A-Za-z0-9 .·&-]+$/.test(kit.name)||typeof kit.heading!=="string"||kit.heading.length>100||typeof kit.description!=="string"||kit.description.length>240||typeof kit.tag!=="string"||kit.tag.length>100)throw Error("Theme title or copy outside safe bounds");
  for(const color of ["accent","glow","metal","ink","surface","depth","highlight"])
   if(typeof kit[color]!=="string"||!/^#[0-9a-fA-F]{6}$/.test(kit[color]))throw Error("Unreviewed theme color: "+kit.preset);
  if(!Array.isArray(kit.showcase)||kit.showcase.length<1||kit.showcase.length>8||!kit.showcase.includes(kit.hero))throw Error("Invalid artwork lineup");
