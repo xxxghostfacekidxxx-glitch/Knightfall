@@ -85,6 +85,6 @@ test("installed PWA and edge cache recognize each CSS owner",()=>{
  const shell=read("sw.js"),headers=read("_headers");
  for(const file of ordered){
   assert.ok(shell.includes('"/'+file+'"'),"Missing offline cache entry: "+file);
-  assert.ok(headers.includes("/"+file+"\n  Cache-Control: no-cache"),"Missing cache revalidation: "+file);
+  assert.ok(headers.includes("/"+file+"\n  Cache-Control: no-cache")||(file.startsWith("knightfall-")&&headers.includes("/knightfall-*\n  Cache-Control: no-cache")),"Missing cache revalidation: "+file);
  }
 });
