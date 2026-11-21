@@ -11,6 +11,8 @@ const jobs=[
  ["Protected artwork and Creator Foundry static audit",["scripts/knightfall-creation-preserve.mjs","--audit"]],
  ["Protected artwork and Creator Foundry workspace regressions",["--test","scripts/knightfall-creation-preserve.test.mjs"]],
  ["Creator Foundry production editor, sprite atlas and tilemap regressions",["--test","scripts/creator-production-lab.test.mjs"]],
+ ["Six original theme-art PNG checksums, Creator Foundry gallery and safe paths",["--test","scripts/knightfall-theme-art.test.mjs"]],
+ ["Original theme-art offline integrity",["scripts/knightfall-theme-art-import.mjs","--verify"]],
  ["Global CSS integrity",["scripts/theme-crew-audit.mjs"]],
  ["CSS ownership, duplicate imports and legacy debt budget",["--test","scripts/theme-style-ownership.test.mjs"]],
  ["Canonical theme asset URLs and single loader",["--test","scripts/theme-asset-url-integrity.test.mjs"]],
