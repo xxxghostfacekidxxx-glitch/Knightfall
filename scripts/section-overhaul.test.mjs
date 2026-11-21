@@ -10,7 +10,7 @@ test("section polish loads with and without navigation",async()=>{
  for(const root of [".community-directory",".cartridge-shelf",".messages-shell",".admin-shell",".profile-shell",".foundry",".dt-workspace-nav"])assert.ok(css.includes(root),root);
 });
 test("section overhaul supports small screens, keyboard access and personal themes",async()=>{
- const css=(await read("knightfall-section-foundations.css"))+"\n"+(await read("knightfall-unified-theme.css"));
+ const css=(await read("knightfall-section-foundations.css"))+"\n"+(await read("knightfall-gothic-chrome.css"))+"\n"+(await read("knightfall-illustrated-realms.css"))+"\n"+(await read("knightfall-unified-theme.css"));
  assert.match(css,/@media\(max-width:600px\)/);
  assert.match(css,/:focus-visible/);
  assert.match(css,/prefers-reduced-motion:reduce/);
@@ -19,7 +19,7 @@ test("section overhaul supports small screens, keyboard access and personal them
 
 
 test("common section colors reuse canonical tokens instead of copying hardcoded palette values",async()=>{
- const css=(await read("knightfall-section-foundations.css"))+"\n"+(await read("knightfall-unified-theme.css"));
+ const css=(await read("knightfall-section-foundations.css"))+"\n"+(await read("knightfall-gothic-chrome.css"))+"\n"+(await read("knightfall-illustrated-realms.css"))+"\n"+(await read("knightfall-unified-theme.css"));
  assert.match(css,/--section-surface:var\(--af-v2-card\)/);
  assert.match(css,/--section-raised:var\(--kf-panel-2\)/);
  assert.match(css,/--section-green:var\(--kf-antique-gold\)/);
