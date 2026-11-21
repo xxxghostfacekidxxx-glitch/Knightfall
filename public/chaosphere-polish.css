@@ -3,9 +3,12 @@
  * viewport offsets, member profile styling, or game screens.
  */
 .messages-shell{
- --cs-glass:#17181f;--cs-ink:#f7ecdf;--cs-muted:#cbbab3;
- --cs-wine:#b25b68;--cs-wine-light:#dc8991;--cs-gold:#d8b785;
- --cs-line:rgba(216,183,133,.25);--cs-shadow:0 24px 65px #0008;
+ /* Chaosphere inherits only reviewed theme tokens, never raw member content. */
+ --cs-glass:var(--kf-msg-depth,#17181f);--cs-ink:var(--kf-msg-text,#f7ecdf);--cs-muted:#cbbab3;
+ --cs-wine:var(--kf-realm-glow,#b25b68);--cs-wine-light:var(--kf-realm-metal,#dc8991);
+ --cs-gold:var(--kf-realm-metal,#d8b785);
+ --cs-line:color-mix(in srgb,var(--cs-gold) 25%,transparent);
+ --cs-shadow:var(--kf-global-ambient-shadow,0 24px 65px #0008);
 }
 .messages-shell .messages-hero{
  position:relative;isolation:isolate;overflow:hidden;
@@ -13,9 +16,9 @@
  margin-bottom:clamp(.6rem,1.8vw,1rem);
  border:1px solid var(--cs-line);border-radius:24px;
  background:
-  radial-gradient(ellipse at 12% 10%,#b25b6828,transparent 54%),
-  radial-gradient(ellipse at 94% 84%,#d8b78515,transparent 45%),
-  linear-gradient(120deg,#211b24f5,#10151af2 70%);
+  radial-gradient(ellipse at 12% 10%,color-mix(in srgb,var(--cs-wine) 16%,transparent),transparent 54%),
+  radial-gradient(ellipse at 94% 84%,color-mix(in srgb,var(--cs-gold) 9%,transparent),transparent 45%),
+  linear-gradient(120deg,var(--kf-msg-surface,#211b24),var(--kf-msg-depth,#10151a) 70%);
  box-shadow:inset 0 1px #ffffff0c,0 16px 44px #0005;
 }
 .messages-shell .messages-hero::before{opacity:.35}
@@ -31,23 +34,23 @@
 }
 .messages-shell .messages-hero .primary,
 .messages-shell .composer button.primary{
- background:linear-gradient(125deg,#ce7783,#a84a60)!important;
- border:1px solid #efb0a29c!important;color:#fff!important;
- box-shadow:0 8px 20px #8f3e4b2a!important;
+ background:linear-gradient(125deg,var(--cs-wine-light),var(--cs-wine))!important;
+ border:1px solid var(--cs-gold)!important;color:var(--cs-ink)!important;
+ box-shadow:0 8px 20px color-mix(in srgb,var(--cs-wine) 18%,transparent)!important;
 }
 .messages-shell .messages-hero .primary:hover,
 .messages-shell .composer button.primary:hover:not(:disabled){filter:brightness(1.09)}
 .messages-shell .msg-status:not(:empty){padding:.55rem .85rem;margin:0 0 .65rem;color:#e8d9c6;border-left:2px solid var(--cs-gold);background:#16171bba;border-radius:0 9px 9px 0}
 .messages-shell .message-layout{
  border-color:var(--cs-line)!important;
- background:#11151b!important;
+ background:var(--cs-glass)!important;
  border-radius:22px!important;
  box-shadow:var(--cs-shadow),inset 0 1px #ffffff0b!important;
 }
 .messages-shell .conversation-panel{
  background:
-  radial-gradient(ellipse at 10% 0%,#b25b6818,transparent 61%),
-  linear-gradient(170deg,#201d25,#151820 85%);
+  radial-gradient(ellipse at 10% 0%,color-mix(in srgb,var(--cs-wine) 10%,transparent),transparent 61%),
+  linear-gradient(170deg,var(--kf-msg-surface,#201d25),var(--kf-msg-depth,#151820) 85%);
  border-color:var(--cs-line)!important;
 }
 .messages-shell .panel-title{border-bottom:1px solid var(--cs-line)}
@@ -78,9 +81,9 @@
 }
 .messages-shell .conversation:hover{background:#29252d;border-color:#8b697199!important;transform:none}
 .messages-shell .conversation.active{
- background:linear-gradient(100deg,#b25b6832,#26252e 76%)!important;
- border-color:#c38783!important;
- box-shadow:inset 3px 0 #d6aa7c,0 6px 22px #0003!important;
+ background:linear-gradient(100deg,color-mix(in srgb,var(--cs-wine) 20%,transparent),var(--cs-glass) 76%)!important;
+ border-color:var(--cs-gold)!important;
+ box-shadow:inset 3px 0 var(--cs-wine-light),0 6px 22px #0003!important;
 }
 .messages-shell .conversation .avatar,.messages-shell .chat-avatar{
  border:1px solid #c6a17c85;
@@ -92,10 +95,10 @@
 .messages-shell .conversation-copy small,.messages-shell .conversation-tail time{color:#bea9a5}
 .messages-shell .unread{background:#d9b885;color:#22191d;box-shadow:0 0 0 2px #19191f}
 .messages-shell .chat-panel{
- background:radial-gradient(ellipse at 50% 0%,#b25b6815,transparent 42%),#14181f!important;
+ background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--cs-wine) 8%,transparent),transparent 42%),var(--cs-glass)!important;
 }
 .messages-shell .chat-head{
- background:linear-gradient(105deg,#24212a,#181b23)!important;
+ background:linear-gradient(105deg,var(--kf-msg-surface,#24212a),var(--cs-glass))!important;
  border-bottom:1px solid var(--cs-line);box-shadow:0 8px 23px #0003;
 }
 .messages-shell .chat-identity strong{color:var(--cs-ink);font-size:.99rem}
@@ -156,16 +159,16 @@
 .messages-shell .reaction-add,.messages-shell .reaction-chip{border-color:#8e797079;color:#eacfbf;background:#2b2630}
 .messages-shell .typing-indicator{background:transparent;color:var(--cs-gold)}
 .messages-shell .composer{
- position:relative;background:linear-gradient(170deg,#24212b,#181a21)!important;
+ position:relative;background:linear-gradient(170deg,var(--kf-msg-surface,#24212b),var(--kf-msg-depth,#181a21))!important;
  border-top:1px solid var(--cs-line)!important;
  box-shadow:0 -12px 35px #0003;
 }
 .messages-shell .composer textarea{
- background:#11151c!important;border-color:#87726f!important;
- color:#f9eee8!important;border-radius:15px!important;
+ background:var(--kf-msg-base,#11151c)!important;border-color:var(--cs-line)!important;
+ color:var(--cs-ink)!important;border-radius:15px!important;
  min-height:45px;max-height:180px;
 }
-.messages-shell .composer textarea:focus{outline:2px solid #d4ab7f!important;outline-offset:2px}
+.messages-shell .composer textarea:focus{outline:2px solid var(--cs-gold)!important;outline-offset:2px}
 .messages-shell .composer small{color:#c0b5b0}
 .messages-shell .composer-actions small{font-variant-numeric:tabular-nums}
 .messages-shell .cs-compose-tools{
