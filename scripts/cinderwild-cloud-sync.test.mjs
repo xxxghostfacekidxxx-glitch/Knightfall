@@ -51,7 +51,7 @@ function fixture({local=sample(),remote=null,account={id:7,username:"tester"},sa
 }
 
 test("account sync reuses current arcade endpoint, explicit allowlist and existing revisioned schema",()=>{
- assert.match(backend,/const arcadeGames = new Set\(\["cinderwild"/);
+ assert.match(backend,/const arcadeGames = new Set\(\[[^\]]*"cinderwild"/);
  assert.match(backend,/SELECT revision FROM arcade_saves WHERE user_id=\? AND game_key=\? AND save_key=\?/);
  assert.doesNotMatch(backend,/SELECT id,revision FROM arcade_saves/);
  assert.match(migration,/PRIMARY KEY \(user_id, game_key, save_key\)/);
