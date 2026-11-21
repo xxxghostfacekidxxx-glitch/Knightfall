@@ -50,6 +50,21 @@ jobs:
           node --check public/creator-foundry-workspaces.js
           node --check public/creator-art-studio.js
           node --check public/creator-production-lab.js
+      - name: Validate every original vector as complete well-formed XML
+        run: |
+          python3 - <<'PY'
+          import json
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          manifest=json.loads(Path("public/assets/knightfall/theme-collections/ornaments.json").read_text())
+          assert len(manifest["assets"])==32
+          for asset in manifest["assets"]:
+              path=Path("public")/asset["path"].lstrip("/")
+              node=ET.parse(path).getroot()
+              assert node.tag=="{http://www.w3.org/2000/svg}svg", path
+              assert node.attrib.get("viewBox"), path
+          print("SVG XML validated:",len(manifest["assets"]),"first-party ornaments")
+          PY
       - name: Block artwork or Creator Foundry deletion against saved baseline
         run: node scripts/knightfall-creation-preserve.mjs --audit --verify
       - name: Save all tracked artwork and Foundry sources with SHA-256 file inventory
