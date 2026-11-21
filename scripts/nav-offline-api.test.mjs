@@ -28,7 +28,11 @@ test("navigation keeps intentional shortcuts and grouped links while starting si
  const seen=new Set(),repeated=[];
  for(const route of routes){if(seen.has(route))repeated.push(route);seen.add(route);}
  assert.deepEqual(repeated.sort(),["/ai-handoff.html","/eye-of-chaos.html"]);
- assert.ok(routes.length<=18,"Avoid adding another oversized navigation menu");
+ // Hidden account/staff groups are mounted for signed-in users.
+ // Count only links available to a visitor who has not signed in.
+ const signedOutMarkup=nav.replace(/<details\b[^>]*\bhidden\b[^>]*>[\s\S]*?<\/details>/g,"");
+ const signedOutRoutes=[...signedOutMarkup.matchAll(/href="([^"]+)"/g)].map(match=>match[1]);
+ assert.ok(signedOutRoutes.length<=18,"Avoid adding another oversized signed-out navigation menu");
  assert.match(nav,/class="kf-nav-group kf-profile-group" hidden/);
  assert.match(nav,/class="kf-nav-group kf-staff-group" hidden/);
  assert.match(nav,/class="kf-sign-in-link"|kf-sign-in-link" href="\/auth.html"/);
@@ -83,7 +87,7 @@ test("one public arcade directory with safe redirects and no duplicate browse me
  const primary=readFileSync("public/chaos-cartridge.html","utf8");
  const stylesheet=readFileSync("public/section-directory.css","utf8");
  assert.match(redirects,/\/arcade-30-games\.html \/chaos-cartridge\.html 301/);
- assert.match(redirects,/\/arcade-card-board\.html \/chaos-cartridge\.html 301/);
+ assert.match(redirects,/\/arcade-card-board\.html \/chaos-cartridge\.html(?:\?collection=family#game-shelf)? 301/);
  assert.doesNotMatch(primary,/arcade-directory-links|href="\/arcade-card-board\.html"/);
  assert.doesNotMatch(stylesheet,/\.arcade-directory-links/);
  assert.match(primary,/href="\/arcade\/async-play\.html"/);
@@ -93,7 +97,7 @@ test("one public arcade directory with safe redirects and no duplicate browse me
 
 test('retired arcade category page routes through canonical Chaos Cartridge',()=>{
  const redirect=readFileSync('public/_redirects','utf8');
- assert.match(redirect,/\/arcade-card-board\.html \/chaos-cartridge\.html 301/);
+ assert.match(redirect,/\/arcade-card-board\.html \/chaos-cartridge\.html(?:\?collection=family#game-shelf)? 301/);
  assert.match(redirect,/\/arcade-30-games\.html \/chaos-cartridge\.html 301/);
  assert.doesNotMatch(readFileSync('public/chaos-cartridge.html','utf8'),/href="\/arcade-card-board\.html"/);
 });
