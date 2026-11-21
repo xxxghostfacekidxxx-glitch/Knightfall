@@ -41,3 +41,19 @@ The admin-facing launchpad is `public/dev-toolkit.html`. God account and adminis
 4. Add attribution/license metadata to the asset manifest.
 5. Integrate the exported assets and test at native size, mobile scale, and fullscreen.
 6. Check frame timing, memory use, image dimensions, and keyboard/touch behavior before release.
+
+## Original Egyptian Eclipse and Dark Lord Ascendant artwork (2026-11-20)
+
+The original six PNG files are saved in `public/assets/knightfall/theme-collections/`, separated by named collections and inventoried in `manifest.json` with SHA-256 checksums, dimensions, and original roles.
+
+| Art set | Files | Usage |
+| --- | ---: | --- |
+| Egyptian Eclipse | 3 | Cinematic temple hero, celestial throne background, preview concept |
+| Dark Lord Ascendant | 2 | Original dark space-opera figure and crimson command chamber |
+| Theme Forge selector concept | 1 | Design reference for future selectable site themes |
+
+In the **Creator Foundry**, staff and authorized Digital Creators can open **Original Theme Artwork Vault**, filter the six originals, preview high-resolution art, download local files, and copy first-party asset paths. This is separate from `Site Image Library`'s member R2 uploads, which are not automatically backed up by Git.
+
+The actual original files were imported by `.github/workflows/knightfall-theme-art-import.yml` from durable transport copies, with exact-byte checksum and dimensions verification. `scripts/knightfall-theme-art-import.mjs --verify` runs offline and fails if anything changes. `scripts/knightfall-theme-art.test.mjs` tests the Foundry gallery, permissions, all six PNG hashes, and path safety. These files and the gallery code are in the Knightfall Creations Vault's required-preservation set, and are included in its recoverable archives.
+
+**Important:** artwork previews do not make these new named designs an active Theme Forge preset. Theme publication must follow the existing reviewed palette, realm isolation, access, rollback, and visual-testing workflow. The dark-lord collection uses original character art and a descriptive generic name, not official franchise imagery or logos. Large full-resolution originals intentionally stay out of the PWA's install-time precache to avoid 14 MB of needless downloads.
