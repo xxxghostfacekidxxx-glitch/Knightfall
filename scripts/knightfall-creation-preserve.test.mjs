@@ -62,3 +62,16 @@ test("Creator Foundry approval preserves a published copy before removing a pend
  assert.ok(source.includes("if(stored){try{await env.PUBLIC_ASSETS.delete(key)}"),
   "Rollback partial approval if database indexing fails, retaining the pending original");
 });
+
+test("automatic restoration snapshots cannot silently disappear during theme cleanup",()=>{
+ const workflow=readFileSync(resolve(root,".github/workflows/knightfall-creations-vault.yml"),"utf8");
+ const guard=readFileSync(resolve(root,"scripts/pages-release-guard.mjs"),"utf8");
+ assert.match(workflow,/schedule:\s*\n\s*-\s*cron:/);
+ assert.match(workflow,/fetch-depth:\s*0/);
+ assert.match(workflow,/--audit --verify/);
+ assert.match(workflow,/--archive/);
+ assert.match(workflow,/actions\/upload-artifact@v4/);
+ assert.match(workflow,/retention-days:\s*30/);
+ assert.match(guard,/knightfall-creation-preserve\.mjs/);
+ assert.match(guard,/knightfall-creation-preserve\.test\.mjs/);
+});
