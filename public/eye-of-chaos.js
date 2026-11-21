@@ -16,6 +16,28 @@ async function api(path,method="GET",payload){
  if(!response.ok)throw Error(result.error||"Request failed ("+response.status+").");
  return result;
 }
+async function loadQuotaGuardian(){
+ if(!state.canGod)return;
+ const status=$("chaos-quota-state"),summary=$("chaos-quota-summary"),limits=$("chaos-quota-limits"),services=$("chaos-quota-services");
+ status.textContent="Reading private diagnostics…";
+ try{
+  const response=await fetch("https://api.ash-fall.com/api/admin/quota-guardian",{credentials:"include",cache:"no-store",headers:{accept:"application/json"}});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw Error(data.error||"Diagnostics unavailable ("+response.status+").");
+  summary.replaceChildren();limits.replaceChildren();services.replaceChildren();
+  const diagnostics=data.local_diagnostics||{};
+  for(const [label,value] of [["Active and expired counters",diagnostics.rate_limit_counter_rows],["Expired counters",diagnostics.expired_rate_limit_counter_rows],["Cleanup batch size",diagnostics.rate_limit_cleanup_batch_size]]){
+   const card=node("article","chaos-card");card.append(node("strong","",value??"Unknown"),node("p","",label));summary.append(card);
+  }
+  for(const [key,value] of Object.entries(data.free_tier_reference||{})){
+   const card=node("article","chaos-agent");card.append(node("h3","",key.replaceAll("_"," ")),node("p","",Number(value).toLocaleString()+" daily allowance"));limits.append(card);
+  }
+  for(const [key,enabled] of Object.entries(data.configured_services||{})){
+   const card=node("article","chaos-agent");card.append(node("h3","",key.replaceAll("_"," ")),node("p","",enabled?"Binding configured":"Not configured"));services.append(card);
+  }
+  status.textContent="D1 diagnostics updated "+new Date(data.collected_at).toLocaleString()+". "+(data.provider_usage_note||"Account usage unavailable.");
+ }catch(error){status.textContent="Quota Guardian unavailable: "+error.message;}
+}
 function openSection(name){
  const section=document.querySelector('.chaos-panel[data-panel="'+name+'"]');
  if(!section)return;
@@ -26,6 +48,7 @@ function openSection(name){
  if(name==="approvals")loadDrafts();
  if(name==="history")loadEvents();
  if(name==="qa")loadQA();
+ if(name==="quota"&&state.canGod)loadQuotaGuardian();
 }
 const names={
  agents:()=>state.fleet?.agents||[],
@@ -256,6 +279,7 @@ $("chaos-draft-form").addEventListener("submit",async e=>{
   resetDraftEditor();await loadDrafts();
  });b.disabled=false;
 });
+$("chaos-quota-refresh")?.addEventListener("click",loadQuotaGuardian);
 (async()=>{
  try{
   const data=await api("/status");
