@@ -106,7 +106,7 @@
   const setVisualTheme=value=>{
     const theme=visualThemes.has(value)?value:"obsidian";
     root.dataset.mcTheme=theme;
-    const sigil=root.querySelector(".mc-minimized-sigil");if(sigil)sigil.src="/assets/knightfall/miss-chaos/"+themeArt[theme]+"-sigil.svg";
+    const sigil=root.querySelector(".mc-minimized-sigil");if(sigil)sigil.src="/assets/knightfall/miss-chaos/"+themeArt[theme]+"-sigil.svg?v=20261121-art2";
     if(themeControl)themeControl.value=theme;
     try{localStorage.setItem(themeKey,theme)}catch{}
   };
