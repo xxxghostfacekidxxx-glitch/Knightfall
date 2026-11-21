@@ -14,7 +14,7 @@ const root=fileURLToPath(new URL("../",import.meta.url));
 const get=p=>JSON.parse(readFileSync(resolve(root,p),"utf8"));
 const args=Object.fromEntries(process.argv.slice(2).filter(x=>x.startsWith("--")&&x.includes("=")).map(x=>{const i=x.indexOf("=");return[x.slice(2,i),x.slice(i+1)]}));
 const name=String(args.name||"").trim(),preset=String(args.preset||""),collection=String(args.collection||"");
-if(!/^[a-z][a-z0-9_]{2,39}$/.test(preset)||!/^[a-z][a-z0-9-]{2,45}$/.test(collection)||name.length<3||name.length>80)
+if(!/^[a-z][a-z0-9_]{2,39}$/.test(preset)||!/^[a-z][a-z0-9-]{2,45}$/.test(collection)||name.length<3||name.length>80||/[<>{}/*\\r\\n]/.test(name))
  throw Error("Provide --preset=valid_name --collection=original-art-slug --name='Readable theme name'");
 if(process.argv.slice(2).some(x=>x.startsWith("--")&&!x.includes("=")&&x!=="--write"&&x!=="--json"))throw Error("Unknown argument");
 const catalogPath=resolve(root,"public/assets/knightfall/theme-collections/theme-recipes.json");
