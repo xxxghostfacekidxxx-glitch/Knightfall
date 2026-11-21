@@ -15,18 +15,18 @@ function init(){
  const impToggle=document.getElementById("cs-imp-enabled"), voiceToggle=document.getElementById("cs-imp-voice-enabled");
  const getPref=(name)=>{try{return localStorage.getItem("knightfall-"+name)!=="off"}catch{return true}};
  const setPref=(name,value)=>{try{localStorage.setItem("knightfall-"+name,value?"on":"off")}catch{}};
- const imp=document.createElement("div");imp.className="cs-roaming-imp";imp.setAttribute("aria-label","Chaosphere roaming imp");
- const button=document.createElement("button");button.type="button";button.setAttribute("aria-label","Talk to the Chaosphere imp");
+ const imp=document.createElement("div");imp.className="cs-roaming-imp";imp.setAttribute("aria-label","Soot Riot, Chaosphere roaming imp");
+ const button=document.createElement("button");button.type="button";button.setAttribute("aria-label","Talk to Soot Riot, the Chaosphere imp");button.title="Soot Riot: tap for trouble";
  const img=document.createElement("img");img.src="/assets/knightfall/chaosphere/roaming-imp.svg";img.alt="";img.setAttribute("aria-hidden","true");button.append(img);
  const voice=document.createElement("div");voice.className="cs-imp-voice";voice.setAttribute("role","status");voice.hidden=true;
  imp.append(button,voice);document.body.append(imp);
  let x=24,dir=1,last=0,spoken=0,hideTimer=0,frame=0;const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
- const speak=()=>{if(voiceToggle&&!voiceToggle.checked)return;voice.textContent=lines[spoken++%lines.length];voice.hidden=false;clearTimeout(hideTimer);hideTimer=setTimeout(()=>voice.hidden=true,4200)};
+ const speak=()=>{if(voiceToggle&&!voiceToggle.checked)return;imp.dataset.mood="cackling";voice.textContent=lines[spoken++%lines.length];voice.hidden=false;clearTimeout(hideTimer);hideTimer=setTimeout(()=>{voice.hidden=true;delete imp.dataset.mood},4200)};
  button.addEventListener("click",speak);
  if(impToggle){impToggle.checked=getPref("chaosphere-imp-roam");imp.hidden=!impToggle.checked;impToggle.addEventListener("change",()=>{imp.hidden=!impToggle.checked;setPref("chaosphere-imp-roam",impToggle.checked)})}
  if(voiceToggle){voiceToggle.checked=getPref("chaosphere-imp-voice");voiceToggle.addEventListener("change",()=>{setPref("chaosphere-imp-voice",voiceToggle.checked);if(!voiceToggle.checked)voice.hidden=true})}
  const old=document.getElementById("cs-hero-imp");if(old)old.hidden=true;
- const move=(time)=>{if(document.hidden||reduced){frame=0;return;}frame=0;const max=Math.max(0,innerWidth-imp.offsetWidth-8);if(last){x+=Math.min((time-last)/1000,.1)*dir*29;if(x>=max){x=max;dir=-1}else if(x<=8){x=8;dir=1}imp.style.setProperty("--imp-x",x+"px");imp.style.setProperty("--imp-face",dir)}last=time;frame=requestAnimationFrame(move)};
+ const move=(time)=>{if(document.hidden||reduced){frame=0;return;}frame=0;const max=Math.max(0,innerWidth-imp.offsetWidth-8);if(last){x+=Math.min((time-last)/1000,.1)*dir*29;if(x>=max){x=max;dir=-1;imp.dataset.mood="turning"}else if(x<=8){x=8;dir=1;imp.dataset.mood="turning"}imp.style.setProperty("--imp-x",x+"px");imp.style.setProperty("--imp-face",dir)}last=time;frame=requestAnimationFrame(move)};
  if(!reduced)frame=requestAnimationFrame(move);else imp.style.setProperty("--imp-x","12px");
  document.addEventListener("visibilitychange",()=>{last=0;if(!document.hidden&&!reduced&&!frame)frame=requestAnimationFrame(move)});
  window.addEventListener("pagehide",()=>{clearTimeout(hideTimer);if(frame)cancelAnimationFrame(frame)}, {once:true});
