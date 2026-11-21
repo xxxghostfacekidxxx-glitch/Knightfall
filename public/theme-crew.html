@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="/theme.css">
 <!-- The shared theme import and final nav layer own Theme Crew CSS; do not load a second link. -->
 <script src="/nav.js" defer></script>
-<script src="/theme-crew-ui.js?v=20261120-quick-switch1" defer></script>
+<script src="/theme-crew-ui.js?v=20261120-global-design1" defer></script>
 </head>
 <body class="theme-crew-page"><header class="kf-header"></header>
 <main class="theme-crew-shell" id="theme-crew">
@@ -20,6 +20,41 @@
 <section id="theme-crew-denied" class="theme-crew-panel theme-crew-denied" hidden><h2>Staff access required</h2><p>Only GOD and the accepted admin partner can publish or roll back a reviewed theme. Other admins can plan and preview. The public site never receives the control API.</p><a href="/auth.html?next=%2Ftheme-crew.html">Sign in to Knightfall</a></section>
 <div id="theme-crew-workspace" class="theme-crew-workspace" hidden>
   <section class="theme-crew-panel" aria-labelledby="crew-presets-title">
+  <section class="theme-crew-global-controls" aria-labelledby="theme-crew-global-title">
+   <p class="eyebrow">GLOBAL / SHARED CHROME</p>
+   <h2 id="theme-crew-global-title">Global Design Controls</h2>
+   <p>One set of shared interface settings across all realms. Adjust navigation density, component corners, staff typography and decorative effects without changing each realm's published colors or artwork.</p>
+   <div class="theme-crew-global-grid">
+    <label for="kf-global-density">Interface spacing
+     <select id="kf-global-density" data-kf-global-control="density">
+      <option value="balanced">Balanced</option><option value="compact">Compact</option><option value="relaxed">Relaxed</option>
+     </select>
+    </label>
+    <label for="kf-global-corners">Corners
+     <select id="kf-global-corners" data-kf-global-control="corners">
+      <option value="soft">Soft</option><option value="square">Angular</option><option value="rounded">Rounded</option>
+     </select>
+    </label>
+    <label for="kf-global-typography">Shared UI text
+     <select id="kf-global-typography" data-kf-global-control="typography">
+      <option value="standard">Standard</option><option value="large">Large</option><option value="extra_large">Extra large</option>
+     </select>
+    </label>
+    <label for="kf-global-effects">Shared atmosphere
+     <select id="kf-global-effects" data-kf-global-control="effects">
+      <option value="ceremonial">Ceremonial</option><option value="subtle">Subtle</option><option value="minimal">Minimal</option>
+     </select>
+    </label>
+   </div>
+   <p id="theme-crew-global-state" class="theme-crew-selected" aria-live="polite">Checking global control revision…</p>
+   <div class="theme-crew-actions">
+    <button type="button" id="theme-crew-global-preview">Preview global controls</button>
+    <button type="button" id="theme-crew-global-publish">Publish globally</button>
+    <button type="button" id="theme-crew-global-clear">Clear global preview</button>
+    <button type="button" id="theme-crew-global-rollback">Rollback global controls</button>
+   </div>
+   <p id="theme-crew-global-feedback" class="theme-crew-hint" role="status" aria-live="polite">Global controls use a separate revision and rollback history from all realm presets.</p>
+  </section>
   <h2 id="crew-presets-title">Independent realm appearance</h2>
   <label for="theme-crew-scope" class="theme-crew-scope-label">Choose the realm to control</label>
   <select id="theme-crew-scope" class="theme-crew-scope" aria-describedby="theme-crew-scope-hint">
