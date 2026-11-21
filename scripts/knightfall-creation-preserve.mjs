@@ -46,7 +46,21 @@ export const FOUNDRY_REQUIRED=Object.freeze([
  "scripts/knightfall-theme-art-sources.json",
  "scripts/knightfall-theme-art-import.mjs",
  ".github/workflows/knightfall-theme-art-import.yml",
- "scripts/knightfall-theme-art.test.mjs"
+ "scripts/knightfall-theme-art.test.mjs",
+ "public/assets/knightfall/theme-collections/ornaments.json",
+ "public/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-temple-gateway.png",
+ "public/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-crimson-eclipse-hall.png",
+ "public/assets/knightfall/theme-collections/korriban/korriban-red-necropolis.png",
+ "public/assets/knightfall/theme-collections/mustafar/mustafar-obsidian-lava-citadel.png",
+ "public/assets/knightfall/theme-collections/theme-selector/theme-forge-four-realm-concept.png",
+ "public/assets/knightfall/theme-collections/theme-selector/theme-art-ornaments-concept.png",
+ "public/assets/knightfall/theme-collections/theme-selector/creator-foundry-collection-showcase.png",
+ "scripts/knightfall-theme-art-expansion-sources.json",
+ "scripts/knightfall-theme-art-expansion-import.mjs",
+ ".github/workflows/knightfall-theme-art-expansion-import.yml",
+ ...["egyptian-eclipse","dark-lord-ascendant","korriban","mustafar"].flatMap(collection=>
+  ["header","frame","divider","corner","emblem","panel","button","side-rail"].map(role=>
+   "public/assets/knightfall/theme-collections/"+collection+"/svg/"+role+".svg"))
 ]);
 const IMAGE_EXT=/\.(?:svg|png|jpe?g|webp|avif|gif|apng|bmp|ico|tiff?|psd|aseprite|kra|ora|xcf|glb|gltf|fbx|obj|stl|woff2?)$/i;
 const SCRIPT_EXT=/\.(?:html|css|js|mjs|json|webmanifest|md)$/i;
