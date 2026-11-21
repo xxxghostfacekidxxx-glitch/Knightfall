@@ -721,26 +721,19 @@ body[data-kf-realm="messages"]:not(.profile-custom-theme) :is(.compose-dialog in
  background:#121421!important;color:#f2e4e7!important;border:1px solid #8d718d!important;
 }
 
-/* Moon: symbolic atmosphere now follows the reviewed realm palette, without
-   forced declarations. Moon Journal layout and member data remain untouched. */
+/* Moon: symbolic atmosphere follows published realm tokens, not forced palette overrides. */
 body[data-kf-realm="moon"]:not(.profile-custom-theme) :is(.moon-panel,.moon-current,.moon-calendar,.moon-guide,.moon-upcoming){
  border:1px solid color-mix(in srgb,var(--kf-realm-metal,#a8a4c7) 68%,transparent);
  border-radius:var(--kf-global-panel-corner,19px);
- background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(--kf-realm-glow,#7f73c1) 24%,transparent),transparent 58%),
-  linear-gradient(136deg,color-mix(in srgb,var(--kf-crew-surface,#26243a) 90%,#090d13),var(--kf-crew-depth,#121620));
+ background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(--kf-realm-glow,#7f73c1) 24%,transparent),transparent 58%),linear-gradient(136deg,color-mix(in srgb,var(--kf-crew-surface,#26243a) 90%,#090d13),var(--kf-crew-depth,#121620));
  box-shadow:0 18px 47px #0009,inset 0 1px color-mix(in srgb,var(--kf-realm-metal,#d4cfe7) 24%,transparent);
 }
 body[data-kf-realm="moon"]:not(.profile-custom-theme) .moon-current{
- background-image:linear-gradient(96deg,color-mix(in srgb,var(--kf-crew-depth,#161827) 96%,transparent),
-  color-mix(in srgb,var(--kf-crew-surface,#1d2031) 74%,transparent)),var(--kf-rose-art);
+ background-image:linear-gradient(96deg,color-mix(in srgb,var(--kf-crew-depth,#161827) 96%,transparent),color-mix(in srgb,var(--kf-crew-surface,#1d2031) 74%,transparent)),var(--kf-rose-art);
  background-position:center,right top;background-size:cover,auto 155%;
 }
-body[data-kf-realm="moon"]:not(.profile-custom-theme) :is(.moon-section-head,.moon-phase-name){
- color:var(--kf-realm-metal,#e2d9f0);text-shadow:0 2px 16px #000a;
-}
-body[data-kf-realm="moon"]:not(.profile-custom-theme) .moon-button{
- border-color:var(--kf-realm-metal,#a6a0dc);
-}
+body[data-kf-realm="moon"]:not(.profile-custom-theme) :is(.moon-section-head,.moon-phase-name){color:var(--kf-realm-metal,#e2d9f0);text-shadow:0 2px 16px #000a}
+body[data-kf-realm="moon"]:not(.profile-custom-theme) .moon-button{border-color:var(--kf-realm-metal,#a6a0dc)}
 
 /* The Diary: old paper under glass, never overwrite text or personal entries. */
 body[data-kf-realm="diary"]:not(.profile-custom-theme) :is(.diary-card,.diary-privacy,.diary-entries-section,.diary-shell>section){
