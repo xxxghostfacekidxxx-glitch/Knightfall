@@ -56,6 +56,9 @@ test("registration stores a token digest and consumes the proof exactly once", a
     assert.equal(url, "https://api.resend.com/emails");
     const email = JSON.parse(request.body);
     assert.deepEqual(email.to, [signup.email]);
+    assert.equal(email.subject, "Verify your Knightfall email");
+    assert.match(email.text, /Knightfall account/);
+    assert.ok(request.signal, "Provider request must have a timeout signal");
     token = email.text.match(/\/verify-email\.html#token=([a-f0-9]{64})/)[1];
     return new Response(null, { status: 200 });
   });
