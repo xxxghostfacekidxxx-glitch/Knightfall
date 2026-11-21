@@ -8,7 +8,7 @@ const LIVE_CACHE="kf:theme-live-cache-v3";
 const GLOBAL_PREVIEW="kf:global-design-preview";
 const PUBLISH_SIGNAL="kf:theme-published-v1";
 const channel=typeof BroadcastChannel==="function"?new BroadcastChannel("kf:theme-published"):null;
-const KNOWN=new Set(["cathedral","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"]);
+const KNOWN=new Set(["cathedral","egyptian_eclipse","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"]);
 const REALMS=new Set(["site","madhouse","arcade","chaosphere","admin"]);
 const GLOBAL_OPTIONS=Object.freeze({
  density:["balanced","compact","relaxed"],
