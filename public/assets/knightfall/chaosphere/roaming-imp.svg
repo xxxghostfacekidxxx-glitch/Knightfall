@@ -32,7 +32,7 @@
 <path d="M74 141Q46 129 34 151Q43 183 87 170M241 143Q278 123 293 151Q282 182 235 171" fill="url(#skin)" stroke="#2e0c1a" stroke-width="5"/>
 <path d="M52 150l24 6M265 155l17-5" stroke="#7b1829" stroke-width="3"/>
 <g id="eyes"><path d="M89 132Q119 108 144 131Q119 159 91 144ZM177 131Q204 106 235 130Q215 156 181 143Z" fill="url(#eye)" stroke="#180c19" stroke-width="7"/><path d="M122 128v22M201 127v23" stroke="#171019" stroke-width="8"/></g>
-<path d="M89 119l48-13M183 106l49 11" stroke="#180d19" stroke-width="11"/>
+<path d="M148 84l20 20m0-20l-20 20" fill="none" stroke="#1b101b" stroke-width="7" stroke-linecap="round"/><path d="M149 84l19 20" fill="none" stroke="#ffd58b" stroke-width="1.6" opacity=".8"/><path d="M89 119l48-13M183 106l49 11" stroke="#180d19" stroke-width="11"/>
 <path d="M112 166Q160 197 219 164Q201 217 162 216Q123 214 112 166Z" fill="#1a0912" stroke="#6b1c22" stroke-width="4"/>
 <path d="M122 177l13 14 13-11 13 13 14-11 14 11 14-15" fill="#fff0d5" stroke="#e7c8a6" stroke-width="2"/>
 <path d="M156 197Q162 220 171 202" fill="#ef5968"/>
