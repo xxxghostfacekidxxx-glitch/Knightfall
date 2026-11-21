@@ -636,6 +636,19 @@
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/riot.svg",
       "styleVersion": 1,
       "availability": "art-preview-only"
+    },
+    {
+      "id": "boogie",
+      "name": "Boogie",
+      "type": "gothic-mouse",
+      "primary": "#e85da9",
+      "accent": "#a269d6",
+      "svg": "/assets/devil-tools/neon-nuisances/boogie.svg",
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/boogie.svg",
+      "description": "Boogie · a shy midnight mouse with long black hair, purple eyes, soft pink bows, dramatic eyeliner and an oversized gothic hoodie.",
+      "personality": "Gentle, quietly funny, observant, and happiest around friends who accept her weirdness.",
+      "styleVersion": 1,
+      "availability": "art-preview-only"
     }
   ],
   "animationVariants": [
