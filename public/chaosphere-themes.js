@@ -14,7 +14,7 @@ function init(){
  controls.append(select);(shell.querySelector(".messages-hero-actions")||shell.querySelector(".panel-title")||shell).prepend(controls);
  const imp=document.createElement("div");imp.className="cs-roaming-imp";imp.setAttribute("aria-label","Chaosphere roaming imp");
  const button=document.createElement("button");button.type="button";button.setAttribute("aria-label","Talk to the Chaosphere imp");
- const img=document.createElement("img");img.src="/icons/chaosphere.svg";img.alt="";img.setAttribute("aria-hidden","true");button.append(img);
+ const img=document.createElement("img");img.src="/assets/knightfall/chaosphere/roaming-imp.svg";img.alt="";img.setAttribute("aria-hidden","true");button.append(img);
  const voice=document.createElement("div");voice.className="cs-imp-voice";voice.setAttribute("role","status");voice.hidden=true;
  imp.append(button,voice);document.body.append(imp);
  let x=24,dir=1,last=0,spoken=0,hideTimer=0,frame=0;const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
