@@ -64,7 +64,7 @@
 @media(max-width:1080px){
  .kf-header{position:sticky;top:0;flex-wrap:wrap}
  .kf-nav-toggle{display:flex;align-items:center;gap:.45rem;padding:.55rem .75rem;font-weight:750}
- .kf-nav{display:none;position:absolute;left:.75rem;right:.75rem;top:calc(100% + .35rem);grid-template-columns:1fr;align-items:stretch;gap:.25rem;max-height:calc(100dvh - 90px);overflow-y:auto;padding:.6rem;border:1px solid #303030;border-radius:12px;background:rgba(9,9,9,.99);box-shadow:0 20px 55px #000c}
+ .kf-nav{display:none;position:absolute;left:.75rem;right:.75rem;top:calc(100% + .35rem);grid-template-columns:1fr;align-items:stretch;gap:.25rem;max-height:calc(100vh - 90px);max-height:calc(100dvh - 90px);overflow-y:auto;padding:.6rem;border:1px solid #303030;border-radius:12px;background:rgba(9,9,9,.99);box-shadow:0 20px 55px #000c}
  .kf-nav.open{display:grid}
  .kf-nav-primary,.kf-nav-group>summary{width:100%;min-height:44px;padding:.75rem .85rem}
  .kf-nav-group{width:100%}
@@ -100,7 +100,7 @@ img,video,iframe{max-width:100%}
 }
 @media(max-width:760px){
  .kf-header{position:sticky;top:0;min-height:64px}
- .kf-nav{flex-wrap:initial;left:.65rem;right:.65rem;top:calc(100% + .2rem);max-height:calc(100dvh - 78px);overscroll-behavior:contain;overflow-y:auto}
+ .kf-nav{flex-wrap:initial;left:.65rem;right:.65rem;top:calc(100% + .2rem);max-height:calc(100vh - 78px);max-height:calc(100dvh - 78px);overscroll-behavior:contain;overflow-y:auto}
  .kf-nav a{padding:.75rem}
  .kf-nav-primary,.kf-nav-group>summary{min-height:46px}
  .kf-nav-group[open]>summary{color:var(--kf-text)}
@@ -132,7 +132,7 @@ main:focus{outline:none}
 .kf-nav-menu a:focus-visible,.kf-nav-group>summary:focus-visible,.kf-nav-toggle:focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:2px}
 @media(min-width:761px) and (max-width:1080px){
  .kf-nav-toggle{display:flex;align-items:center;gap:.45rem;min-height:44px}
- .kf-nav{display:none;position:absolute;left:.75rem;right:.75rem;top:calc(100% + .35rem);grid-template-columns:1fr;align-items:stretch;justify-content:stretch;flex-wrap:nowrap;gap:.25rem;max-height:calc(100dvh - 90px);overflow-y:auto;overscroll-behavior:contain;padding:.6rem;border:1px solid #303030;border-radius:12px;background:rgba(9,9,9,.99);box-shadow:0 20px 55px #000c}
+ .kf-nav{display:none;position:absolute;left:.75rem;right:.75rem;top:calc(100% + .35rem);grid-template-columns:1fr;align-items:stretch;justify-content:stretch;flex-wrap:nowrap;gap:.25rem;max-height:calc(100vh - 90px);max-height:calc(100dvh - 90px);overflow-y:auto;overscroll-behavior:contain;padding:.6rem;border:1px solid #303030;border-radius:12px;background:rgba(9,9,9,.99);box-shadow:0 20px 55px #000c}
  .kf-nav.open{display:grid}
  .kf-nav-primary,.kf-nav-group>summary{width:100%;min-height:44px;padding:.75rem .85rem}
  .kf-nav-group{width:100%}
@@ -143,3 +143,17 @@ main:focus{outline:none}
 
 /* Keep mobile navigation scrollable without scrolling games behind its open drawer. */
 @media(max-width:1080px){body.kf-navigation-open{overflow:hidden}}
+
+
+/* iPhone/iPad: usable PWA drawers and form fields when Safari changes its
+   visual viewport for browser chrome, the home indicator, or the keyboard. */
+@media (max-width:1080px) {
+  .kf-nav {
+    padding-bottom:max(.6rem, env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling:touch;
+  }
+  @supports (-webkit-touch-callout:none) {
+    /* Safari otherwise zooms the entire page when focusing a small input. */
+    input:not([type="range"]), textarea, select { font-size:16px; }
+  }
+}
