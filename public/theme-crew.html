@@ -15,24 +15,33 @@
 <main class="theme-crew-shell" id="theme-crew">
 <nav class="theme-crew-breadcrumb" aria-label="Breadcrumb"><a href="/admin.html">Admin</a><span>/</span><a href="/eye-of-chaos.html">Eye of Chaos</a><span>/</span><span>Theme Crew</span></nav>
 <header class="theme-crew-header"><div><p class="eyebrow">KNIGHTFALL / EYE OF CHAOS / DIVISION IV</p>
-<h1>The Theme Forge.</h1><p>Five curated visual identities. One fast preview, one approved publish, one rollback. Change the kingdom without piling another haunted stylesheet onto the previous one.</p></div></header>
+<h1>The Theme Forge.</h1><p>One shared foundation. Five separately controlled realms: Knightfall, The Madhouse, Chaos Cartridge, Chaosphere, and the Eye of Chaos for Osiris &amp; Isis. Preview, publish and roll back each realm independently.</p></div></header>
 <p id="theme-crew-status" class="theme-crew-status" role="status" aria-live="polite">Checking staff authorization and live theme state…</p>
 <section id="theme-crew-denied" class="theme-crew-panel theme-crew-denied" hidden><h2>Staff access required</h2><p>Only GOD and the accepted admin partner can publish or roll back a reviewed theme. Other admins can plan and preview. The public site never receives the control API.</p><a href="/auth.html?next=%2Ftheme-crew.html">Sign in to Knightfall</a></section>
 <div id="theme-crew-workspace" class="theme-crew-workspace" hidden>
   <section class="theme-crew-panel" aria-labelledby="crew-presets-title">
-  <h2 id="crew-presets-title">Sitewide appearance</h2>
+  <h2 id="crew-presets-title">Independent realm appearance</h2>
+  <label for="theme-crew-scope" class="theme-crew-scope-label">Choose the realm to control</label>
+  <select id="theme-crew-scope" class="theme-crew-scope" aria-describedby="theme-crew-scope-hint">
+   <option value="site">Knightfall / Shared site</option>
+   <option value="madhouse">The Madhouse / Forums</option>
+   <option value="arcade">Chaos Cartridge / Arcade hub</option>
+   <option value="chaosphere">Chaosphere / Messaging</option>
+   <option value="admin">Eye of Chaos / Osiris &amp; Isis</option>
+  </select>
+  <p id="theme-crew-scope-hint" class="theme-crew-hint">Changes to one realm do not replace the others. Untouched realms inherit the shared site appearance until you customize them.</p>
   <p id="theme-crew-current" aria-live="polite">Reading the published version…</p>
   <div id="theme-crew-presets" class="theme-crew-presets" role="group" aria-label="Reviewed Knightfall theme presets"></div>
   <p id="theme-crew-selected" class="theme-crew-selected" aria-live="polite">Choose a look to preview.</p>
   <p class="theme-crew-hint">Select a card for an immediate, private preview. Arrow keys navigate themes. Publish or rollback only when authorized.</p>
   <div class="theme-crew-actions">
-    <button type="button" id="theme-crew-preview">Open homepage preview</button>
+    <button type="button" id="theme-crew-preview">Open selected realm preview</button>
     <button type="button" id="theme-crew-copy-preview">Copy preview link</button>
-    <button type="button" id="theme-crew-publish">Publish sitewide</button>
+    <button type="button" id="theme-crew-publish">Publish selected realm</button>
     <button type="button" id="theme-crew-revert-preview">Clear my preview</button>
     <button type="button" id="theme-crew-rollback">Rollback last change</button>
   </div>
-  <p><small>Selecting a card previews instantly in your tab. Publish requires authorization, confirmation and an up-to-date revision. Open tabs on your device update immediately; other devices check regularly. Gameplay and individual profile themes stay untouched.</small></p>
+  <p><small>Previews never publish. Publication requires Osiris/GOD or the verified delegated Isis collaborator, confirmation and the selected realm’s current revision. Hosted gameplay and member-defined profile themes stay untouched.</small></p>
   <div class="theme-crew-plan">
     <h2>Ask Morgue Mason</h2>
     <p>Describe a look. The planner matches your direction to a reviewed palette without injecting generated CSS.</p>
