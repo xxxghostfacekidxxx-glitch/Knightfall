@@ -1,0 +1,72 @@
+name: Knightfall Creations Vault
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 7 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'public/assets/**'
+      - 'public/icons/**'
+      - 'public/arcade/**'
+      - 'public/creator-*'
+      - 'public/devil-tools.html'
+      - 'public/dev-toolkit.html'
+      - 'public/open-source-arsenal.html'
+      - 'public/mascot-room.html'
+      - 'public/chaos-visual-lab.html'
+      - 'public/knightfall-*.css'
+      - 'backend/src/creator-*'
+      - 'scripts/knightfall-creation-preserve*'
+      - '.github/workflows/knightfall-creations-vault.yml'
+permissions:
+  contents: read
+concurrency:
+  group: knightfall-creations-vault-main
+  cancel-in-progress: false
+jobs:
+  preserve:
+    name: Verify and archive original art plus Creator Foundry
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check preservation scripts and Creator Foundry
+        run: |
+          node --check scripts/knightfall-creation-preserve.mjs
+          node --test scripts/knightfall-creation-preserve.test.mjs
+          node --check public/creator-foundry.js
+          node --check public/creator-foundry-workspaces.js
+          node --check public/creator-art-studio.js
+          node --check public/creator-production-lab.js
+      - name: Block artwork or Creator Foundry deletion against saved baseline
+        run: node scripts/knightfall-creation-preserve.mjs --audit --verify
+      - name: Save all tracked artwork and Foundry sources with SHA-256 file inventory
+        run: node scripts/knightfall-creation-preserve.mjs --archive
+      - name: Upload recoverable art and Creator Foundry snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: knightfall-art-and-creator-foundry
+          path: |
+            artifacts/knightfall-preservation/knightfall-artwork-and-creator-foundry.tar.gz
+            artifacts/knightfall-preservation/inventory.json
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+      - name: Record recovery instructions
+        run: |
+          {
+            echo "## Knightfall protected creation snapshot"
+            echo ""
+            echo "This archive contains all Git-tracked artwork and Creator Foundry source matched by the preservation inventory."
+            echo "Review the attached inventory.json for every path, original byte length and SHA-256 checksum."
+            echo "Git history retains previous revisions. This GitHub Actions artifact has a 30-day retention period and is refreshed by the daily scheduled workflow."
+            echo "Cloudflare R2, D1 and member-uploaded artwork are not copied by this job."
+          } >> "$GITHUB_STEP_SUMMARY"
