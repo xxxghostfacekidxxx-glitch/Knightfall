@@ -13,7 +13,7 @@
 </head>
 <body>
 <header class="kf-header"></header>
-<main class="messages-shell">
+<main class="messages-shell"><section class="kf-trouble-controls" aria-label="Trouble's voice"><label for="kf-trouble-spice">😈 Trouble's mood</label><input id="kf-trouble-spice" type="range" min="0" max="3" step="1" value="0" aria-describedby="kf-trouble-spice-label"><output id="kf-trouble-spice-label" for="kf-trouble-spice">Sweet</output><span class="kf-trouble-control-note">Default is kid-friendly. Strong language is optional.</span></section>
   <section class="messages-hero">
     <div><p class="eyebrow">KNIGHTFALL / ENTER THE CHAOS</p><div class="cs-hero-brand"><button type="button" class="cs-hero-imp" id="cs-hero-imp" aria-label="Poke the Chaosphere demon mascot" title="Poke the little demon"><img src="/icons/chaosphere.svg" width="76" height="76" alt="Chaosphere's little demon mascot"></button><h1>CHAOSPHERE<span>.</span></h1></div><p class="cs-hero-imp-speech" id="cs-hero-imp-speech" role="status" hidden></p><p>Enter the chaos. Find your kind. Private messages, live conversations, and ridiculous game nights.</p></div>
     <div class="messages-hero-actions"><button id="phone-push-help" class="secondary" type="button">📲 Phone alerts</button><button id="new-group" class="secondary">New group</button><button id="new-message" class="primary">New message</button></div>
@@ -795,4 +795,6 @@ $("#phone-push-help").addEventListener("click",()=>{location.href="/notification
 window.addEventListener("beforeunload",()=>{if(pollHandle)clearInterval(pollHandle);if(typingPollHandle)clearInterval(typingPollHandle);if(presenceHandle)clearInterval(presenceHandle);if(memberSearchHandle)clearTimeout(memberSearchHandle);if(archiveSearchHandle)clearTimeout(archiveSearchHandle)});
 </script>
 <script src="/chaosphere-extras.js?v=20261120-messenger1" defer></script>
-</body></html>
+<script>
+(()=>{const input=document.getElementById("kf-trouble-spice");const output=document.getElementById("kf-trouble-spice-label");const labels=["Sweet","Sassy","Spicy","Unhinged"];const key="kf:trouble-spice";let saved=0;try{saved=Number(localStorage.getItem(key))||0}catch{}input.value=Math.max(0,Math.min(3,saved));output.textContent=labels[Number(input.value)];input.addEventListener("input",()=>{const n=Number(input.value);output.textContent=labels[n];try{localStorage.setItem(key,String(n))}catch{}})})();
+</script></body></html>
