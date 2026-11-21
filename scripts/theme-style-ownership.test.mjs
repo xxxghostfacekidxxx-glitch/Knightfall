@@ -9,6 +9,7 @@ const read=file=>readFileSync(join(publicDir,file),"utf8");
 const ordered=[
  "design-system.css",
  "visual-refresh.css",
+ "knightfall-section-foundations.css",
  "knightfall-unified-theme.css",
  "theme-crew.css",
  "theme-crew-dashboard.css",
@@ -55,7 +56,9 @@ test("new global and realm architecture does not grow fresh forced overrides",()
  assert.equal(important(realm),0,"Realm boundaries should not become a new important war");
  assert.ok(important(read("theme-crew.css"))<=28,"Approved preset specificity must not grow");
  assert.ok(important(read("theme-crew-dashboard.css"))<=2,"Staff CSS should avoid forced declarations");
- assert.ok(important(read("knightfall-unified-theme.css"))<=482,"Old monolith may only shrink");
+ assert.ok(important(read("knightfall-section-foundations.css"))<=14,"Foundation forced styles may only shrink");
+ assert.ok(important(read("knightfall-unified-theme.css"))<=468,"Old monolith may only shrink");
+ assert.ok(important(read("knightfall-section-foundations.css"))+important(read("knightfall-unified-theme.css"))<=482,"Legacy shared override total may only shrink");
  assert.ok(important(read("knightfall-requiem.css"))<=132,"Black Sun layer may only shrink");
  for(const text of [global,realm]){
   assert.doesNotMatch(text,/\bcanvas\s*\{/);
