@@ -14,7 +14,7 @@ assert.match(tokens,/--af-bg:#0d1013/);
 assert.match(tokens,/body\{min-width:0;margin:0\}/,"Shared body reset must remove 8px browser margin");
 assert.match(tokens,/--af-ember:#b25b68/);
 assert.match(tokens,/--af-ember-light:#c7a77c/);
-assert.match(theme,/knightfall-unified-theme\.css\?v=20261120-tokens1/,"Canonical shared CSS must use the approved cached revision");
+assert.match(theme,/knightfall-unified-theme\.css\?v=20261120-tokens2/,"Canonical shared CSS must use the approved cached revision");
 assert.doesNotMatch(theme,/@import url\("\/neon-global\.css/);
 assert.match(nav,/kfCanonicalTheme/,"Nav must deduplicate the canonical theme");
 assert.doesNotMatch(nav,/#ff55d8|#c6ff45|#ba36c1/i,"Injected navigation must not revive neon palette");
