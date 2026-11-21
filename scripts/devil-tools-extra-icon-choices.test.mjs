@@ -13,8 +13,8 @@ test("eight additional SVGs are listed in the 21-choice icon gallery",async()=>{
   assert.match(svg,/<\/svg>/);
  }
 });
-test("mobile inbox controls keep neon palette and are not obscured by mascots",async()=>{
+test("mobile inbox controls respect realm palette and remain free of overlays",async()=>{
  const css=(await read("knightfall-section-foundations.css"))+"\n"+(await read("knightfall-unified-theme.css"));
- assert.match(css,/\.messages-shell \.composer textarea\{background:#0b0d1b!important/);
+ assert.match(css,/\.messages-shell \.composer textarea\{background:var\(--kf-msg-base\)!important/);
  assert.match(css,/body:has\(\.messages-shell\) \.gw-character-crew\{display:none!important\}/);
 });
