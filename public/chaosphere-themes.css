@@ -22,3 +22,11 @@
 @keyframes cs-imp-bob{to{translate:0 -7px;rotate:3deg}}
 @media(max-width:700px){.cs-roaming-imp{width:65px;height:75px;bottom:90px}.cs-roaming-imp .cs-imp-voice{min-width:120px}}
 @media(prefers-reduced-motion:reduce){.cs-roaming-imp button{animation:none}}
+
+/* Registered vector scene artwork for each theme, clipped inside the message viewport. */
+.messages-shell[data-cs-theme="obsidian"] .messages-list{background-image:linear-gradient(#0c0d19c9,#0c0d19dd),url("/assets/knightfall/chaosphere/obsidian-chat.svg")!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+.messages-shell[data-cs-theme="hellfire"] .messages-list{background-image:linear-gradient(#0c0d19c9,#0c0d19dd),url("/assets/knightfall/chaosphere/hellfire-chat.svg")!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+.messages-shell[data-cs-theme="egypt"] .messages-list{background-image:linear-gradient(#0c0d19c9,#0c0d19dd),url("/assets/knightfall/chaosphere/egypt-chat.svg")!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+.messages-shell[data-cs-theme="mustafar"] .messages-list{background-image:linear-gradient(#0c0d19c9,#0c0d19dd),url("/assets/knightfall/chaosphere/mustafar-chat.svg")!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+.messages-shell[data-cs-theme="korriban"] .messages-list{background-image:linear-gradient(#0c0d19c9,#0c0d19dd),url("/assets/knightfall/chaosphere/korriban-chat.svg")!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+.messages-shell[data-cs-theme="vader"] .messages-list{background-image:linear-gradient(#0c0d19c9,#0c0d19dd),url("/assets/knightfall/chaosphere/vader-chat.svg")!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
