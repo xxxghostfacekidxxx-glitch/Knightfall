@@ -13,10 +13,12 @@
 <link rel="stylesheet" href="/creator-foundry.css?v=20261115-gothic7">
 <link rel="stylesheet" href="/creator-motion-preview.css?v=20261114-motion1">
 <link rel="stylesheet" href="/creator-art-studio.css?v=20261119-photos-fix2">
+<link rel="stylesheet" href="/creator-theme-art-gallery.css?v=20261120-theme-art1">
 <link rel="stylesheet" href="/creator-production-lab.css?v=20261113-creator1">
 <script src="/creator-foundry.js?v=20261115-workspaces1" defer></script>
 <script src="/photo-upload.js?v=1" defer></script>
 <script src="/creator-art-studio.js?v=20261119-photos-fix3" defer></script>
+<script src="/creator-theme-art-gallery.js?v=20261120-theme-art1" defer></script>
 <script type="module" src="/creator-foundry-workspaces.js?v=20261115-workspaces1"></script>
 <script type="module" src="/creator-motion-preview.js?v=20261114-motion1"></script>
 <script type="module" src="/creator-production-lab.js?v=20261113-creator1"></script>
@@ -96,6 +98,11 @@
         <h3>Site Image Library</h3>
         <p>Store and preview images, check approvals, and copy URLs for use around the site.</p>
         <div class="actions"><a class="foundry-link-main" href="#site-image-library" data-workspace-search>Open Image Library</a></div>
+      </article>
+      <article class="foundry-card" data-search="Egyptian Eclipse Dark Lord Ascendant original theme art six illustrations backgrounds concept previews theme forge">
+        <h3>𓂀 Original Theme Artwork Vault</h3>
+        <p>Six saved Egyptian Eclipse and Dark Lord Ascendant illustrations, including the theme-selector concept. Filter, preview, download, or copy a local asset path.</p>
+        <div class="actions"><a class="foundry-link-main" href="#theme-art-collection" data-workspace-search>Open Theme Artwork Vault</a></div>
       </article>
       <article class="foundry-card" data-search="cards prompts answers black white expansion deck madhouse after hours">
         <h3>Cards Against Chaos Catalog</h3>
@@ -455,6 +462,20 @@
     <p class="small">Open an image to preview it, or copy its URL for a game or site page.</p>
     <div id="kf-art-published" class="kf-art-staged"><p class="small">Loading asset inventory…</p></div>
   <button class="btn" type="button" id="kf-art-more" hidden>Load more images</button>
+</section>
+<section class="panel kf-theme-art-vault" id="theme-art-collection" data-workspace hidden aria-labelledby="theme-art-collection-title">
+  <p class="eyebrow">CREATOR FOUNDRY / SAVED ORIGINALS / 2026-11-20</p>
+  <h2 id="theme-art-collection-title">Egyptian Eclipse &amp; Dark Lord Ascendant · Theme Artwork Vault</h2>
+  <p class="kf-theme-art-intro">The six original high-resolution illustrations created for Knightfall, organized into two future theme-art collections and one selector concept. These files are part of the repository preservation vault and can be reused in the site's artwork without re-uploading.</p>
+  <p class="small">Artwork gallery, not a theme activation switch. Use the Theme Forge to manage currently approved sitewide and realm themes. Future theme presets must be reviewed before publishing.</p>
+  <div class="kf-theme-art-filters" role="group" aria-label="Filter original theme artwork">
+    <button type="button" data-collection="all" aria-pressed="true">All artwork · 6</button>
+    <button type="button" data-collection="egyptian-eclipse" aria-pressed="false">𓂀 Egyptian Eclipse</button>
+    <button type="button" data-collection="dark-lord-ascendant" aria-pressed="false">◈ Dark Lord Ascendant</button>
+    <button type="button" data-collection="theme-selector" aria-pressed="false">Theme selector concept</button>
+  </div>
+  <p id="kf-theme-art-status" class="small" role="status" aria-live="polite">Loading verified original artwork from Knightfall…</p>
+  <div id="kf-theme-art-gallery" class="kf-theme-art-gallery" aria-label="Original theme-art gallery"></div>
 </section>
 <section class="panel" id="creation-gallery" data-workspace hidden aria-labelledby="creation-gallery-title">
   <h2 id="creation-gallery-title">Creation Gallery</h2>
