@@ -15,8 +15,8 @@ function init(){
  const impToggle=document.getElementById("cs-imp-enabled"), voiceToggle=document.getElementById("cs-imp-voice-enabled");
  const getPref=(name)=>{try{return localStorage.getItem("knightfall-"+name)!=="off"}catch{return true}};
  const setPref=(name,value)=>{try{localStorage.setItem("knightfall-"+name,value?"on":"off")}catch{}};
- const imp=document.createElement("div");imp.className="cs-roaming-imp";imp.setAttribute("aria-label","Mayhem Munch, Chaosphere roaming imp");
- const button=document.createElement("button");button.type="button";button.setAttribute("aria-label","Talk to Mayhem Munch, the Chaosphere imp");button.title="Mayhem Munch: tap for trouble";
+ const imp=document.createElement("div");imp.className="cs-roaming-imp";imp.setAttribute("aria-label","Mayhem the Menace, Chaosphere roaming imp");
+ const button=document.createElement("button");button.type="button";button.setAttribute("aria-label","Talk to Mayhem the Menace, the Chaosphere imp");button.title="Mayhem the Menace: tap for trouble";
  const img=document.createElement("img");img.src="/assets/knightfall/chaosphere/roaming-imp.svg";img.alt="";img.setAttribute("aria-hidden","true");button.append(img);
  const voice=document.createElement("div");voice.className="cs-imp-voice";voice.setAttribute("role","status");voice.hidden=true;
  imp.append(button,voice);document.body.append(imp);
