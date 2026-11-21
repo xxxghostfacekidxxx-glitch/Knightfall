@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v92";
+const CACHE_NAME = "knightfall-shell-v93";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -25,6 +25,8 @@ const APP_SHELL = [
   "/arcade/hosted/hex-and-whisk/SOURCE.md",
   "/theme-crew.css",
   "/egyptian-eclipse-theme.css",
+  "/knightfall-art-theme-variables.css",
+  "/knightfall-art-theme-template.css",
   "/theme-crew-dashboard.css",
   "/theme-crew-runtime.js",
   "/theme-crew.html",
