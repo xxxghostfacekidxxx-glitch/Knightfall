@@ -12,6 +12,7 @@ const jobs=[
  ["Canonical theme asset URLs and single loader",["--test","scripts/theme-asset-url-integrity.test.mjs"]],
  ["Black Sun navigation and theme regression checks",["--test","scripts/black-sun-cleanup.test.mjs"]],
  ["Theme Forge artwork and rapid preset switching",["--test","scripts/theme-forge-fast-switch.test.mjs"]],
+ ["Independent realm theme routing, previews and isolation",["--test","scripts/realm-theme-engine.test.mjs"]],
  ["Internal navigation and duplicate links",["scripts/site-link-integrity.mjs"]],
  ["Approved Gothic colors, assets and PWA invariants",["scripts/site-theme-audit.mjs"]],
  ["Messaging theme regression",["scripts/messaging-theme-audit.mjs"]],
