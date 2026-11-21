@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "collection": "Chaosphere messenger",
+  "collection": "Knightfall cross-realm theme art",
   "created": "2026-11-21",
   "assets": [
     {
@@ -118,15 +118,89 @@
     ]
   },
   "catalog": {
-    "status": "foundation",
-    "freeThemes": [
-      "obsidian",
-      "hellfire",
-      "egypt",
-      "mustafar",
-      "korriban",
-      "vader"
+    "status": "preview-only; checkout and entitlements not enabled",
+    "components": [
+      "profile",
+      "chaosphere",
+      "miss_chaos",
+      "site"
     ],
-    "futurePaidThemes": "not yet implemented; server-side entitlement checks and checkout required before sales"
+    "bundleRule": "A complete collection bundle grants every available component of the same theme, while individual purchases grant only their named component.",
+    "items": [
+      {
+        "theme": "obsidian",
+        "individualSkuIds": [
+          "theme.obsidian.profile",
+          "theme.obsidian.chaosphere",
+          "theme.obsidian.miss_chaos",
+          "theme.obsidian.site"
+        ],
+        "bundleSkuId": "theme.obsidian.complete",
+        "sellable": false
+      },
+      {
+        "theme": "hellfire",
+        "individualSkuIds": [
+          "theme.hellfire.profile",
+          "theme.hellfire.chaosphere",
+          "theme.hellfire.miss_chaos",
+          "theme.hellfire.site"
+        ],
+        "bundleSkuId": "theme.hellfire.complete",
+        "sellable": false
+      },
+      {
+        "theme": "egypt",
+        "individualSkuIds": [
+          "theme.egypt.profile",
+          "theme.egypt.chaosphere",
+          "theme.egypt.miss_chaos",
+          "theme.egypt.site"
+        ],
+        "bundleSkuId": "theme.egypt.complete",
+        "sellable": false
+      },
+      {
+        "theme": "mustafar",
+        "individualSkuIds": [
+          "theme.mustafar.profile",
+          "theme.mustafar.chaosphere",
+          "theme.mustafar.miss_chaos",
+          "theme.mustafar.site"
+        ],
+        "bundleSkuId": "theme.mustafar.complete",
+        "sellable": false
+      },
+      {
+        "theme": "korriban",
+        "individualSkuIds": [
+          "theme.korriban.profile",
+          "theme.korriban.chaosphere",
+          "theme.korriban.miss_chaos",
+          "theme.korriban.site"
+        ],
+        "bundleSkuId": "theme.korriban.complete",
+        "sellable": false
+      },
+      {
+        "theme": "vader",
+        "individualSkuIds": [
+          "theme.vader.profile",
+          "theme.vader.chaosphere",
+          "theme.vader.miss_chaos",
+          "theme.vader.site"
+        ],
+        "bundleSkuId": "theme.vader.complete",
+        "sellable": false
+      }
+    ],
+    "requirements": [
+      "Persist purchases in server-side member entitlements",
+      "Validate purchases and refunds against Stripe webhooks",
+      "Enforce entitlement on theme selection APIs",
+      "Prevent duplicate charges for components owned via bundles",
+      "Provide theme preview before checkout",
+      "Do not list third-party licensed art for commercial sale without rights"
+    ]
   }
 }
