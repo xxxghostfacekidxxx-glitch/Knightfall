@@ -50,6 +50,48 @@
       "type": "image/svg+xml",
       "path": "/assets/knightfall/chaosphere/roaming-imp.svg",
       "usage": "animated DOM mascot"
+    },
+    {
+      "id": "obsidian-panel",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/obsidian-panel.svg",
+      "usage": "chat header, settings and conversation panel ornament",
+      "theme": "obsidian"
+    },
+    {
+      "id": "hellfire-panel",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/hellfire-panel.svg",
+      "usage": "chat header, settings and conversation panel ornament",
+      "theme": "hellfire"
+    },
+    {
+      "id": "egypt-panel",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/egypt-panel.svg",
+      "usage": "chat header, settings and conversation panel ornament",
+      "theme": "egypt"
+    },
+    {
+      "id": "mustafar-panel",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/mustafar-panel.svg",
+      "usage": "chat header, settings and conversation panel ornament",
+      "theme": "mustafar"
+    },
+    {
+      "id": "korriban-panel",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/korriban-panel.svg",
+      "usage": "chat header, settings and conversation panel ornament",
+      "theme": "korriban"
+    },
+    {
+      "id": "vader-panel",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/vader-panel.svg",
+      "usage": "chat header, settings and conversation panel ornament",
+      "theme": "vader"
     }
   ],
   "pending": [
@@ -59,5 +101,16 @@
       "status": "generated in conversation; binary not yet transferred to repository",
       "note": "Original detailed punk imp concept. SVG mascot is a separate vector interpretation, not the PNG."
     }
-  ]
+  ],
+  "mascot": {
+    "name": "Soot Riot",
+    "asset": "/assets/knightfall/chaosphere/roaming-imp.svg",
+    "features": [
+      "roaming",
+      "tap speech",
+      "cackling",
+      "direction changes",
+      "member mute and visibility preferences"
+    ]
+  }
 }
