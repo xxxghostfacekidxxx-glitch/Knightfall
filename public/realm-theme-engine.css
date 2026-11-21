@@ -1,0 +1,52 @@
+/*
+ * KNIGHTFALL REALM THEME ENGINE v3
+ * One published preset per realm, with independent art direction and controls.
+ * Deliberately limited to chrome and section containers. Never style canvas,
+ * member-owned profile colors, messenger message bodies, or hosted games here.
+ * The active allowlisted preset is selected by theme-crew-runtime.js.
+ */
+:root{--kf-realm-engine-version:3}
+
+/* Every realm has its own motif, but all presets still control shared colors. */
+html body[data-kf-theme-scope="madhouse"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-domain-art:url('/assets/knightfall/realm-madhouse.svg');
+ --kf-domain-ornament:#8f3444;
+ --kf-domain-name:"THE MADHOUSE";
+}
+html body[data-kf-theme-scope="arcade"]:not(.profile-custom-theme):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
+ --kf-domain-art:url('/assets/knightfall/realm-arcade.svg');
+ --kf-domain-ornament:#d18237;
+ --kf-domain-name:"CHAOS CARTRIDGE";
+}
+html body[data-kf-theme-scope="chaosphere"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-domain-art:url('/assets/knightfall/realm-messages.svg');
+ --kf-domain-ornament:#7971c8;
+ --kf-domain-name:"CHAOSPHERE";
+}
+html body[data-kf-theme-scope="admin"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-domain-art:url('/assets/knightfall/realm-god.svg');
+ --kf-domain-ornament:#c9a56a;
+ --kf-domain-name:"EYE OF CHAOS";
+}
+/* Isolated section rails: no broad selectors and zero forced declarations. */
+html body[data-kf-theme-scope="madhouse"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.community-directory>.hero,.forum-hero){
+ border-inline-start:3px solid var(--kf-realm-metal,var(--kf-domain-ornament));
+}
+html body[data-kf-theme-scope="arcade"]:not(.profile-custom-theme):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.cartridge-hero,.arcade-directory>.hero,.cartridge-shelf>.hero){
+ border-inline-start:3px solid var(--kf-realm-metal,var(--kf-domain-ornament));
+}
+html body[data-kf-theme-scope="chaosphere"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.messages-hero,.rw-install-hero,.social-hero){
+ border-inline-start:3px solid var(--kf-realm-metal,var(--kf-domain-ornament));
+}
+html body[data-kf-theme-scope="admin"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.admin-shell>.hero,.eye-shell>.eye-hero,.theme-crew-header){
+ border-inline-start:3px solid var(--kf-realm-metal,var(--kf-domain-ornament));
+}
+/* The staff editor is also a realm-aware surface, without influencing games. */
+body.theme-crew-page .theme-crew-scope-label{display:block;margin:0 0 .4rem;font-weight:800;color:#f1cb8b;letter-spacing:.035em}
+body.theme-crew-page .theme-crew-scope{display:block;width:100%;max-width:520px;min-height:48px;padding:.7rem .8rem;margin:0 0 .6rem;
+ background:#111612;color:#fff0d4;border:1px solid #bd8c52;border-radius:10px;font:700 1rem/1.4 system-ui,sans-serif}
+body.theme-crew-page .theme-crew-scope:focus-visible{outline:3px solid #ffcd85;outline-offset:3px}
+body.theme-crew-page .theme-crew-scope:disabled{opacity:.65}
+body.theme-crew-page .theme-crew-hint{max-width:76ch;line-height:1.5}
+@media(max-width:600px){body.theme-crew-page .theme-crew-scope{max-width:100%}}
+@media(forced-colors:active){body.theme-crew-page .theme-crew-scope{border-color:CanvasText}}
