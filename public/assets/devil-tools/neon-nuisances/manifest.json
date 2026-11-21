@@ -508,11 +508,11 @@
     {
       "id": "trouble",
       "name": "Trouble",
-      "type": "raccoon",
-      "primary": "#aab1bc",
-      "accent": "#73ffcd",
-      "description": "Trouble · punk raccoon with a dramatic black eye mask, ringed tail, neon green eyes, pink jacket and a suspiciously acquired bottle cap.",
-      "personality": "Curious, crafty, playful little scavenger. Hoards treasures, arranges harmless pranks and eventually shares his loot with friends.",
+      "type": "infernal-imp",
+      "primary": "#ef4b3d",
+      "accent": "#ffcc68",
+      "description": "Trouble · chibi Egyptian-infernal imp with engraved horns, an X tattoo on his forehead, gold jewelry, scorched wings and a wicked grin.",
+      "personality": "Loud, mischievous and fiercely loyal. His optional four-step speech intensity ranges from kid-friendly to profane.",
       "svg": "/assets/devil-tools/neon-nuisances/trouble.svg",
       "variants": {
         "idle": "/assets/devil-tools/neon-nuisances/trouble-idle.svg",
@@ -520,7 +520,7 @@
         "bounce": "/assets/devil-tools/neon-nuisances/trouble-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/trouble-mischief.svg"
       },
-      "styleVersion": 15,
+      "styleVersion": 16,
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/trouble.svg"
     },
     {
@@ -558,6 +558,19 @@
       },
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/crush.svg",
       "styleVersion": 16
+    },
+    {
+      "id": "havoc",
+      "name": "Havoc",
+      "type": "infernal-imp",
+      "primary": "#8956d8",
+      "accent": "#6efff4",
+      "description": "Havoc · Trouble's violet and electric-cyan demon brother, a chibi infernal troublemaker.",
+      "personality": "Trouble's mischievous brother; curious, theatrical and protective.",
+      "svg": "/assets/devil-tools/neon-nuisances/havoc.svg",
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/havoc.svg",
+      "styleVersion": 1,
+      "availability": "art-preview-only"
     }
   ],
   "animationVariants": [
