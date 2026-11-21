@@ -51,3 +51,14 @@ test("Knightfall asset manifest is retained and its primary artwork files resolv
   assert.ok(existsSync(resolve(root,"public",path.slice(1))),"Manifest artwork missing: "+path);
  }
 });
+
+test("Creator Foundry approval preserves a published copy before removing a pending submission",()=>{
+ const source=readFileSync(resolve(root,"backend/src/creator-art-submissions.js"),"utf8");
+ const stored=source.indexOf("await env.PUBLIC_ASSETS.put(key,bytes");
+ const registered=source.indexOf("INSERT INTO public_asset_releases",stored);
+ const deletePending=source.indexOf("await env.PUBLIC_ASSETS.delete(PREFIX+id)",stored);
+ assert.ok(stored>0&&registered>stored&&deletePending>registered,
+  "Approved artwork must be saved in R2 and indexed before the pending original is removed");
+ assert.ok(source.includes("if(stored){try{await env.PUBLIC_ASSETS.delete(key)}"),
+  "Rollback partial approval if database indexing fails, retaining the pending original");
+});
