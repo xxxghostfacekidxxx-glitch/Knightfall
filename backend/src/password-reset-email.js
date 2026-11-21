@@ -32,6 +32,7 @@ export async function deliverPasswordResetEmail(env, { to, subject, text, html }
   try {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
+      signal: AbortSignal.timeout(10000),
       headers: {
         authorization: "Bearer " + env.RESEND_API_KEY,
         "content-type": "application/json",
