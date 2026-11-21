@@ -266,6 +266,14 @@
     skip.className="kf-skip-link";skip.href="#"+mainContent.id;
     skip.textContent="Skip to content";header.before(skip);
   }
+  // Keep the shared navigation pinned even on pages with scrolling/overflow wrappers.
+  if(!header.dataset.kfFixedObserver){
+    header.dataset.kfFixedObserver="true";
+    const syncHeight=()=>document.documentElement.style.setProperty("--kf-header-height",Math.ceil(header.getBoundingClientRect().height)+"px");
+    if(typeof ResizeObserver==="function")new ResizeObserver(syncHeight).observe(header);
+    window.addEventListener("resize",syncHeight,{passive:true});
+    requestAnimationFrame(syncHeight);
+  }
   header.innerHTML = `
     <a class="kf-brand" href="/" aria-label="Knightfall home"><span>KNIGHT</span><b>FALL</b></a>
     <a href="/install.html" class="kf-install-pill" aria-label="Install Knightfall on your device">⬇ <span>Install</span></a>
