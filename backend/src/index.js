@@ -2066,6 +2066,7 @@ For complex questions, organize the answer clearly and provide actionable detail
 
   if(url.pathname==="/api/auth/password-reset/request"&&request.method==="POST"){
     if(!(await rateLimit(env,request,"password-reset",5,900)))return json({message:"If an account matches that email, password-reset instructions will be sent."},200,origin);
+    if(!env.RESEND_API_KEY||!env.PASSWORD_RESET_FROM)return json({error:"Password recovery email is temporarily unavailable. Please contact Knightfall support."},503,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const email=String(body.email||"").trim().toLowerCase();
     if(email.length<=254&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
