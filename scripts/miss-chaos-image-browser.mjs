@@ -94,7 +94,7 @@ async function verifyPopup(width,kind){
    assert.equal(calls[0].companion,"owner");
    assert.match(calls[0].image,/^data:image\/jpeg;base64,/);
    assert.match(calls[0].message,/tattoo/);
-   assert.equal(await page.locator(".mc-attachment-preview").isHidden(),true);
+   assert.equal(await page.locator("#mc-form .mc-attachment-preview").isHidden(),true);
   }
   assert.deepEqual(errors.filter(x=>/TypeError|ReferenceError|SyntaxError/.test(x)),[],errors.join("\n"));
  }finally{await page.close();}
@@ -116,7 +116,7 @@ async function verifyFullChat(){
   assert.equal(calls.length,1);
   assert.match(calls[0].message,/Describe this image/);
   assert.match(calls[0].image,/^data:image\/jpeg;base64,/);
-  assert.equal(await page.locator(".mc-attachment-preview").isHidden(),true);
+  assert.equal(await page.locator("#chat-form .mc-attachment-preview").isHidden(),true);
   assert.deepEqual(errors.filter(x=>/TypeError|ReferenceError|SyntaxError/.test(x)),[],errors.join("\n"));
  }finally{await page.close();}
 }
