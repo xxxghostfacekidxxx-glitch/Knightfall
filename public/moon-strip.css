@@ -38,3 +38,19 @@ html body > .kf-header .kf-lunar-strip {
 @media (max-width: 1080px) {
   html body > .kf-header .kf-nav.open { max-height: calc(100dvh - 125px) !important; }
 }
+
+/* Pocket-sized phones have a real width budget. Keep installation and menu
+ * reachable without pushing the lunar strip or the brand off-screen. */
+@media (max-width: 420px) {
+ html body>.kf-header{min-width:0;column-gap:.3rem!important;row-gap:.35rem!important}
+ html body>.kf-header .kf-brand{flex:1 1 auto;min-width:0;max-width:calc(100% - 100px);letter-spacing:.04em!important}
+ html body>.kf-header .kf-nav-toggle{flex:0 0 auto;margin-left:auto}
+ html body>.kf-header .kf-install-pill{flex:0 0 44px;min-width:44px;min-height:44px;padding:.35rem!important}
+ html body>.kf-header .kf-install-pill span{display:none}
+ html body>.kf-header .kf-lunar-strip{flex:1 0 100%;min-width:0;max-width:100%;flex-wrap:wrap}
+}
+@media (max-width: 340px) {
+ html body>.kf-header .kf-nav-toggle span{display:none}
+ html body>.kf-header .kf-brand{font-size:.82rem!important;letter-spacing:0!important}
+ html body>.kf-header .kf-lunar-disks{gap:2px}
+}
