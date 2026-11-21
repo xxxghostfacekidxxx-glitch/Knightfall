@@ -109,6 +109,11 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: '22'
+      - name: Verify Osiris-only quota dashboard UI
+        run: |
+          node --check public/eye-of-chaos.js
+          node --test scripts/eye-of-chaos-ui.test.mjs
+
       - name: Verify KV-free rate limiter syntax and safeguards
         run: |
           node --check backend/src/index.js
