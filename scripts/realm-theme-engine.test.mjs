@@ -79,6 +79,18 @@ test("Casino and Miss Chaos pages inherit their owning realm, not the global def
   assert.equal(b.window.KnightfallThemeCrew,undefined,"Independent hosted games must remain untouched: "+path);
  }
 });
+test("new public section hubs inherit the site palette without altering existing five realm publishers",async()=>{
+ for(const [route,section] of [
+  ["/celestial-sanctum.html","moon"],["/music.html","music"],["/chatbots.html","foundry"]
+ ]){
+  const b=browser(route,published);
+  await b.window.KnightfallThemeCrew.refresh();
+  assert.equal(b.body.dataset.kfThemeScope,"site",route+" inherits shared publication safely");
+  assert.equal(b.body.dataset.kfTheme,"blood_moon",route+" obeys published site preset");
+  assert.ok(read("public/nav.js").includes('realm = "'+section+'"'),route+" has a separate public identity");
+ }
+ assert.match(read("public/nav.js"),/classList\.contains\("kf-hub-page"\)/);
+});
 test("previews are session-scoped, never become server state, and reject unknown presets",async()=>{
  const session=new Map();
  const madhouse=browser("/community.html",published,session);
