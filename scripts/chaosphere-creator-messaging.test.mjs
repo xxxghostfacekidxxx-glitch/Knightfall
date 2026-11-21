@@ -8,7 +8,10 @@ const backend=readFileSync(new URL("../backend/src/index.js",import.meta.url),"u
 const css=readFileSync(new URL("../public/chaosphere-polish.css",import.meta.url),"utf8");
 const inline=[...inbox.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(Boolean).at(-1);
 if(!inline)throw Error("Chaosphere inline controller missing");
-const from=inline.indexOf(" function composeNotice("),until=inline.indexOf("\n let friendData=",from);
+const from=inline.indexOf(" function composeNotice(");
+const friendBoundary=from<0?-1:inline.slice(from).search(/\
+\s*let friendData=/);
+const until=friendBoundary<0?-1:from+friendBoundary;
 if(from<0||until<from)throw Error("Direct conversation startup functions missing");
 const helper=inline.slice(from,until);
 
