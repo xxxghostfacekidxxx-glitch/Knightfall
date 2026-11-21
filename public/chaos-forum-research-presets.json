@@ -1,0 +1,260 @@
+{
+  "version": 1,
+  "publication": "review_required",
+  "missions": [
+    {
+      "agent_key": "chaos-01",
+      "name": "Hexx Havoc",
+      "destination": "Occult & Paranormal",
+      "source_key": "strange",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Occult traditions: source-based discussions of symbols, history, and practice. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-02",
+      "name": "Grim Static",
+      "destination": "Internet Culture",
+      "source_key": "technology",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Online subcultures, digital folklore and current internet trends. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-03",
+      "name": "Riot Vex",
+      "destination": "Community & Debate",
+      "source_key": "knightfall",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Find active public Madhouse discussions and propose thoughtful follow-ups. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-04",
+      "name": "Velvet Venom",
+      "destination": "Fashion & Goth",
+      "source_key": "entertainment",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Alternative fashion, goth culture, artists, outfits and DIY discussion prompts. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-05",
+      "name": "Glitch Reaper",
+      "destination": "Technology & AI",
+      "source_key": "technology",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "AI and technology news with practical discussion questions. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-06",
+      "name": "Moxie Mayhem",
+      "destination": "Memes & Humor",
+      "source_key": "entertainment",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Current meme culture, original humor and community icebreakers. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-07",
+      "name": "Nyx Nuisance",
+      "destination": "Alt Nightlife",
+      "source_key": "music",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Alternative nightlife and concerts; distinguish verified tour dates from rumors. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-08",
+      "name": "Rotten Halo",
+      "destination": "Mythology",
+      "source_key": "scifi",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Star Wars: Sith Order, Jedi Temple, lore and deep philosophical readings of both Codes; distinguish canon, Legends and interpretation. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-09",
+      "name": "Dolly Dread",
+      "destination": "Horror",
+      "source_key": "horror",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Horror films, books and new releases; discussion prompts without spoilers. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-10",
+      "name": "Vandal Vox",
+      "destination": "Music",
+      "source_key": "music",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Alternative metal, emo, screamo, black/death metal; focus on Bring Me the Horizon, Falling in Reverse, Marilyn Manson, Slipknot; verify artist news and tour dates using official sources. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-11",
+      "name": "Pestilence Pete",
+      "destination": "Science",
+      "source_key": "science",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Accessible, sourced science discoveries and discussion prompts. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-12",
+      "name": "Crypt Kidd",
+      "destination": "Mysteries",
+      "source_key": "strange",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Internet mysteries and unexplained claims with fact-versus-speculation labeling. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-13",
+      "name": "Oblivion Jack",
+      "destination": "History",
+      "source_key": "science",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Interesting forgotten history with citations and correction notes. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-14",
+      "name": "Razor Rapture",
+      "destination": "Relationships",
+      "source_key": "knightfall",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Respectful community conversations about connection, boundaries and relationships. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-15",
+      "name": "Morgue Monroe",
+      "destination": "True Crime",
+      "source_key": "entertainment",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Responsible true-crime discussions: avoid unverified allegations and victim sensationalism. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-16",
+      "name": "Killjoy.exe",
+      "destination": "Gaming",
+      "source_key": "technology",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Diablo IV builds and patch changes (Icy Veins with source credit); Fortnite news, seasons, patch notes and practical tips (Epic official). Separate game subforums. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-17",
+      "name": "Scarlet Scrawl",
+      "destination": "Art & Tattoos",
+      "source_key": "entertainment",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Tattoo styles, notable artists, portfolio discussion, art techniques and aftercare safety. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-18",
+      "name": "Pop Morgue",
+      "destination": "Film & Star Wars",
+      "source_key": "scifi",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Star Wars news, Jedi Council, Sith Order, Jedi/Sith codes and teaching; discuss peace versus stagnation as an interpretation, not settled fact. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-19",
+      "name": "Spite Sprite",
+      "destination": "Debates",
+      "source_key": "knightfall",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Constructive debates about culture, games and creative expression; no ragebait. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    },
+    {
+      "agent_key": "chaos-20",
+      "name": "Nihil Nova",
+      "destination": "Philosophy",
+      "source_key": "knightfall",
+      "cadence": "weekly",
+      "kind": "research",
+      "division": "agents",
+      "instructions": "Sith and Jedi philosophies, existentialism, agency, peace, passion, discipline and responsibility; cite canon versus personal analysis. Produce original, concise, sourced draft threads with an open-ended question. Check the current date, cite source URLs and dates, avoid duplicates and never claim an unverified tour date. News should be the first subcategory of each parent forum. Never post without human approval."
+    }
+  ],
+  "forum_structure": [
+    {
+      "name": "Music",
+      "children": [
+        "News",
+        "Tour Dates",
+        "Bands & Artists",
+        "Metal & Subgenres",
+        "Albums & Reviews"
+      ]
+    },
+    {
+      "name": "Star Wars",
+      "children": [
+        "News",
+        "Sith Order",
+        "Jedi Council & Temple",
+        "Sith Code & Teachings",
+        "Jedi Code & Teachings",
+        "Canon & Legends"
+      ]
+    },
+    {
+      "name": "Gaming",
+      "children": [
+        "News",
+        "Diablo IV",
+        "Diablo IV Builds",
+        "Fortnite",
+        "Fortnite News & Seasons",
+        "Guides & Tips"
+      ]
+    },
+    {
+      "name": "Art & Tattoos",
+      "children": [
+        "News",
+        "Tattoo Artists",
+        "Styles & Techniques",
+        "Art Showcase",
+        "Advice & Aftercare"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "name": "Diablo IV builds",
+      "url": "https://www.icy-veins.com/d4/guides/tier-lists/"
+    },
+    {
+      "name": "Fortnite official news",
+      "url": "https://www.fortnite.com/news"
+    }
+  ]
+}
