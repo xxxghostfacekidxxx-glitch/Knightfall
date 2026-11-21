@@ -109,6 +109,11 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: '22'
+      - name: Verify KV-free rate limiter syntax and safeguards
+        run: |
+          node --check backend/src/index.js
+          node --check backend/src/database-rate-limit.js
+          node --test backend/src/database-rate-limit.test.mjs
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
       - name: Verify opt-in Miss Chaos reference photo privacy and syntax
