@@ -79,3 +79,19 @@ body.theme-crew-page .theme-crew-hint{max-width:76ch;line-height:1.5}
 .mc-realm-card strong{font-size:1.2rem}.mc-realm-card small{line-height:1.6;color:#c9bccc}.mc-realm-card span{font-size:1.6rem}
 .mc-realm-back{display:inline-block;margin-top:1rem;color:#edc2f6}
 @media(prefers-reduced-motion:reduce){.mc-realm-card{transition:none}.mc-realm-card:hover{transform:none}}
+
+/* Creator Foundry progressive disclosure: canonical engine, not page-level patches. */
+#workshop .kf-foundry-portals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:1.3rem 0}
+#workshop .kf-foundry-portals a{display:flex;align-items:center;justify-content:center;text-align:center;min-height:76px;padding:1rem;border:1px solid #ba9c745e;border-radius:22px;background:linear-gradient(140deg,#2c1c32,#10131e);color:#f5e8da;font-weight:800;text-decoration:none}
+#workshop .kf-foundry-portals a:hover,#workshop .kf-foundry-portals a:focus-visible{border-color:#e9c18c;box-shadow:0 8px 30px #d69d4220}
+#workshop .kf-foundry-zones{display:grid;gap:1rem}
+#workshop .kf-foundry-zone{min-width:0;border:1px solid #c6a77a50;border-radius:26px;background:linear-gradient(145deg,#19151f,#0c1017);overflow:clip;box-shadow:0 12px 35px #0004}
+#workshop .kf-foundry-zone>summary{cursor:pointer;display:flex;flex-direction:column;gap:.4rem;list-style:none;padding:1.3rem 1.6rem;min-height:100px;justify-content:center}
+#workshop .kf-foundry-zone>summary::-webkit-details-marker{display:none}
+#workshop .kf-foundry-zone>summary strong{font-size:clamp(1.1rem,2.2vw,1.5rem);color:#f7dfbc}
+#workshop .kf-foundry-zone>summary small{color:#bdb3bf;line-height:1.5}
+#workshop .kf-foundry-zone[open]>summary{border-bottom:1px solid #d7a16c36;background:#ffffff05}
+#workshop .kf-foundry-zone-body{display:grid;gap:1.2rem;padding:1.2rem;min-width:0}
+#workshop .kf-foundry-zone-body>*{min-width:0;max-width:100%}
+#workshop .kf-foundry-zone [data-workspace][hidden]{display:none!important}
+@media(max-width:700px){#workshop .kf-foundry-portals{grid-template-columns:1fr}#workshop .kf-foundry-portals a{min-height:56px}#workshop .kf-foundry-zone>summary{padding:1rem 1.1rem}}
