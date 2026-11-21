@@ -1,0 +1,96 @@
+/* GENERATED from theme-recipes.json by scripts/build-knightfall-theme-kits.mjs.
+ * Color schemes and all eight original SVG ornaments are defined per theme.
+ * Put new presentation rules in knightfall-art-theme-template.css, not here. */
+
+/* Dark Lord Ascendant: preserved original art and complete scalable ornament kit. */
+html body[data-kf-realm][data-kf-theme="dark_lord_ascendant"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-realm-metal:#afb9c9;
+ --kf-realm-glow:#fa344c;
+ --kf-realm-tint:#211925;
+ --kf-crew-ink:#090811;
+ --kf-crew-surface:#211925;
+ --kf-crew-depth:#100c16;
+ --kf-crew-highlight:#ffb6bd;
+ --kf-crew-shadow:#fa344c50;
+ --kf-crew-accent:#d5b8c1;
+ --kf-accent:#d5b8c1;
+ --kf-accent-bright:#ffb6bd;
+ --kf-kit-accent:#d5b8c1;
+ --kf-kit-metal:#afb9c9;
+ --kf-kit-glow:#fa344c;
+ --kf-kit-ink:#090811;
+ --kf-kit-surface:#211925;
+ --kf-kit-depth:#100c16;
+ --kf-kit-scene:url('/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-ascendant-throne-room.png');
+ --kf-kit-backdrop:url('/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-ascendant-command-chamber.png');
+ --kf-kit-header:url('/assets/knightfall/theme-collections/dark-lord-ascendant/svg/header.svg');
+ --kf-kit-frame:url('/assets/knightfall/theme-collections/dark-lord-ascendant/svg/frame.svg');
+ --kf-kit-divider:url('/assets/knightfall/theme-collections/dark-lord-ascendant/svg/divider.svg');
+ --kf-kit-corner:url('/assets/knightfall/theme-collections/dark-lord-ascendant/svg/corner.svg');
+ --kf-kit-emblem:url('/assets/knightfall/theme-collections/dark-lord-ascendant/svg/emblem.svg');
+ --kf-kit-panel:url('/assets/knightfall/theme-collections/dark-lord-ascendant/svg/panel.svg');
+ --kf-kit-button:url('/assets/knightfall/theme-collections/dark-lord-ascendant/svg/button.svg');
+ --kf-kit-side-rail:url('/assets/knightfall/theme-collections/dark-lord-ascendant/svg/side-rail.svg');
+}
+
+/* Korriban · Red Necropolis: preserved original art and complete scalable ornament kit. */
+html body[data-kf-realm][data-kf-theme="korriban_necropolis"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-realm-metal:#c58a62;
+ --kf-realm-glow:#f04750;
+ --kf-realm-tint:#392124;
+ --kf-crew-ink:#170d11;
+ --kf-crew-surface:#392124;
+ --kf-crew-depth:#1b1118;
+ --kf-crew-highlight:#f8bd9d;
+ --kf-crew-shadow:#f0475050;
+ --kf-crew-accent:#d9a078;
+ --kf-accent:#d9a078;
+ --kf-accent-bright:#f8bd9d;
+ --kf-kit-accent:#d9a078;
+ --kf-kit-metal:#c58a62;
+ --kf-kit-glow:#f04750;
+ --kf-kit-ink:#170d11;
+ --kf-kit-surface:#392124;
+ --kf-kit-depth:#1b1118;
+ --kf-kit-scene:url('/assets/knightfall/theme-collections/korriban/korriban-red-necropolis.png');
+ --kf-kit-backdrop:url('/assets/knightfall/theme-collections/korriban/korriban-red-necropolis.png');
+ --kf-kit-header:url('/assets/knightfall/theme-collections/korriban/svg/header.svg');
+ --kf-kit-frame:url('/assets/knightfall/theme-collections/korriban/svg/frame.svg');
+ --kf-kit-divider:url('/assets/knightfall/theme-collections/korriban/svg/divider.svg');
+ --kf-kit-corner:url('/assets/knightfall/theme-collections/korriban/svg/corner.svg');
+ --kf-kit-emblem:url('/assets/knightfall/theme-collections/korriban/svg/emblem.svg');
+ --kf-kit-panel:url('/assets/knightfall/theme-collections/korriban/svg/panel.svg');
+ --kf-kit-button:url('/assets/knightfall/theme-collections/korriban/svg/button.svg');
+ --kf-kit-side-rail:url('/assets/knightfall/theme-collections/korriban/svg/side-rail.svg');
+}
+
+/* Mustafar · Obsidian Forge: preserved original art and complete scalable ornament kit. */
+html body[data-kf-realm][data-kf-theme="mustafar_forge"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-realm-metal:#dc9352;
+ --kf-realm-glow:#ff7928;
+ --kf-realm-tint:#352017;
+ --kf-crew-ink:#100b0b;
+ --kf-crew-surface:#352017;
+ --kf-crew-depth:#1a100f;
+ --kf-crew-highlight:#ffd0a5;
+ --kf-crew-shadow:#ff792850;
+ --kf-crew-accent:#edaf65;
+ --kf-accent:#edaf65;
+ --kf-accent-bright:#ffd0a5;
+ --kf-kit-accent:#edaf65;
+ --kf-kit-metal:#dc9352;
+ --kf-kit-glow:#ff7928;
+ --kf-kit-ink:#100b0b;
+ --kf-kit-surface:#352017;
+ --kf-kit-depth:#1a100f;
+ --kf-kit-scene:url('/assets/knightfall/theme-collections/mustafar/mustafar-obsidian-lava-citadel.png');
+ --kf-kit-backdrop:url('/assets/knightfall/theme-collections/mustafar/mustafar-obsidian-lava-citadel.png');
+ --kf-kit-header:url('/assets/knightfall/theme-collections/mustafar/svg/header.svg');
+ --kf-kit-frame:url('/assets/knightfall/theme-collections/mustafar/svg/frame.svg');
+ --kf-kit-divider:url('/assets/knightfall/theme-collections/mustafar/svg/divider.svg');
+ --kf-kit-corner:url('/assets/knightfall/theme-collections/mustafar/svg/corner.svg');
+ --kf-kit-emblem:url('/assets/knightfall/theme-collections/mustafar/svg/emblem.svg');
+ --kf-kit-panel:url('/assets/knightfall/theme-collections/mustafar/svg/panel.svg');
+ --kf-kit-button:url('/assets/knightfall/theme-collections/mustafar/svg/button.svg');
+ --kf-kit-side-rail:url('/assets/knightfall/theme-collections/mustafar/svg/side-rail.svg');
+}
