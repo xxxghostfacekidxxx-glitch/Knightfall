@@ -3,16 +3,16 @@ import assert from "node:assert/strict";
 import {handleThemeCrew,normalizeThemeState,themePlan,THEME_CREW_PRESETS,THEME_CREW_BOTS} from "./theme-crew.js";
 const json=(obj,status=200)=>new Response(JSON.stringify(obj),{status,headers:{"content-type":"application/json"}});
 function fixture(user={id:1,role:"god"},delegated=false){
- let saved=null,logged=[];
+ const saved=new Map(),logged=[];
  const env={DB:{prepare(sql){
   return {async first(){if(sql.includes("FROM ai_handoff_partner"))return delegated?{user_id:user.id,invited_by:1,status:"accepted"}:null;return null;},bind(...params){return {
-   async first(){if(sql.includes("FROM ai_handoff_partner"))return delegated?{user_id:user.id,invited_by:1,status:"accepted"}:null;if(sql.startsWith("SELECT value"))return saved===null?null:{value:saved};return null},
+   async first(){if(sql.includes("FROM ai_handoff_partner"))return delegated?{user_id:user.id,invited_by:1,status:"accepted"}:null;if(sql.startsWith("SELECT value"))return saved.has(params[0])?{value:saved.get(params[0])}:null;return null},
    async all(){return {results:logged.map(e=>({created_at:e.created_at,actor_id:e.actor_id,details:JSON.stringify(e.details)}))}},
    async run(){
-    if(sql.startsWith("INSERT OR IGNORE")){if(saved===null)saved=params[1];return {meta:{changes:1}}}
+    if(sql.startsWith("INSERT OR IGNORE")){if(!saved.has(params[0]))saved.set(params[0],params[1]);return {meta:{changes:1}}}
     if(sql.startsWith("UPDATE site_settings")){
-     if(saved!==params[4])return {meta:{changes:0}};
-     saved=params[0];return {meta:{changes:1}};
+     if(saved.get(params[3])!==params[4])return {meta:{changes:0}};
+     saved.set(params[3],params[0]);return {meta:{changes:1}};
     }
     throw Error("Unexpected SQL "+sql);
    }
@@ -31,7 +31,7 @@ function fixture(user={id:1,role:"god"},delegated=false){
   const response=await handleThemeCrew(request,env,new URL(request.url),deps);
   return {status:response.status,body:await response.json()};
  }
- return {call,read:()=>saved,logs:logged};
+ return {call,read:()=>saved.get("theme_crew_current")??null,readRealm:realm=>saved.get("theme_crew_realm_"+realm)??null,logs:logged};
 }
 test("Theme Crew has five fixed presets and four real worker roles",()=>{
  assert.equal(Object.keys(THEME_CREW_PRESETS).length,5);
@@ -50,7 +50,11 @@ test("Invalid stored state fails safe to the approved cathedral",()=>{
 });
 test("A visitor may read current preset but never mutate it",async()=>{
  const f=fixture(null);
- assert.deepEqual((await f.call("/api/theme")).body,{preset:"cathedral",revision:0,updated_at:null});
+ const visible=(await f.call("/api/theme")).body;
+ assert.equal(visible.preset,"cathedral");
+ assert.equal(visible.revision,0);
+ assert.deepEqual(Object.keys(visible.realms).sort(),["admin","arcade","chaosphere","madhouse"]);
+ assert.ok(Object.values(visible.realms).every(value=>value.preset==="cathedral"));
  assert.equal((await f.call("/api/god/theme/status")).status,401);
  assert.equal((await f.call("/api/god/theme/activate","POST",{preset:"blood_moon",expectedRevision:0})).status,401);
 });
@@ -126,4 +130,52 @@ test("verified accepted admin partner can publish reviewed presets and roll back
  assert.equal((await memberWithInvite.call("/api/god/theme/activate","POST",{preset:"blood_moon",expectedRevision:0})).status,403);
  const revoked=fixture({id:42,role:"admin"},false);
  assert.equal((await revoked.call("/api/god/theme/rollback","POST",{expectedRevision:0})).status,403);
+});
+
+test("independent realm revisions, inherited defaults, and per-realm rollback never leak",async()=>{
+ const f=fixture();
+ const global=await f.call("/api/god/theme/activate","POST",{preset:"blood_moon",expectedRevision:0});
+ assert.equal(global.status,200);
+ const initial=(await f.call("/api/theme")).body;
+ assert.equal(initial.preset,"blood_moon");
+ for(const item of Object.values(initial.realms))assert.equal(item.preset,"blood_moon","Uncustomized domains inherit sitewide theme");
+ const madhouse=await f.call("/api/god/theme/activate","POST",{realm:"madhouse",preset:"verdant_crypt",expectedRevision:0});
+ assert.equal(madhouse.status,200);
+ assert.equal(madhouse.body.realm,"madhouse");
+ assert.equal(madhouse.body.current.revision,1);
+ const after=(await f.call("/api/theme")).body;
+ assert.equal(after.realms.madhouse.preset,"verdant_crypt");
+ assert.equal(after.realms.arcade.preset,"blood_moon");
+ assert.equal(after.realms.chaosphere.preset,"blood_moon");
+ assert.equal(after.realms.admin.preset,"blood_moon");
+ const arcade=await f.call("/api/god/theme/activate","POST",{realm:"arcade",preset:"iron_eclipse",expectedRevision:0});
+ assert.equal(arcade.status,200);
+ const conflict=await f.call("/api/god/theme/activate","POST",{realm:"madhouse",preset:"royal_abyss",expectedRevision:0});
+ assert.equal(conflict.status,409,"Independent realms guard against stale revisions");
+ const rolled=await f.call("/api/god/theme/rollback","POST",{realm:"madhouse",expectedRevision:1});
+ assert.equal(rolled.status,200);
+ assert.equal(rolled.body.current.preset,"blood_moon");
+ assert.equal(rolled.body.current.revision,2);
+ const final=(await f.call("/api/theme")).body;
+ assert.equal(final.realms.arcade.preset,"iron_eclipse","Rolling back the Madhouse must not alter the arcade");
+ assert.equal(final.realms.madhouse.preset,"blood_moon");
+ assert.equal(final.realms.chaosphere.preset,"blood_moon");
+ assert.equal(final.realms.admin.preset,"blood_moon");
+ assert.equal(final.preset,"blood_moon");
+ const staff=(await f.call("/api/god/theme/status")).body;
+ assert.equal(staff.realms.madhouse.revision,2);
+ assert.equal(staff.realms.arcade.revision,1);
+ assert.equal(staff.history[0].realm,"madhouse");
+ assert.equal(f.logs[0].details.realm,"madhouse");
+});
+test("realm selectors are allowlisted and admin/Isis editing cannot bypass authorization",async()=>{
+ const f=fixture();
+ for(const realm of ["../../secrets","",42,"realm_test","__proto__"]){
+  assert.equal((await f.call("/api/god/theme/activate","POST",{realm,preset:"blood_moon",expectedRevision:0})).status,400);
+ }
+ const unauthorized=fixture({id:6,role:"admin"});
+ assert.equal((await unauthorized.call("/api/god/theme/activate","POST",{realm:"admin",preset:"blood_moon",expectedRevision:0})).status,403);
+ const delegated=fixture({id:42,role:"admin"},true);
+ assert.equal((await delegated.call("/api/god/theme/activate","POST",{realm:"admin",preset:"royal_abyss",expectedRevision:0})).status,200);
+ assert.equal((await delegated.call("/api/theme")).body.realms.admin.preset,"royal_abyss");
 });
