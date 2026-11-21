@@ -21,8 +21,8 @@ const globalKeys=Object.keys(GLOBAL_OPTIONS);
 const validGlobal=value=>value&&typeof value==="object"&&!Array.isArray(value)&&
  Object.keys(value).length===globalKeys.length&&globalKeys.every(key=>GLOBAL_OPTIONS[key].includes(value[key]));
 const safeGlobal=value=>validGlobal(value)?Object.fromEntries(globalKeys.map(key=>[key,value[key]])):GLOBAL_DEFAULT;
-const globalPreview=()=>{try{return safeGlobal(JSON.parse(sessionStorage.getItem(GLOBAL_PREVIEW)||"null"))===GLOBAL_DEFAULT?null:
- safeGlobal(JSON.parse(sessionStorage.getItem(GLOBAL_PREVIEW)||"null"))}catch{return null}};
+const globalPreview=()=>{try{const data=JSON.parse(sessionStorage.getItem(GLOBAL_PREVIEW)||"null");
+ return validGlobal(data)?safeGlobal(data):null}catch{return null}};
 const enabledHosts=new Set(["ash-fall.com","www.ash-fall.com"]);
 const path=location.pathname.toLowerCase();
 // Hosted games and account recovery remain outside the theme orchestration.
