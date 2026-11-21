@@ -288,7 +288,7 @@
         </div>
       </details>
       <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
-      <a class="kf-nav-primary" href="/devil-tools.html">Foundry</a>
+      <a class="kf-nav-primary kf-foundry-link" href="/devil-tools.html" hidden>Foundry</a>
       <details class="kf-nav-group kf-worlds-group">
         <summary>Explore <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
@@ -536,6 +536,10 @@
         window.addEventListener("kf:ticker-ready",mountTickerEditor,{once:true});mountTickerEditor();
       }
       const role = String(user.role || "").trim().toLowerCase();
+      const creatorAccess=["god","admin","moderator"].includes(role)||String(user.public_title||"").trim().toLowerCase()==="digital creator"||user.staff_access?.rank_code==="isis";
+      const foundryLink=nav.querySelector(".kf-foundry-link");
+      if(foundryLink)foundryLink.hidden=!creatorAccess;
+
       const admin = role === "admin" || role === "god";
       const rights = user.staff_access || {};
       // Only trusted auth/me rank metadata changes these visible ceremonial titles.
