@@ -29,6 +29,9 @@ const paintGlobal=()=>{
 };
 const PREVIEW_ART=Object.freeze({
  egyptian_eclipse:"/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-temple-gateway.png",
+ dark_lord_ascendant:"/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-crimson-eclipse-hall.png",
+ korriban_necropolis:"/assets/knightfall/theme-collections/korriban/korriban-red-necropolis.png",
+ mustafar_forge:"/assets/knightfall/theme-collections/mustafar/mustafar-obsidian-lava-citadel.png",
  cathedral:"/assets/knightfall/black-sun-hero-illustration.webp",
  blood_moon:"/assets/knightfall/obsidian-cathedral.svg",
  verdant_crypt:"/assets/knightfall/realm-pets.svg",
