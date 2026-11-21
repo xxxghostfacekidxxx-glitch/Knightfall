@@ -63,6 +63,7 @@ test("realm hubs inherit current theme tokens without a new forced CSS war",()=>
  assert.ok(nav.includes('celestial-sanctum'));
  assert.ok(nav.includes('realm = "music"'));
  assert.ok(nav.includes('chatbots'));
+ assert.ok(nav.includes('if (document.body.classList.contains("kf-hub-page")) return;'),"New hubs must not get the old global artwork overlays");
  new vm.Script(read("music-rhythm-lab.js"),{filename:"music-rhythm-lab.js"});
  new vm.Script(nav,{filename:"nav.js"});
 });
