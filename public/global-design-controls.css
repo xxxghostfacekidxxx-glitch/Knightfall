@@ -101,3 +101,21 @@ html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data
 .theme-crew-global-controls button{min-height:44px}
 @media(max-width:620px){.theme-crew-global-grid{grid-template-columns:1fr}}
 @media(forced-colors:active){.theme-crew-global-controls,.theme-crew-global-grid select{border-color:CanvasText}}
+
+/* Shared section return affordance. Scoped to approved chrome, never profile themes or game canvases. */
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-section-back{
+ margin:1rem 0 1.2rem;
+ line-height:1.45;
+}
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-section-back a{
+ display:inline-flex;align-items:center;gap:.4rem;
+ padding:.5rem .8rem;min-height:42px;
+ border:1px solid var(--kf-realm-metal,#c7a77c);
+ border-radius:var(--kf-global-corner,12px);
+ background:color-mix(in srgb,var(--kf-panel,#18191c),transparent 17%);
+ color:var(--kf-realm-metal,#e0c29d);
+ text-decoration:none;font-weight:800;
+}
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-section-back a:hover{
+ background:color-mix(in srgb,var(--kf-realm-metal,#c7a77c),transparent 83%);
+}
