@@ -1,6 +1,6 @@
 /* Knightfall realm hubs: celestial studies, underground music and chatbots.
    Independent content sections sharing approved theme tokens. No global overrides,
-   no !important, no game canvas, no member profile selectors, no duplicated tools. */
+   no forced CSS overrides, no game canvas, no member profile selectors, no duplicated tools. */
 body.kf-hub-page{
  color:var(--kf-ink,#eee1d2);
  background:var(--kf-bg,#0b0c10);
