@@ -8,6 +8,7 @@ const visual=text("public/knightfall-requiem.css");
 const deck=text("public/theme-crew.html");
 const ui=text("public/theme-crew-ui.js");
 const css=text("public/theme-crew.css");
+const dashboard=text("public/theme-crew-dashboard.css");
 const runtime=text("public/theme-crew-runtime.js");
 const root=text("public/theme.css");
 const worker=text("public/sw.js");
@@ -42,9 +43,9 @@ test("Theme Forge has accessible one-click preview and stable staff controls",()
  assert.match(ui,/navigator\.clipboard\.writeText/);
  assert.match(ui,/theme-crew-scene/);
  assert.match(ui,/announcePublished\?\.\(current\.revision,scope\)/);
- assert.match(css,/\.theme-crew-scene\{/);
- assert.match(css,/\.theme-crew-header[\s\S]*?black-sun-hero-illustration\.webp/);
- assert.match(css,/\.theme-crew-choice:focus-visible/);
+ assert.match(dashboard,/\.theme-crew-scene\{/);
+ assert.match(dashboard,/\.theme-crew-header[\s\S]*?black-sun-hero-illustration\.webp/);
+ assert.match(dashboard,/\.theme-crew-choice:focus-visible/);
 });
 
 test("fast switching reuses the vetted API with rollback and revision protection",()=>{
