@@ -715,8 +715,9 @@ async function handlePublicAssetRequest(request, env, origin, url) {
       "cache-control": "public, max-age=31536000, immutable",
       "x-content-type-options": "nosniff",
       "content-security-policy": "default-src 'none'; sandbox",
-      "cross-origin-resource-policy": "cross-origin",
-      "access-control-allow-origin": "*",
+      "cross-origin-resource-policy": "same-site",
+      "x-robots-tag": "noindex, noimageindex",
+      "referrer-policy": "no-referrer",
       "content-length": String(object.size || 0)
     });
     if (object.httpEtag) headers.set("etag", object.httpEtag);
