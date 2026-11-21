@@ -134,3 +134,12 @@ body.chaos-page[data-mc-realm-theme] .chaos-shell .new-chat{border:1px solid var
 body.chaos-page[data-mc-realm-theme] .mc-full-theme-label{display:grid;gap:.35rem;margin:.7rem 0;color:var(--mc-chat-accent);font-size:.8rem;font-weight:800}
 body.chaos-page[data-mc-realm-theme] .mc-full-theme-label select{min-height:42px;border:1px solid var(--mc-chat-accent);border-radius:12px;background:#10131b;color:#f6f6f6;padding:.5rem}
 body.chaos-page[data-mc-realm-theme] .chaos-shell .message{border-radius:18px}
+
+/* Astral Abyss: celestial navigation, galaxy mist and black-hole accretion. */
+#miss-chaos-presence[data-mc-theme="astral"],body[data-mc-realm-theme="astral"]{--mc-realm-accent:#a9d8ff;--mc-realm-glow:#7474ff80;--mc-realm-art:url("/assets/knightfall/miss-chaos/astral-realm.svg");--mc-realm-frame:url("/assets/knightfall/miss-chaos/hex-portrait-frame.svg?v=20261121-art2")}
+#miss-chaos-presence[data-mc-theme="inferno"],body[data-mc-realm-theme="inferno"]{--mc-realm-accent:#ff9c39;--mc-realm-glow:#f64b2280;--mc-realm-art:url("/assets/knightfall/miss-chaos/inferno-realm.svg");--mc-realm-frame:url("/assets/knightfall/miss-chaos/anarchy-portrait-frame.svg?v=20261121-art2")}
+#miss-chaos-presence[data-mc-theme="astral"] #miss-chaos-window,#miss-chaos-presence[data-mc-theme="inferno"] #miss-chaos-window{background-image:linear-gradient(145deg,#060a16ed,#100e19ee),var(--mc-realm-art);background-size:cover,cover;background-position:center}
+#miss-chaos-presence[data-mc-theme="astral"] .mc-portrait-frame::after,#miss-chaos-presence[data-mc-theme="inferno"] .mc-portrait-frame::after{filter:drop-shadow(0 0 8px var(--mc-realm-accent))}
+.kf-trouble-controls{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin:.75rem 0;padding:.75rem 1rem;border:1px solid #e7a34d66;border-radius:16px;background:linear-gradient(110deg,#1b121b,#10141c);color:#f8e8d2}
+.kf-trouble-controls label{font-weight:800}.kf-trouble-controls input{accent-color:#ff9536;min-width:100px;flex:1}.kf-trouble-controls output{font-weight:800;color:#ffba68}.kf-trouble-control-note{font-size:.75rem;color:#c6bac5}
+@media(max-width:600px){.kf-trouble-controls{margin:.5rem;padding:.65rem}.kf-trouble-control-note{width:100%}}
