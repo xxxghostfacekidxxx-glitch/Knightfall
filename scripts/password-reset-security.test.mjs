@@ -24,3 +24,13 @@ test("password reset client consumes fragment tokens and clears legacy query tok
   assert.match(page,/params\.delete\("token"\)/);
   assert.match(page,/history\.replaceState\(/);
 });
+
+test("password reset reports a provider outage without disclosing account existence", () => {
+  const start = backend.indexOf('if(url.pathname==="/api/auth/password-reset/request"');
+  const end = backend.indexOf('if(url.pathname==="/api/auth/password-reset/complete"', start);
+  assert.ok(start >= 0 && end > start);
+  const requestHandler = backend.slice(start, end);
+  assert.match(requestHandler, /if\(!env\.RESEND_API_KEY\|\|!env\.PASSWORD_RESET_FROM\)return json\(\{error:/);
+  assert.match(requestHandler, /temporarily unavailable/);
+  assert.match(requestHandler, /,503,origin\)/);
+});
