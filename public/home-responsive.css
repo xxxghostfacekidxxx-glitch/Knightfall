@@ -1,0 +1,94 @@
+/* Knightfall homepage: one structural mobile owner loaded after the realm skins.
+ * The individual theme files own artwork, colors, and decoration. This file
+ * only protects mobile geometry, text flow, and usable controls at 280-780px.
+ * It is deliberately scoped to .home-page, never profiles or gameplay. */
+@media (max-width: 780px) {
+ html body.home-page .container{
+  width:calc(100% - max(1rem, env(safe-area-inset-left) + env(safe-area-inset-right) + 1rem));
+  max-width:1120px;min-width:0;margin-inline:auto;
+ }
+ html body.home-page :is(.home-intro,.kf-egyptian-pavilion,.kf-theme-art-showcase,.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section){
+  box-sizing:border-box;min-width:0;max-width:100%;
+ }
+ html body.home-page :is(.home-intro,.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section,.kf-egyptian-pavilion,.kf-theme-art-showcase) :is(h1,h2,h3,p,a){
+  min-width:0;overflow-wrap:anywhere;
+ }
+ html body.home-page :is(.kf-start-grid,.kf-atlas-grid,.directory-groups,.activity-stream,.kf-egyptian-pavilion-grid,.kf-theme-art-grid){
+  min-width:0;max-width:100%;
+ }
+ html body.home-page :is(.kf-start-card,.kf-atlas-card,.directory-group,.activity-post,.kf-egyptian-art-card,.kf-theme-art-card){
+  min-width:0;max-width:100%;
+ }
+ html body.home-page :is(.kf-egyptian-art-card,.kf-theme-art-card) img{
+  display:block;max-width:100%;width:100%;height:auto;object-fit:cover;
+ }
+ html body.home-page .home-intro-actions{
+  max-width:100%;min-width:0;flex-wrap:wrap;gap:.65rem;
+ }
+ html body.home-page .home-intro-actions>a{
+  box-sizing:border-box;max-width:100%;min-height:44px;
+  white-space:normal;text-align:center;
+ }
+ html body.home-page .kf-atlas-copy{min-width:0;max-width:100%}
+ html body.home-page .kf-atlas-copy a{max-width:100%;white-space:normal}
+ html body.home-page .site-footer .footer-links{max-width:100%;flex-wrap:wrap}
+}
+/* Real phone widths: stack content instead of squeezing image galleries and cards
+ * into fractional columns. This also covers narrow iOS PWA viewports. */
+@media (max-width: 600px) {
+ html body.home-page :is(.kf-start-grid,.kf-atlas-grid,.directory-groups,.activity-stream,.kf-egyptian-pavilion-grid,.kf-theme-art-grid){
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ html body.home-page :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section){
+  width:100%;padding-inline:clamp(.85rem,4vw,1.25rem);
+ }
+ html body.home-page :is(.kf-start-heading h2,.kf-atlas-heading h2,.activity-heading h2,.section-heading h2){
+  max-width:100%;font-size:clamp(1.55rem,7vw,2.4rem);line-height:1.14;
+ }
+ html body.home-page .home-intro-actions{flex-direction:column;align-items:stretch}
+ html body.home-page .home-intro-actions>a{width:100%;justify-content:center}
+ html body.home-page .kf-egyptian-pavilion-head,
+ html body.home-page .kf-theme-art-intro{
+  flex-direction:column;align-items:flex-start;min-width:0;
+ }
+ html body.home-page .kf-egyptian-pavilion-head>div,
+ html body.home-page .kf-theme-art-intro>div{min-width:0;width:100%}
+}
+/* Egyptian Eclipse has a real <figure> before its copy. Do not inherit the old
+ * cathedral hero's forced 500px height, inner padding or background alignment.
+ * Keep the painting full-width and the text beneath, not on top of the painting. */
+@media (max-width: 780px) {
+ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro{
+  display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;
+  min-height:0!important;padding:0 0 1.25rem!important;
+ }
+ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-feature{
+  display:block;flex:0 0 auto;align-self:stretch;
+  min-width:0;max-width:100%;width:100%;margin:0;
+ }
+ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-feature img{
+  width:100%;height:auto;min-height:0;max-height:none;object-fit:cover;
+ }
+ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro>h1,
+ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro>p,
+ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro>.home-intro-actions{
+  box-sizing:border-box;min-width:0;max-width:calc(100% - 2rem);
+  margin-inline:1rem;
+ }
+ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro>h1{
+  font-size:clamp(1.85rem,8vw,3.25rem)!important;line-height:1.1!important;
+  letter-spacing:-.038em!important;overflow-wrap:anywhere;
+ }
+ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion{
+  padding:clamp(.85rem,3vw,1.25rem);margin-block:1rem 1.5rem;
+ }
+}
+/* Gallery links remain large enough to use without pushing the viewport wide. */
+@media (max-width: 380px) {
+ html body.home-page .container{width:calc(100% - .75rem)}
+ html body.home-page .kf-egyptian-pavilion-actions,
+ html body.home-page .kf-theme-art-links{flex-direction:column;align-items:stretch}
+ html body.home-page .kf-egyptian-pavilion-actions a,
+ html body.home-page .kf-theme-art-links a{max-width:100%;width:100%;text-align:center}
+ html body.home-page .kf-atlas-copy h3{font-size:clamp(1.45rem,7vw,1.85rem)}
+}
