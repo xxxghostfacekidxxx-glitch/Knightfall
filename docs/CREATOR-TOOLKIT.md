@@ -57,3 +57,39 @@ In the **Creator Foundry**, staff and authorized Digital Creators can open **Ori
 The actual original files were imported by `.github/workflows/knightfall-theme-art-import.yml` from durable transport copies, with exact-byte checksum and dimensions verification. `scripts/knightfall-theme-art-import.mjs --verify` runs offline and fails if anything changes. `scripts/knightfall-theme-art.test.mjs` tests the Foundry gallery, permissions, all six PNG hashes, and path safety. These files and the gallery code are in the Knightfall Creations Vault's required-preservation set, and are included in its recoverable archives.
 
 **Important:** artwork previews do not make these new named designs an active Theme Forge preset. Theme publication must follow the existing reviewed palette, realm isolation, access, rollback, and visual-testing workflow. The dark-lord collection uses original character art and a descriptive generic name, not official franchise imagery or logos. Large full-resolution originals intentionally stay out of the PWA's install-time precache to avoid 14 MB of needless downloads.
+
+## Four-realm theme artwork expansion: Egyptian, Dark Lord, Korriban and Mustafar
+
+The existing six original PNGs stay immutable. Seven additional high-resolution paintings are transferred by `.github/workflows/knightfall-theme-art-expansion-import.yml` and checksum-verified into `public/assets/knightfall/theme-collections/<collection>/`. The combined painting inventory is `manifest.json`, covering 13 preserved original images once the expansion import succeeds.
+
+The **original SVG ornament kit** contains 32 independent scalable files, with **eight unique designs for each of four collections**:
+
+| Collection | Signature materials | Vector components |
+| --- | --- | --- |
+| Egyptian Eclipse | Gold, turquoise, eclipse and winged solar/ankh geometry | header, frame, divider, corner, emblem, panel, button, side-rail |
+| Dark Lord Ascendant | Brushed gunmetal, crimson energy and angular star-citadel geometry | header, frame, divider, corner, emblem, panel, button, side-rail |
+| Korriban: Red Necropolis | Sandstone, iron and crimson tomb sigils | header, frame, divider, corner, emblem, panel, button, side-rail |
+| Mustafar: Obsidian Forge | Black basalt, copper and volcanic fire sigils | header, frame, divider, corner, emblem, panel, button, side-rail |
+
+These SVGs are actual vector graphics, not raster images wrapped in SVG. Each contains a unique abstract original crest, geometric engravings, gradients and ornamental lines, with no remote image links or scripts. The master inventory is `public/assets/knightfall/theme-collections/ornaments.json`.
+
+### Creator Foundry use
+
+Visit `/devil-tools.html#theme-art-collection` with a permitted Creator Foundry account. Filter by **collection** and **PNG / SVG**, preview the full original, download the file or copy a first-party path. The copied CSS option makes it easy to reuse artwork in an authorized style:
+
+```css
+.kf-themed-preview .ornament-banner {
+  background: url("/assets/knightfall/theme-collections/korriban/svg/header.svg") center / 100% 100% no-repeat;
+}
+.kf-themed-preview .frame {
+  background: url("/assets/knightfall/theme-collections/mustafar/svg/frame.svg") center / 100% 100% no-repeat;
+}
+```
+
+The transparent frames and corners must not capture clicks or cover message bubbles. For decorative overlays use `pointer-events:none`, while always preserving content contrast. Header artwork and illustrations are separate sources. Do not precache all the full-resolution images into the PWA shell. Asset metadata does not grant permission to bypass moderation or expose private member uploads.
+
+### Backups and guarantees
+
+Both `scripts/knightfall-theme-art-import.mjs --verify` (immutable first six) and `scripts/knightfall-theme-art-expansion-import.mjs --verify` (seven additional paintings) validate offline by SHA-256 and image dimensions. `scripts/knightfall-theme-art.test.mjs` verifies all 13 PNGs plus all 32 SVG entries. The preservation vault's required file list includes all 45 art assets and both manifests. Creations Vault's scheduled GitHub archive includes these sources and their gallery code, subject to workflow success and artifact retention.
+
+**Scope:** Korriban and Mustafar are user-selected collection labels for original dark-fantasy environments; this archive is not a licensed Star Wars art package. The artwork gallery and selector concept images are **not** proof that these site presets have been made switchable in the production Theme Forge.
