@@ -1,0 +1,321 @@
+{
+  "id": "knightfall-original-theme-ornaments",
+  "version": "2026-11-20",
+  "status": "original-scalable-vectors",
+  "themes": [
+    {
+      "id": "egyptian-eclipse",
+      "title": "Egyptian Eclipse",
+      "accent": "#33e4d9",
+      "metal": "#e7b65c"
+    },
+    {
+      "id": "dark-lord-ascendant",
+      "title": "Dark Lord Ascendant",
+      "accent": "#fa344c",
+      "metal": "#afb9c9"
+    },
+    {
+      "id": "korriban",
+      "title": "Korriban Red Necropolis",
+      "accent": "#f04750",
+      "metal": "#c58a62"
+    },
+    {
+      "id": "mustafar",
+      "title": "Mustafar Obsidian Forge",
+      "accent": "#ff7928",
+      "metal": "#dc9352"
+    }
+  ],
+  "assets": [
+    {
+      "id": "egyptian-eclipse-header",
+      "collection": "egyptian-eclipse",
+      "role": "header",
+      "title": "Egyptian Eclipse / header",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/svg/header.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "egyptian-eclipse-frame",
+      "collection": "egyptian-eclipse",
+      "role": "frame",
+      "title": "Egyptian Eclipse / frame",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/svg/frame.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "egyptian-eclipse-divider",
+      "collection": "egyptian-eclipse",
+      "role": "divider",
+      "title": "Egyptian Eclipse / divider",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/svg/divider.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "egyptian-eclipse-corner",
+      "collection": "egyptian-eclipse",
+      "role": "corner",
+      "title": "Egyptian Eclipse / corner",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/svg/corner.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "egyptian-eclipse-emblem",
+      "collection": "egyptian-eclipse",
+      "role": "emblem",
+      "title": "Egyptian Eclipse / emblem",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/svg/emblem.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "egyptian-eclipse-panel",
+      "collection": "egyptian-eclipse",
+      "role": "panel",
+      "title": "Egyptian Eclipse / panel",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/svg/panel.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "egyptian-eclipse-button",
+      "collection": "egyptian-eclipse",
+      "role": "button",
+      "title": "Egyptian Eclipse / button",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/svg/button.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "egyptian-eclipse-side-rail",
+      "collection": "egyptian-eclipse",
+      "role": "side-rail",
+      "title": "Egyptian Eclipse / side-rail",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/svg/side-rail.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "dark-lord-ascendant-header",
+      "collection": "dark-lord-ascendant",
+      "role": "header",
+      "title": "Dark Lord Ascendant / header",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/svg/header.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "dark-lord-ascendant-frame",
+      "collection": "dark-lord-ascendant",
+      "role": "frame",
+      "title": "Dark Lord Ascendant / frame",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/svg/frame.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "dark-lord-ascendant-divider",
+      "collection": "dark-lord-ascendant",
+      "role": "divider",
+      "title": "Dark Lord Ascendant / divider",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/svg/divider.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "dark-lord-ascendant-corner",
+      "collection": "dark-lord-ascendant",
+      "role": "corner",
+      "title": "Dark Lord Ascendant / corner",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/svg/corner.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "dark-lord-ascendant-emblem",
+      "collection": "dark-lord-ascendant",
+      "role": "emblem",
+      "title": "Dark Lord Ascendant / emblem",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/svg/emblem.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "dark-lord-ascendant-panel",
+      "collection": "dark-lord-ascendant",
+      "role": "panel",
+      "title": "Dark Lord Ascendant / panel",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/svg/panel.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "dark-lord-ascendant-button",
+      "collection": "dark-lord-ascendant",
+      "role": "button",
+      "title": "Dark Lord Ascendant / button",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/svg/button.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "dark-lord-ascendant-side-rail",
+      "collection": "dark-lord-ascendant",
+      "role": "side-rail",
+      "title": "Dark Lord Ascendant / side-rail",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/svg/side-rail.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "korriban-header",
+      "collection": "korriban",
+      "role": "header",
+      "title": "Korriban Red Necropolis / header",
+      "path": "/assets/knightfall/theme-collections/korriban/svg/header.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "korriban-frame",
+      "collection": "korriban",
+      "role": "frame",
+      "title": "Korriban Red Necropolis / frame",
+      "path": "/assets/knightfall/theme-collections/korriban/svg/frame.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "korriban-divider",
+      "collection": "korriban",
+      "role": "divider",
+      "title": "Korriban Red Necropolis / divider",
+      "path": "/assets/knightfall/theme-collections/korriban/svg/divider.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "korriban-corner",
+      "collection": "korriban",
+      "role": "corner",
+      "title": "Korriban Red Necropolis / corner",
+      "path": "/assets/knightfall/theme-collections/korriban/svg/corner.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "korriban-emblem",
+      "collection": "korriban",
+      "role": "emblem",
+      "title": "Korriban Red Necropolis / emblem",
+      "path": "/assets/knightfall/theme-collections/korriban/svg/emblem.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "korriban-panel",
+      "collection": "korriban",
+      "role": "panel",
+      "title": "Korriban Red Necropolis / panel",
+      "path": "/assets/knightfall/theme-collections/korriban/svg/panel.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "korriban-button",
+      "collection": "korriban",
+      "role": "button",
+      "title": "Korriban Red Necropolis / button",
+      "path": "/assets/knightfall/theme-collections/korriban/svg/button.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "korriban-side-rail",
+      "collection": "korriban",
+      "role": "side-rail",
+      "title": "Korriban Red Necropolis / side-rail",
+      "path": "/assets/knightfall/theme-collections/korriban/svg/side-rail.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "mustafar-header",
+      "collection": "mustafar",
+      "role": "header",
+      "title": "Mustafar Obsidian Forge / header",
+      "path": "/assets/knightfall/theme-collections/mustafar/svg/header.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "mustafar-frame",
+      "collection": "mustafar",
+      "role": "frame",
+      "title": "Mustafar Obsidian Forge / frame",
+      "path": "/assets/knightfall/theme-collections/mustafar/svg/frame.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "mustafar-divider",
+      "collection": "mustafar",
+      "role": "divider",
+      "title": "Mustafar Obsidian Forge / divider",
+      "path": "/assets/knightfall/theme-collections/mustafar/svg/divider.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "mustafar-corner",
+      "collection": "mustafar",
+      "role": "corner",
+      "title": "Mustafar Obsidian Forge / corner",
+      "path": "/assets/knightfall/theme-collections/mustafar/svg/corner.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "mustafar-emblem",
+      "collection": "mustafar",
+      "role": "emblem",
+      "title": "Mustafar Obsidian Forge / emblem",
+      "path": "/assets/knightfall/theme-collections/mustafar/svg/emblem.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "mustafar-panel",
+      "collection": "mustafar",
+      "role": "panel",
+      "title": "Mustafar Obsidian Forge / panel",
+      "path": "/assets/knightfall/theme-collections/mustafar/svg/panel.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "mustafar-button",
+      "collection": "mustafar",
+      "role": "button",
+      "title": "Mustafar Obsidian Forge / button",
+      "path": "/assets/knightfall/theme-collections/mustafar/svg/button.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    },
+    {
+      "id": "mustafar-side-rail",
+      "collection": "mustafar",
+      "role": "side-rail",
+      "title": "Mustafar Obsidian Forge / side-rail",
+      "path": "/assets/knightfall/theme-collections/mustafar/svg/side-rail.svg",
+      "format": "svg",
+      "rights": "Original Knightfall vector art"
+    }
+  ]
+}
