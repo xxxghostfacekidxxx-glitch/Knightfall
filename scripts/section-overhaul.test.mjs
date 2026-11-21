@@ -19,7 +19,7 @@ test("section overhaul supports small screens, keyboard access and personal them
 
 
 test("common section colors reuse canonical tokens instead of copying hardcoded palette values",async()=>{
- const css=await read("knightfall-unified-theme.css");
+ const css=(await read("knightfall-section-foundations.css"))+"\n"+(await read("knightfall-unified-theme.css"));
  assert.match(css,/--section-surface:var\(--af-v2-card\)/);
  assert.match(css,/--section-raised:var\(--kf-panel-2\)/);
  assert.match(css,/--section-green:var\(--kf-antique-gold\)/);
