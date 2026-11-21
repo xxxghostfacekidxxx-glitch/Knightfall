@@ -169,3 +169,18 @@
  #theme-art-collection #kf-theme-kit-emblem{height:95px;width:95px}
  #theme-art-collection #kf-theme-kit-header{max-height:105px}
 }
+
+/* Safe first-party design-template shortcuts, inside the already authorized Foundry. */
+#theme-art-collection .kf-theme-art-blueprint-links{
+ display:flex;flex-wrap:wrap;gap:.8rem;margin:1.1rem 0 1.4rem;
+}
+#theme-art-collection .kf-theme-art-blueprint-links a{
+ display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+ padding:.7rem 1rem;max-width:100%;text-align:center;line-height:1.3;
+ border:1px solid #c8a37b;border-radius:9px;color:#f9e4c5;
+ text-decoration:none;background:#221b25;
+}
+#theme-art-collection .kf-theme-art-blueprint-links a:hover,
+#theme-art-collection .kf-theme-art-blueprint-links a:focus-visible{
+ border-color:#e7c18e;background:#3a2932;outline-offset:2px;
+}
