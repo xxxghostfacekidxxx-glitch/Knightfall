@@ -9,8 +9,7 @@ const css=readFileSync(new URL("../public/chaosphere-polish.css",import.meta.url
 const inline=[...inbox.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(Boolean).at(-1);
 if(!inline)throw Error("Chaosphere inline controller missing");
 const from=inline.indexOf(" function composeNotice(");
-const friendBoundary=from<0?-1:inline.slice(from).search(/\
-\s*let friendData=/);
+const friendBoundary=from<0?-1:inline.slice(from).search(/\n\s*let friendData=/);
 const until=friendBoundary<0?-1:from+friendBoundary;
 if(from<0||until<from)throw Error("Direct conversation startup functions missing");
 const helper=inline.slice(from,until);
