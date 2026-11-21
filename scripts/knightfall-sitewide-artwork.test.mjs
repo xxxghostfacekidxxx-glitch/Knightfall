@@ -100,9 +100,9 @@ test('canonical and hyphenated URLs execute the right realm styling',()=>{
  const runtime=nav.slice(start,end)+'\nmountRealmArtwork();';
  const cases=[
   ['/','home'],['/community','madhouse'],['/community-topic','madhouse'],
-  ['/chaos-cartridge','arcade'],['/arcade-progress','arcade'],
+  ['/chaos-cartridge','arcade'],['/arcade-progress','arcade'],['/casino','arcade'],['/card-room','arcade'],
   ['/devil-tools','foundry'],['/personal-bots','foundry'],['/bots','foundry'],['/creator-studio','foundry'],
-  ['/messages','messages'],['/ruinwire','messages'],['/chaosphere','messages'],['/notifications','messages'],['/miss-chaos','messages'],
+  ['/messages','messages'],['/ruinwire','messages'],['/miss-chaos','messages'],['/chaosphere','messages'],['/notifications','messages'],['/miss-chaos','messages'],
   ['/moonology','moon'],['/shadow-work','moon'],
   ['/shops','market'],['/shop-builder','market'],['/my-shop','market'],
   ['/members','members'],['/auth','members'],['/profile','members'],
