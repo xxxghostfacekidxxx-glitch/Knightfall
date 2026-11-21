@@ -95,3 +95,28 @@ body.theme-crew-page .theme-crew-hint{max-width:76ch;line-height:1.5}
 #workshop .kf-foundry-zone-body>*{min-width:0;max-width:100%}
 #workshop .kf-foundry-zone [data-workspace][hidden]{display:none!important}
 @media(max-width:700px){#workshop .kf-foundry-portals{grid-template-columns:1fr}#workshop .kf-foundry-portals a{min-height:56px}#workshop .kf-foundry-zone>summary{padding:1rem 1.1rem}}
+
+/* Miss Chaos: ten independent component themes. One canonical CSS owner. */
+#miss-chaos-presence[data-mc-theme="hex"],body[data-mc-realm-theme="hex"]{--mc-realm-accent:#20f4d6;--mc-realm-glow:#00e7c85e;--mc-realm-art:url("/assets/knightfall/miss-chaos/hex-sigil.svg");--mc-realm-frame:url("/assets/knightfall/miss-chaos/hex-portrait-frame.svg")}
+#miss-chaos-presence[data-mc-theme="anarchy"],body[data-mc-realm-theme="anarchy"]{--mc-realm-accent:#ff304a;--mc-realm-glow:#ff18395e;--mc-realm-art:url("/assets/knightfall/miss-chaos/anarchy-sigil.svg");--mc-realm-frame:url("/assets/knightfall/miss-chaos/anarchy-portrait-frame.svg")}
+#miss-chaos-presence[data-mc-theme="chaos"],body[data-mc-realm-theme="chaos"]{--mc-realm-accent:#adff18;--mc-realm-glow:#9dfb005e;--mc-realm-art:url("/assets/knightfall/miss-chaos/chaos-sigil.svg");--mc-realm-frame:url("/assets/knightfall/miss-chaos/chaos-portrait-frame.svg")}
+#miss-chaos-presence[data-mc-theme="blood"],body[data-mc-realm-theme="blood"]{--mc-realm-accent:#f6f6f6;--mc-realm-glow:#c7163e5e;--mc-realm-art:url("/assets/knightfall/miss-chaos/blood-sigil.svg");--mc-realm-frame:url("/assets/knightfall/miss-chaos/blood-portrait-frame.svg")}
+#miss-chaos-presence[data-mc-theme="obsidian"]{--mc-realm-frame:url("/assets/knightfall/miss-chaos/hex-portrait-frame.svg")}
+#miss-chaos-presence[data-mc-theme="hellfire"],#miss-chaos-presence[data-mc-theme="mustafar"]{--mc-realm-frame:url("/assets/knightfall/miss-chaos/anarchy-portrait-frame.svg")}
+#miss-chaos-presence[data-mc-theme="egypt"]{--mc-realm-frame:url("/assets/knightfall/miss-chaos/hex-portrait-frame.svg")}
+#miss-chaos-presence[data-mc-theme="korriban"]{--mc-realm-frame:url("/assets/knightfall/miss-chaos/chaos-portrait-frame.svg")}
+#miss-chaos-presence[data-mc-theme="vader"]{--mc-realm-frame:url("/assets/knightfall/miss-chaos/blood-portrait-frame.svg")}
+#miss-chaos-presence .mc-head>img{position:relative;border-radius:50%;padding:7px;border:2px solid var(--mc-realm-accent,#b49aff);box-shadow:0 0 22px var(--mc-realm-glow,#aa64ff55);background:linear-gradient(135deg,#0b1014,#17101c)}
+#miss-chaos-presence .mc-head>img{outline:3px solid var(--mc-realm-accent,#b49aff);outline-offset:3px}
+#miss-chaos-presence .mc-head{border-bottom:1px solid var(--mc-realm-accent,#b49aff);background-image:linear-gradient(125deg,#080b10e8,#141018ef),var(--mc-realm-art)!important;background-position:center,right center;background-size:cover,auto 180%!important}
+#miss-chaos-presence .mc-bubble{border-radius:18px!important}
+#miss-chaos-presence .mc-bubble.system{border-left:3px solid var(--mc-realm-accent,#b49aff)}
+#miss-chaos-presence #mc-send{border-radius:16px!important;border:1px solid var(--mc-realm-accent,#b49aff)!important}
+#miss-chaos-presence #miss-chaos-launcher{border-radius:999px!important;box-shadow:0 8px 30px var(--mc-realm-glow,#aa64ff55)!important}
+#miss-chaos-presence .mc-minimized-sigil{border-radius:50%;border:2px solid var(--mc-realm-accent,#b49aff);filter:drop-shadow(0 0 9px var(--mc-realm-glow,#aa64ff55))}
+#miss-chaos-presence #mc-dock{max-width:calc(100vw - 12px)}
+body[data-mc-realm-theme] .mc-realm-hero{border-color:var(--mc-realm-accent,#b49aff);box-shadow:0 15px 50px var(--mc-realm-glow,#aa64ff55);background-image:linear-gradient(115deg,#0b0e13ed,#100e16e8),var(--mc-realm-art)}
+body[data-mc-realm-theme] .mc-realm-card{border-color:var(--mc-realm-accent,#b49aff);background-image:linear-gradient(145deg,#10131be8,#0d1016f2),var(--mc-realm-art);background-position:center;background-size:cover,150px}
+body[data-mc-realm-theme] .mc-realm-card:hover{box-shadow:0 10px 28px var(--mc-realm-glow,#aa64ff55)}
+body[data-mc-realm-theme] .mc-realm-theme-picker{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:1rem}
+body[data-mc-realm-theme] .mc-realm-theme-picker select{padding:.65rem 1rem;border:1px solid var(--mc-realm-accent);border-radius:14px;background:#10131a;color:#fff}
