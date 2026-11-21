@@ -76,6 +76,90 @@
       "width": 1672,
       "height": 941,
       "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "egyptian-eclipse-temple-gateway",
+      "collection": "egyptian-eclipse",
+      "title": "Egyptian Eclipse / Temple Gateway",
+      "role": "hero",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-temple-gateway.png",
+      "sha256": "aa55cdf15e6992b5c55e09012183edb7fa454364de4fd710ea2b4065d5b60750",
+      "bytes": 2851170,
+      "width": 1672,
+      "height": 941,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "dark-lord-crimson-eclipse-hall",
+      "collection": "dark-lord-ascendant",
+      "title": "Dark Lord Ascendant / Crimson Eclipse Hall",
+      "role": "hero",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-crimson-eclipse-hall.png",
+      "sha256": "289bcb057cc8faf2660eafc101da42e5e7a9e61db873cbc6140ac34eeb7f7928",
+      "bytes": 2422981,
+      "width": 1774,
+      "height": 887,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "korriban-red-necropolis",
+      "collection": "korriban",
+      "title": "Korriban / Red Necropolis",
+      "role": "hero",
+      "path": "/assets/knightfall/theme-collections/korriban/korriban-red-necropolis.png",
+      "sha256": "15dc44c8532432df454567390239c682aa22b6b1569550ef9efe18f353d6e57a",
+      "bytes": 2738583,
+      "width": 1672,
+      "height": 941,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "mustafar-obsidian-lava-citadel",
+      "collection": "mustafar",
+      "title": "Mustafar / Obsidian Lava Citadel",
+      "role": "hero",
+      "path": "/assets/knightfall/theme-collections/mustafar/mustafar-obsidian-lava-citadel.png",
+      "sha256": "d761116511626bbec13a753fe6addc5186a1daa2a94373842457c80a9fd3fa5d",
+      "bytes": 2624423,
+      "width": 1672,
+      "height": 941,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "theme-forge-four-realm-concept",
+      "collection": "theme-selector",
+      "title": "Theme Forge / Four Realms Design Concept",
+      "role": "concept",
+      "path": "/assets/knightfall/theme-collections/theme-selector/theme-forge-four-realm-concept.png",
+      "sha256": "8ff702b9e5f05fd5871ece156cec22840b4220e567ef23a983a8457e108d882d",
+      "bytes": 2532340,
+      "width": 1536,
+      "height": 1024,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "theme-art-ornaments-concept",
+      "collection": "theme-selector",
+      "title": "Theme Forge / Ornament Sheet Concept",
+      "role": "concept",
+      "path": "/assets/knightfall/theme-collections/theme-selector/theme-art-ornaments-concept.png",
+      "sha256": "8eeab615fa8c6461456f79df926f63188df29da6be16ae5f6a82463c6ac0151c",
+      "bytes": 2414746,
+      "width": 1536,
+      "height": 1024,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "creator-foundry-collection-showcase",
+      "collection": "theme-selector",
+      "title": "Creator Foundry / Four-Collection Showcase",
+      "role": "concept",
+      "path": "/assets/knightfall/theme-collections/theme-selector/creator-foundry-collection-showcase.png",
+      "sha256": "1a1c767d5b3e9c20ee93bcfbaac98b0991d0d02f09c95c648fbfd3a03d042bea",
+      "bytes": 2769892,
+      "width": 1672,
+      "height": 941,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
     }
   ]
 }
