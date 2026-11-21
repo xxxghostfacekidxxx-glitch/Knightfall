@@ -50,3 +50,50 @@ test("notification settings script parses and refuses unsafe alert destinations"
  assert.ok(html.includes('safeNoticeUrl(n.url)'));
  assert.match(html,/visibilitychange/);
 });
+
+test("iOS install precaches only essential files and survives storage/download failures", async () => {
+  let onInstall;
+  const fetched=[];
+  const warnings=[];
+  const serviceWorkerScope={
+    addEventListener(type,callback) {
+      if(type==="install") onInstall=callback;
+    }
+  };
+  const fakeCache={
+    async add(path) {
+      fetched.push(path);
+      if(path==="/nav.js") throw new Error("network temporarily unavailable");
+    }
+  };
+  new Script(sw,{filename:"sw.js"}).runInNewContext({
+    self:serviceWorkerScope,
+    caches:{open:async()=>fakeCache},
+    console:{warn:(...args)=>warnings.push(args)},
+    Promise
+  });
+  assert.equal(typeof onInstall,"function");
+  let installPromise;
+  onInstall({waitUntil(promise){installPromise=promise;}});
+  await assert.doesNotReject(installPromise);
+  assert.deepEqual(fetched,[
+    "/","/offline.html","/theme.css","/design-system.css",
+    "/homepage.css","/nav.js","/icons/knightfall-crest-192.png"
+  ]);
+  assert.ok(warnings.some(args=>args[0]==="offline_shell_partial_cache"));
+  assert.ok(sw.includes("APP_SHELL.includes(url.pathname)"),"other shell files still cache on demand");
+  assert.ok(!sw.includes("APP_SHELL.map(resource=>cache.add(resource))"),"never flood iOS with full precache");
+});
+
+test("Safari fallback keeps mobile navigation and home-screen shell usable",()=>{
+  const css=readFileSync(new URL("theme.css",root),"utf8");
+  const home=readFileSync(new URL("index.html",root),"utf8");
+  assert.ok(nav.includes("mobileNavViewport.addListener"),"older Safari MediaQueryList must be supported");
+  assert.ok(css.includes("max-height:calc(100vh - 90px);max-height:calc(100dvh - 90px)"),
+    "mobile drawer must have pre-dynamic-viewport fallback");
+  assert.ok(css.includes("safe-area-inset-bottom"),"nav must respect iPhone home indicator");
+  assert.ok(css.includes('input:not([type="range"]), textarea, select { font-size:16px; }'),
+    "small inputs must not trigger Safari auto-zoom");
+  assert.ok(home.includes('rel="apple-touch-icon"'),"Safari needs static icon markup");
+  assert.ok(home.includes('name="apple-mobile-web-app-title"'),"installed app needs its own title");
+});
