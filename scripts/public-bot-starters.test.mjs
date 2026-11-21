@@ -12,7 +12,7 @@ test("public directory is fully wired and runs valid JavaScript",()=>{
  assert.match(directoryHtml,/id="bot-reset-search"/);
  assert.match(directoryHtml,/id="bot-query"/);
  assert.match(directoryHtml,/id="public-bots"/);
- assert.match(directoryHtml,/bots\.js\?v=20261103-starter1/);
+ assert.match(directoryHtml,/bots\.js\?v=20261120-music-category1/);
  assert.match(directoryHtml,/bots-starter\.css\?v=20261103-starter1/);
  assert.match(directoryScript,/\/api\/public-bots/);
  assert.match(directoryScript,/categoryOptions/);
