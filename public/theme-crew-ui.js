@@ -7,6 +7,26 @@ const workspace=$("theme-crew-workspace");
 const denied=$("theme-crew-denied");
 let current=null,presets={},selected="cathedral",busy=false,initialized=false,canPublish=false;
 let scope="site",states={},realmMeta={},allHistory=[],realmApiReady=false;
+let globalCurrent=null,globalApiReady=false,globalInitialized=false;
+const GLOBAL_FIELDS=Object.freeze(["density","corners","typography","effects"]);
+const GLOBAL_CHOICES=Object.freeze({
+ density:["balanced","compact","relaxed"],
+ corners:["soft","square","rounded"],
+ typography:["standard","large","extra_large"],
+ effects:["ceremonial","subtle","minimal"]
+});
+const readGlobal=()=>Object.fromEntries(GLOBAL_FIELDS.map(key=>[key,$("kf-global-"+key).value]));
+const validGlobal=state=>state&&GLOBAL_FIELDS.every(key=>GLOBAL_CHOICES[key].includes(state[key]));
+const assignGlobal=state=>{if(!validGlobal(state))return;for(const key of GLOBAL_FIELDS)$("kf-global-"+key).value=state[key]};
+const announceGlobal=value=>{$("theme-crew-global-feedback").textContent=String(value)};
+const paintGlobal=()=>{
+ if(!globalApiReady||!globalCurrent){
+  $("theme-crew-global-state").textContent="Global API upgrade not confirmed. Publication disabled.";
+  return;
+ }
+ $("theme-crew-global-state").textContent="LIVE GLOBAL CONTROLS · Revision "+globalCurrent.revision+
+  (globalCurrent.updated_at?" · "+new Date(globalCurrent.updated_at).toLocaleString():"");
+};
 const PREVIEW_ART=Object.freeze({
  cathedral:"/assets/knightfall/black-sun-hero-illustration.webp",
  blood_moon:"/assets/knightfall/obsidian-cathedral.svg",
@@ -37,6 +57,10 @@ const lock=value=>{
  }
  $("theme-crew-scope").disabled=busy;
  for(const choice of document.querySelectorAll(".theme-crew-choice"))choice.disabled=busy;
+ for(const key of GLOBAL_FIELDS)$("kf-global-"+key).disabled=busy;
+ for(const id of ["theme-crew-global-preview","theme-crew-global-clear","theme-crew-global-publish","theme-crew-global-rollback"]){
+  $(id).disabled=busy||((id==="theme-crew-global-publish"||id==="theme-crew-global-rollback")&&(!canPublish||!globalApiReady));
+ }
  $("theme-crew-plan-form").querySelector("button").disabled=busy;
 };
 function choose(preset){
@@ -102,14 +126,57 @@ async function load(){
  presets=data.presets;realmMeta=data.realmMeta||{};
  realmApiReady=Boolean(data.realmMeta&&data.realms&&["madhouse","arcade","chaosphere","admin"].every(key=>data.realmMeta[key]&&data.realms[key]));
  states={site:data.current,...data.realms};allHistory=data.history||[];
+ globalApiReady=Boolean(data.globalControls&&data.globalOptions&&validGlobal(data.globalControls)&&
+  GLOBAL_FIELDS.every(key=>Array.isArray(data.globalOptions[key])&&
+   GLOBAL_CHOICES[key].every(value=>data.globalOptions[key].includes(value))));
+ globalCurrent=globalApiReady?data.globalControls:null;
+ if(globalApiReady&&!globalInitialized){assignGlobal(globalCurrent);globalInitialized=true}
+ paintGlobal();
  canPublish=data.permissions?.can_publish===true;
- for(const id of ["theme-crew-publish","theme-crew-rollback"])$(id).hidden=!canPublish;
+ for(const id of ["theme-crew-publish","theme-crew-rollback","theme-crew-global-publish","theme-crew-global-rollback"])$(id).hidden=!canPublish;
  if(!initialized){selected=states[scope]?.preset||data.current.preset;initialized=true}
  if(!busy)lock(false);
  displayScope();drawBots(data.bots||[],data.workflow);
  workspace.hidden=false;denied.hidden=true;
  announce(!realmApiReady?"The API Worker has not confirmed independent realm support. Realm publishing is locked until it is deployed.":(canPublish?"Verified theme publishing available.":"Staff preview controls available.")+" Editing "+realmName()+" only.");
 }
+async function publishGlobal(undo=false){
+ if(busy||!canPublish){announceGlobal("Only GOD and the accepted delegated admin partner can publish global controls.");return}
+ if(!globalApiReady||!globalCurrent){announceGlobal("Global design API has not been deployed. Publishing remains locked.");return}
+ const target=undo?globalCurrent.previous:readGlobal();
+ if(!validGlobal(target)){announceGlobal("Select approved global options.");return}
+ if(GLOBAL_FIELDS.every(key=>target[key]===globalCurrent[key])){
+  announceGlobal(undo?"There is no earlier global setting to restore.":"Those global options are already live.");return;
+ }
+ if(!confirm((undo?"ROLL BACK":"PUBLISH")+" the global Knightfall interface controls? Shared chrome changes in ALL realms. Their individual themes stay unchanged."))return;
+ lock(true);let published=false;
+ try{
+  const result=await req(undo?"/global/rollback":"/global","POST",
+   undo?{expectedRevision:globalCurrent.revision}:{controls:target,expectedRevision:globalCurrent.revision});
+  globalCurrent=result.current;published=true;assignGlobal(globalCurrent);
+  window.KnightfallThemeCrew?.previewGlobal?.(null);
+  window.KnightfallThemeCrew?.announceGlobalPublished?.(globalCurrent.revision);
+  try{await load()}catch(error){announceGlobal("Global settings saved, but status refresh failed: "+error.message)}
+  await window.KnightfallThemeCrew?.refresh?.();
+  announceGlobal("Published global interface controls · Revision "+globalCurrent.revision+". Realm colors and artwork remain independent.");
+ }catch(error){
+  announceGlobal(published?"Saved globally but confirmation was interrupted. Refresh to verify.":"Global settings NOT published: "+error.message);
+ }finally{lock(false)}
+}
+$("theme-crew-global-preview").addEventListener("click",()=>{
+ const values=readGlobal();
+ if(!validGlobal(values)||window.KnightfallThemeCrew?.previewGlobal?.(values)!==true){
+  announceGlobal("Global preview unavailable. Refresh the page and check your selections.");return;
+ }
+ announceGlobal("Private preview applied across the shared chrome in this tab. No server settings changed.");
+});
+$("theme-crew-global-clear").addEventListener("click",()=>{
+ window.KnightfallThemeCrew?.previewGlobal?.(null);
+ if(globalCurrent)assignGlobal(globalCurrent);
+ announceGlobal("Global preview cleared. Showing the published shared appearance.");
+});
+$("theme-crew-global-publish").addEventListener("click",()=>publishGlobal(false));
+$("theme-crew-global-rollback").addEventListener("click",()=>publishGlobal(true));
 async function boot(){
  try{await load()}catch(e){workspace.hidden=true;denied.hidden=false;announce("Theme Crew unavailable: "+e.message)}
 }
