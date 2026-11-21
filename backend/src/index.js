@@ -1,3 +1,4 @@
+import { handleQuotaGuardian } from "./quota-guardian.js";
 import { databaseRateLimit } from "./database-rate-limit.js";
 import { beginEmailSignup, canSendVerification, expiredEmailSignups, finishEmailSignup, verificationDigest } from "./email-signup.js";
 import { deliverPasswordResetEmail, resetEmailConfigured } from "./password-reset-email.js";
@@ -1069,6 +1070,8 @@ export default { async queue(batch, env) {
    // Global theme recipes: public read, GOD-only versioned publishing/rollback.
   const themeCrewResponse=await handleThemeCrew(request,env,url,{requireUser,json,origin,audit});
   if(themeCrewResponse)return themeCrewResponse;
+  const quotaResponse=await handleQuotaGuardian(request,env,url,{requireUser,json,origin});
+  if(quotaResponse)return quotaResponse;
   const chaosResponse=await handleEyeOfChaos(request,env,url,{requireUser,json,origin,rateLimit});
   if(chaosResponse)return chaosResponse;
   const eyeResponse=await handleEyeOfHorus(request,env,url,{requireUser,json,origin});
