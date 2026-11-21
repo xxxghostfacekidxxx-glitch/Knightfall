@@ -158,3 +158,21 @@ main:focus{outline:none}
     input:not([type="range"]), textarea, select { font-size:16px; }
   }
 }
+
+/* Shared header stays visible regardless of page-specific overflow wrappers. */
+html{scroll-padding-top:calc(var(--kf-header-height,90px) + 12px)}
+body{padding-top:var(--kf-header-height,90px)!important}
+body>.kf-header,.kf-header{position:fixed!important;inset:0 0 auto 0!important;width:100%!important;z-index:1000!important;box-sizing:border-box;flex-wrap:wrap}
+.kf-leadership-ticker{display:flex;flex-direction:column;gap:2px;order:99;flex:1 0 100%;min-width:0;overflow:hidden;border-top:1px solid #ffffff20;padding:3px 0 0;background:#100d15}
+.kf-ticker-row{display:flex;align-items:center;min-height:25px;gap:10px;width:100%;overflow:hidden}
+.kf-ticker-row[hidden]{display:none!important}
+.kf-ticker-label{flex:0 0 112px;font:800 .66rem/1.2 system-ui,sans-serif;letter-spacing:.15em;color:#f3bb80;text-align:right}
+.kf-ticker-row[data-ticker-owner="isis"] .kf-ticker-label{color:#b5e7e1}
+.kf-ticker-viewport{min-width:0;flex:1;overflow:hidden;white-space:nowrap;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.kf-ticker-track{display:inline-block;white-space:nowrap;padding-left:100%;animation:kf-ticker-scroll 24s linear infinite;will-change:transform}
+.kf-ticker-track span{font-size:.75rem;font-weight:650;color:#e7dce8}
+.kf-ticker-row:hover .kf-ticker-track,.kf-ticker-row:focus-within .kf-ticker-track{animation-play-state:paused}
+.kf-ticker-edit{align-self:flex-end;border:1px solid #c38b7859;border-radius:999px;background:#261b27;color:#f3d3c8;font-size:.67rem;padding:4px 11px;cursor:pointer}
+@keyframes kf-ticker-scroll{to{transform:translateX(-100%)}}
+@media(max-width:650px){.kf-ticker-label{flex-basis:76px;font-size:.55rem}.kf-ticker-track{animation-duration:20s}.kf-leadership-ticker{gap:0}}
+@media(prefers-reduced-motion:reduce){.kf-ticker-track{animation:none;padding-left:0;white-space:normal}.kf-ticker-viewport{white-space:normal}}
