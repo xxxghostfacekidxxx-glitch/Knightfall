@@ -7,7 +7,7 @@
 <meta name="description" content="Eye of Chaos staff fleet and game QA command console.">
 <title>𓂀 Eye of Chaos | Knightfall Staff</title>
 <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/eye-of-chaos.css?v=20261119-candidate2">
-<script src="/nav.js" defer></script><script src="/eye-of-chaos.js?v=20261119-osiris-isis1" defer></script>
+<script src="/nav.js" defer></script><script src="/eye-of-chaos.js?v=20261121-quota1" defer></script>
 <script type="module" src="/chaos-dev-review-ui.mjs?v=20261119-candidate2"></script>
 </head>
 <body class="chaos-console"><header class="kf-header"></header>
@@ -35,6 +35,7 @@
   <button type="button" data-section="qa">Game QA</button>
   <button type="button" data-section="forums">Madhouse</button>
   <button type="button" data-section="history">History</button>
+  <button type="button" data-section="quota" data-chaos-god-only hidden>Quota Guardian</button>
  </nav>
  <section class="chaos-panel" data-panel="overview">
   <div class="chaos-grid">
@@ -106,6 +107,13 @@
   <div class="chaos-section-head"><div><h2>Madhouse Bot Division</h2><p>Preserving existing service identities and editorial controls.</p></div></div>
   <div id="chaos-forum-registry" class="chaos-registry"></div>
   <article class="chaos-card"><h3>Legacy forum bot controls</h3><p>Bot profiles and explicit manual authorized staff posts remain in the existing editor. Automatic forum publishing has been disabled server-side.</p><a href="/god-bot-control.html" data-chaos-approval-access hidden>Open Madhouse Bot Control</a></article>
+ </section>
+ <section class="chaos-panel" data-panel="quota" hidden data-chaos-god-only>
+  <div class="chaos-section-head"><div><h2>Quota Guardian · Osiris Only</h2><p>Cloudflare free-tier resource diagnostics. Provider-wide consumption is not yet connected; never confuse allowance with usage.</p></div><button type="button" id="chaos-quota-refresh" class="chaos-quiet">Refresh diagnostics</button></div>
+  <p id="chaos-quota-state" class="chaos-status" role="status" aria-live="polite">Awaiting diagnostics.</p>
+  <div id="chaos-quota-summary" class="chaos-grid" aria-live="polite"></div>
+  <article class="chaos-card"><h3>Daily free-tier reference limits</h3><p>These are limits, not live consumption. All services share account-level allowances where applicable.</p><div id="chaos-quota-limits" class="chaos-registry"></div></article>
+  <article class="chaos-card"><h3>Configured service bindings</h3><div id="chaos-quota-services" class="chaos-registry"></div></article>
  </section>
  <section class="chaos-panel" data-panel="history" hidden>
   <div class="chaos-section-head"><div><h2>Mission history</h2><p>Operational changes are recorded without copying private research text into event logs.</p></div><button id="chaos-history-refresh" class="chaos-quiet" type="button">Refresh</button></div>
