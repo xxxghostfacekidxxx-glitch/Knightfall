@@ -18,11 +18,13 @@ const GLOBAL_OPTIONS=Object.freeze({
 });
 const GLOBAL_DEFAULT=Object.freeze({density:"balanced",corners:"soft",typography:"standard",effects:"ceremonial"});
 const globalKeys=Object.keys(GLOBAL_OPTIONS);
+// Published API data also carries revision metadata; preview requests never do.
 const validGlobal=value=>value&&typeof value==="object"&&!Array.isArray(value)&&
- Object.keys(value).length===globalKeys.length&&globalKeys.every(key=>GLOBAL_OPTIONS[key].includes(value[key]));
+ globalKeys.every(key=>GLOBAL_OPTIONS[key].includes(value[key]));
+const exactGlobal=value=>validGlobal(value)&&Object.keys(value).length===globalKeys.length;
 const safeGlobal=value=>validGlobal(value)?Object.fromEntries(globalKeys.map(key=>[key,value[key]])):GLOBAL_DEFAULT;
 const globalPreview=()=>{try{const data=JSON.parse(sessionStorage.getItem(GLOBAL_PREVIEW)||"null");
- return validGlobal(data)?safeGlobal(data):null}catch{return null}};
+ return exactGlobal(data)?safeGlobal(data):null}catch{return null}};
 const enabledHosts=new Set(["ash-fall.com","www.ash-fall.com"]);
 const path=location.pathname.toLowerCase();
 // Hosted games and account recovery remain outside the theme orchestration.
@@ -120,7 +122,7 @@ const start=()=>{
 };
 window.KnightfallThemeCrew=Object.freeze({
  previewGlobal(value){
-  if(value!==null&&!validGlobal(value))return false;
+  if(value!==null&&!exactGlobal(value))return false;
   try{if(value)sessionStorage.setItem(GLOBAL_PREVIEW,JSON.stringify(safeGlobal(value)));
   else sessionStorage.removeItem(GLOBAL_PREVIEW)}
   catch{return false}
