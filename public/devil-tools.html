@@ -13,12 +13,12 @@
 <link rel="stylesheet" href="/creator-foundry.css?v=20261115-gothic7">
 <link rel="stylesheet" href="/creator-motion-preview.css?v=20261114-motion1">
 <link rel="stylesheet" href="/creator-art-studio.css?v=20261119-photos-fix2">
-<link rel="stylesheet" href="/creator-theme-art-gallery.css?v=20261120-theme-art1">
+<link rel="stylesheet" href="/creator-theme-art-gallery.css?v=20261120-theme-art2">
 <link rel="stylesheet" href="/creator-production-lab.css?v=20261113-creator1">
 <script src="/creator-foundry.js?v=20261115-workspaces1" defer></script>
 <script src="/photo-upload.js?v=1" defer></script>
 <script src="/creator-art-studio.js?v=20261119-photos-fix3" defer></script>
-<script src="/creator-theme-art-gallery.js?v=20261120-theme-art1" defer></script>
+<script src="/creator-theme-art-gallery.js?v=20261120-theme-art2" defer></script>
 <script type="module" src="/creator-foundry-workspaces.js?v=20261115-workspaces1"></script>
 <script type="module" src="/creator-motion-preview.js?v=20261114-motion1"></script>
 <script type="module" src="/creator-production-lab.js?v=20261113-creator1"></script>
@@ -99,9 +99,9 @@
         <p>Store and preview images, check approvals, and copy URLs for use around the site.</p>
         <div class="actions"><a class="foundry-link-main" href="#site-image-library" data-workspace-search>Open Image Library</a></div>
       </article>
-      <article class="foundry-card" data-search="Egyptian Eclipse Dark Lord Ascendant original theme art six illustrations backgrounds concept previews theme forge">
+      <article class="foundry-card" data-search="Egyptian Eclipse Dark Lord Ascendant Korriban Mustafar original theme art 13 illustrations 32 SVG borders headers frames icons backgrounds concepts theme forge">
         <h3>𓂀 Original Theme Artwork Vault</h3>
-        <p>Six saved Egyptian Eclipse and Dark Lord Ascendant illustrations, including the theme-selector concept. Filter, preview, download, or copy a local asset path.</p>
+        <p>Four original theme-art collections, seven new cinematic scenes, and 32 custom SVG ornaments. Filter, preview, download, or copy reusable asset paths.</p>
         <div class="actions"><a class="foundry-link-main" href="#theme-art-collection" data-workspace-search>Open Theme Artwork Vault</a></div>
       </article>
       <article class="foundry-card" data-search="cards prompts answers black white expansion deck madhouse after hours">
@@ -464,15 +464,22 @@
   <button class="btn" type="button" id="kf-art-more" hidden>Load more images</button>
 </section>
 <section class="panel kf-theme-art-vault" id="theme-art-collection" data-workspace hidden aria-labelledby="theme-art-collection-title">
-  <p class="eyebrow">CREATOR FOUNDRY / SAVED ORIGINALS / 2026-11-20</p>
-  <h2 id="theme-art-collection-title">Egyptian Eclipse &amp; Dark Lord Ascendant · Theme Artwork Vault</h2>
-  <p class="kf-theme-art-intro">The six original high-resolution illustrations created for Knightfall, organized into two future theme-art collections and one selector concept. These files are part of the repository preservation vault and can be reused in the site's artwork without re-uploading.</p>
+  <p class="eyebrow">CREATOR FOUNDRY / SAVED ORIGINALS / FOUR REALMS</p>
+  <h2 id="theme-art-collection-title">Egyptian Eclipse · Dark Lord · Korriban · Mustafar | Theme Artwork Vault</h2>
+  <p class="kf-theme-art-intro">The original high-resolution scenes and scalable SVG interface ornaments for four themed art collections, plus Theme Forge concept sheets. Use these first-party assets for headers, borders, dividers, corners, icons, panels, buttons and side rails. All originals are preserved in the repository.</p>
   <p class="small">Artwork gallery, not a theme activation switch. Use the Theme Forge to manage currently approved sitewide and realm themes. Future theme presets must be reviewed before publishing.</p>
   <div class="kf-theme-art-filters" role="group" aria-label="Filter original theme artwork">
-    <button type="button" data-collection="all" aria-pressed="true">All artwork · 6</button>
+    <button type="button" data-collection="all" aria-pressed="true">All artwork</button>
     <button type="button" data-collection="egyptian-eclipse" aria-pressed="false">𓂀 Egyptian Eclipse</button>
     <button type="button" data-collection="dark-lord-ascendant" aria-pressed="false">◈ Dark Lord Ascendant</button>
+    <button type="button" data-collection="korriban" aria-pressed="false">◆ Korriban · Red Necropolis</button>
+    <button type="button" data-collection="mustafar" aria-pressed="false">♨ Mustafar · Obsidian Forge</button>
     <button type="button" data-collection="theme-selector" aria-pressed="false">Theme selector concept</button>
+  </div>
+  <div class="kf-theme-art-format-filters kf-theme-art-filters" role="group" aria-label="Artwork file formats">
+    <button type="button" data-format="all" aria-pressed="true">All formats</button>
+    <button type="button" data-format="png" aria-pressed="false">Illustrations · PNG</button>
+    <button type="button" data-format="svg" aria-pressed="false">Vector ornaments · SVG</button>
   </div>
   <p id="kf-theme-art-status" class="small" role="status" aria-live="polite">Loading verified original artwork from Knightfall…</p>
   <div id="kf-theme-art-gallery" class="kf-theme-art-gallery" aria-label="Original theme-art gallery"></div>
