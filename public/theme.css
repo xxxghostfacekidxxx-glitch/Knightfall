@@ -8,6 +8,7 @@
 @import url("/theme-crew.css?v=20261120-theme-forge1");
 @import url("/knightfall-requiem.css?v=20261120-black-sun6");
 @import url("/realm-theme-engine.css?v=20261120-realms1");
+@import url("/global-design-controls.css?v=20261120-global-design1");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
