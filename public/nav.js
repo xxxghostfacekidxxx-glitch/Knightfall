@@ -466,16 +466,25 @@
       const siteSettings = d?.settings;
       if (!siteSettings) return;
       if (siteSettings.feature_miss_chaos === "false") document.querySelector("[data-miss-chaos-directory]")?.setAttribute("hidden", "");
-      if (siteSettings.announcements_enabled === "true" && (siteSettings.announcement_title || siteSettings.announcement_body)) {
-        const banner = document.createElement("aside");
-        banner.id="kf-shared-announcement";
-        banner.className = "kf-announcement kf-shared-announcement";
-        const heading = document.createElement("strong");
-        heading.textContent = siteSettings.announcement_title || "Knightfall";
-        const message = document.createElement("span");
-        message.textContent = siteSettings.announcement_body || "";
-        banner.append(heading, message);
-        header.append(banner);
+      // Single shared, accessible ticker with independent leadership lines.
+      const tickerRows=[
+        ["ANNOUNCEMENT",siteSettings.announcements_enabled==="true"?(siteSettings.announcement_title||"Knightfall")+" · "+(siteSettings.announcement_body||""):"",null],
+        ["OSIRIS",siteSettings.ticker_osiris||"","osiris"],
+        ["ISIS",siteSettings.ticker_isis||"","isis"]
+      ].filter(row=>row[1].trim());
+      if(tickerRows.length){
+        const ticker=document.createElement("aside");
+        ticker.id="kf-shared-announcement";ticker.className="kf-leadership-ticker";
+        ticker.setAttribute("aria-label","Knightfall announcements");
+        for(const [label,message,owner] of tickerRows){
+          const row=document.createElement("div");row.className="kf-ticker-row";if(owner)row.dataset.tickerOwner=owner;
+          const tag=document.createElement("strong");tag.className="kf-ticker-label";tag.textContent=label;
+          const viewport=document.createElement("div");viewport.className="kf-ticker-viewport";
+          const track=document.createElement("div");track.className="kf-ticker-track";
+          const span=document.createElement("span");span.textContent=message;track.append(span);viewport.append(track);row.append(tag,viewport);ticker.append(row);
+        }
+        header.append(ticker);
+        window.dispatchEvent(new Event("kf:ticker-ready"));
       }
       if (siteSettings.maintenance_mode === "true") {
         const banner = document.createElement("aside");
@@ -496,6 +505,27 @@
       nav.querySelector(".kf-messages-shortcut").hidden = false;
       nav.querySelector(".kf-sign-in-link").hidden = true;
       document.querySelector("[data-home-sign-in]")?.setAttribute("hidden", "");
+      const tickerOwner=user.role==="god"?"osiris":Number(user.is_isis)===1||user.staff_access?.rank_code==="isis"?"isis":null;
+      if(tickerOwner){
+        const mountTickerEditor=()=>{
+          const ticker=document.querySelector("#kf-shared-announcement");
+          if(!ticker||ticker.querySelector("[data-ticker-edit]"))return;
+          const editor=document.createElement("button");editor.type="button";editor.className="kf-ticker-edit";editor.dataset.tickerEdit=tickerOwner;editor.textContent="Edit "+tickerOwner.toUpperCase()+" ticker";
+          editor.addEventListener("click",async()=>{
+            const existing=ticker.querySelector('[data-ticker-owner="'+tickerOwner+'"] .kf-ticker-track span')?.textContent||"";
+            const message=window.prompt("Your "+tickerOwner.toUpperCase()+" ticker line (240 characters max). Leave empty to hide:",existing);
+            if(message===null)return;
+            try{
+              const response=await fetch("https://api.ash-fall.com/api/leadership-ticker",{method:"PATCH",credentials:"include",headers:{"content-type":"application/json"},body:JSON.stringify({message})});
+              const result=await response.json().catch(()=>({}));
+              if(!response.ok)throw Error(result.error||"Ticker save failed");
+              location.reload();
+            }catch(error){window.alert(error.message)}
+          });
+          ticker.append(editor);
+        };
+        window.addEventListener("kf:ticker-ready",mountTickerEditor,{once:true});mountTickerEditor();
+      }
       const role = String(user.role || "").trim().toLowerCase();
       const admin = role === "admin" || role === "god";
       const rights = user.staff_access || {};
