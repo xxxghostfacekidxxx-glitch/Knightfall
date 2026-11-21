@@ -20,7 +20,8 @@ const ordered=[
  "global-design-controls.css",
  "egyptian-eclipse-theme.css",
  "knightfall-art-theme-variables.css",
- "knightfall-art-theme-template.css"
+ "knightfall-art-theme-template.css",
+ "home-responsive.css"
 ];
 const important=css=>(css.match(/!important\b/g)||[]).length;
 
@@ -108,7 +109,8 @@ test("installed PWA and edge cache recognize each CSS owner",()=>{
   // revalidates theme.css. Do not add a 100th duplicate rule just for this asset.
   const named=headers.includes("/"+file+"\n  Cache-Control: no-cache");
   const group=file.startsWith("knightfall-")&&headers.includes("/knightfall-*\n  Cache-Control: no-cache");
-  const versioned=file==="egyptian-eclipse-theme.css"&&read("theme.css").includes('/egyptian-eclipse-theme.css?v=20261121-complete1');
+  const versioned=(file==="egyptian-eclipse-theme.css"&&read("theme.css").includes('/egyptian-eclipse-theme.css?v=20261121-complete1'))||
+   (file==="home-responsive.css"&&read("theme.css").includes('/home-responsive.css?v=20261121-mobile1'));
   assert.ok(named||group||versioned,"Missing cache revalidation or pinned import version: "+file);
  }
 });
