@@ -113,7 +113,7 @@ test('canonical and hyphenated URLs execute the right realm styling',()=>{
  const run=(path,hasCanvas=false)=>{
   const hero={dataset:{}},classes=new Set();
   const main={dataset:{},contains:node=>node===hero,querySelector:()=>hasCanvas?{}:null};
-  const body={dataset:{},classList:{add:value=>classes.add(value)}};
+  const body={dataset:{},classList:{add:value=>classes.add(value),contains:value=>classes.has(value)}};
   const document={body,querySelector:selector=>selector==='main'?main:hero};
   vm.runInNewContext(runtime,{location:{pathname:path},document},{timeout:1000});
   return {body,hero,main,classes};
