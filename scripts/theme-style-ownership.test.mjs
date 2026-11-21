@@ -102,8 +102,8 @@ test("installed PWA and edge cache recognize each CSS owner",()=>{
   // Cloudflare Pages has a strict 100-header-rule limit. Newly authored Egyptian
   // layer is cache-versioned at its single canonical import, while PWA shell
   // revalidates theme.css. Do not add a 100th duplicate rule just for this asset.
-  const named=headers.includes("/"+file+"\\n  Cache-Control: no-cache");
-  const group=file.startsWith("knightfall-")&&headers.includes("/knightfall-*\\n  Cache-Control: no-cache");
+  const named=headers.includes("/"+file+"\n  Cache-Control: no-cache");
+  const group=file.startsWith("knightfall-")&&headers.includes("/knightfall-*\n  Cache-Control: no-cache");
   const versioned=file==="egyptian-eclipse-theme.css"&&read("theme.css").includes('/egyptian-eclipse-theme.css?v=20261121-complete1');
   assert.ok(named||group||versioned,"Missing cache revalidation or pinned import version: "+file);
  }
