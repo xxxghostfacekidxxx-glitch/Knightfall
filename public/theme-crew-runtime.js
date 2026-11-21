@@ -12,16 +12,16 @@ const REALMS=new Set(["site","madhouse","arcade","chaosphere","admin"]);
 const enabledHosts=new Set(["ash-fall.com","www.ash-fall.com"]);
 const path=location.pathname.toLowerCase();
 // Hosted games and account recovery remain outside the theme orchestration.
-if(/^\\/(?:arcade\\/hosted\\/|games\\/|casino\\/)/.test(path)||/^\\/(?:offline|personal-bots-offline)(?:\\.html)?$/.test(path))return;
+if(/^\/(?:arcade\/hosted\/|games\/|casino\/)/.test(path)||/^\/(?:offline|personal-bots-offline)(?:\.html)?$/.test(path))return;
 const isLive=enabledHosts.has(location.hostname.toLowerCase());
 const safe=value=>KNOWN.has(value)?value:null;
 const safeRealm=value=>REALMS.has(value)?value:null;
 const routeRealm=()=>{
- const p=path.replace(/\\.html$/,"");
- if(/^\\/(?:community|homepage|thread|create-thread|forums|madhouse)(?:-|\\/|$)/.test(p))return "madhouse";
- if(/^\\/(?:chaos-cartridge|chaos-lab|arcade|arcade-vault)(?:-|\\/|$)/.test(p))return "arcade";
- if(/^\\/(?:chaosphere|ruinwire|messages|social|friends|notifications)(?:-|\\/|$)/.test(p))return "chaosphere";
- if(/^\\/(?:admin|eye-of-chaos|eye-of-horus|god|moderation|theme-crew)(?:-|\\/|$)/.test(p))return "admin";
+ const p=path.replace(/\.html$/,"");
+ if(/^\/(?:community|homepage|thread|create-thread|forums|madhouse)(?:-|\/|$)/.test(p))return "madhouse";
+ if(/^\/(?:chaos-cartridge|chaos-lab|arcade|arcade-vault)(?:-|\/|$)/.test(p))return "arcade";
+ if(/^\/(?:chaosphere|ruinwire|messages|social|friends|notifications)(?:-|\/|$)/.test(p))return "chaosphere";
+ if(/^\/(?:admin|eye-of-chaos|eye-of-horus|god|moderation|theme-crew)(?:-|\/|$)/.test(p))return "admin";
  return "site";
 };
 const activeScope=routeRealm();
@@ -81,9 +81,9 @@ const refresh=()=>{
 };
 const addFallbackRealm=()=>{
  if(document.body?.dataset.kfRealm)return;
- const p=path.replace(/\\.html$/,"");
- if(/^\\/(?:admin-bot-archive|moderation-accounts|theme-crew)$/.test(p))document.body.dataset.kfRealm="god";
- else if(/^\\/(?:reset-password|verify-email)$/.test(p))document.body.dataset.kfRealm="members";
+ const p=path.replace(/\.html$/,"");
+ if(/^\/(?:admin-bot-archive|moderation-accounts|theme-crew)$/.test(p))document.body.dataset.kfRealm="god";
+ else if(/^\/(?:reset-password|verify-email)$/.test(p))document.body.dataset.kfRealm="members";
  else document.body.dataset.kfRealm="general";
 };
 const start=()=>{
