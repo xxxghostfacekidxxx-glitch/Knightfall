@@ -610,6 +610,32 @@
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/rosie-gills.svg",
       "styleVersion": 1,
       "availability": "art-preview-only"
+    },
+    {
+      "id": "mayhem",
+      "name": "Mayhem",
+      "type": "infernal-imp",
+      "primary": "#f9a51a",
+      "accent": "#f8ff52",
+      "description": "Trouble and Havoc's wild-eyed infernal brother; asymmetrical, manic eyes and volatile orange-magenta palette.",
+      "personality": "A fiercely loyal chaotic sibling, with a distinct voice and pet evolution planned.",
+      "svg": "/assets/devil-tools/neon-nuisances/mayhem.svg",
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/mayhem.svg",
+      "styleVersion": 1,
+      "availability": "art-preview-only"
+    },
+    {
+      "id": "riot",
+      "name": "Riot",
+      "type": "infernal-imp",
+      "primary": "#37e8a1",
+      "accent": "#ff5bca",
+      "description": "Trouble, Havoc and Mayhem's rebellious infernal brother; acid mint, cyan and hot-pink palette.",
+      "personality": "A fiercely loyal chaotic sibling, with a distinct voice and pet evolution planned.",
+      "svg": "/assets/devil-tools/neon-nuisances/riot.svg",
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/riot.svg",
+      "styleVersion": 1,
+      "availability": "art-preview-only"
     }
   ],
   "animationVariants": [
