@@ -33,7 +33,20 @@ export const FOUNDRY_REQUIRED=Object.freeze([
  "public/knightfall-art-runtime.js",
  "backend/src/creator-art-submissions.js",
  "backend/src/creator-ideas.js",
- "docs/CREATOR-TOOLKIT.md"
+ "docs/CREATOR-TOOLKIT.md",
+ "public/creator-theme-art-gallery.js",
+ "public/creator-theme-art-gallery.css",
+ "public/assets/knightfall/theme-collections/manifest.json",
+ "public/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-hero.png",
+ "public/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-throne-hall.png",
+ "public/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-theme-preview.png",
+ "public/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-ascendant-throne-room.png",
+ "public/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-ascendant-command-chamber.png",
+ "public/assets/knightfall/theme-collections/theme-selector/theme-selector-concept.png",
+ "scripts/knightfall-theme-art-sources.json",
+ "scripts/knightfall-theme-art-import.mjs",
+ ".github/workflows/knightfall-theme-art-import.yml",
+ "scripts/knightfall-theme-art.test.mjs"
 ]);
 const IMAGE_EXT=/\.(?:svg|png|jpe?g|webp|avif|gif|apng|bmp|ico|tiff?|psd|aseprite|kra|ora|xcf|glb|gltf|fbx|obj|stl|woff2?)$/i;
 const SCRIPT_EXT=/\.(?:html|css|js|mjs|json|webmanifest|md)$/i;
