@@ -421,7 +421,13 @@
   document.addEventListener("pointerdown", event => {
     if (!header.contains(event.target)) setDrawer(false);
   });
-  mobileNavViewport.addEventListener("change", () => setDrawer(false));
+  // Older iOS Safari versions only support MediaQueryList.addListener.
+  // A missing addEventListener must not abort navigation initialization.
+  if (typeof mobileNavViewport.addEventListener === "function") {
+    mobileNavViewport.addEventListener("change", () => setDrawer(false));
+  } else if (typeof mobileNavViewport.addListener === "function") {
+    mobileNavViewport.addListener(() => setDrawer(false));
+  }
   window.addEventListener("popstate", () => setDrawer(false));
   nav.addEventListener("click", event => {
     if (event.target.closest("a")) setDrawer(false);
