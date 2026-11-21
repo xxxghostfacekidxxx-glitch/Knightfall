@@ -73,6 +73,9 @@
     const main = document.querySelector("main");
     if (!main) return;
     document.body.dataset.kfRealm = realm;
+    // New first-party hub heroes own their saved artwork and responsive paint.
+    // Do not attach the legacy high-specificity [data-kf-art-hero] overlay.
+    if (document.body.classList.contains("kf-hub-page")) return;
     if (realm === "home") return; // Homepage has its own illustrated cathedral hero.
     // Keep actual games untouched even when a game lives at a root-level URL.
     if (realm === "general" && main.querySelector("canvas, [data-game-canvas]")) {
