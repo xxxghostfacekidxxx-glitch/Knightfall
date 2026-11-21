@@ -15,6 +15,8 @@ on:
       - 'scripts/theme-style-ownership.test.mjs'
       - 'scripts/pages-release-guard.mjs'
       - 'scripts/theme-crew-route.test.mjs'
+      - 'scripts/realm-hubs.test.mjs'
+      - 'public/music-rhythm-lab.js'
       - 'scripts/theme-crew-browser-smoke.mjs'
       - 'scripts/theme-crew-sitewide-browser.mjs'
       - 'scripts/theme-browser-smoke.mjs'
@@ -66,7 +68,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Guard heritage art, real templates, mobile and game exclusions
         run: |
-          node --test scripts/cathedral-overhaul.test.mjs scripts/knightfall-sitewide-artwork.test.mjs scripts/theme-crew-route.test.mjs
+          node --test scripts/cathedral-overhaul.test.mjs scripts/knightfall-sitewide-artwork.test.mjs scripts/theme-crew-route.test.mjs scripts/realm-hubs.test.mjs
           node --check public/nav.js
           node --check public/sw.js
       - name: Install Playwright Chromium for actual UI tests
