@@ -47,14 +47,22 @@ const jobs=[
  ["PWA service worker syntax",["--check","public/sw.js"]],
  ["API theme module syntax",["--check","backend/src/theme-crew.js"]]
 ];
+// Keep Pages build logs compact: Cloudflare's history endpoint truncates large
+// logs, which previously hid the first real failure after thousands of passes.
+// Every job still runs and blocks publication on a nonzero exit.
 for(const [label,args] of jobs){
- console.log("\nPAGES RELEASE GUARD: "+label);
- const result=spawnSync(process.execPath,args,{stdio:"inherit",timeout:120000});
+ const result=spawnSync(process.execPath,args,{
+  encoding:"utf8",maxBuffer:32*1024*1024,timeout:120000
+ });
  if(result.error||result.status!==0){
+  const output=[result.stdout||"",result.stderr||""].filter(Boolean).join("\n");
+  console.error("\nPAGES RELEASE GUARD FAILURE: "+label);
+  if(output)console.error(output.slice(-40000));
   console.error("PAGES RELEASE BLOCKED: "+label+
    (result.error?": "+String(result.error):" (exit "+result.status+")"));
   process.exitCode=1;
   break;
  }
+ console.log("PAGES RELEASE GUARD PASS: "+label);
 }
 if(!process.exitCode)console.log("\nPAGES RELEASE GATE PASSED: original Knightfall Textract requires no third-party build downloads.");
