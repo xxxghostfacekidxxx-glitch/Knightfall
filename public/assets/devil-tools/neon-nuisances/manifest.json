@@ -571,6 +571,45 @@
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/havoc.svg",
       "styleVersion": 1,
       "availability": "art-preview-only"
+    },
+    {
+      "id": "rascal",
+      "name": "Rascal",
+      "type": "raccoon",
+      "primary": "#8f8999",
+      "accent": "#aaff6e",
+      "description": "Rascal, a masked punk raccoon with a ringed tail and pink jacket.",
+      "personality": "Curious, affectionate and mischievous.",
+      "svg": "/assets/devil-tools/neon-nuisances/rascal.svg",
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/rascal.svg",
+      "styleVersion": 1,
+      "availability": "art-preview-only"
+    },
+    {
+      "id": "foxfire",
+      "name": "Foxfire",
+      "type": "fox",
+      "primary": "#fa803c",
+      "accent": "#a2ffd4",
+      "description": "Foxfire, a curious orange fox with an expressive face and oversized tail.",
+      "personality": "Curious, affectionate and mischievous.",
+      "svg": "/assets/devil-tools/neon-nuisances/foxfire.svg",
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/foxfire.svg",
+      "styleVersion": 1,
+      "availability": "art-preview-only"
+    },
+    {
+      "id": "rosie-gills",
+      "name": "Rosie Gills",
+      "type": "axolotl",
+      "primary": "#ffa2d5",
+      "accent": "#ffe6f4",
+      "description": "Rosie Gills, a sweet pink axolotl with six feathery external gills.",
+      "personality": "Curious, affectionate and mischievous.",
+      "svg": "/assets/devil-tools/neon-nuisances/rosie-gills.svg",
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/rosie-gills.svg",
+      "styleVersion": 1,
+      "availability": "art-preview-only"
     }
   ],
   "animationVariants": [
