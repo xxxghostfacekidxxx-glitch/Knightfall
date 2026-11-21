@@ -83,7 +83,7 @@
     </section>
   </section>
   <section id="admin-archive" class="admin-archive" hidden>
-    <div class="archive-head"><div><p class="eyebrow">ADMINISTRATOR OVERSIGHT</p><h2>MESSAGE ARCHIVE</h2><p>Supervisory access to every conversation. Administrators can inspect messages and soft-delete abusive content. Only God can see and permanently purge the deleted archive.</p></div><button id="refresh-archive">Refresh archive</button></div>
+    <div class="archive-head"><div><p class="eyebrow">OSIRIS-ONLY OVERSIGHT</p><h2>MESSAGE ARCHIVE</h2><p>Owner-only access to the full conversation archive. Administrators handle reported messages through moderation tools.</p></div><button id="refresh-archive">Refresh archive</button></div>
     <div class="archive-tools"><input id="archive-search" class="search" placeholder="Search message text or user"><select id="archive-conversation"><option value="0">All conversations</option></select></div>
     <div id="archive" class="archive-list"></div>
   </section>
@@ -760,7 +760,7 @@ async function archive(){
 }
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-admin-message]");if(!b)return;if(b.dataset.action!=="delete")return;try{await api("/api/admin/messages/"+b.dataset.adminMessage,{method:"PATCH",body:JSON.stringify({action:b.dataset.action})});await archive();status("Admin message action completed.",true)}catch(x){status(x.message)}});
 $("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archive;$("#archive-search").oninput=()=>{clearTimeout(archiveSearchHandle);archiveSearchHandle=setTimeout(archive,300)};
-(async()=>{try{const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=["admin","god"].includes(me.user.role);loadConversationDrafts();await sendActivityPing();await loadConversations();
+(async()=>{try{const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=me.user.role==="god";loadConversationDrafts();await sendActivityPing();await loadConversations();
  if(new URLSearchParams(location.search).has("message"))await followNotificationConversation();
  startMessageLive();if(new URLSearchParams(location.search).has("reply"))focusNotificationReply();await loadAdmin();status("Inbox ready.",true);let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight||document.hidden)return;pollInFlight=true;try{await loadConversations({openSelected:false});await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(()=>{if(!window.KnightfallLive?.connected)liveRefresh()},12000);
  typingPollHandle=setInterval(()=>{if(!window.KnightfallLive?.connected)refreshTyping()},5000);presenceHandle=setInterval(sendActivityPing,60000);document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;try{await sendActivityPing();await loadConversations({openSelected:false});if(currentId)await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Inbox resume refresh failed",e)}});updateNotificationButton()}catch(e){status(e.message)}})();
