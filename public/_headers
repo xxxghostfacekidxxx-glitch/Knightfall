@@ -15,13 +15,8 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /knightfall-section-foundations.css
   Cache-Control: no-cache, max-age=0, must-revalidate
-/knightfall-gothic-chrome.css
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/knightfall-illustrated-realms.css
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/knightfall-unified-theme.css
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/knightfall-requiem.css
+# Canonical Gothic layers share one revalidated Pages header rule.
+/knightfall-*
   Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew.css
   Cache-Control: no-cache, max-age=0, must-revalidate
