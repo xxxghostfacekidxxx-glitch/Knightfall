@@ -1,0 +1,81 @@
+/*
+ * KNIGHTFALL GLOBAL DESIGN CONTROLS
+ * This is shared chrome, NOT a fifth independent realm design. The global
+ * controls are allowlisted, versioned and applied on every themed realm.
+ * Deliberately never target game canvases, hosted games, user profile
+ * overrides, message bodies or private application content.
+ * New shared components should consume --kf-global-* tokens here.
+ */
+:root{--kf-global-design-version:1}
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
+ --kf-global-header-pad:.85rem;
+ --kf-global-nav-gap:.6rem;
+ --kf-global-control-pad:.7rem;
+ --kf-global-corner:12px;
+ --kf-global-panel-corner:18px;
+ --kf-global-type-scale:1;
+ --kf-global-ambient-shadow:0 12px 40px #0008;
+}
+html body[data-kf-theme-scope][data-kf-global-density="compact"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-global-header-pad:.5rem;
+ --kf-global-nav-gap:.3rem;
+ --kf-global-control-pad:.5rem;
+}
+html body[data-kf-theme-scope][data-kf-global-density="relaxed"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-global-header-pad:1.2rem;
+ --kf-global-nav-gap:.95rem;
+ --kf-global-control-pad:.95rem;
+}
+html body[data-kf-theme-scope][data-kf-global-corners="square"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-global-corner:3px;
+ --kf-global-panel-corner:6px;
+}
+html body[data-kf-theme-scope][data-kf-global-corners="rounded"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-global-corner:22px;
+ --kf-global-panel-corner:28px;
+}
+html body[data-kf-theme-scope][data-kf-global-typography="large"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-global-type-scale:1.08;
+}
+html body[data-kf-theme-scope][data-kf-global-typography="extra_large"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-global-type-scale:1.16;
+}
+html body[data-kf-theme-scope][data-kf-global-effects="subtle"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-global-ambient-shadow:0 7px 20px #0007;
+}
+html body[data-kf-theme-scope][data-kf-global-effects="minimal"]:not(.profile-custom-theme):not(.kf-gameplay-page){
+ --kf-global-ambient-shadow:none;
+}
+/* Reusable shell components. Use normal cascade rules, never !important. */
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) > .kf-header{
+ padding-block:var(--kf-global-header-pad);
+ gap:var(--kf-global-nav-gap);
+}
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) > .kf-header :is(.kf-nav,.kf-nav-menu){
+ gap:var(--kf-global-nav-gap);
+}
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) > .kf-header :is(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle){
+ border-radius:var(--kf-global-corner);
+ padding-block:var(--kf-global-control-pad);
+ font-size:calc(.875rem * var(--kf-global-type-scale));
+}
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.theme-crew-panel,.kf-atlas-card,.kf-nav-menu,.kf-profile-menu){
+ border-radius:var(--kf-global-panel-corner);
+}
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.theme-crew-panel,.kf-atlas-card){
+ box-shadow:var(--kf-global-ambient-shadow);
+}
+html body[data-kf-theme-scope]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .theme-crew-panel :is(button,select,textarea){
+ border-radius:var(--kf-global-corner);
+ font-size:calc(1rem * var(--kf-global-type-scale));
+}
+@media(max-width:760px){
+ html body[data-kf-theme-scope]:not(.profile-custom-theme):not(.kf-gameplay-page) > .kf-header :is(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle){
+  min-height:44px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html body[data-kf-theme-scope] > .kf-header :is(.kf-nav a,.kf-nav-toggle){
+  transition-duration:0.01ms;
+ }
+}
