@@ -827,9 +827,11 @@ async function boot(){
     const role = String(user.role || '').trim().toLowerCase();
     const isGod = role === 'god';
     const administrator = isGod || role === 'admin';
+    const moderator = role === 'moderator';
+    const isIsis = session.user?.staff_access?.rank_code === 'isis' || Number(session.user?.is_isis) === 1;
     // Account IDs are stable across profile and username edits. All publish operations remain Worker-authorized.
     const digitalCreator = role === 'member' && String(user.public_title || '').trim() === 'Digital Creator';
-    if (!administrator && !digitalCreator) throw Error('Workshop access required.');
+    if (!administrator && !moderator && !digitalCreator && !isIsis) throw Error('Workshop access required.');
     if (administrator) {
       const back = document.querySelector('a.back');
       back.href = '/admin.html';
