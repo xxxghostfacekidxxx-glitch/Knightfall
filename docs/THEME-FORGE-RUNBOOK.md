@@ -38,6 +38,7 @@ This adds a bounded new global design layer, not a license to keep adding forced
 | Staff Theme Forge UI | `public/theme-crew.html`, `public/theme-crew-ui.js` |
 | Global shared chrome controls | `backend/src/theme-crew.js`, `public/global-design-controls.css`, `public/theme-crew-ui.js` |
 | Preset color and shared presentation recipes | `public/theme-crew.css` |
+| Staff-only Theme Forge dashboard CSS | `public/theme-crew-dashboard.css` |
 | Realm-specific chrome tokens and staff selector | `public/realm-theme-engine.css`, `public/theme-crew.html`, `public/theme-crew-ui.js` |
 | Approved Egyptian Black Sun art and homepage visual | `public/assets/knightfall/black-sun-hero-illustration.webp`, `public/index.html`, `public/knightfall-requiem.css` |
 | Canonical root stylesheet, cascade ordering | `public/theme.css`, `public/nav.js` |
