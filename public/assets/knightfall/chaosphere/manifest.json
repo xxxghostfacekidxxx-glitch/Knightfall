@@ -92,6 +92,62 @@
       "path": "/assets/knightfall/chaosphere/vader-panel.svg",
       "usage": "chat header, settings and conversation panel ornament",
       "theme": "vader"
+    },
+    {
+      "id": "hex-sigil",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/miss-chaos/hex-sigil.svg",
+      "usage": "Miss Chaos minimized mark, realm artwork",
+      "theme": "hex"
+    },
+    {
+      "id": "hex-portrait-frame",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/miss-chaos/hex-portrait-frame.svg",
+      "usage": "Miss Chaos portrait border",
+      "theme": "hex"
+    },
+    {
+      "id": "anarchy-sigil",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/miss-chaos/anarchy-sigil.svg",
+      "usage": "Miss Chaos minimized mark, realm artwork",
+      "theme": "anarchy"
+    },
+    {
+      "id": "anarchy-portrait-frame",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/miss-chaos/anarchy-portrait-frame.svg",
+      "usage": "Miss Chaos portrait border",
+      "theme": "anarchy"
+    },
+    {
+      "id": "chaos-sigil",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/miss-chaos/chaos-sigil.svg",
+      "usage": "Miss Chaos minimized mark, realm artwork",
+      "theme": "chaos"
+    },
+    {
+      "id": "chaos-portrait-frame",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/miss-chaos/chaos-portrait-frame.svg",
+      "usage": "Miss Chaos portrait border",
+      "theme": "chaos"
+    },
+    {
+      "id": "blood-sigil",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/miss-chaos/blood-sigil.svg",
+      "usage": "Miss Chaos minimized mark, realm artwork",
+      "theme": "blood"
+    },
+    {
+      "id": "blood-portrait-frame",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/miss-chaos/blood-portrait-frame.svg",
+      "usage": "Miss Chaos portrait border",
+      "theme": "blood"
     }
   ],
   "pending": [
@@ -103,7 +159,7 @@
     }
   ],
   "mascot": {
-    "name": "Mayhem the Menace",
+    "name": "Trouble",
     "asset": "/assets/knightfall/chaosphere/roaming-imp.svg",
     "features": [
       "roaming",
@@ -191,6 +247,50 @@
           "theme.vader.site"
         ],
         "bundleSkuId": "theme.vader.complete",
+        "sellable": false
+      },
+      {
+        "theme": "hex",
+        "individualSkuIds": [
+          "theme.hex.profile",
+          "theme.hex.chaosphere",
+          "theme.hex.miss_chaos",
+          "theme.hex.site"
+        ],
+        "bundleSkuId": "theme.hex.complete",
+        "sellable": false
+      },
+      {
+        "theme": "anarchy",
+        "individualSkuIds": [
+          "theme.anarchy.profile",
+          "theme.anarchy.chaosphere",
+          "theme.anarchy.miss_chaos",
+          "theme.anarchy.site"
+        ],
+        "bundleSkuId": "theme.anarchy.complete",
+        "sellable": false
+      },
+      {
+        "theme": "chaos",
+        "individualSkuIds": [
+          "theme.chaos.profile",
+          "theme.chaos.chaosphere",
+          "theme.chaos.miss_chaos",
+          "theme.chaos.site"
+        ],
+        "bundleSkuId": "theme.chaos.complete",
+        "sellable": false
+      },
+      {
+        "theme": "blood",
+        "individualSkuIds": [
+          "theme.blood.profile",
+          "theme.blood.chaosphere",
+          "theme.blood.miss_chaos",
+          "theme.blood.site"
+        ],
+        "bundleSkuId": "theme.blood.complete",
         "sellable": false
       }
     ],
