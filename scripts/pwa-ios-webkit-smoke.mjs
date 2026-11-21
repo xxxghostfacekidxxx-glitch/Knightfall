@@ -37,6 +37,7 @@ try {
       path+" mobile menu must close on touch");
   }
   await page.goto(base+"/install.html",{waitUntil:"domcontentloaded"});
+  await page.locator("#kf-install-help-button").tap();
   assert.match(await page.locator("#kf-install-guide-title").innerText(),/iPhone|iPad/i,
     "iOS users must receive Safari install instructions");
   assert.ok(!errors.some(e=>/mobileNavViewport\.addEventListener is not a function|SyntaxError/.test(e)),
