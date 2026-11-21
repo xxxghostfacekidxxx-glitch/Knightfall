@@ -10,7 +10,6 @@ const ordered=[
  "design-system.css",
  "visual-refresh.css",
  "knightfall-section-foundations.css",
- "knightfall-section-foundations.css",
  "knightfall-unified-theme.css",
  "theme-crew.css",
  "theme-crew-dashboard.css",
