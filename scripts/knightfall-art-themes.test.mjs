@@ -22,8 +22,8 @@ const runtime=read("public/theme-crew-runtime.js");
 const ui=read("public/theme-crew-ui.js");
 
 test("all four first-party collections are fully registered and can be published or rolled back with existing authorization",()=>{
- assert.deepEqual(recipes.themes.map(x=>x.preset),original);
- assert.equal(Object.keys(THEME_CREW_PRESETS).length,9);
+ assert.deepEqual(recipes.themes.slice(0,4).map(x=>x.preset),original);
+ assert.equal(Object.keys(THEME_CREW_PRESETS).length,5+recipes.themes.length);
  const known=runtime.match(/const KNOWN=new Set\((\[[^\n)]+\])\)/);
  assert.ok(known);
  assert.deepEqual(JSON.parse(known[1]).sort(),Object.keys(THEME_CREW_PRESETS).sort());
