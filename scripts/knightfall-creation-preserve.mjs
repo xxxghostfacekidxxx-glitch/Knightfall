@@ -88,7 +88,7 @@ function audit(){
 function verify(){
  const originals=tree(BASELINE_COMMIT).filter(isProtectedCreationPath);
  const changedSinceBaseline=runGit(["log","--no-renames","--format=","--name-only",
-  BASELINE_COMMIT+"..HEAD","--","public","backend/src","docs"]).split(/\\r?\\n/).map(x=>x.trim())
+  BASELINE_COMMIT+"..HEAD","--","public","backend/src","docs"]).split(/\r?\n/).map(x=>x.trim())
   .filter(isProtectedCreationPath);
  const allEverProtected=new Set([...originals,...changedSinceBaseline]);
  const current=new Set(tree("HEAD"));
