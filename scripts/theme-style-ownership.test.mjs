@@ -70,11 +70,11 @@ test("new global and realm architecture does not grow fresh forced overrides",()
 test("Chaosphere owns its switched composer palette, without old global color overrides",()=>{
  const foundation=read("knightfall-section-foundations.css");
  const gothic=read("knightfall-unified-theme.css");
- assert.match(foundation,/--kf-msg-accent:var\\(--kf-realm-metal/);
- assert.match(foundation,/\\.messages-shell \\.composer textarea\\{background:var\\(--kf-msg-base\\)!important/);
- assert.match(foundation,/background:linear-gradient\\(180deg,var\\(--kf-msg-surface\\),var\\(--kf-msg-depth\\)\\)/);
- assert.doesNotMatch(gothic,/\\.messages-shell \\.composer\\{\\s*border-top-color:#8e7372/);
- assert.doesNotMatch(gothic,/\\.messages-shell \\.composer textarea\\{\\s*color:var\\(--kf-bone\\)!important;background:#16181e/);
+ assert.match(foundation,/--kf-msg-accent:var\(--kf-realm-metal/);
+ assert.match(foundation,/\.messages-shell \.composer textarea\{background:var\(--kf-msg-base\)!important/);
+ assert.match(foundation,/background:linear-gradient\(180deg,var\(--kf-msg-surface\),var\(--kf-msg-depth\)\)/);
+ assert.doesNotMatch(gothic,/\.messages-shell \.composer\{\s*border-top-color:#8e7372/);
+ assert.doesNotMatch(gothic,/\.messages-shell \.composer textarea\{\s*color:var\(--kf-bone\)!important;background:#16181e/);
 });
 
 test("installed PWA and edge cache recognize each CSS owner",()=>{
