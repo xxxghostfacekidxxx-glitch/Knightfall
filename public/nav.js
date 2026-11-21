@@ -303,7 +303,6 @@
       <details class="kf-nav-group kf-profile-group" hidden>
         <summary>My Account <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
-          <a class="kf-my-profile-link" href="/profile.html">My Profile</a>
           <a href="/friends.html">Friends</a>
           <a class="kf-notify" href="/notifications.html">Notifications <span class="kf-notify-badge" hidden>0</span></a>
           <a class="kf-account-link" href="/account.html">Settings &amp; Tools</a>
@@ -387,7 +386,8 @@
   window.addEventListener("appinstalled",()=>{recordMainPwa();syncInstallLink()});
   window.addEventListener("beforeinstallprompt",()=>{
     if(!mainManifestActive())return;
-    try{localStorage.removeItem(mainPwaKey)}catch{}
+    // An install prompt does not prove the app was uninstalled on another browser surface.
+    // Preserve positive installation evidence instead of resurrecting the install link.
     syncInstallLink();
   });
   window.addEventListener("storage",event=>{if(event.key===mainPwaKey)syncInstallLink()});
@@ -511,7 +511,8 @@
       if (!user) return;
       profileGroup.hidden = false;
       nav.querySelector(".kf-messages-shortcut").hidden = false;
-      nav.querySelector(".kf-sign-in-link").hidden = true;
+      const identityLink=nav.querySelector(".kf-sign-in-link");
+      if(identityLink){identityLink.hidden=false;identityLink.textContent="@"+String(user.username||"member");identityLink.href="/profile.html";identityLink.classList.add("kf-identity-link");identityLink.setAttribute("aria-label","View your profile, "+String(user.username||"member"));}
       document.querySelector("[data-home-sign-in]")?.setAttribute("hidden", "");
       const tickerOwner=user.role==="god"?"osiris":Number(user.is_isis)===1||user.staff_access?.rank_code==="isis"?"isis":null;
       if(tickerOwner){
