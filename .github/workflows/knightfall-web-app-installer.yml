@@ -11,8 +11,12 @@ on:
       - 'public/manifest.webmanifest'
       - 'public/nav.js'
       - 'public/sw.js'
+      - 'public/index.html'
+      - 'public/theme.css'
       - 'public/_redirects'
       - 'scripts/pwa-installer-browser-smoke.mjs'
+      - 'scripts/pwa-ios-webkit-smoke.mjs'
+      - 'scripts/pwa-update-audit.test.mjs'
       - 'scripts/knightfall-android-shell.test.mjs'
       - '.github/workflows/knightfall-web-app-installer.yml'
   workflow_dispatch:
@@ -34,11 +38,14 @@ jobs:
       - name: Check safe install state and Android release gating
         run: |
           node --check public/install.js
+          node --check public/nav.js
+          node --check public/sw.js
+          node --test scripts/pwa-update-audit.test.mjs
           node --test scripts/knightfall-android-shell.test.mjs
-      - name: Install Chromium test browser
+      - name: Install Chromium and WebKit test browsers
         run: |
           npm install --no-save playwright
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
       - name: Start local Knightfall website
         run: |
           python3 -m http.server 8765 --directory public > /tmp/knightfall-installer.log 2>&1 &
@@ -50,3 +57,5 @@ jobs:
           exit 1
       - name: Click web app installer on Android, iPhone and embedded browsers
         run: node scripts/pwa-installer-browser-smoke.mjs
+      - name: Exercise iPhone touch navigation and install guidance in WebKit
+        run: node scripts/pwa-ios-webkit-smoke.mjs
