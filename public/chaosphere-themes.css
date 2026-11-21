@@ -65,3 +65,15 @@
 .cs-roaming-imp[data-mood="turning"] img{filter:drop-shadow(0 0 16px #ff9e44)}
 @keyframes cs-imp-cackle{25%{transform:rotate(-12deg) scale(1.06)}75%{transform:rotate(12deg) scale(.98)}}
 @media(prefers-reduced-motion:reduce){.cs-roaming-imp[data-mood] img{animation:none}}
+
+/* Type families are theme tokens, not per-theme stylesheets. */
+.messages-shell[data-cs-theme="egypt"]{--cs-display:Georgia,"Palatino Linotype",serif;--cs-body:"Trebuchet MS",system-ui,sans-serif}
+.messages-shell[data-cs-theme="hellfire"],.messages-shell[data-cs-theme="mustafar"]{--cs-display:Impact,"Arial Narrow",sans-serif;--cs-body:"Trebuchet MS",system-ui,sans-serif}
+.messages-shell[data-cs-theme="vader"],.messages-shell[data-cs-theme="korriban"]{--cs-display:"Arial Black",system-ui,sans-serif;--cs-body:"Segoe UI",system-ui,sans-serif}
+.messages-shell[data-cs-theme="obsidian"]{--cs-display:"Trebuchet MS",system-ui,sans-serif;--cs-body:"Segoe UI",system-ui,sans-serif}
+.messages-shell[data-cs-theme]{font-family:var(--cs-body,system-ui,sans-serif)}
+.messages-shell[data-cs-theme] :is(.messages-hero h1,.panel-title strong,.chat-identity strong){font-family:var(--cs-display,system-ui,sans-serif);letter-spacing:-.03em}
+.messages-shell[data-cs-theme] :is(.conversation-panel,.chat-panel,.chat-head,.composer){border-radius:clamp(16px,2vw,28px)}
+.messages-shell[data-cs-theme] :is(.conversation,.message,.compose-dialog,.cs-settings){border-radius:clamp(18px,2vw,26px)}
+.messages-shell[data-cs-theme] .message.mine{border-bottom-right-radius:8px}
+.messages-shell[data-cs-theme] .message:not(.mine){border-bottom-left-radius:8px}
