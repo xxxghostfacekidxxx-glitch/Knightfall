@@ -47,6 +47,8 @@ export const FOUNDRY_REQUIRED=Object.freeze([
  "scripts/knightfall-theme-art-import.mjs",
  ".github/workflows/knightfall-theme-art-import.yml",
  "scripts/knightfall-theme-art.test.mjs",
+ "public/egyptian-eclipse-theme.css",
+ "scripts/egyptian-eclipse-theme.test.mjs",
  "public/assets/knightfall/theme-collections/ornaments.json",
  "public/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-temple-gateway.png",
  "public/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-crimson-eclipse-hall.png",
