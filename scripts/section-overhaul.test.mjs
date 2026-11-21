@@ -4,7 +4,7 @@ import {readFile} from "node:fs/promises";
 const read=name=>readFile(new URL("../public/"+name,import.meta.url),"utf8");
 test("section polish loads with and without navigation",async()=>{
  const [theme,nav,css]=await Promise.all([read("theme.css"),read("nav.js"),read("knightfall-section-foundations.css")]);
- assert.ok(theme.includes('"/knightfall-unified-theme.css?v=20261120-tokens1"'), 'Section styles must load from canonical CSS');
+ assert.ok(theme.includes('"/knightfall-unified-theme.css?v=20261120-tokens2"'), 'Section styles must load from canonical CSS');
  assert.match(nav,/kfCanonicalTheme/);
  assert.ok(css.includes("CANONICAL KNIGHTFALL CHROME: SECTION FOUNDATIONS"));
  for(const root of [".community-directory",".cartridge-shelf",".messages-shell",".admin-shell",".profile-shell",".foundry",".dt-workspace-nav"])assert.ok(css.includes(root),root);
