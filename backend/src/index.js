@@ -2353,7 +2353,17 @@ For complex questions, organize the answer clearly and provide actionable detail
     }
     return json({ok:true,requested_at:now,scheduled_for:deadline,message:"Your account deletion request has been recorded. The operator must complete deletion within 30 days. This request is not yet completed."},202,origin);
   }
-  if(url.pathname==="/api/site-settings"&&request.method==="GET"){const keys=["site_name","maintenance_mode","registration_enabled","forum_enabled","announcements_enabled","announcement_title","announcement_body","feature_miss_chaos","feature_profiles"],settings={};for(const key of keys)settings[key]=await getSetting(env,key);return json({settings},200,origin);}
+  if(url.pathname==="/api/leadership-ticker"&&request.method==="PATCH"){
+    const user=await requireUser(request,env);
+    const key=user?.role==="god"?"ticker_osiris":Number(user?.is_isis)===1?"ticker_isis":null;
+    if(!key)return json({error:"Osiris or Isis access required."},403,origin);
+    let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
+    const message=String(body?.message??"").trim();
+    if(message.length>240)return json({error:"Ticker line must be 240 characters or fewer."},400,origin);
+    await env.DB.prepare("INSERT INTO site_settings (key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind(key,message).run();
+    return json({ok:true,key,message},200,origin);
+  }
+  if(url.pathname==="/api/site-settings"&&request.method==="GET"){const keys=["site_name","maintenance_mode","registration_enabled","forum_enabled","announcements_enabled","announcement_title","announcement_body","ticker_osiris","ticker_isis","feature_miss_chaos","feature_profiles"],settings={};for(const key of keys)settings[key]=await getSetting(env,key);return json({settings},200,origin);}
   if(url.pathname==="/api/adult/status"&&request.method==="GET"){const user=await requireUser(request,env);if(!user)return json({confirmed:false},200,origin);return json({confirmed:(await env.SESSIONS.get("adult-confirmed:"+user.id))==="true"},200,origin);}
   if(url.pathname==="/api/adult/confirm"&&request.method==="POST"){const user=await requireUser(request,env);if(!user)return json({error:"Sign in before confirming 18+ access."},401,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid confirmation."},400,origin);}if(body.confirm!==true)return json({error:"Explicit 18+ confirmation is required."},400,origin);await env.SESSIONS.put("adult-confirmed:"+user.id,"true",{expirationTtl:2592000});await audit(env,user,"adult_access.confirm","account",user.id,{method:"self_attestation",expires_in_days:30});return json({ok:true,confirmed:true,expires_in_days:30},200,origin);}
   if(url.pathname==="/api/categories"&&request.method==="GET"){const adultAccess=await adultAccessConfirmed(request,env);const {results}=await env.DB.prepare("SELECT id,name,slug,description,sort_order,created_at FROM categories ORDER BY sort_order ASC,name ASC").all();return json({categories:(results||[]).filter(x=>x.slug!=="adults-only"||adultAccess),adult_category_locked:!adultAccess},200,origin);}
