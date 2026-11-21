@@ -61,14 +61,26 @@ test("new global and realm architecture does not grow fresh forced overrides",()
  assert.ok(important(read("knightfall-section-foundations.css"))<=14,"Foundation forced styles may only shrink");
  assert.ok(important(read("knightfall-gothic-chrome.css"))<=157,"Gothic overrides may only shrink");
  assert.ok(important(read("knightfall-illustrated-realms.css"))<=67,"Illustration overrides may only shrink");
- assert.ok(important(read("knightfall-unified-theme.css"))<=239,"Cathedral legacy sheet may only shrink");
- assert.ok(["knightfall-section-foundations.css","knightfall-gothic-chrome.css","knightfall-illustrated-realms.css","knightfall-unified-theme.css"].reduce((sum,file)=>sum+important(read(file)),0)<=477,"Combined legacy override total may only shrink");
+ assert.ok(important(read("knightfall-unified-theme.css"))<=231,"Cathedral legacy sheet may only shrink");
+ assert.ok(["knightfall-section-foundations.css","knightfall-gothic-chrome.css","knightfall-illustrated-realms.css","knightfall-unified-theme.css"].reduce((sum,file)=>sum+important(read(file)),0)<=468,"Combined legacy override total may only shrink");
  assert.ok(important(read("knightfall-requiem.css"))<=132,"Black Sun layer may only shrink");
  for(const text of [global,realm]){
   assert.doesNotMatch(text,/\bcanvas\s*\{/);
   assert.match(text,/:not\(\.profile-custom-theme\)/);
   assert.match(text,/:not\(\.kf-gameplay-page\)/);
  }
+});
+
+test("Moonology no longer forces an obsolete palette over published site themes",()=>{
+ const lunar=read("knightfall-unified-theme.css");
+ const start=lunar.indexOf("/* Moon: symbolic atmosphere");
+ const end=lunar.indexOf("/* The Diary:",start);
+ assert.ok(start>=0&&end>start);
+ const block=lunar.slice(start,end);
+ assert.doesNotMatch(block,/!important\\b/);
+ assert.match(block,/var\\(--kf-realm-metal/);
+ assert.match(block,/var\\(--kf-realm-glow/);
+ assert.match(block,/var\\(--kf-global-panel-corner/);
 });
 
 test("Chaosphere owns its switched composer palette, without old global color overrides",()=>{
