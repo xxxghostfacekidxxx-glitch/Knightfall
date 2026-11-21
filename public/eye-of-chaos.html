@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0d1013">
 <meta name="description" content="Eye of Chaos staff fleet and game QA command console.">
 <title>𓂀 Eye of Chaos | Knightfall Staff</title>
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/eye-of-chaos.css?v=20261119-candidate2">
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/eye-of-chaos.css?v=20261121-quota2">
 <script src="/nav.js" defer></script><script src="/eye-of-chaos.js?v=20261121-quota1" defer></script>
 <script type="module" src="/chaos-dev-review-ui.mjs?v=20261119-candidate2"></script>
 </head>
@@ -113,6 +113,16 @@
   <p id="chaos-quota-state" class="chaos-status" role="status" aria-live="polite">Awaiting diagnostics.</p>
   <div id="chaos-quota-summary" class="chaos-grid" aria-live="polite"></div>
   <article class="chaos-card"><h3>Daily free-tier reference limits</h3><p>These are limits, not live consumption. All services share account-level allowances where applicable.</p><div id="chaos-quota-limits" class="chaos-registry"></div></article>
+  <article class="chaos-card"><h3>Cloudflare traffic and usage</h3><p>Open the official Cloudflare dashboard for actual requests, traffic, storage, and account usage. The reference allowances above are not usage measurements.</p>
+   <div class="chaos-quota-links">
+    <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer">Cloudflare account overview</a>
+    <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer">Workers &amp; Pages · requests and errors</a>
+    <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer">Storage &amp; databases · D1, KV, R2</a>
+    <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer">Analytics &amp; Logs · site traffic</a>
+    <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer">Workers AI · inference usage</a>
+   </div>
+   <p class="chaos-note">These open Cloudflare's official dashboard. Select the named section after signing in; no API credentials are stored in your browser.</p>
+  </article>
   <article class="chaos-card"><h3>Configured service bindings</h3><div id="chaos-quota-services" class="chaos-registry"></div></article>
  </section>
  <section class="chaos-panel" data-panel="history" hidden>
