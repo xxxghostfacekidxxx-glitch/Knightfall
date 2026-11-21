@@ -66,7 +66,7 @@ test("Egyptian theme uses canonical amber and ember tokens instead of disconnect
  assert.match(final,/--af-ember:#b95d35;--af-ember-light:#ecc17a/);
 });
 test("core theme CSS growth is bounded until scope and specificity are simplified",()=>{
- const shared=read("knightfall-section-foundations.css")+"\n"+read("knightfall-unified-theme.css");
+ const shared=read("knightfall-section-foundations.css")+"\n"+read("knightfall-gothic-chrome.css")+"\n"+read("knightfall-illustrated-realms.css")+"\n"+read("knightfall-unified-theme.css");
  const countImportant=s=>(s.match(/!important\b/g)||[]).length;
  assert.ok(shared.length<=105000,"Canonical shared theme grew beyond reviewed budget; consolidate before expanding");
  assert.ok(countImportant(shared)<=500,"Canonical theme specificity budget exceeded");
@@ -83,7 +83,7 @@ test("Black Sun default chrome no longer falls back to inherited magenta or stai
 });
 
 test("profile foundation selectors keep their guard with lower specificity",()=>{
- const shared=read("knightfall-section-foundations.css")+"\n"+read("knightfall-unified-theme.css");
+ const shared=read("knightfall-section-foundations.css")+"\n"+read("knightfall-gothic-chrome.css")+"\n"+read("knightfall-illustrated-realms.css")+"\n"+read("knightfall-unified-theme.css");
  const foundation=shared.slice(0,shared.indexOf("@media(max-width:800px){"));
  assert.ok(foundation.includes("body:where(:not(.profile-custom-theme)) .profile-shell .card"));
  const lowered=[...foundation.matchAll(/body:where\(:not\(\.profile-custom-theme\)\) \.profile-shell/g)];
