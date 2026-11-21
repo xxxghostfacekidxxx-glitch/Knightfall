@@ -38,6 +38,18 @@ const PREVIEW_ART=Object.freeze({
  iron_eclipse:"/assets/knightfall/vaulted-cathedral.svg",
  royal_abyss:"/assets/knightfall/black-sun-temple.svg"
 });
+const ART_THEMES=new Set(["egyptian_eclipse","dark_lord_ascendant","korriban_necropolis","mustafar_forge"]);
+let presetFilter="art";
+$("theme-crew-collection-filters")?.addEventListener("click",event=>{
+ const button=event.target.closest("button[data-theme-filter]");
+ if(!button||busy)return;
+ const next=button.dataset.themeFilter;
+ if(!["art","classic","all"].includes(next))return;
+ presetFilter=next;
+ for(const element of document.querySelectorAll("[data-theme-filter]"))
+  element.setAttribute("aria-pressed",String(element.dataset.themeFilter===presetFilter));
+ drawPresets();
+});
 const realmName=()=>realmMeta[scope]?.name||$("theme-crew-scope").selectedOptions[0]?.textContent||scope;
 const previewUrl=key=>{
  const url=new URL(realmMeta[scope]?.path||"/",location.origin);
@@ -82,6 +94,7 @@ function choose(preset){
 function drawPresets(){
  const place=$("theme-crew-presets");place.replaceChildren();
  for(const [key,preset] of Object.entries(presets)){
+  if(presetFilter==="art"&&!ART_THEMES.has(key)||presetFilter==="classic"&&ART_THEMES.has(key))continue;
   const b=document.createElement("button");b.type="button";b.className="theme-crew-choice";b.dataset.preset=key;
   b.style.setProperty("--kf-choice-accent",preset.accent);
   b.setAttribute("aria-pressed",String(selected===key));
