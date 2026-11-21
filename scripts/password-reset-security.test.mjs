@@ -71,3 +71,37 @@ test("Signup verification requests have a bounded network timeout", () => {
   const source = readFileSync(new URL("../backend/src/email-signup.js", import.meta.url), "utf8");
   assert.match(source, /signal:\s*AbortSignal\.timeout\(10000\)/);
 });
+
+test("Resend recovery sends only to intended recipient and never logs the reset link", async t => {
+  const messages=[];
+  t.mock.method(globalThis, "fetch", async (url, options) => {
+    assert.equal(url, "https://api.resend.com/emails");
+    assert.equal(options.method, "POST");
+    assert.ok(options.signal);
+    assert.match(options.headers.authorization, /^Bearer /);
+    messages.push(JSON.parse(options.body));
+    return new Response(null, { status: 202 });
+  });
+  const result=await deliverPasswordResetEmail({
+    PASSWORD_RESET_FROM:"Knightfall <accounts@ash-fall.com>",
+    RESEND_API_KEY:"test-only"
+  }, {
+    to:"member@example.test",
+    subject:"Account recovery",
+    text:"Use the recovery link.",
+    html:"<p>Use the recovery link.</p>"
+  });
+  assert.deepEqual(result,{ok:true,status:202});
+  assert.equal(messages.length,1);
+  assert.deepEqual(messages[0].to,["member@example.test"]);
+  assert.equal(messages[0].from,"Knightfall <accounts@ash-fall.com>");
+});
+
+test("Resend recovery rejects provider failures without throwing or exposing credentials", async t => {
+  t.mock.method(globalThis,"fetch",async () => new Response(null,{status:429}));
+  const result=await deliverPasswordResetEmail({
+    PASSWORD_RESET_FROM:"accounts@ash-fall.com",
+    RESEND_API_KEY:"test-only"
+  },{to:"member@example.test",subject:"Recovery",text:"Recovery",html:"<p>Recovery</p>"});
+  assert.deepEqual(result,{ok:false,status:429});
+});
