@@ -74,3 +74,16 @@
 .studio-preview-card[data-theme="mustafar"]{background:linear-gradient(145deg,var(--pf-surface),var(--pf-surface-deep));border-color:var(--pf-border)}.studio-preview-card[data-theme="mustafar"] .studio-preview-cover{background:linear-gradient(#0b0b15a0,#0b0b15a0),url("/assets/knightfall/chaosphere/mustafar-chat.svg") center/cover}
 .studio-preview-card[data-theme="korriban"]{background:linear-gradient(145deg,var(--pf-surface),var(--pf-surface-deep));border-color:var(--pf-border)}.studio-preview-card[data-theme="korriban"] .studio-preview-cover{background:linear-gradient(#0b0b15a0,#0b0b15a0),url("/assets/knightfall/chaosphere/korriban-chat.svg") center/cover}
 .studio-preview-card[data-theme="vader"]{background:linear-gradient(145deg,var(--pf-surface),var(--pf-surface-deep));border-color:var(--pf-border)}.studio-preview-card[data-theme="vader"] .studio-preview-cover{background:linear-gradient(#0b0b15a0,#0b0b15a0),url("/assets/knightfall/chaosphere/vader-chat.svg") center/cover}
+
+/* Collection typography and modern curved surfaces. Uses installed system fonts, no extra font files. */
+#profile[data-theme="egypt"]{--pf-display:Georgia,"Palatino Linotype",serif;--pf-body:"Trebuchet MS",system-ui,sans-serif}
+#profile[data-theme="hellfire"],#profile[data-theme="mustafar"]{--pf-display:Impact,"Arial Narrow",sans-serif;--pf-body:"Trebuchet MS",system-ui,sans-serif}
+#profile[data-theme="vader"],#profile[data-theme="korriban"]{--pf-display:"Arial Black",system-ui,sans-serif;--pf-body:"Segoe UI",system-ui,sans-serif}
+#profile[data-theme="obsidian"]{--pf-display:"Trebuchet MS",system-ui,sans-serif;--pf-body:"Segoe UI",system-ui,sans-serif}
+#profile[data-theme] {font-family:var(--pf-body,system-ui,sans-serif);border-radius:30px;overflow:hidden}
+#profile[data-theme] :is(h1,h2,h3,.profile-heading strong){font-family:var(--pf-display,inherit);letter-spacing:-.025em}
+#profile[data-theme] :is(.profile-about,.profile-birth-chart,.profile-favorites,.profile-social-panel,.friends-panel,.activity-card,.profile-photo-card,.profile-stats>div){border-radius:22px!important}
+#profile[data-theme] :is(.action,button){border-radius:999px!important}
+#profile[data-theme] :is(input,select,textarea){border-radius:16px}
+#profile[data-theme] .profile-cover{border-radius:25px;overflow:hidden}
+@media(max-width:620px){#profile[data-theme]{border-radius:22px}#profile[data-theme] :is(.profile-about,.profile-birth-chart,.profile-favorites,.profile-social-panel,.friends-panel){border-radius:18px!important}}
