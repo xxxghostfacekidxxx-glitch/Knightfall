@@ -81,8 +81,8 @@ test('legacy optional mascot crew keeps featured artwork without globally replac
   assert.ok(!existsSync(resolve(root, 'public/gravewave-takeover.js')), 'retired takeover script is gone');
   assert.ok(!existsSync(resolve(root, 'public/gravewave-decor.js')), 'retired decoration injector is gone');
   assert.ok(!nav.includes('/gravewave-takeover.js'), 'approved Gothic theme must not globally inject mascot overlays');
-  assert.match(nav, /const target = "\/theme\\.css"/, 'canonical theme entrypoint loads');
-  assert.match(theme, /knightfall-unified-theme\\.css\\?v=20261120-tokens1/, 'approved unified Gothic chrome loads through the entrypoint');
+  assert.match(nav, /const target = "\/theme\.css"/, 'canonical theme entrypoint loads');
+  assert.match(theme, /knightfall-unified-theme\.css\?v=20261120-tokens1/, 'approved unified Gothic chrome loads through the entrypoint');
   assert.ok(nav.includes('mountApprovedTheme'), 'the shared theme loader is retained');
   assert.ok(nav.includes('document.head.appendChild(link)'), 'approved theme must be mounted after page-specific styles');
   assert.ok(css.includes('.gw-character-crew'), 'obsolete mascot crew overlays are suppressed');
