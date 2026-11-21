@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "collection": "Chaosphere messenger",
+  "created": "2026-11-21",
+  "assets": [
+    {
+      "id": "obsidian",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/obsidian-chat.svg",
+      "usage": "chat background",
+      "theme": "obsidian"
+    },
+    {
+      "id": "hellfire",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/hellfire-chat.svg",
+      "usage": "chat background",
+      "theme": "hellfire"
+    },
+    {
+      "id": "egypt",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/egypt-chat.svg",
+      "usage": "chat background",
+      "theme": "egypt"
+    },
+    {
+      "id": "mustafar",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/mustafar-chat.svg",
+      "usage": "chat background",
+      "theme": "mustafar"
+    },
+    {
+      "id": "korriban",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/korriban-chat.svg",
+      "usage": "chat background",
+      "theme": "korriban"
+    },
+    {
+      "id": "vader",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/vader-chat.svg",
+      "usage": "chat background",
+      "theme": "vader"
+    },
+    {
+      "id": "roaming-imp",
+      "type": "image/svg+xml",
+      "path": "/assets/knightfall/chaosphere/roaming-imp.svg",
+      "usage": "animated DOM mascot"
+    }
+  ],
+  "pending": [
+    {
+      "id": "imp-detailed-concept-20261121",
+      "type": "image/png",
+      "status": "generated in conversation; binary not yet transferred to repository",
+      "note": "Original detailed punk imp concept. SVG mascot is a separate vector interpretation, not the PNG."
+    }
+  ]
+}
