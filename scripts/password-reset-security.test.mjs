@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
+import { deliverPasswordResetEmail, resetEmailConfigured } from "../backend/src/password-reset-email.js";
 
 const backend = readFileSync(new URL("../backend/src/index.js", import.meta.url), "utf8");
 const page = readFileSync(new URL("../public/reset-password.html", import.meta.url), "utf8");
@@ -30,7 +31,33 @@ test("password reset reports a provider outage without disclosing account existe
   const end = backend.indexOf('if(url.pathname==="/api/auth/password-reset/complete"', start);
   assert.ok(start >= 0 && end > start);
   const requestHandler = backend.slice(start, end);
-  assert.match(requestHandler, /if\(!env\.RESEND_API_KEY\|\|!env\.PASSWORD_RESET_FROM\)return json\(\{error:/);
+  assert.match(requestHandler, /if\(!resetEmailConfigured\(env\)\)return json\(\{error:/);
   assert.match(requestHandler, /temporarily unavailable/);
   assert.match(requestHandler, /,503,origin\)/);
+});
+
+test("both recovery paths use the same provider abstraction", () => {
+  assert.equal((backend.match(/const sent=await deliverPasswordResetEmail\(env,/g)||[]).length, 2);
+});
+
+test("Cloudflare email binding sends recovery mail without a Resend API key", async () => {
+  const messages=[];
+  const env={
+    PASSWORD_RESET_FROM:"Knightfall <accounts@ash-fall.com>",
+    EMAIL:{async send(message){messages.push(message);return {messageId:"fixture-id"};}}
+  };
+  assert.equal(resetEmailConfigured(env),true);
+  const result=await deliverPasswordResetEmail(env,{
+    to:"member@example.test",subject:"Password reset",text:"Test recovery message",html:"<p>Test recovery message</p>"
+  });
+  assert.deepEqual(result,{ok:true,status:202});
+  assert.equal(messages.length,1);
+  assert.deepEqual(messages[0].from,{name:"Knightfall",email:"accounts@ash-fall.com"});
+  assert.equal(messages[0].to,"member@example.test");
+});
+
+test("recovery provider configuration requires sender and a delivery channel", () => {
+  assert.equal(resetEmailConfigured({PASSWORD_RESET_FROM:"accounts@ash-fall.com"}),false);
+  assert.equal(resetEmailConfigured({EMAIL:{send(){}}}),false);
+  assert.equal(resetEmailConfigured({PASSWORD_RESET_FROM:"accounts@ash-fall.com",RESEND_API_KEY:"fixture"}),true);
 });
