@@ -5,6 +5,9 @@ import {acceptedAdminPartner} from "./chaos-companion.mjs";
 // reaches the browser. This state is stored in the existing site_settings D1 table.
 export const THEME_CREW_PRESETS=Object.freeze({
  egyptian_eclipse:Object.freeze({name:"Egyptian Eclipse",tag:"Gold / turquoise / obsidian",mood:"Original eclipsed temple artwork, gilded Anubis halls, turquoise lunar fire, custom winged cartouches and eight matching SVG ornaments",accent:"#e7b65c"}),
+ dark_lord_ascendant:Object.freeze({name:"Dark Lord Ascendant",tag:"Crimson / gunmetal / obsidian",mood:"Original dark-space-fantasy throne room, crimson eclipsed command citadel and eight brushed metal SVG ornaments",accent:"#d5b8c1"}),
+ korriban_necropolis:Object.freeze({name:"Korriban · Red Necropolis",tag:"Crimson / sandstone / iron",mood:"Original red desert crypt and tomb-city painting with eight sandstone and iron SVG ornaments",accent:"#d9a078"}),
+ mustafar_forge:Object.freeze({name:"Mustafar · Obsidian Forge",tag:"Lava / copper / black glass",mood:"Original volcanic black-stone citadel painting, molten rivers and eight lava-metal SVG ornaments",accent:"#edaf65"}),
  cathedral:Object.freeze({name:"Black Sun Temple",tag:"Egyptian / obsidian",mood:"Anubis guardians, golden cartouches, dark temples, crimson eclipse and emerald scarabs",accent:"#e2bc76"}),
  blood_moon:Object.freeze({name:"Blood Moon Court",tag:"Crimson / velvet",mood:"Ox-blood velvet, candlelight, rose gold and dark cathedral stone",accent:"#e59ab1"}),
  verdant_crypt:Object.freeze({name:"Verdant Crypt",tag:"Poison ivy / copper",mood:"Moss-covered ironwork, emerald stained glass and aged bronze",accent:"#a7c899"}),
@@ -119,7 +122,10 @@ export function themePlan(mood){
  if(typeof mood!=="string"||mood.length>200)return null;
  const q=mood.toLowerCase().trim();
  const patterns=[
-  [/egypt|anubis|horus|isis|osiris|scarab|pharaoh|duat|sphinx|turquoise|solar temple/,"egyptian_eclipse"],
+  [/dark lord|dark.?space|crimson citadel|ascendant|black armour|star fortress/,"dark_lord_ascendant"],
+  [/korriban|necropolis|red desert|ancient tomb|tomb.?city/,"korriban_necropolis"],
+  [/mustafar|obsidian forge|volcanic fortress|lava river|molten|black glass/,"mustafar_forge"],
+   [/egypt|anubis|horus|isis|osiris|scarab|pharaoh|duat|sphinx|turquoise|solar temple/,"egyptian_eclipse"],
   [/temple|black sun|cathedral/,"cathedral"],
   [/blood|rose|red|velvet|vamp|crimson|gore/,"blood_moon"],
   [/green|poison|forest|moss|ivy|emerald|crypt/,"verdant_crypt"],
