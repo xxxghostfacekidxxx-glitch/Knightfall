@@ -8,7 +8,8 @@ const config=JSON.parse(readFileSync(new URL("../backend/wrangler.jsonc",import.
 const start=source.indexOf("async function rateLimit(");
 const end=source.indexOf("\nfunction getCookie(",start);
 assert.ok(start!==-1&&end>start,"central rate limit implementation must be present");
-const context={console:{warn(){}},Date,Math};
+const dbCalls=[];
+const context={console:{warn(){}},Date,Math,databaseRateLimit:async (...args)=>{dbCalls.push(args);return true;}};
 vm.runInNewContext(source.slice(start,end)+"\nthis.rateLimit=rateLimit;",context);
 const rateLimit=context.rateLimit;
 const request=new Request("https://api.ash-fall.com/api/messages/conversations/7",{method:"POST"});
@@ -40,7 +41,7 @@ test("allowed native message sends are accepted without a KV write",async()=>{
   assert.equal(await rateLimit(env,request,"message",60,60,77),true);
 });
 
-test("non-message buckets preserve their existing KV limits",async()=>{
+test("non-message buckets use D1 without consuming KV",async()=>{
   let calls=0;
   const env={
     MESSAGE_RATE_LIMITER:{async limit(){throw Error("wrong limiter");}},
@@ -50,10 +51,11 @@ test("non-message buckets preserve their existing KV limits",async()=>{
     }
   };
   assert.equal(await rateLimit(env,request,"login",12,900,null),true);
-  assert.equal(calls,2);
+  assert.equal(calls,0);
+  assert.equal(dbCalls.at(-1)[1],"rate:login:ip:unknown");
 });
 
-test("message rate limiting retains a KV fallback if the binding fails",async()=>{
+test("message rate limiting falls back to D1 if native binding fails",async()=>{
   let reads=0;
   const env={
     MESSAGE_RATE_LIMITER:{async limit(){throw Error("limiter unavailable");}},
@@ -63,5 +65,6 @@ test("message rate limiting retains a KV fallback if the binding fails",async()=
     }
   };
   assert.equal(await rateLimit(env,request,"message",60,60,77),true);
-  assert.equal(reads,1);
+  assert.equal(reads,0);
+  assert.equal(dbCalls.at(-1)[1],"rate:message:user:77");
 });
