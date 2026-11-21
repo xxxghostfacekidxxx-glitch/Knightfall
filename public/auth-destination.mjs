@@ -1,4 +1,4 @@
-const fallback = "/account.html";
+const fallback = "/profile.html";
 
 export function authDestination(value, origin = "https://ash-fall.com") {
   if (typeof value !== "string" || !value.trim()) return fallback;
