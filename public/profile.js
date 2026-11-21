@@ -113,6 +113,7 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
   if (u.interests || u.favorite_games || u.favorite_music) { const section=document.createElement("section"); section.className="profile-favorites"; const h=document.createElement("h2"); h.textContent="Things I’m into"; section.append(h); for (const [label,value] of [["Interests",u.interests],["Favorite games",u.favorite_games],["Favorite music",u.favorite_music]]) if(value) { const p=document.createElement("p"),b=document.createElement("strong"); b.textContent=label+" "; p.append(b,document.createTextNode(value)); section.append(p); } (root.querySelector(".bio")||root.querySelector(".profile-actions-wrap"))?.after(section); }
 
   if(d.birth_chart){
+    try {
     const chart=d.birth_chart,section=document.createElement("section");
     section.className="profile-birth-chart";section.setAttribute("aria-label","Member birth chart");
     const heading=document.createElement("h2");heading.textContent="✦ Cosmic blueprint";
@@ -133,7 +134,8 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
     const chartWheel=document.createElement("div");
     chartWheel.className="profile-cosmic-wheel";
     if(window.KnightfallCosmic){
-      window.KnightfallCosmic.render(chartWheel,chart);
+      try { window.KnightfallCosmic.render(chartWheel,chart); }
+      catch(error){ console.warn("Birth chart wheel unavailable",error);chartWheel.textContent="Chart wheel unavailable. Planetary placements remain accessible below."; }
       section.append(heading,detail,chartWheel,details);
       const reading=document.createElement("button");
       reading.type="button";reading.className="cosmic-read-button";
@@ -157,6 +159,7 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
       }
     }else section.append(heading,detail,bigThree,details);
     const bio=root.querySelector(".bio");(bio||root.querySelector(".profile-actions-wrap"))?.after(section);
+    } catch(error) { console.warn("Birth chart section unavailable",error); }
   }
   // Consolidate the existing bio and public details into a single readable
   // About section without exposing any additional fields to visitors.
