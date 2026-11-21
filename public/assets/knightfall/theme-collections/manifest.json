@@ -1,0 +1,81 @@
+{
+  "id": "knightfall-2026-11-20-premium-theme-art",
+  "version": "2026-11-20",
+  "status": "originals-preserved",
+  "origin": "Original Egyptian-inspired and dark-space-fantasy artwork created for Knightfall; no franchise names or official character assets.",
+  "usage": "Reusable Creator Foundry artwork. Concept images are reference art, not functional interfaces or proof of installed themes.",
+  "assets": [
+    {
+      "id": "egyptian-eclipse-hero",
+      "collection": "egyptian-eclipse",
+      "title": "Egyptian Eclipse · Temple of the Eclipse",
+      "role": "hero",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-hero.png",
+      "sha256": "bab7e90a4c3bbd0fdb5d64770be875d90918ba27c52b68c6b849d55200b628cc",
+      "bytes": 2788960,
+      "width": 1672,
+      "height": 941,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "egyptian-eclipse-throne-hall",
+      "collection": "egyptian-eclipse",
+      "title": "Egyptian Eclipse · Celestial Throne Hall",
+      "role": "background",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-throne-hall.png",
+      "sha256": "6ddfaf9728ca25a0a3272b277cecc95c986847ef8564a32fa12c0b8fc5ccc7da",
+      "bytes": 2380925,
+      "width": 1672,
+      "height": 941,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "egyptian-eclipse-theme-preview",
+      "collection": "egyptian-eclipse",
+      "title": "Egyptian Eclipse · Theme Preview",
+      "role": "concept",
+      "path": "/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-theme-preview.png",
+      "sha256": "8556873d71f2c0a1bc491eca9abdfa84c48bf5e66b668cc651883c557435df96",
+      "bytes": 2633632,
+      "width": 1122,
+      "height": 1402,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "dark-lord-ascendant-throne-room",
+      "collection": "dark-lord-ascendant",
+      "title": "Dark Lord Ascendant · Crimson Throne Room",
+      "role": "hero",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-ascendant-throne-room.png",
+      "sha256": "9a9f874abd2bcc53f95e9f3ab7f40341efb9a1de4cd1740400a2201dc58a20d3",
+      "bytes": 2299080,
+      "width": 1672,
+      "height": 941,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "dark-lord-ascendant-command-chamber",
+      "collection": "dark-lord-ascendant",
+      "title": "Dark Lord Ascendant · Eclipse Command Chamber",
+      "role": "background",
+      "path": "/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-ascendant-command-chamber.png",
+      "sha256": "8960d79f4028cde2847f7f8854ec0d23e86d6c983f0b3a5cf3a3fcbb0d9051c0",
+      "bytes": 1869426,
+      "width": 1672,
+      "height": 941,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    },
+    {
+      "id": "theme-selector-concept",
+      "collection": "theme-selector",
+      "title": "Theme Forge · Selectable Themes Concept",
+      "role": "concept",
+      "path": "/assets/knightfall/theme-collections/theme-selector/theme-selector-concept.png",
+      "sha256": "8a7e8f2c266b158372bba18c4bcc16980748e8095a3f6d3551b636138e15d110",
+      "bytes": 1991009,
+      "width": 1672,
+      "height": 941,
+      "rights": "Original artwork created for Knightfall; no licensed third-party character artwork"
+    }
+  ]
+}
