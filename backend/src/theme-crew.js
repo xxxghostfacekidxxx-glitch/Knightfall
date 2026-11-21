@@ -24,6 +24,42 @@ export const THEME_CREW_REALMS=Object.freeze({
  chaosphere:Object.freeze({name:"Chaosphere",path:"/chaosphere.html"}),
  admin:Object.freeze({name:"Eye of Chaos / Osiris & Isis",path:"/eye-of-chaos.html"})
 });
+// Shared interface controls are a separate versioned record, NOT another realm.
+export const THEME_GLOBAL_OPTIONS=Object.freeze({
+ density:Object.freeze(["balanced","compact","relaxed"]),
+ corners:Object.freeze(["soft","square","rounded"]),
+ typography:Object.freeze(["standard","large","extra_large"]),
+ effects:Object.freeze(["ceremonial","subtle","minimal"])
+});
+const GLOBAL_KEY="theme_crew_global_controls";
+const GLOBAL_DEFAULT=Object.freeze({density:"balanced",corners:"soft",typography:"standard",effects:"ceremonial"});
+const globalKeys=Object.keys(THEME_GLOBAL_OPTIONS);
+const validGlobalControls=value=>value&&typeof value==="object"&&!Array.isArray(value)&&
+ Object.keys(value).length===globalKeys.length&&globalKeys.every(key=>THEME_GLOBAL_OPTIONS[key].includes(value[key]));
+export function normalizeGlobalControls(value){
+ let data=value;
+ try{if(typeof data==="string")data=JSON.parse(data)}catch{data=null}
+ return Object.fromEntries(globalKeys.map(key=>[key,THEME_GLOBAL_OPTIONS[key].includes(data?.[key])?data[key]:GLOBAL_DEFAULT[key]]));
+}
+export function normalizeGlobalState(value){
+ let data=value;
+ try{if(typeof data==="string")data=JSON.parse(data)}catch{data=null}
+ return {...normalizeGlobalControls(data),previous:normalizeGlobalControls(data?.previous),
+  revision:Number.isSafeInteger(data?.revision)&&data.revision>=0?data.revision:0,
+  updated_at:typeof data?.updated_at==="string"?data.updated_at:null};
+}
+const publicGlobal=state=>({...normalizeGlobalControls(state),revision:state.revision,updated_at:state.updated_at});
+async function readGlobal(env){
+ const row=await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(GLOBAL_KEY).first();
+ return {state:normalizeGlobalState(row?.value),raw:row?.value??null};
+}
+async function prepareGlobal(env){
+ const initial={...GLOBAL_DEFAULT,previous:GLOBAL_DEFAULT,revision:0,updated_at:null};
+ await env.DB.prepare("INSERT OR IGNORE INTO site_settings (key,value,updated_by,updated_at) VALUES (?,?,NULL,?)")
+  .bind(GLOBAL_KEY,JSON.stringify(initial),ts()).run();
+ return readGlobal(env);
+}
+const globalLabel=value=>globalKeys.map(key=>String(value[key])).join(" / ");
 const STORE_KEY="theme_crew_current";
 const storeKey=realm=>realm==="site"?STORE_KEY:"theme_crew_realm_"+realm;
 const validRealm=value=>typeof value==="string"&&Object.hasOwn(THEME_CREW_REALMS,value);
@@ -99,8 +135,8 @@ export async function handleThemeCrew(request,env,url,{requireUser,json,origin,a
  const reply=(value,status=200)=>json(value,status,origin,{"cache-control":respondStatus,"x-robots-tag":"noindex,nofollow"});
  if(isPublic){
   if(request.method!=="GET")return reply({error:"Method not allowed"},405);
-  const {site,realms}=await readAllCurrent(env);
-  return reply({...publicTheme(site),realms:Object.fromEntries(Object.entries(realms).map(([key,value])=>[key,publicTheme(value)]))});
+  const [{site,realms},{state:globalControls}]=await Promise.all([readAllCurrent(env),readGlobal(env)]);
+  return reply({...publicTheme(site),globalControls:publicGlobal(globalControls),realms:Object.fromEntries(Object.entries(realms).map(([key,value])=>[key,publicTheme(value)]))});
  }
  const user=await requireUser(request,env);
  if(!user)return reply({error:"Sign in as Knightfall staff."},401);
@@ -108,11 +144,11 @@ export async function handleThemeCrew(request,env,url,{requireUser,json,origin,a
  // Trusted admin collaborators can publish only reviewed, version-guarded presets.
  // Other administrators can inspect and preview without affecting the site.
  const canPublish=canAccessEyeOfHorus(user)||await acceptedAdminPartner(env,user);
- if(!canPublish&&(path==="/api/god/theme/activate"||path==="/api/god/theme/rollback"))
+ if(!canPublish&&["/api/god/theme/activate","/api/god/theme/rollback","/api/god/theme/global","/api/god/theme/global/rollback"].includes(path))
    return reply({error:"Owner or delegated admin partner approval required."},403);
  if(path==="/api/god/theme/status"&&request.method==="GET"){
-  const {site,realms}=await readAllCurrent(env);
-  return reply({current:site,realms,realmMeta:THEME_CREW_REALMS,presets:THEME_CREW_PRESETS,bots:THEME_CREW_BOTS,
+  const [{site,realms},{state:globalControls}]=await Promise.all([readAllCurrent(env),readGlobal(env)]);
+  return reply({current:site,realms,globalControls,globalOptions:THEME_GLOBAL_OPTIONS,realmMeta:THEME_CREW_REALMS,presets:THEME_CREW_PRESETS,bots:THEME_CREW_BOTS,
     history:await history(env),workflow:"https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/theme-crew.yml",
     permissions:{can_view:true,can_plan:true,can_preview:true,can_publish:canPublish,can_rollback:canPublish},
     policy:"All administrators can inspect and plan. GOD and the accepted admin partner can publish reviewed presets and roll back. Every update is versioned, audited, and reversible. No arbitrary CSS endpoint."});
@@ -126,6 +162,28 @@ export async function handleThemeCrew(request,env,url,{requireUser,json,origin,a
   const plan=themePlan(data.mood);
   if(!plan)return reply({error:"Provide a short mood description."},400);
   return reply({plan,preset:THEME_CREW_PRESETS[plan.preset],published:false});
+ }
+ if(path==="/api/god/theme/global"||path==="/api/god/theme/global/rollback"){
+  if(!Number.isSafeInteger(data.expectedRevision)||data.expectedRevision<0)
+   return reply({error:"Expected global revision required. Refresh the console."},400);
+  const rollback=path.endsWith("/rollback");
+  if(!rollback&&!validGlobalControls(data.controls))
+   return reply({error:"Choose only the approved global interface options."},400);
+  const {state,raw}=await prepareGlobal(env);
+  if(state.revision!==data.expectedRevision)
+   return reply({error:"Global controls changed elsewhere. Refresh before publishing.",current:state},409);
+  const target=rollback?state.previous:data.controls;
+  if(!validGlobalControls(target))return reply({error:"Stored global control values invalid."},409);
+  if(globalKeys.every(key=>target[key]===state[key]))
+   return reply({error:rollback?"No earlier global controls to restore.":"Those global controls are already live.",current:state},409);
+  const next={...normalizeGlobalControls(target),previous:normalizeGlobalControls(state),revision:state.revision+1,updated_at:ts()};
+  const result=await env.DB.prepare("UPDATE site_settings SET value=?,updated_by=?,updated_at=? WHERE key=? AND value=?")
+   .bind(JSON.stringify(next),user.id,next.updated_at,GLOBAL_KEY,raw).run();
+  if(Number(result.meta?.changes||0)!==1)return reply({error:"Global controls changed concurrently. Refresh and retry."},409);
+  try{await audit(env,user,"theme_crew.publish","site_theme",null,
+   {realm:"global",from:globalLabel(state),to:globalLabel(next),revision:next.revision,action:rollback?"global_rollback":"global_activate"})}
+  catch(error){console.warn("theme_crew_global_audit_failed",String(error))}
+  return reply({ok:true,realm:"global",current:next,rolled_back:rollback});
  }
  if(path!=="/api/god/theme/activate"&&path!=="/api/god/theme/rollback")return reply({error:"Unknown Theme Crew operation."},404);
  const realm=data.realm??"site";
