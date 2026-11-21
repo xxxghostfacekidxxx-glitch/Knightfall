@@ -22,7 +22,13 @@ const spicyCaptions=Object.freeze({
 const spiceKey="kf:trouble-spice";
 const getSpice=()=>{try{return Math.max(0,Math.min(3,Number(localStorage.getItem(spiceKey))||0))}catch{return 0}};
 const setSpice=value=>{const n=Math.max(0,Math.min(3,Math.floor(Number(value)||0)));try{localStorage.setItem(spiceKey,String(n))}catch{}return n};
-const linesFor=(mood,level)=>level===0?captions[mood]:spicyCaptions[mood]||captions[mood];
+const linesFor=(mood,level)=>{
+ if(level===0)return captions[mood];
+ const lines=spicyCaptions[mood]||captions[mood];
+ if(level===1)return [lines[0]];
+ if(level===2)return [lines[1]||lines[0]];
+ return [lines[2]||lines[lines.length-1]];
+};
 const id=row=>Number.isSafeInteger(Number(row?.id))&&Number(row.id)>0?Number(row.id):0;
 const unread=row=>Math.max(0,Math.floor(Number(row?.unread_count)||0));
 function newUnread(before,after){
