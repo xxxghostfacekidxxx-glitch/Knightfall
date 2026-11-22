@@ -32,3 +32,13 @@ test("Foundry help gives a grounded lesson and workspace link",async()=>{
  assert.equal(answer.lesson?.steps.length,3);
  assert.equal((await publicChaosHandlers["site.help"]({input:{topic:"unrelated nonsense"}})).lesson,null);
 });
+
+test("guided lessons return the requested step without claiming screen access",async()=>{
+ const first=(await publicChaosHandlers["site.help"]({input:{topic:"teach me Textract"}})).lesson;
+ const second=(await publicChaosHandlers["site.help"]({input:{topic:"teach me Textract step 2"}})).lesson;
+ assert.equal(first.currentStep,1);
+ assert.equal(second.currentStep,2);
+ assert.equal(second.instruction,second.steps[1]);
+ assert.equal(second.nextStep,3);
+ assert.match(second.guidance,/cannot see or click your screen/);
+});
