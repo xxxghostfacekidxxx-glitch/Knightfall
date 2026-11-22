@@ -46,7 +46,7 @@ export const GUIDE_AREAS=Object.freeze([
  Object.freeze({
   id:"community",icon:"🎮",title:"Knightfall Guide",
   detail:"Navigate the site, find arcade games and available instructions, understand tools and features, and use calculations, measurements or word counts to plan projects.",
-  prompt:"Help me find a Knightfall arcade game that works well on a touch screen, and tell me where its instructions are.",
+  prompt:"Show me where the Creator Foundry is, give me a link I can tap, and teach me how to use its tools one step at a time. Explain what each tool does in plain language, ask what I want to make, then guide me through the workspace without pretending you clicked anything.",
   route:"/chaos-cartridge.html",routeLabel:"Explore arcade",
   capabilities:["site.help","site.games","site.search","utility.calculate","utility.word_count","utility.now"]
  })
