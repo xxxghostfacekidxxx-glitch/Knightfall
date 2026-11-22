@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS arcade_issue_reports (id INTEGER PRIMARY KEY AUTOINCREMENT, reporter_id INTEGER NOT NULL, game TEXT NOT NULL, description TEXT NOT NULL, page_url TEXT, status TEXT NOT NULL DEFAULT 'open', admin_note TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_arcade_issue_reports_status ON arcade_issue_reports(status,created_at);
