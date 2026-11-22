@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "Chaos Cartridge Original Creations",
-  "description": "First-party Knightfall game implementations and original vector artwork. Catalog entries are source references, not copyright registrations.",
+  "description": "Knightfall games and artwork. Choose a game to play.",
   "updated": "2026-10-26",
   "games": [
     {
@@ -13,7 +13,6 @@
       ],
       "notes": "Original touch-first merge-cooking game with restaurant orders, energy regeneration, drag/tap controls, streaks, upgrades and cloud saves.",
       "engine": "/arcade/hosted/hex-and-whisk/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/hex-and-whisk",
       "assets": [
         {
           "name": "icons.svg",
@@ -29,7 +28,6 @@
       "sprites": [],
       "notes": "Original tile-merging engine; visual tiles are CSS-rendered.",
       "engine": "/arcade/hosted/cinder-merge/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-merge",
       "assets": [],
       "status": "committed; browser QA pending"
     },
@@ -44,7 +42,6 @@
       ],
       "notes": "Original ship, debris and projectile vector artwork.",
       "engine": "/arcade/hosted/cinder-drift/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-drift",
       "assets": [
         {
           "name": "ship.svg",
@@ -71,7 +68,6 @@
       ],
       "notes": "Original character and collectible vector artwork.",
       "engine": "/arcade/hosted/ash-serpent/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-serpent",
       "assets": [
         {
           "name": "serpent-head.svg",
@@ -95,7 +91,6 @@
       ],
       "notes": "Original spirit, hazard and bonus collectible artwork.",
       "engine": "/arcade/hosted/ember-pop/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-pop",
       "assets": [
         {
           "name": "wisp.svg",
@@ -122,7 +117,6 @@
       ],
       "notes": "Original ring texture and infernal sigil artwork.",
       "engine": "/arcade/hosted/pyre-stacks/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/pyre-stacks",
       "assets": [
         {
           "name": "ember-disc.svg",
@@ -146,7 +140,6 @@
       ],
       "notes": "Original wasteland runner, spike hazard, and winged scavenger sprites.",
       "engine": "/arcade/hosted/ashbound-runner/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ashbound-runner",
       "assets": [
         {
           "name": "runner.svg",
@@ -173,7 +166,6 @@
       ],
       "notes": "Original five-letter decoding puzzle and infernal rune/seal vector art.",
       "engine": "/arcade/hosted/crypt-words/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-words",
       "assets": [
         {
           "name": "rune.svg",
@@ -200,7 +192,6 @@
       ],
       "notes": "Three selectable rule sets, local match restoration, separate mode win counts, original neon gesture art, and expanded play.",
       "engine": "/arcade/hosted/ember-clash/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-clash",
       "assets": [
         {
           "name": "ember.svg",
@@ -238,7 +229,6 @@
       ],
       "notes": "Original Sudoku generator with unique-solution validation, hints, three difficulties, saved progress, and original chamber sigil artwork.",
       "engine": "/arcade/hosted/ash-sudoku/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-sudoku",
       "assets": [
         {
           "name": "logic-sigil.svg",
@@ -257,7 +247,6 @@
       ],
       "notes": "Original falling-block engine with seven-piece bag, line clearing, hold, ghost piece, keyboard and touch controls, and bespoke block artwork.",
       "engine": "/arcade/hosted/ashfall-foundry/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ashfall-foundry",
       "assets": [
         {
           "name": "cinder-block.svg",
@@ -280,7 +269,6 @@
       ],
       "notes": "Original archery challenge with ballistic arrow physics, animated targets, touch drag aiming, keyboard controls, and bespoke bow and target artwork.",
       "engine": "/arcade/hosted/cinder-archer/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-archer",
       "assets": [
         {
           "name": "ash-bow.svg",
@@ -303,7 +291,6 @@
       ],
       "notes": "Original boundary-claiming territory puzzle with a CPU opponent, turn retention on captured squares, touch controls, and bespoke core sprites.",
       "engine": "/arcade/hosted/cinder-enclosure/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-enclosure",
       "assets": [
         {
           "name": "ember-core.svg",
@@ -326,7 +313,6 @@
       ],
       "notes": "Original stealth-grid game with patrol sightlines, three sector layouts, ember-key collection, keyboard and touch controls, and original rogue and sentinel sprites.",
       "engine": "/arcade/hosted/ash-veil/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-veil",
       "assets": [
         {
           "name": "cinder-rogue.svg",
@@ -349,7 +335,6 @@
       ],
       "notes": "Original hexagonal cluster-clearing puzzle with a seven-by-seven board, chain scoring, move limits, local autosave, and bespoke ember/void relic sprites.",
       "engine": "/arcade/hosted/hex-embers/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/hex-embers",
       "assets": [
         {
           "name": "ember-hex.svg",
@@ -372,7 +357,6 @@
       ],
       "notes": "Face the Void in an original neon air-hockey duel with puck physics, touch controls and first-to-seven scoring.",
       "engine": "/arcade/hosted/void-hockey/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-hockey",
       "assets": [
         {
           "name": "ember-paddle.svg",
@@ -395,7 +379,6 @@
       ],
       "notes": "Original falling-gem match-three game with chain reactions, keyboard and mobile controls, and bespoke ember and void gems.",
       "engine": "/arcade/hosted/cinder-columns/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-columns",
       "assets": [
         {
           "name": "ember-gem.svg",
@@ -430,7 +413,6 @@
       ],
       "notes": "Six, eight, or twelve pairs; two artwork sets; best-clear tracking; optional peek.",
       "engine": "/arcade/hosted/crypt-pairs/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-pairs",
       "assets": [
         {
           "name": "ember-sigil.svg",
@@ -501,7 +483,6 @@
       ],
       "notes": "Three difficulties with a safe first opening, flag controls, number chording, and one emergency flare.",
       "engine": "/arcade/hosted/cinder-mines/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-mines",
       "assets": [
         {
           "name": "ash-marker.svg",
@@ -524,7 +505,6 @@
       ],
       "notes": "Push salvage crates onto furnaces through original warehouse puzzles with undo support.",
       "engine": "/arcade/hosted/ash-crateworks/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-crateworks",
       "assets": [
         {
           "name": "crate.svg",
@@ -551,7 +531,6 @@
       ],
       "notes": "Five distinct modes, combos, friendly decoys, mode records, pause, and viewport-fitted expanded view.",
       "engine": "/arcade/hosted/crypt-smash/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-smash",
       "assets": [
         {
           "name": "void-wisp.svg",
@@ -590,7 +569,6 @@
       ],
       "notes": "Explore original crypt corridors, collect ember shards and evade the Void watcher.",
       "engine": "/arcade/hosted/cinder-maze/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-maze",
       "assets": [
         {
           "name": "ember-shard.svg",
@@ -613,7 +591,6 @@
       ],
       "notes": "Rotate a six-sided furnace to build matching ember chains before the stacks overflow.",
       "engine": "/arcade/hosted/pyre-hex/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/pyre-hex",
       "assets": [
         {
           "name": "pyre-core.svg",
@@ -636,7 +613,6 @@
       ],
       "notes": "Original four-house dice racing game with three CPU opponents, capture mechanics, four runners per team and bespoke SVG tokens.",
       "engine": "/arcade/hosted/ash-circuit/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-circuit",
       "assets": [
         {
           "name": "cinder-runner.svg",
@@ -658,7 +634,6 @@
       ],
       "notes": "Rotate an ember shield to ricochet a glowing orb and survive increasingly fast bounces.",
       "engine": "/arcade/hosted/ember-ricochet/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-ricochet",
       "assets": [
         {
           "name": "ember-orb.svg",
@@ -676,7 +651,6 @@
       ],
       "notes": "Dodge accelerating burning debris and survive the fallout for the highest score.",
       "engine": "/arcade/hosted/ash-fallout/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-fallout",
       "assets": [
         {
           "name": "falling-cinder.svg",
@@ -694,7 +668,6 @@
       ],
       "notes": "Rotate sixteen conduit tiles until every connection joins and the circuit seals.",
       "engine": "/arcade/hosted/ash-orbit/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-orbit",
       "assets": [
         {
           "name": "conduit.svg",
@@ -712,7 +685,6 @@
       ],
       "notes": "Crack a secret four-digit code with exact-position and misplaced-digit clues.",
       "engine": "/arcade/hosted/crypt-count/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-count",
       "assets": [
         {
           "name": "number-sigil.svg",
@@ -730,7 +702,6 @@
       ],
       "notes": "Trace all 25 ash tiles in one unbroken path without revisiting a square.",
       "engine": "/arcade/hosted/ember-path/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-path",
       "assets": [
         {
           "name": "path-sigil.svg",
@@ -748,7 +719,6 @@
       ],
       "notes": "Solve fast arithmetic challenges against a 45-second clock.",
       "engine": "/arcade/hosted/rune-rush/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rune-rush",
       "assets": [
         {
           "name": "rune-token.svg",
@@ -766,7 +736,6 @@
       ],
       "notes": "Spin three ember symbols for points in a no-wager arcade minigame.",
       "engine": "/arcade/hosted/cinder-slots/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-slots",
       "assets": [
         {
           "name": "slot-sigil.svg",
@@ -784,7 +753,6 @@
       ],
       "notes": "Hit moving Void eyes in a timed precision gallery.",
       "engine": "/arcade/hosted/void-target/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-target",
       "assets": [
         {
           "name": "void-eye.svg",
@@ -802,7 +770,6 @@
       ],
       "notes": "Reorder fifteen sliding tiles in an original ash-themed number puzzle.",
       "engine": "/arcade/hosted/ash-tiles/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-tiles",
       "assets": [
         {
           "name": "tile-mark.svg",
@@ -820,7 +787,6 @@
       ],
       "notes": "Discover hidden infernal words across a nine-by-nine letter grid.",
       "engine": "/arcade/hosted/crypt-hunt/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-hunt",
       "assets": [
         {
           "name": "crypt-letter.svg",
@@ -838,7 +804,6 @@
       ],
       "notes": "Roll dice against the Void and bank points before losing your turn.",
       "engine": "/arcade/hosted/cinder-dice/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-dice",
       "assets": [
         {
           "name": "dice.svg",
@@ -856,7 +821,6 @@
       ],
       "notes": "Connect a six-by-six bridge before the CPU connects the opposite sides.",
       "engine": "/arcade/hosted/void-bridge/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-bridge",
       "assets": [
         {
           "name": "bridge.svg",
@@ -874,7 +838,6 @@
       ],
       "notes": "Rotate channels to conduct molten energy across a crypt grid.",
       "engine": "/arcade/hosted/crypt-caldera/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-caldera",
       "assets": [
         {
           "name": "lava.svg",
@@ -892,7 +855,6 @@
       ],
       "notes": "Jump over approaching ruins in a one-button endless survival sprint.",
       "engine": "/arcade/hosted/ash-dash/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-dash",
       "assets": [
         {
           "name": "runner.svg",
@@ -910,7 +872,6 @@
       ],
       "notes": "Align four rotating rune wheels to unlock an infernal vault.",
       "engine": "/arcade/hosted/ember-vault/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-vault",
       "assets": [
         {
           "name": "wheel.svg",
@@ -928,7 +889,6 @@
       ],
       "notes": "Sort four ember colors into six flasks.",
       "engine": "/arcade/hosted/ember-sort/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-sort",
       "assets": [
         {
           "name": "ember-flask.svg",
@@ -946,7 +906,6 @@
       ],
       "notes": "Time ten strikes against a rotating pulse needle.",
       "engine": "/arcade/hosted/void-pulse/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-pulse",
       "assets": [
         {
           "name": "pulse-core.svg",
@@ -964,7 +923,6 @@
       ],
       "notes": "Shift rows and columns to restore a 4×4 rune matrix.",
       "engine": "/arcade/hosted/crypt-shift/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-shift",
       "assets": [
         {
           "name": "shift-rune.svg",
@@ -982,7 +940,6 @@
       ],
       "notes": "Dodge Void traps and collect embers across four lanes.",
       "engine": "/arcade/hosted/cinder-lanes/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-lanes",
       "assets": [
         {
           "name": "lane-ember.svg",
@@ -1000,7 +957,6 @@
       ],
       "notes": "Escape a procedurally carved nine-by-nine crypt maze.",
       "engine": "/arcade/hosted/crypt-labyrinth/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-labyrinth",
       "assets": [
         {
           "name": "compass.svg",
@@ -1018,7 +974,6 @@
       ],
       "notes": "Defend the citadel against descending Void invaders.",
       "engine": "/arcade/hosted/ash-siege/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-siege",
       "assets": [
         {
           "name": "turret.svg",
@@ -1036,7 +991,6 @@
       ],
       "notes": "Connect every star once along a network of paths.",
       "engine": "/arcade/hosted/void-constellation/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-constellation",
       "assets": [
         {
           "name": "star.svg",
@@ -1054,7 +1008,6 @@
       ],
       "notes": "Balance five sets of weighted infernal stones.",
       "engine": "/arcade/hosted/crypt-balance/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-balance",
       "assets": [
         {
           "name": "scale.svg",
@@ -1072,7 +1025,6 @@
       ],
       "notes": "Replaced legacy page and gameplay JavaScript with original Ash-Fall action canvas engine (ashfall-original-action.js); original emblem retained; full browser QA pending.",
       "engine": "/arcade/hosted/alien-battle/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/alien-battle",
       "assets": [
         {
           "name": "cinder-invader.svg",
@@ -1090,7 +1042,6 @@
       ],
       "notes": "Replaced previous game page and JavaScript with new shared Ash-Fall original canvas gameplay engine (ashfall-original-trio.js). Original Ash-Fall emblem retained; runtime browser QA and historical asset provenance still pending.",
       "engine": "/arcade/hosted/balance-stack/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/balance-stack",
       "assets": [
         {
           "name": "balance-sigil.svg",
@@ -1108,7 +1059,6 @@
       ],
       "notes": "Replaced previous game page and gameplay JavaScript with independently written Ash-Fall sports canvas engine (ashfall-original-sports.js). Existing emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/basketball/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/basketball",
       "assets": [
         {
           "name": "inferno-ball.svg",
@@ -1126,7 +1076,6 @@
       ],
       "notes": "Replaced previous game page and gameplay JavaScript with independently written Ash-Fall sports canvas engine (ashfall-original-sports.js). Existing emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/bowling/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/bowling",
       "assets": [
         {
           "name": "crypt-pin.svg",
@@ -1144,7 +1093,6 @@
       ],
       "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall original puzzle canvas engine (ashfall-original-matching.js). Existing original emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/bubble-pop/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/bubble-pop",
       "assets": [
         {
           "name": "ember-bubble.svg",
@@ -1162,7 +1110,6 @@
       ],
       "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall original puzzle canvas engine (ashfall-original-matching.js). Existing original emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/candy-crush/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/candy-crush",
       "assets": [
         {
           "name": "cinder-candy.svg",
@@ -1180,7 +1127,6 @@
       ],
       "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall road-survival canvas engine (ashfall-original-driving.js). Existing original emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/car-race/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/car-race",
       "assets": [
         {
           "name": "speedway.svg",
@@ -1198,7 +1144,6 @@
       ],
       "notes": "Replaced legacy page and gameplay JavaScript with original Ash-Fall action canvas engine (ashfall-original-action.js); original emblem retained; full browser QA pending.",
       "engine": "/arcade/hosted/doodle-jump/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/doodle-jump",
       "assets": [
         {
           "name": "ascension.svg",
@@ -1216,7 +1161,6 @@
       ],
       "notes": "Replaced legacy page and gameplay JavaScript with original Ash-Fall action canvas engine (ashfall-original-action.js); original emblem retained; full browser QA pending.",
       "engine": "/arcade/hosted/survivor/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/survivor",
       "assets": [
         {
           "name": "survivor.svg",
@@ -1234,7 +1178,6 @@
       ],
       "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall road-survival canvas engine (ashfall-original-driving.js). Existing original emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/two-cars/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/two-cars",
       "assets": [
         {
           "name": "twin-car.svg",
@@ -1252,7 +1195,6 @@
       ],
       "notes": "Original five-letter decoding engine with duplicate-letter-aware grading, score progression, touch keyboard, and account completion event. Previous page and gameplay replaced; browser QA pending.",
       "engine": "/arcade/hosted/words-of-wonder/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/words-of-wonder",
       "assets": [
         {
           "name": "lexicon.svg",
@@ -1270,7 +1212,6 @@
       ],
       "notes": "Replaced previous game page and gameplay JavaScript with independently written Ash-Fall sports canvas engine (ashfall-original-sports.js). Existing emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/penalty-shootout/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/penalty-shootout",
       "assets": [
         {
           "name": "shootout.svg",
@@ -1288,7 +1229,6 @@
       ],
       "notes": "Replaced previous game page and JavaScript with new shared Ash-Fall original canvas gameplay engine (ashfall-original-trio.js). Original Ash-Fall emblem retained; runtime browser QA and historical asset provenance still pending.",
       "engine": "/arcade/hosted/stack-tower/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/stack-tower",
       "assets": [
         {
           "name": "spire.svg",
@@ -1306,7 +1246,6 @@
       ],
       "notes": "Cross perilous lanes through the ashlands. Existing Knightfall first-party implementation; code provenance not independently verified.",
       "engine": "/arcade/hosted/cinder-crossing/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-crossing",
       "assets": [
         {
           "name": "crossing-mark.svg",
@@ -1324,7 +1263,6 @@
       ],
       "notes": "Break through the infernal brick wall. Existing Knightfall first-party implementation; code provenance not independently verified.",
       "engine": "/arcade/hosted/afterburn-breakout/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/afterburn-breakout",
       "assets": [
         {
           "name": "afterburn-mark.svg",
@@ -1342,7 +1280,6 @@
       ],
       "notes": "Build combos on a tactical hex board. Existing Knightfall first-party implementation; code provenance not independently verified.",
       "engine": "/arcade/hosted/hexa-havoc/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/hexa-havoc",
       "assets": [
         {
           "name": "hex-mark.svg",
@@ -1360,7 +1297,6 @@
       ],
       "notes": "Survive the last days of a ruined world. Existing Knightfall first-party implementation; code provenance not independently verified.",
       "engine": "/arcade/hosted/last-ember/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/last-ember",
       "assets": [
         {
           "name": "last-ember-mark.svg",
@@ -1378,7 +1314,6 @@
       ],
       "notes": "Hop through the burning obstacle field. Existing Knightfall first-party implementation; code provenance not independently verified.",
       "engine": "/arcade/hosted/cinder-hopper/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-hopper",
       "assets": [
         {
           "name": "hopper-mark.svg",
@@ -1396,7 +1331,6 @@
       ],
       "notes": "Manage chaotic elevator traffic. Existing Knightfall first-party implementation; code provenance not independently verified.",
       "engine": "/arcade/hosted/lift-riot/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/lift-riot",
       "assets": [
         {
           "name": "lift-mark.svg",
@@ -1414,7 +1348,6 @@
       ],
       "notes": "Fit blocks into the Ash-Fall puzzle board. Existing Knightfall first-party implementation; code provenance not independently verified.",
       "engine": "/arcade/hosted/ashen-blocks/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ashen-blocks",
       "assets": [
         {
           "name": "blocks-mark.svg",
@@ -1432,7 +1365,6 @@
       ],
       "notes": "Build a new skyline from the ruins. Existing Knightfall first-party implementation; code provenance not independently verified.",
       "engine": "/arcade/hosted/skyline-foundry/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/skyline-foundry",
       "assets": [
         {
           "name": "skyline-mark.svg",
@@ -1450,7 +1382,6 @@
       ],
       "notes": "Survive the particle storm. Existing Knightfall first-party implementation; code provenance not independently verified.",
       "engine": "/arcade/hosted/particle-panic/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/particle-panic",
       "assets": [
         {
           "name": "particle-mark.svg",
@@ -1471,7 +1402,6 @@
       ],
       "notes": "Original Ash-Fall Cinder Guard, Void Raider and Ember Outpost SVG illustrations are now drawn inside the hosted strategy game. Existing game-engine code still requires an independent provenance review; live browser QA pending.",
       "engine": "/arcade/hosted/ashen-dominion/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ashen-dominion",
       "assets": [
         {
           "name": "dominion-mark.svg",
@@ -1501,7 +1431,6 @@
       ],
       "notes": "Independent original first-party canvas shooter engine in ashfall-original-vector.js, distinct mode rules, keyboard and touch input, account scoring. Legacy code and page replaced; browser QA pending.",
       "engine": "/arcade/hosted/prism-panic/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/prism-panic",
       "assets": [
         {
           "name": "prism.svg",
@@ -1519,7 +1448,6 @@
       ],
       "notes": "Independent original first-party canvas shooter engine in ashfall-original-vector.js, distinct mode rules, keyboard and touch input, account scoring. Legacy code and page replaced; browser QA pending.",
       "engine": "/arcade/hosted/neon-vector/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/neon-vector",
       "assets": [
         {
           "name": "vector.svg",
@@ -1537,7 +1465,6 @@
       ],
       "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
       "engine": "/arcade/hosted/cinder-circuit/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-circuit",
       "assets": [
         {
           "name": "circuit.svg",
@@ -1555,7 +1482,6 @@
       ],
       "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
       "engine": "/arcade/hosted/hexforge-command/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/hexforge-command",
       "assets": [
         {
           "name": "forge.svg",
@@ -1573,7 +1499,6 @@
       ],
       "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
       "engine": "/arcade/hosted/neon-mahjong/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/neon-mahjong",
       "assets": [
         {
           "name": "mahjong.svg",
@@ -1591,7 +1516,6 @@
       ],
       "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
       "engine": "/arcade/hosted/ruinwalkers/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ruinwalkers",
       "assets": [
         {
           "name": "ruin.svg",
@@ -1609,7 +1533,6 @@
       ],
       "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
       "engine": "/arcade/hosted/burrow-blitz/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/burrow-blitz",
       "assets": [
         {
           "name": "burrow.svg",
@@ -1627,7 +1550,6 @@
       ],
       "notes": "Independent first-party side-scrolling game implementation in ashfall-original-runner.js. Legacy game page and gameplay replaced; earlier imported code provenance remains recorded in history. Browser QA pending.",
       "engine": "/arcade/hosted/rusty-sky/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rusty-sky",
       "assets": [
         {
           "name": "sky.svg",
@@ -1645,7 +1567,6 @@
       ],
       "notes": "Independent first-party side-scrolling game implementation in ashfall-original-runner.js. Legacy game page and gameplay replaced; earlier imported code provenance remains recorded in history. Browser QA pending.",
       "engine": "/arcade/hosted/slush-rush/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/slush-rush",
       "assets": [
         {
           "name": "slush.svg",
@@ -1663,7 +1584,6 @@
       ],
       "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
       "engine": "/arcade/hosted/bubble-barrage/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/bubble-barrage",
       "assets": [
         {
           "name": "bubble-barrage-mark.svg",
@@ -1681,7 +1601,6 @@
       ],
       "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
       "engine": "/arcade/hosted/cinder-chess/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-chess",
       "assets": [
         {
           "name": "chess-mark.svg",
@@ -1699,7 +1618,6 @@
       ],
       "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
       "engine": "/arcade/hosted/tether-tangle/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/tether-tangle",
       "assets": [
         {
           "name": "tether-mark.svg",
@@ -1717,7 +1635,6 @@
       ],
       "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
       "engine": "/arcade/hosted/space-fighter/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/space-fighter",
       "assets": [
         {
           "name": "squadron-mark.svg",
@@ -1737,7 +1654,6 @@
       ],
       "notes": "Original Ash-Fall Ember Devourer and Void Stalker SVG characters integrated into live canvas gameplay, with existing emblem. Underlying engine provenance remains unverified; browser QA pending.",
       "engine": "/arcade/hosted/glitch-munch/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/glitch-munch",
       "assets": [
         {
           "name": "munch-mark.svg",
@@ -1763,7 +1679,6 @@
       ],
       "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
       "engine": "/arcade/hosted/rift-wardens/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rift-wardens",
       "assets": [
         {
           "name": "wardens-mark.svg",
@@ -1783,7 +1698,6 @@
       ],
       "notes": "Original Ash-Fall gameplay character and collectible SVG artwork integrated in the canvas renderer. Underlying engine provenance requires independent review; browser QA pending.",
       "engine": "/arcade/hosted/colossus-clash/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/colossus-clash",
       "assets": [
         {
           "name": "colossus-mark.svg",
@@ -1811,7 +1725,6 @@
       ],
       "notes": "Original Ash-Fall gameplay character and collectible SVG artwork integrated in the canvas renderer. Underlying engine provenance requires independent review; browser QA pending.",
       "engine": "/arcade/hosted/rooftop-riot/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rooftop-riot",
       "assets": [
         {
           "name": "rooftop-mark.svg",
@@ -1837,7 +1750,6 @@
       ],
       "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
       "engine": "/arcade/hosted/marshland-marksman/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/marshland-marksman",
       "assets": [
         {
           "name": "marshland-mark.svg",
@@ -1855,7 +1767,6 @@
       ],
       "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
       "engine": "/arcade/hosted/particle-clicker/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/particle-clicker",
       "assets": [
         {
           "name": "reactor.svg",
@@ -1873,7 +1784,6 @@
       ],
       "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
       "engine": "/arcade/hosted/cube-composer/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cube-composer",
       "assets": [
         {
           "name": "conduits.svg",
@@ -1891,7 +1801,6 @@
       ],
       "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
       "engine": "/arcade/hosted/skifree/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/skifree",
       "assets": [
         {
           "name": "slope.svg",
@@ -1907,7 +1816,6 @@
       "sprites": [],
       "notes": "Independently authored Ash-Fall lander physics, procedural terrain, vector spacecraft, and touch controls. Genre research reference: cscazorla/javascript-videogame-lunar-lander (MIT); no upstream code or art incorporated. Browser QA pending.",
       "engine": "/arcade/hosted/cinder-lander/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-lander",
       "assets": [],
       "status": "original Ash-Fall engine committed; browser QA pending"
     },
@@ -1920,7 +1828,6 @@
       ],
       "notes": "Three-round play, fresh signals after interruption, false-start detection, and separate local timing records.",
       "engine": "/arcade/hosted/reaction-ritual/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/reaction-ritual",
       "assets": [
         {
           "name": "ritual-mark.svg",
@@ -1938,7 +1845,6 @@
       ],
       "notes": "Original Ash-Fall cabinet with a unified ruleset, polished presentation, and expanded play options.",
       "engine": "/arcade/hosted/cursed-circuit/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cursed-circuit",
       "assets": [
         {
           "name": "rune.svg",
@@ -1957,7 +1863,6 @@
       ],
       "notes": "Original Ash-Fall cabinet with a unified ruleset, polished presentation, and expanded play options.",
       "engine": "/arcade/hosted/lights-out-afterburn/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/lights-out-afterburn",
       "assets": [
         {
           "name": "ember-lantern.svg",
