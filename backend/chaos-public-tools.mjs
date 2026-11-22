@@ -50,6 +50,14 @@ export function findFoundryLesson(topic){
  const found=aliases.filter(([,pattern])=>pattern.test(query));
  return found.length===1?FOUNDRY_LESSONS.find(lesson=>lesson.name===found[0][0]):null;
 }
+export const FOUNDRY_EXERCISES=Object.freeze({
+ "Visual Lab":{task:"Make a 64 by 64 pixel test icon and export it as PNG.",check:"Confirm the exported file opens and is 64 by 64 pixels."},
+ "Code Studio":{task:"Paste a tiny JSON object with a name and a color, then run its validator.",check:"Confirm the editor reports valid JSON before copying it."},
+ "Chaos Forge":{task:"Draft a simple rectangular pouch using measured dimensions.",check:"Confirm every cut piece has a width, height and seam allowance."},
+ "Textract":{task:"Extract text from a short document you have permission to use.",check:"Compare the first and last sentence against the original before copying."},
+ "The Crucible":{task:"Write a three-sentence project brief for a small creative project.",check:"Confirm it states the goal, materials and first action."},
+ "Production Lab":{task:"Create a tiny sprite and export it to a local file.",check:"Open the exported asset and check its dimensions and transparency."}
+});
 export function foundryLessonResponse(topic){
  const query=String(topic||"").slice(0,160);
  const lesson=findFoundryLesson(query);
@@ -57,7 +65,9 @@ export function foundryLessonResponse(topic){
  const requested=query.match(/\b(?:step|stage)\s*([1-3])\b/i);
  const step=requested?Number(requested[1]):1;
  const issue=/\b(?:stuck|error|broken|failed|fails|doesn.t\s+work|not\s+working|problem|trouble|confused)\b/i.test(query);
+ const exercise=FOUNDRY_EXERCISES[lesson.name];
  return {...lesson,currentStep:step,instruction:lesson.steps[step-1],nextStep:step<lesson.steps.length?step+1:null,
+  exercise:step===lesson.steps.length?exercise:null,verified:false,
   guidance:issue?"Tell me the exact error message and what happened after this step. Check your selected file or input, then retry. I cannot inspect your screen or claim to have fixed the tool.":
   "Try this step in the linked workspace. Tell me when you are ready for the next step or describe what went wrong. I cannot see or click your screen."};
 }
