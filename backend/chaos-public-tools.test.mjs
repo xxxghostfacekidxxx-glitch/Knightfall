@@ -24,3 +24,11 @@ test("legendary family and tool workspace requests return their real pages", () 
   assert.ok(searchPublicPages({query:"how to use creator foundry tools"}).some(page=>page.url==="/devil-tools.html"));
   assert.deepEqual(searchPublicPages({query:"where is the page please"}),[]);
 });
+
+test("Foundry help gives a grounded lesson and workspace link",async()=>{
+ const answer=await publicChaosHandlers["site.help"]({input:{topic:"teach me to use Textract"}});
+ assert.equal(answer.lesson?.name,"Textract");
+ assert.equal(answer.lesson?.url,"/chaos-textract.html");
+ assert.equal(answer.lesson?.steps.length,3);
+ assert.equal((await publicChaosHandlers["site.help"]({input:{topic:"unrelated nonsense"}})).lesson,null);
+});
