@@ -16,12 +16,12 @@ const invoke=(path,method,body,env,getUser=async()=>owner)=>handleMascotPets(req
 test('all mascot IDs are unique, safe, first-party and match the real art catalog',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../../public/assets/devil-tools/neon-nuisances/manifest.json',import.meta.url),'utf8'));
  assert.ok(MASCOT_SPECIES.length>=32,'Keep the newest memorial and punk-skunk species');
- assert.equal(MASCOT_SPECIES.length,manifest.characters.length);
+ assert.equal(MASCOT_SPECIES.length,manifest.characters.filter(x=>x.availability!=='art-preview-only').length);
  assert.ok(MASCOT_SPECIES.some(x=>x.id==='crush'));
  assert.ok(MASCOT_SPECIES.some(x=>x.id==='skunk-riot'));
  assert.ok(MASCOT_SPECIES.some(x=>x.id==='boogie'));
  assert.equal(MASCOT_SPECIES.length,33);
- assert.deepEqual(new Set(MASCOT_SPECIES.map(x=>x.id)),new Set(manifest.characters.map(x=>x.id)));
+ assert.deepEqual(new Set(MASCOT_SPECIES.map(x=>x.id)),new Set(manifest.characters.filter(x=>x.availability!=='art-preview-only').map(x=>x.id)));
  for(const pet of MASCOT_SPECIES)assert.match(pet.svg,/^\/assets\/devil-tools\/neon-nuisances\/[a-z0-9-]+\.svg$/);
 });
 
