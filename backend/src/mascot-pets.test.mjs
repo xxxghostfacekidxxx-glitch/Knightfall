@@ -23,6 +23,19 @@ test('all mascot IDs are unique, safe, first-party and match the real art catalo
  for(const pet of MASCOT_SPECIES)assert.match(pet.svg,/^\/assets\/devil-tools\/neon-nuisances\/[a-z0-9-]+\.svg$/);
 });
 
+
+test('Boogie is a gifted legendary, never available through public adoption',async()=>{
+ const boogie=MASCOT_SPECIES.find(p=>p.id==='boogie');
+ assert.ok(boogie);
+ assert.equal(boogie.rarity,'Legendary');
+ assert.equal(boogie.exclusive,true);
+ assert.equal(boogie.first_rescue_free,false);
+ const db=stub(()=>{throw Error('Gifted legendary must be rejected before database access')});
+ const response=await invoke('/api/mascot-pets/adopt','POST',{species:'boogie'},db);
+ assert.equal(response.status,403);
+ assert.match(response.data.error,/awarded directly/);
+});
+
 test('vitals decay with time but never reach zero; XP progresses consistently',()=>{
  const today=petVitals(sample,now);
  assert.ok(today.hunger<90&&today.joy<90);
