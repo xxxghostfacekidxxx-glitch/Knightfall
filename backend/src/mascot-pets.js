@@ -112,7 +112,7 @@ const SPECIES = [
   temperament:SPECIES_PERSONALITIES[id][0],favorite:SPECIES_PERSONALITIES[id][1],lore:SPECIES_PERSONALITIES[id][2],
  cost_cinders:PET_MARKET[id][0],unlock_level:PET_MARKET[id][1],
   rarity:id==='boogie'?'Legendary':STAR_IDS.has(id)?'Starborn':'Misfit',rarity_label:id==='boogie'?'✦ Legendary':STAR_IDS.has(id)?'✦ Starborn':'Misfit',
-  first_rescue_free:FREE_STARTER_SPECIES.includes(id),featured:STAR_IDS.has(id),evolution:STAR_FORMS[id]||null,
+  first_rescue_free:FREE_STARTER_SPECIES.includes(id),exclusive:id==='boogie',featured:STAR_IDS.has(id),evolution:STAR_FORMS[id]||null,
   affinity:affinityFor(id).id,affinity_label:affinityFor(id).name,growth_stages:stagesFor(id,name,STAR_FORMS[id]),
  svg:'/assets/devil-tools/neon-nuisances/'+id+'.svg',
  portrait:'/assets/devil-tools/neon-nuisances/portraits/'+id+'.svg',
@@ -359,6 +359,7 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
  if(path==='/api/mascot-pets/adopt'&&request.method==='POST'){
   const species=typeof body.species==='string'?BY_ID.get(body.species):null;
   if(!species)return respond({error:'Choose an available sanctuary mascot.'},400);
+  if(species.exclusive)return respond({error:'This legendary companion is awarded directly and cannot be adopted from the public catalog.'},403);
   const nickname=body.nickname===undefined?species.name:nameOf(body.nickname);
   if(!nickname)return respond({error:'Pet names must be 1–28 simple characters.'},400);
   const pending=await env.DB.prepare("SELECT id FROM mascot_rescue_eggs WHERE user_id=? AND species=? AND status='incubating'").bind(user.id,species.id).first();
