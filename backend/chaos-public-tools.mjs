@@ -58,7 +58,16 @@ export function searchPublicPages(input={}) {
     .map(({title,url})=>({title,url}));
 }
 export const publicChaosHandlers=Object.freeze({
-  "site.help":async({input})=>({results:searchPublicPages({query:input.topic}),lesson:findFoundryLesson(input.topic)}),
+  "site.help":async({input})=>{
+    const topic=String(input?.topic||"").slice(0,160);
+    const lesson=findFoundryLesson(topic);
+    const requested=topic.match(/\b(?:step|stage)\s*([1-3])\b/i);
+    const step=requested?Number(requested[1]):1;
+    return {results:searchPublicPages({query:topic}),lesson:lesson?{
+      ...lesson,currentStep:step,instruction:lesson.steps[step-1],nextStep:step<lesson.steps.length?step+1:null,
+      guidance:"Try this step in the linked workspace. Tell me when you are ready for the next step or describe what went wrong. I cannot see or click your screen."
+    }:null};
+  },
   "site.games":async()=>({results:PUBLIC_PAGES.filter(page=>page.title==="Chaos Cartridge").map(({title,url})=>({title,url}))}),
   "site.search":async({input})=>({results:searchPublicPages(input)})
 });
