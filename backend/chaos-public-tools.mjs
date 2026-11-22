@@ -28,6 +28,23 @@ export const PUBLIC_PAGES = Object.freeze([
   {title:"The Crucible",url:"/chaos-crucible.html",terms:"miss chaos creative workbench project builder brief blueprint tattoo character game design craft sewing coding writing markdown export private memo save maker projects"},
   {title:"Miss Chaos Abilities Guide",url:"/miss-chaos-guide.html",terms:"what can miss chaos do capabilities guide ai tools how to use assistant member osiris isis private modes permissions creator code research demo"}
 ]);
+/** Simple, grounded tool lessons. Each step points to an existing workspace. */
+export const FOUNDRY_LESSONS=Object.freeze([
+ {name:"Visual Lab",url:"/chaos-visual-lab.html",terms:"visual lab image picture photo resize pixel art tattoo stencil trace",steps:["Open Visual Lab.","Choose an image from your device.","Select one edit, preview the result, then export when ready."]},
+ {name:"Code Studio",url:"/chaos-code-studio.html",terms:"code studio programming javascript json format debug diagram",steps:["Open Code Studio.","Paste a short code sample or JSON document.","Choose inspect, format, compare or diagram, then review the output."]},
+ {name:"Chaos Forge",url:"/chaos-forge.html",terms:"forge craft sewing pattern fabric 3d material measurements",steps:["Open Chaos Forge.","Choose the project or pattern you want to prototype.","Enter actual measurements and check the estimates before cutting material."]},
+ {name:"Textract",url:"/chaos-textract.html",terms:"textract document pdf photo scan ocr extract text",steps:["Open Textract.","Choose a supported photo or document.","Extract text, correct any recognition mistakes, then copy the result."]},
+ {name:"The Crucible",url:"/chaos-crucible.html",terms:"crucible idea project brief plan design workspace",steps:["Open The Crucible.","Describe what you want to create.","Review the generated project brief and work through one task at a time."]},
+ {name:"Production Lab",url:"/devil-tools.html#production-workbench",terms:"production lab pixel sprite atlas packer tilemap game map",steps:["Open Creator Foundry and select the Production Lab workspace.","Choose Pixel Studio, Atlas Packer or the map editor.","Make a small test asset and export it before starting a large project."]}
+]);
+export function findFoundryLesson(topic){
+ const tokens=String(topic||"").toLowerCase().match(/[a-z0-9]{3,}/g)||[];
+ const skip=new Set(["how","the","and","use","tool","tools","teach","help","with","please","foundry","creator","workspace"]);
+ const words=[...new Set(tokens.filter(t=>!skip.has(t)))];
+ if(!words.length)return null;
+ const ranked=FOUNDRY_LESSONS.map(lesson=>({lesson,score:words.reduce((n,t)=>n+(lesson.name.toLowerCase().includes(t)?3:lesson.terms.includes(t)?1:0),0)})).sort((a,b)=>b.score-a.score);
+ return ranked[0]?.score>0?ranked[0].lesson:null;
+}
 export function searchPublicPages(input={}) {
   const query=String(input.query||"").trim().toLowerCase().slice(0,160);
   if(!query)return [];
@@ -41,7 +58,7 @@ export function searchPublicPages(input={}) {
     .map(({title,url})=>({title,url}));
 }
 export const publicChaosHandlers=Object.freeze({
-  "site.help":async({input})=>({results:searchPublicPages({query:input.topic})}),
+  "site.help":async({input})=>({results:searchPublicPages({query:input.topic}),lesson:findFoundryLesson(input.topic)}),
   "site.games":async()=>({results:PUBLIC_PAGES.filter(page=>page.title==="Chaos Cartridge").map(({title,url})=>({title,url}))}),
   "site.search":async({input})=>({results:searchPublicPages(input)})
 });
