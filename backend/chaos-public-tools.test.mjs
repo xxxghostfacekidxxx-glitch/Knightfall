@@ -51,3 +51,15 @@ test("Foundry lessons avoid guessing for generic or ambiguous requests",async()=
  assert.equal((await help("help with OCR")).name,"Textract");
  assert.match((await help("Textract step 2 is stuck")).guidance,/exact error message/);
 });
+
+test("hands-on exercise appears at final lesson step and never claims verified",async()=>{
+ const lesson=async topic=>(await publicChaosHandlers["site.help"]({input:{topic}})).lesson;
+ assert.equal((await lesson("Textract step 1")).exercise,null);
+ const end=await lesson("Textract step 3");
+ assert.match(end.exercise.task,/Extract text/);
+ assert.match(end.exercise.check,/Compare/);
+ assert.equal(end.verified,false);
+ assert.equal(end.nextStep,null);
+ const visual=await lesson("Visual Lab step 3");
+ assert.match(visual.exercise.check,/64 by 64/);
+});
