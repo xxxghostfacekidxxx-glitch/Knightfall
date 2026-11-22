@@ -34,7 +34,7 @@
    <select id="forge-kind"><option value="clothing">Clothing / fabric</option><option value="accessory">Accessory / bag</option><option value="craft">Craft / prop</option><option value="object">Other object</option></select></div>
   <div class="field"><label for="forge-notes">Maker notes (optional)</label><textarea id="forge-notes" maxlength="400" rows="2" placeholder="Denim, close-up of pocket, reference scale, what you want to replicate…"></textarea></div>
   <button type="button" id="forge-analyze" class="forge-btn primary">✦ Analyze photo with Miss Chaos</button>
-  <p class="forge-status" id="forge-vision-status" role="status">AI analysis requires sign-in and uses the existing Cloudflare Workers AI allowance. Manual tracing, pattern drafting and 3D previews need no AI credits.</p>
+  <p class="forge-status" id="forge-vision-status" role="status">Sign in to analyze an image with AI. Prefer working by hand? Tracing, patterns and 3D previews work without AI credits.</p>
   <pre id="forge-analysis" class="forge-analysis" hidden></pre>
  </section>
  <section class="forge-panel" aria-labelledby="pattern-heading">
@@ -61,7 +61,7 @@
 <div class="forge-columns forge-second-row">
  <section class="forge-panel" aria-labelledby="model-heading">
   <div class="panel-heading"><span class="eyebrow">03 / 3D MODEL</span><h2 id="model-heading">Mesh Ritual</h2></div>
-  <p>Interactive WebGL preview built on Knightfall's existing MIT-licensed Three.js. Rotate to inspect. Drag a real OBJ or STL model into your local viewer, or export a simplified OBJ of the pattern prototype.</p>
+  <p>Spin your design around to inspect every angle. Drop in an OBJ or STL model, or export a simple OBJ of your pattern. Three.js is used under its MIT license.</p>
   <div id="forge-viewer" class="forge-viewer"><canvas id="forge-3d" aria-label="Rotatable 3D model viewer"></canvas><div id="forge-viewer-fallback" class="forge-viewer-fallback" hidden></div></div>
   <div class="forge-actions">
    <button type="button" class="forge-btn secondary" id="forge-reset-camera">Reset view</button>
@@ -73,7 +73,7 @@
  </section>
  <section class="forge-panel" aria-labelledby="resources-heading">
   <div class="panel-heading"><span class="eyebrow">04 / FREE RESOURCES</span><h2 id="resources-heading">The Public Vault</h2></div>
-  <p>Search open reference collections and CC0 assets. No paid membership or API key is needed for these catalog queries.</p>
+  <p>Find free reference images and CC0 assets. No paid membership or personal API key required.</p>
   <form id="forge-resource-form" class="forge-resource-form">
    <div class="field"><label for="forge-source">Library</label>
    <select id="forge-source"><option value="polyhaven">Poly Haven • 3D assets &amp; textures</option><option value="met">The Met • historical garments &amp; artifacts</option><option value="wikidata">Wikidata • structured knowledge</option></select></div>
@@ -82,7 +82,7 @@
    <button class="forge-btn primary" type="submit">Search free sources</button>
   </form>
   <div class="forge-resource-results" id="forge-resource-results" aria-live="polite"></div>
-  <p class="forge-status" id="forge-resource-status" role="status">Powered by Poly Haven when using its live catalog. Its downloadable assets are CC0.</p>
+  <p class="forge-status" id="forge-resource-status" role="status">Live assets come from Poly Haven and are available under CC0.</p>
   <div class="forge-resource-links">
    <h3>Free maker tools &amp; references</h3>
    <a href="https://freesewing.org/" target="_blank" rel="noopener noreferrer">FreeSewing • parametric clothing patterns</a>
