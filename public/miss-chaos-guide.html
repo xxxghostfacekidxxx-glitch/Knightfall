@@ -40,6 +40,13 @@
    <p id="mc-guide-card-status" class="mc-guide-mini-status" role="status" aria-live="polite"></p>
  </section>
 
+ <section class="mc-guide-discovery" id="mc-learning-workshop" aria-labelledby="mc-learning-title">
+  <div class="mc-guide-section-head"><div><p class="mc-guide-index">LEARN / PRACTICE</p><h2 id="mc-learning-title">Foundry training workshop</h2><p>Pick a tool, follow one step at a time, and practice with a tiny project. Progress is saved only in this browser, not your account.</p></div></div>
+  <label for="mc-lesson-tool">Choose a workspace</label>
+  <select id="mc-lesson-tool"><option value="Visual Lab">Visual Lab</option><option value="Code Studio">Code Studio</option><option value="Chaos Forge">Chaos Forge</option><option value="Textract">Textract</option><option value="The Crucible">The Crucible</option><option value="Production Lab">Production Lab</option></select>
+  <div class="mc-guide-card"><h3 id="mc-lesson-heading"></h3><p id="mc-lesson-instruction" aria-live="polite"></p><p id="mc-lesson-exercise"></p><p id="mc-lesson-check"></p><div class="mc-guide-hero-actions"><a id="mc-lesson-open" href="/devil-tools.html">Open workspace</a><button type="button" id="mc-lesson-back">Previous</button><button type="button" id="mc-lesson-next">Next step</button><button type="button" id="mc-lesson-reset">Restart</button></div><p id="mc-lesson-status" role="status" aria-live="polite"></p></div>
+ </section>
+ <script type="module" src="/miss-chaos-lessons.mjs"></script>
  <section class="mc-guide-live" aria-labelledby="mc-guide-live-title">
    <div class="mc-guide-section-head"><div><p class="mc-guide-index">02 / TEST THE MACHINE</p><h2 id="mc-guide-live-title">Try a real tool</h2><p>Explicit, read-only utility requests. They do not start a model chat, change accounts, or post anything.</p></div></div>
    <div class="mc-guide-live-grid">
