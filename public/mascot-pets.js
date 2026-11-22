@@ -8,7 +8,7 @@ if(!owned||!adopt||!shop||!message||!slots)return;
 const clock=window.KnightfallPetCare;
 let spotlightId=null;
 const openDetails=new Map();
-let affinities=[],species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,max=31,
+let affinities=[],species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,max=33,
     cinders=0,level=1,premiumEnabled=false,habitatThemes=[],habitatDecorations=[],incubatingSpecies=[];
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
 const say=text=>{message.textContent=String(text)};
