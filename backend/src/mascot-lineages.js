@@ -27,7 +27,7 @@ const groups={
  celestial:['moxie','void-sprout'],
  feral:['kiki','minion-mouse','butters','trouble'],
  toxic:['bloop','zuzu'],
- neon:['gravebyte','statichex','skunk-riot']
+ neon:['gravebyte','statichex','skunk-riot','boogie']
 };
 export const SPECIES_AFFINITY=Object.freeze(Object.fromEntries(
  Object.entries(groups).flatMap(([type,ids])=>ids.map(id=>[id,type]))
