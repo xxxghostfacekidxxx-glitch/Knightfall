@@ -61,3 +61,10 @@ test("site navigation is grounded and does not swallow unrelated research",()=>{
  for(const request of ["Where are ghosts made?","Tell me how to create a sword", "What is love"])
   assert.equal(site(request),null,request);
 });
+
+test("explicit teaching requests route to grounded site help",()=>{
+ assert.equal(site("Teach me to use Textract")?.name,"site.help");
+ assert.equal(site("Walk me through Visual Lab")?.name,"site.help");
+ assert.equal(site("Where is the Legendary Families gallery?")?.name,"site.search");
+ assert.equal(site("Teach me how to make a bomb"),null);
+});
