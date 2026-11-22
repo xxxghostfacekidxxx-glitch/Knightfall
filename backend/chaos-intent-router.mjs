@@ -77,7 +77,7 @@ export function explicitChaosSiteCall(message){
  const text=String(message||"").trim();
  if(!/^(?:please\s+)?(?:where\s+(?:is|are|can\s+i\s+find)|how\s+(?:do|can)\s+i\s+(?:find|open)|find\s+the|show\s+(?:me\s+)?the|open\s+the|take\s+me\s+to)\b/i.test(text))
    return null;
- if(!/\b(?:knightfall|ash.fall|arcade|games?|chaosphere|messenger|forums?|members?|bots?|memo\s+pad|shop|profile|account|install|foundry|creator|chaos\s+forge|moonology|shadow\s+work|notifications?)\b/i.test(text))
+ if(!/\b(?:knightfall|ash.fall|arcade|games?|chaosphere|messenger|forums?|members?|bots?|memo\s+pad|shop|profile|account|install|foundry|creator|chaos\s+forge|moonology|shadow\s+work|notifications?|legendary|families|boogie|specter|bubblemaw|ruckus|nox|visual\s+lab|code\s+studio|textract|crucible|tool\s+workspace)\b/i.test(text))
    return null;
  return {name:"site.search",arguments:{query:text.slice(0,160)}};
 }
