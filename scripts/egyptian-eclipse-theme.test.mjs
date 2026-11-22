@@ -30,7 +30,7 @@ test("canonical cascade has exactly one Egyptian module last, isolated from obso
  const rootCss=read("public/theme.css");
  const imports=[...rootCss.matchAll(/@import\s+url\(["']?\/([^"'?)]+)(?:\?[^)"']*)?["']?\);/g)].map(m=>m[1]);
  assert.ok(imports.includes("egyptian-eclipse-theme.css"),"Original Egyptian theme CSS retained");
- assert.deepEqual(imports.slice(-3),["egyptian-eclipse-theme.css","knightfall-art-theme-variables.css","knightfall-art-theme-template.css"],
+ assert.deepEqual(imports.slice(-4),["egyptian-eclipse-theme.css","knightfall-art-theme-variables.css","knightfall-art-theme-template.css","home-responsive.css"],
  "Original Egyptian palette must remain separate from the additional art-kit template");
  assert.equal(imports.filter(x=>x==="egyptian-eclipse-theme.css").length,1);
  assert.doesNotMatch(sheet,/!important\b/);
