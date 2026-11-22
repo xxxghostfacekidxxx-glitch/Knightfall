@@ -42,3 +42,12 @@ test("guided lessons return the requested step without claiming screen access",a
  assert.equal(second.nextStep,3);
  assert.match(second.guidance,/cannot see or click your screen/);
 });
+
+test("Foundry lessons avoid guessing for generic or ambiguous requests",async()=>{
+ const help=async topic=>(await publicChaosHandlers["site.help"]({input:{topic}})).lesson;
+ assert.equal(await help("teach me creator foundry"),null);
+ assert.equal(await help("help with Visual Lab and Code Studio"),null);
+ assert.equal((await help("teach me pixel studio")).name,"Production Lab");
+ assert.equal((await help("help with OCR")).name,"Textract");
+ assert.match((await help("Textract step 2 is stuck")).guidance,/exact error message/);
+});
