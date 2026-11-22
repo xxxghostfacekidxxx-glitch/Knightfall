@@ -5,7 +5,7 @@ rattlepop:[750,2],gutterkit:[750,2],"volt-imp":[750,2],"casket-pup":[750,2],"chu
 "crypt-koi":[1400,3],"void-sprout":[1400,3],"minion-mouse":[4500,7],gravebyte:[1400,3],thornriot:[1400,3],
 statichex:[2500,5],"mini-villain":[5500,9],"mini-eddie":[6000,9],
 lydibug:[4500,7],sootsnoot:[750,2],rumblefluff:[1400,3],glittergob:[750,2],craggle:[1400,3],prismare:[2500,5],"boo-thang":[5000,8],
-butters:[1400,3],trouble:[1750,4],"skunk-riot":[2000,4],crush:[1800,4]
+butters:[1400,3],trouble:[1750,4],"skunk-riot":[2000,4],crush:[1800,4],boogie:[0,99]
 });
 const entries=[
 ["scrap_crown","Scrap Crown","head",450,null],["witch_hat","Midnight Witch Hat","head",550,null],["glitch_horns","Glitch Horns","head",null,299],
