@@ -177,3 +177,15 @@ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme)
 @media(forced-colors:active){
  html body[data-kf-theme="egyptian_eclipse"] :is(.kf-egyptian-pavilion,.kf-egyptian-art-card,.kf-header){border:2px solid CanvasText}
 }
+
+/* Published Egyptian collection: original gateway, concept painting and emblem. */
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion{
+ background-image:linear-gradient(135deg,#06131ce8,#10282be8),url('/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-temple-gateway.png');
+ background-position:center,center;background-size:cover;
+}
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-head{
+ background-image:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/emblem.svg');background-repeat:no-repeat;background-position:right center;background-size:72px 72px;padding-right:80px;
+}
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-feature{
+ background-image:linear-gradient(90deg,#06131cdd,#06131c88),url('/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-theme-preview.png');background-position:center;background-size:cover;
+}
