@@ -10,6 +10,7 @@ import {handleMascotRoom} from './mascot-room-api.js';
 import {PET_AFFINITIES,affinityFor,stagesFor,growthFor} from './mascot-lineages.js';
 import {handleMascotFurniture,FURNITURE} from './mascot-furniture.js';
 export const SPECIES_PERSONALITIES=Object.freeze({
+ boogie:['Defiant','Midnight music, pink lightning and impossible schemes','A neon-goth mouse-fox with a razor-sharp grin and a heart hidden beneath the noise.'],
  moxie:['Curious','Moonlight and abandoned lanterns','A velvet-winged scout who finds the beauty in forgotten places.'],
  bloop:['Mischievous','Shimmering puddles','A gilled little troublemaker who treats every pool as a portal.'],
  pippa:['Cheerful','Autumn nights','A jack-o-lantern prankster with a heart bigger than its grin.'],
@@ -50,7 +51,7 @@ export const STAR_FORMS=Object.freeze({
  'mini-eddie':{name:'Everguard Eddie',level:11,bond:850,tagline:'A steadfast little protector, brave because his people are near.'},
  'boo-thang':{name:'Boo Thang: Heartlight',level:10,bond:800,tagline:'A beloved little haunting with a heart bright enough to guide ghosts home.'}
 });
-const STAR_IDS=new Set(Object.keys(STAR_FORMS));
+const STAR_IDS=new Set([...Object.keys(STAR_FORMS),'boogie']);
 const evolvedAsset=id=>'/assets/devil-tools/neon-nuisances/evolutions/'+id+'.svg';
 // Six tiny, species-specific responses make the same care action feel different
 // across the collection. These are flavor only; rewards remain server-defined below.
@@ -106,6 +107,7 @@ const SPECIES = [
  ['butters','Butters','cream ferret'],['trouble','Trouble','masked raccoon'],
  ['crush','Crush','surfer sea turtle'],
  ['skunk-riot','Skunk Riot','punk skunk'],
+ ['boogie','Boogie','goth mouse-fox'],
 ].map(([id,name,type])=>({id,name,type,
   temperament:SPECIES_PERSONALITIES[id][0],favorite:SPECIES_PERSONALITIES[id][1],lore:SPECIES_PERSONALITIES[id][2],
  cost_cinders:PET_MARKET[id][0],unlock_level:PET_MARKET[id][1],
