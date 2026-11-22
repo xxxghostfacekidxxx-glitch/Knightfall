@@ -128,7 +128,7 @@
           links.append(a);
         }
       }
-      for(const [href,label] of [["mailto:accounts@ash-fall.com","Contact Us"],["/report-issue.html","Report Issues"]]){
+      for(const [href,label] of [["/contact.html","Contact Us"],["/report-issue.html","Report Issues"]]){
         if(!links.querySelector('a[href="'+href+'"]')){const a=document.createElement("a");a.href=href;a.textContent=label;a.className="kf-support-link";links.append(a);}
       }
       if(!links.querySelector('a[href="/remembering-josh.html"]')){
@@ -141,7 +141,7 @@
     const footer=document.createElement("footer");
     footer.id="ashfall-support-footer";
     footer.setAttribute("aria-label","Knightfall support and dedication");
-    footer.innerHTML='<a href="/support.html">Support Knightfall</a> <a href="/user-agreement.html">Terms &amp; Policies</a> <a href="/privacy.html">Privacy</a> <a href="/account-deletion.html">Delete account</a> <a href="mailto:accounts@ash-fall.com">Contact Us</a> <a href="/report-issue.html">Report Issues</a> <a class="kf-dedication-link" href="/remembering-josh.html">Dedication · Josh “Crush” Van Patten</a>';
+    footer.innerHTML='<a href="/support.html">Support Knightfall</a> <a href="/user-agreement.html">Terms &amp; Policies</a> <a href="/privacy.html">Privacy</a> <a href="/account-deletion.html">Delete account</a> <a href="/contact.html">Contact Us</a> <a href="/report-issue.html">Report Issues</a> <a class="kf-dedication-link" href="/remembering-josh.html">Dedication · Josh “Crush” Van Patten</a>';
     const css=document.createElement("style");
     css.textContent='#ashfall-support-footer{box-sizing:border-box;width:100%;margin-top:3rem;padding:1.3rem 1rem;text-align:center;background:#17191c;border-top:1px solid #a48a75;color:#d7c8bc;font:500 14px/1.7 system-ui,sans-serif}#ashfall-support-footer a{display:inline-block;margin-left:.6rem;color:#d1b48b;font-weight:800;text-decoration:underline;text-underline-offset:3px}#ashfall-support-footer a:focus-visible{outline:2px solid #d1b48b;outline-offset:4px}@media(max-width:520px){#ashfall-support-footer a{display:block;margin:.4rem auto 0}}';
     document.head.append(css);
