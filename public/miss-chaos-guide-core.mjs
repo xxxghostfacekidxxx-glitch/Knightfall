@@ -31,7 +31,7 @@ export const GUIDE_AREAS=Object.freeze([
  }),
  Object.freeze({
   id:"research",icon:"🔎",title:"Research & Free Resources",
-  detail:"Find attributed public information and references through selected sources including Wikipedia, Wikidata, Open Library, Crossref, The Met, Poly Haven and public GitHub repositories. Not unrestricted live web browsing.",
+  detail:"Search books, research, art references and public information. Check source details before reusing material.",
   prompt:"Find a freely reusable reference for an original gothic stone texture. Name the source, asset license and link, and tell me what still needs verification.",
   route:"/chaos-visual-lab.html",routeLabel:"Open Visual Lab",
   capabilities:["research.wikipedia","resource.wikidata","resource.met","resource.polyhaven","research.github_repos","research.books","research.papers","research.dictionary"]
