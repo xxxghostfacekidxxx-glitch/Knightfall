@@ -19,6 +19,8 @@ test('all mascot IDs are unique, safe, first-party and match the real art catalo
  assert.equal(MASCOT_SPECIES.length,manifest.characters.length);
  assert.ok(MASCOT_SPECIES.some(x=>x.id==='crush'));
  assert.ok(MASCOT_SPECIES.some(x=>x.id==='skunk-riot'));
+ assert.ok(MASCOT_SPECIES.some(x=>x.id==='boogie'));
+ assert.equal(MASCOT_SPECIES.length,33);
  assert.deepEqual(new Set(MASCOT_SPECIES.map(x=>x.id)),new Set(manifest.characters.map(x=>x.id)));
  for(const pet of MASCOT_SPECIES)assert.match(pet.svg,/^\/assets\/devil-tools\/neon-nuisances\/[a-z0-9-]+\.svg$/);
 });
