@@ -75,7 +75,7 @@ export function explicitChaosQuickCall(message){
 }
 export function explicitChaosSiteCall(message){
  const text=String(message||"").trim();
- if(/^(?:please\\s+)?(?:teach\\s+me|show\\s+me\\s+how|how\\s+(?:do|can)\\s+i\\s+use|walk\\s+me\\s+through|help\\s+me\\s+(?:use|learn))\\b/i.test(text) && /\\b(?:foundry|creator|visual\\s+lab|code\\s+studio|chaos\\s+forge|textract|crucible|production\\s+lab|pixel\\s+studio|atlas\\s+packer|tilemap)\\b/i.test(text))
+ if(/^(?:please\s+)?(?:teach\s+me|show\s+me\s+how|how\s+(?:do|can)\s+i\s+use|walk\s+me\s+through|help\s+me\s+(?:use|learn))\b/i.test(text) && /\b(?:foundry|creator|visual\s+lab|code\s+studio|chaos\s+forge|textract|crucible|production\s+lab|pixel\s+studio|atlas\s+packer|tilemap)\b/i.test(text))
    return {name:"site.help",arguments:{topic:text.slice(0,160)}};
  if(!/^(?:please\s+)?(?:where\s+(?:is|are|can\s+i\s+find)|how\s+(?:do|can)\s+i\s+(?:find|open)|find\s+the|show\s+(?:me\s+)?the|open\s+the|take\s+me\s+to)\b/i.test(text))
    return null;
