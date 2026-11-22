@@ -38,12 +38,28 @@ export const FOUNDRY_LESSONS=Object.freeze([
  {name:"Production Lab",url:"/devil-tools.html#production-workbench",terms:"production lab pixel sprite atlas packer tilemap game map",steps:["Open Creator Foundry and select the Production Lab workspace.","Choose Pixel Studio, Atlas Packer or the map editor.","Make a small test asset and export it before starting a large project."]}
 ]);
 export function findFoundryLesson(topic){
- const tokens=String(topic||"").toLowerCase().match(/[a-z0-9]{3,}/g)||[];
- const skip=new Set(["how","the","and","use","tool","tools","teach","help","with","please","foundry","creator","workspace"]);
- const words=[...new Set(tokens.filter(t=>!skip.has(t)))];
- if(!words.length)return null;
- const ranked=FOUNDRY_LESSONS.map(lesson=>({lesson,score:words.reduce((n,t)=>n+(lesson.name.toLowerCase().includes(t)?3:lesson.terms.includes(t)?1:0),0)})).sort((a,b)=>b.score-a.score);
- return ranked[0]?.score>0?ranked[0].lesson:null;
+ const query=String(topic||"").toLowerCase().slice(0,160);
+ const aliases=[
+  ["Visual Lab",/\b(?:visual\s+lab|image\s+edit(?:or|ing)?|photo\s+edit(?:or|ing)?|tattoo\s+stencil|vector\s+trac(?:e|ing))\b/],
+  ["Code Studio",/\b(?:code\s+studio|code\s+edit(?:or|ing)?|javascript|json\s+format|debug\s+code|flowchart)\b/],
+  ["Chaos Forge",/\b(?:chaos\s+forge|sewing\s+pattern|fabric\s+estimate|craft\s+pattern|pattern\s+draft)\b/],
+  ["Textract",/\b(?:textract|ocr|extract\s+text|scan\s+document|read\s+pdf)\b/],
+  ["The Crucible",/\b(?:the\s+crucible|project\s+brief|project\s+builder|creative\s+workbench)\b/],
+  ["Production Lab",/\b(?:production\s+lab|pixel\s+studio|atlas\s+packer|tilemap|sprite\s+sheet)\b/]
+ ];
+ const found=aliases.filter(([,pattern])=>pattern.test(query));
+ return found.length===1?FOUNDRY_LESSONS.find(lesson=>lesson.name===found[0][0]):null;
+}
+export function foundryLessonResponse(topic){
+ const query=String(topic||"").slice(0,160);
+ const lesson=findFoundryLesson(query);
+ if(!lesson)return null;
+ const requested=query.match(/\b(?:step|stage)\s*([1-3])\b/i);
+ const step=requested?Number(requested[1]):1;
+ const issue=/\b(?:stuck|error|broken|failed|fails|doesn.t\s+work|not\s+working|problem|trouble|confused)\b/i.test(query);
+ return {...lesson,currentStep:step,instruction:lesson.steps[step-1],nextStep:step<lesson.steps.length?step+1:null,
+  guidance:issue?"Tell me the exact error message and what happened after this step. Check your selected file or input, then retry. I cannot inspect your screen or claim to have fixed the tool.":
+  "Try this step in the linked workspace. Tell me when you are ready for the next step or describe what went wrong. I cannot see or click your screen."};
 }
 export function searchPublicPages(input={}) {
   const query=String(input.query||"").trim().toLowerCase().slice(0,160);
@@ -60,13 +76,7 @@ export function searchPublicPages(input={}) {
 export const publicChaosHandlers=Object.freeze({
   "site.help":async({input})=>{
     const topic=String(input?.topic||"").slice(0,160);
-    const lesson=findFoundryLesson(topic);
-    const requested=topic.match(/\b(?:step|stage)\s*([1-3])\b/i);
-    const step=requested?Number(requested[1]):1;
-    return {results:searchPublicPages({query:topic}),lesson:lesson?{
-      ...lesson,currentStep:step,instruction:lesson.steps[step-1],nextStep:step<lesson.steps.length?step+1:null,
-      guidance:"Try this step in the linked workspace. Tell me when you are ready for the next step or describe what went wrong. I cannot see or click your screen."
-    }:null};
+    return {results:searchPublicPages({query:topic}),lesson:foundryLessonResponse(topic)};
   },
   "site.games":async()=>({results:PUBLIC_PAGES.filter(page=>page.title==="Chaos Cartridge").map(({title,url})=>({title,url}))}),
   "site.search":async({input})=>({results:searchPublicPages(input)})
