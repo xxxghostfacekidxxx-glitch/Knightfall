@@ -14,7 +14,8 @@ export const PUBLIC_PAGES = Object.freeze([
   {title:"Private Die-ary",url:"/die-ary.html",terms:"my journal private diary die ary entries personal writing reflection diary notes"},
   {title:"Moonology",url:"/moonology.html",terms:"moon phase journal moonology lunar ritual"},
   {title:"Shadow Work",url:"/shadow-work.html",terms:"shadow work reflection journal prompts introspection"},
-  {title:"Devil's Toolkit / Creator Foundry",url:"/devil-tools.html",terms:"developer tools coding workshop creator foundry art tools pixel studio atlas packer tilemap artwork sprites free opensource"},
+  {title:"Creator Foundry · Tool Workspaces",url:"/devil-tools.html",terms:"where is creator foundry devil toolkit developer tools coding workshop tool workspace how to use tutorial teach guide art tools pixel studio atlas packer tilemap artwork sprites free opensource"},
+  {title:"Legendary Families",url:"/legendary-families.html",terms:"legendary families boogie minion mouse mini villain the eddie bubblemaw specter nox ruckus midnight mayhem tiny tyrants companion art gallery"},
   {title:"Textract · Miss Chaos Document Reader",url:"/chaos-textract.html",terms:"textract OCR recognize scanned text image document PDF DOCX XLSX PPTX extract words photo copy download file"},
   {title:"Shop",url:"/cinder-shop.html",terms:"shop merch currency cosmetics purchases"},
   {title:"Account",url:"/account.html",terms:"member account profile settings sign in"},
@@ -32,9 +33,10 @@ export function searchPublicPages(input={}) {
   if(!query)return [];
   const stop=new Set(["where","what","which","find","page","link","please","the","and","for","are","can","how","site","website","show","me","our","you","your","with","about","no"]);
   const tokens=[...new Set(query.match(/[a-z0-9]{2,}/g)||[])].filter(t=>!stop.has(t)).slice(0,12);
+  if(!tokens.length)return [];
   return PUBLIC_PAGES.map(page=>{
     const hay=(page.title+" "+page.terms).toLowerCase();
-    return {...page,score:tokens.reduce((n,t)=>n+(hay.includes(t)?1:0),0)};
+    const title=page.title.toLowerCase();return {...page,score:tokens.reduce((n,t)=>n+(title.includes(t)?3:hay.includes(t)?1:0),0)};
   }).filter(page=>page.score>0).sort((a,b)=>b.score-a.score).slice(0,5)
     .map(({title,url})=>({title,url}));
 }
