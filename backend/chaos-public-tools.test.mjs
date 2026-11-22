@@ -18,3 +18,9 @@ test("no matches returns empty results", () => {
 test("missing query returns empty results", () => {
   assert.deepEqual(searchPublicPages({}),[]);
 });
+
+test("legendary family and tool workspace requests return their real pages", () => {
+  assert.equal(searchPublicPages({query:"where is Boogie and Specter"})[0]?.url,"/legendary-families.html");
+  assert.ok(searchPublicPages({query:"how to use creator foundry tools"}).some(page=>page.url==="/devil-tools.html"));
+  assert.deepEqual(searchPublicPages({query:"where is the page please"}),[]);
+});
