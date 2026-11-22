@@ -311,11 +311,13 @@
         "name": "Bubblemaw",
         "species": "axolotl",
         "color": "pink",
-        "role": "legendary mount",
+        "role": "legendary illustration companion",
         "asset": "/assets/devil-tools/neon-nuisances/companions/pink-axolotl-mount.svg"
       },
       "signatureEars": "red fox",
-      "signatureTails": 3
+      "signatureTails": 3,
+      "collection": "Miss Chaos's Kids",
+      "rarity": "legendary"
     },
     {
       "id": "mini-villain",
@@ -336,7 +338,16 @@
       "tagline": "Kneel. Or don't. I'll remember.",
       "styleVersion": 12,
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/mini-villain.svg",
-      "evolved": "/assets/devil-tools/neon-nuisances/evolutions/mini-villain.svg"
+      "evolved": "/assets/devil-tools/neon-nuisances/evolutions/mini-villain.svg",
+      "companion": {
+        "id": "nox-dragon",
+        "name": "Nox",
+        "species": "original black dragon",
+        "role": "legendary illustration companion",
+        "asset": "/assets/devil-tools/neon-nuisances/companions/nox-dragon.svg"
+      },
+      "collection": "Miss Chaos's Kids",
+      "rarity": "legendary"
     },
     {
       "id": "mini-eddie",
@@ -358,7 +369,16 @@
       "tagline": "Still standing. Still trouble.",
       "styleVersion": 12,
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/mini-eddie.svg",
-      "evolved": "/assets/devil-tools/neon-nuisances/evolutions/mini-eddie.svg"
+      "evolved": "/assets/devil-tools/neon-nuisances/evolutions/mini-eddie.svg",
+      "companion": {
+        "id": "ruckus-beast",
+        "name": "Ruckus",
+        "species": "original whirlwind beast",
+        "role": "legendary illustration companion",
+        "asset": "/assets/devil-tools/neon-nuisances/companions/ruckus-beast.svg"
+      },
+      "collection": "Miss Chaos's Kids",
+      "rarity": "legendary"
     },
     {
       "id": "gutterkit",
@@ -662,7 +682,6 @@
       "rarity": "legendary",
       "collection": "Miss Chaos's Kids",
       "role": "The chaos artist",
-      "tagline": "Born to make beautiful trouble.",
       "variants": {
         "idle": "/assets/devil-tools/neon-nuisances/boogie-idle.svg",
         "blink": "/assets/devil-tools/neon-nuisances/boogie-blink.svg",
@@ -678,11 +697,12 @@
           "#ff35a9",
           "#a4ff18"
         ],
-        "role": "legendary mount",
+        "role": "legendary illustration companion",
         "asset": "/assets/devil-tools/neon-nuisances/companions/specter-wolf.svg"
       },
       "signatureEars": "black fox",
-      "signatureTails": 3
+      "signatureTails": 3,
+      "taglineStatus": "awaiting-creator-approval"
     }
   ],
   "animationVariants": [
