@@ -15,7 +15,7 @@
  const claimReady=species=>{
   if(!state)return false;
   const {pets,incubatingSpecies,cinders,level,max}=state,first=pets.length===0;
-  return !pets.some(p=>p.species===species.id)&&!incubatingSpecies.includes(species.id)
+  return !species.exclusive&&!pets.some(p=>p.species===species.id)&&!incubatingSpecies.includes(species.id)
    &&pets.length<max&&(first?!!species.first_rescue_free:level>=Number(species.unlock_level||1))
    &&cinders>=(first?0:Number(species.cost_cinders||0));
  };
@@ -108,7 +108,7 @@
    ownedSort==='level'?b.level-a.level:
    ownedSort==='needs'?lowValue(a)-lowValue(b):Number(b.featured)-Number(a.featured)||b.id-a.id);
   const speciesQuery=search('pet-species-search'),speciesFilter=value('pet-species-filter','all'),speciesSort=value('pet-species-sort','level');
-  const count=filterCards(get('adopt-pets'),species,'id',p=>{
+  const count=filterCards(get('adopt-pets'),species.filter(p=>!p.exclusive),'id',p=>{
    const has=pets.some(x=>x.species===p.id),can=claimReady(p);
    return matchText([p.name,p.type,p.temperament,p.favorite,p.lore],speciesQuery)&&
     (speciesFilter==='all'||speciesFilter==='available'&&!has||speciesFilter==='owned'&&has||
