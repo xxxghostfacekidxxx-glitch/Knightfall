@@ -111,7 +111,7 @@ const SPECIES = [
 ].map(([id,name,type])=>({id,name,type,
   temperament:SPECIES_PERSONALITIES[id][0],favorite:SPECIES_PERSONALITIES[id][1],lore:SPECIES_PERSONALITIES[id][2],
  cost_cinders:PET_MARKET[id][0],unlock_level:PET_MARKET[id][1],
-  rarity:STAR_IDS.has(id)?'Starborn':'Misfit',rarity_label:STAR_IDS.has(id)?'✦ Starborn':'Misfit',
+  rarity:id==='boogie'?'Legendary':STAR_IDS.has(id)?'Starborn':'Misfit',rarity_label:id==='boogie'?'✦ Legendary':STAR_IDS.has(id)?'✦ Starborn':'Misfit',
   first_rescue_free:FREE_STARTER_SPECIES.includes(id),featured:STAR_IDS.has(id),evolution:STAR_FORMS[id]||null,
   affinity:affinityFor(id).id,affinity_label:affinityFor(id).name,growth_stages:stagesFor(id,name,STAR_FORMS[id]),
  svg:'/assets/devil-tools/neon-nuisances/'+id+'.svg',
