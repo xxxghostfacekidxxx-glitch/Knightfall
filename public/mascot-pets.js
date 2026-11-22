@@ -229,6 +229,7 @@ function renderOwned(){
 function renderAdopt(){
  adopt.replaceChildren();
  for(const pet of species){
+  if(pet.exclusive)continue; // Gifted legendaries cannot be purchased or adopted.
   const already=pets.some(x=>x.species===pet.id),incubating=incubatingSpecies.includes(pet.id),first=pets.length===0,free=first&&!!pet.first_rescue_free;
   const unlock=Number(pet.unlock_level||1),locked=first?!pet.first_rescue_free:level<unlock,full=pets.length>=max;
   const price=free?0:Number(pet.cost_cinders||0),canAfford=cinders>=price;
