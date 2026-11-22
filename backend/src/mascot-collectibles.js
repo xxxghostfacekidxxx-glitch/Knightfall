@@ -14,7 +14,7 @@ const entries=[
 ["ember_aura","Ember Aura","aura",650,null],["acid_particles","Acid Sparks","aura",900,null],["eclipse_aura","Eclipse Aura","aura",null,399]
 ];
 export const PET_ACCESSORIES = Object.freeze(Object.fromEntries(entries.map(([sku,name,slot,cinders_price,price_cents])=>[sku,Object.freeze({sku,name,slot,cinders_price,price_cents,asset:'/assets/devil-tools/neon-nuisances/accessories/'+sku+'.svg',premium:price_cents!==null})])));
-export const MAX_PET_SPECIES=33;
+export const MAX_PET_SPECIES=32;
 export const FREE_STARTER_SPECIES=Object.freeze(['moxie','bloop','pippa','nib','glim','zuzu','kiki','emberbun']);
 export const petMarketPrice=(species,adoptedCount)=>adoptedCount===0&&FREE_STARTER_SPECIES.includes(species)?0:(PET_MARKET[species]?.[0]??null);
 export const petUnlockLevel=species=>PET_MARKET[species]?.[1]??null;
