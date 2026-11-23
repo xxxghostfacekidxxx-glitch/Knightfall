@@ -17,7 +17,9 @@ for(const game of manifest.games){
  seen.add(game.id);
  const expected="/arcade/hosted/"+game.id+"/index.html";
  if(game.engine!==expected)errors.push(game.id+": engine path mismatch");
- if(!catalog.includes('href="'+expected+'"'))errors.push(game.id+": missing catalog play link");
+ const archived=/^archived\b/i.test(game.status||"");
+ if(!archived&&!catalog.includes('href="'+expected+'"'))errors.push(game.id+": missing catalog play link");
+ if(archived&&catalog.includes('href="'+expected+'"'))errors.push(game.id+": archived game still publicly listed");
  const local=[game.engine,...(game.assets||[]).map(a=>a.path)];
  for(const url of local){
   if(typeof url!=="string"||!url.startsWith("/")||url.includes("..")||!existsSync(join(root,url.slice(1))))errors.push(game.id+": missing or unsafe asset "+url);
@@ -50,7 +52,8 @@ for(const url of catalogLinks)if(!existsSync(join(root,url.slice(1))))errors.pus
 for(const game of manifest.games){
  const link='/arcade/hosted/'+game.id+'/index.html';
  const count=catalogLinks.filter(x=>x===link).length;
- if(count!==1)errors.push(game.id+": expected exactly one catalog link, found "+count);
+ const expectedCount=/^archived\b/i.test(game.status||"")?0:1;
+ if(count!==expectedCount)errors.push(game.id+": expected "+expectedCount+" catalog links, found "+count);
 }
 if(errors.length){console.error(errors.join("\n"));process.exitCode=1}
 else console.log("Original creations validated: "+seen.size+" games, "+manifest.games.reduce((n,g)=>n+(g.assets||[]).length,0)+" sprites");
