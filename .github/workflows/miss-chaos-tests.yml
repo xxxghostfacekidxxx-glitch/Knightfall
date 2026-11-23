@@ -14,6 +14,21 @@ on:
       - 'scripts/chaos-textract-lab.test.mjs'
       - 'scripts/chaos-textract-native.test.mjs'
       - 'scripts/pages-release-guard.mjs'
+      - 'scripts/audit-member-copy.mjs'
+      - 'scripts/member-copy-guard.test.mjs'
+      - 'public/index.html'
+      - 'public/arcade/catalog.json'
+      - 'public/arcade/original-creations.json'
+      - 'public/messages.html'
+      - 'public/profile.html'
+      - 'public/mascot-pets.html'
+      - 'public/mascot-room.html'
+      - 'public/chaos-cartridge.html'
+      - 'public/chaosphere.html'
+      - 'public/install.html'
+      - 'public/support.html'
+      - 'public/bots.html'
+      - 'public/chaos-forge.html'
       - 'public/miss-chaos.html'
       - 'public/miss-chaos-presence*'
       - 'public/nav.js'
@@ -67,6 +82,10 @@ jobs:
       - name: Install backend dependencies for parser tests
         run: npm install --prefix backend --no-audit --no-fund
       - run: node --test backend/chaos-*.test.mjs backend/offline-bot-cache.test.mjs
+      - name: Verify protected brand copy and public game catalogs
+        run: |
+          node --test scripts/member-copy-guard.test.mjs
+          node scripts/audit-member-copy.mjs
       - name: Verify Code Studio interface and client syntax
         run: node --check public/chaos-code-studio.js && node --test scripts/chaos-code-studio-ui.test.mjs
       - name: Verify privacy-preserving member Chaos Visual Lab
