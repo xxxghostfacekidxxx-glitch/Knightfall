@@ -316,11 +316,18 @@ self.addEventListener("notificationclick", event => {
           if(chat.url!==target&&typeof chat.navigate==="function"){
             const navigated=await chat.navigate(target);
             if(navigated)return navigated.focus();
+            // Some browsers refuse navigation of an existing PWA client.
+            // Still focus the open chat and ask it to switch threads.
+            chat.postMessage({type:"KF_OPEN_CONVERSATION",conversationId,reply:wantsReply});
+            return chat.focus();
           }else if(chat.url===target){
             chat.postMessage({type:"KF_OPEN_CONVERSATION",conversationId,reply:wantsReply});
             return chat.focus();
           }
-        }catch(error){console.warn("notification_chat_navigation_unavailable",String(error));}
+        }catch(error){
+          console.warn("notification_chat_navigation_unavailable",String(error));
+          try{chat.postMessage({type:"KF_OPEN_CONVERSATION",conversationId,reply:wantsReply});return chat.focus()}catch{}
+        }
       }
     }
     const exact=windows.find(client=>client.url===target);
