@@ -14,6 +14,7 @@ test('creator roles and owner-only correspondence stay separate',()=>{
  }
  assert.equal(canAccessCreatorFoundry({...active,role:'member'}),false);
  assert.equal(canAccessOwnerMailbox({...active,role:'god'}),true);
+ assert.equal(canAccessOwnerMailbox({...active,role:'GOD'}),false, 'only canonical GOD role grants private correspondence');
  for(const user of [{...active,role:'admin',is_isis:1},{...active,role:'admin'},{...active,role:'moderator'},{...active,role:'member',public_title:'Digital Creator'},{status:'disabled',role:'god'}]){
   assert.equal(canAccessOwnerMailbox(user),false);
  }
