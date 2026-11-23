@@ -273,7 +273,9 @@ function closeConversationPushNotices(id){
  else navigator.serviceWorker.ready.then(reg=>reg.active?.postMessage(payload)).catch(()=>{});
 }
 async function openConversation(id,{scroll=true,beforeMessageId=null,highlightMessageId=null}={}){
- const previousId=Number(currentId);const token=++conversationLoadToken;oldestId=null;loadingOlder=false;latestRenderedFingerprint=null;latestRenderedConversation=null;
+ const previousId=Number(currentId);const token=++conversationLoadToken;
+ // Reset the scroll position immediately when switching threads, including while the request is pending.
+ const threadViewport=$("#messages");if(threadViewport)threadViewport.scrollTop=0;oldestId=null;loadingOlder=false;latestRenderedFingerprint=null;latestRenderedConversation=null;
  historyPinnedConversationId=beforeMessageId?Number(id):null;
  $("#jump-latest").textContent="↓ Jump to latest";if(previousId!==Number(id)){
   if(previousId)rememberConversationDraft(previousId,$("#body").value);
