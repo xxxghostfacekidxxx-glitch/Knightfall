@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {Script} from "node:vm";
 const html=readFileSync(new URL("../public/messages.html",import.meta.url),"utf8");
-const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(Boolean).at(-1);
+const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).find(source=>source.includes("const conversationDrafts=new Map();")&&source.includes("async function startDirectMessage("));
 test("inbox script remains valid JavaScript",()=>assert.doesNotThrow(()=>new Script(inline)));
 test("unchanged message pages do not rebuild the entire DOM on each refresh",()=>{
  assert.match(inline,/function messageFingerprint\(messages\)/);
