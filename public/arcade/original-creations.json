@@ -734,7 +734,7 @@
       "sprites": [
         "slot-sigil.svg"
       ],
-      "notes": "Spin three ember symbols for points in a no-wager arcade minigame.",
+      "notes": "Spin three ember symbols for points in a no-wager arcade minigame. Standalone listing archived; casino is the sole public slots entry point.",
       "engine": "/arcade/hosted/cinder-slots/index.html",
       "assets": [
         {
@@ -742,7 +742,7 @@
           "path": "/arcade/hosted/cinder-slots/sprites/slot-sigil.svg"
         }
       ],
-      "status": "committed; browser QA pending"
+      "status": "archived; standalone launch removed during casino consolidation"
     },
     {
       "id": "void-target",
