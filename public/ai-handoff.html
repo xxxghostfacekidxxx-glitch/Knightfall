@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#0c0a13">
 <title>Between the Flames | Knightfall AI Handoff</title>
 <meta name="description" content="Private Knightfall handoff and shared to-do list.">
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/ai-handoff.css?v=20261118-master2">
-<script src="/nav.js" defer></script><script src="/ai-handoff.js?v=20261118-master2" defer></script>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/ai-handoff.css?v=20261122-verify1">
+<script src="/nav.js" defer></script><script src="/ai-handoff.js?v=20261122-verify1" defer></script>
 </head>
 <body class="handoff-page">
 <header class="kf-header"></header>
@@ -134,7 +134,7 @@
       <div class="task-filterbar" aria-label="Filter project tasks">
         <label>Search tasks<input id="filter-query" type="search" placeholder="Game, feature, issue or next step…" autocomplete="off"></label>
         <label>Workstream<select id="filter-area"><option value="all">All workstreams</option></select></label>
-        <label>Progress<select id="filter-status"><option value="open">Open (default)</option><option value="all">All tasks</option><option value="todo">To do</option><option value="in_progress">In progress</option><option value="blocked">Flagged blockers</option><option value="done">Completed</option></select></label>
+        <label>Progress<select id="filter-status"><option value="open">Open (default)</option><option value="all">All tasks</option><option value="todo">To do</option><option value="in_progress">In progress</option><option value="ready">Ready for verification</option><option value="blocked">Flagged blockers</option><option value="done">Completed</option></select></label>
         <label>Priority<select id="filter-priority"><option value="all">All priorities</option><option value="high">High</option><option value="normal">Normal</option><option value="low">Low</option></select></label>
         <label>Verification<select id="filter-verification"><option value="all">All evidence levels</option><option value="needs_review">Needs review</option><option value="source_checked">Source checked</option><option value="ci_passed">CI passed</option><option value="deployed">Deployed</option><option value="device_verified">Device verified</option></select></label>
         <button type="button" id="reset-task-filters" class="handoff-button ghost">Reset filters</button>
@@ -147,7 +147,7 @@
         <button type="submit" class="handoff-button">Add task +</button>
         <div class="task-wide"><label for="task-details">Details (optional)</label><textarea id="task-details" rows="2" maxlength="3000" placeholder="Context, outcome, blockers, next steps"></textarea></div>
       </form>
-      <div id="task-list" class="task-list" aria-live="polite"></div>
+      <section id="task-ready-section" class="task-ready-section" aria-labelledby="task-ready-heading" hidden>\n        <div class="task-ready-header"><div><p class="eyebrow">ACCEPTANCE QUEUE</p><h3 id="task-ready-heading">Ready for verification</h3><p>Implementation is prepared. Confirm tests and real-device behavior before marking done.</p></div><span id="task-ready-count" class="task-ready-count"></span></div>\n        <div id="task-ready-list" class="task-list" aria-live="polite"></div>\n      </section>\n      <div id="task-list" class="task-list" aria-live="polite"></div>
       <button type="button" id="more-tasks" class="handoff-button ghost" hidden>Show more tasks</button>
       
     </section>
