@@ -34,3 +34,15 @@
 @media(max-width:850px){.messages-shell .message-layout{border-radius:22px!important}.messages-shell .chat-head{padding:.7rem .85rem!important}.messages-shell .messages-list{padding-block:.85rem!important}.messages-shell .message{max-width:90%!important;padding:.7rem .85rem!important;border-radius:22px 22px 22px 7px!important}.messages-shell .message.mine{border-radius:22px 22px 7px 22px!important}.messages-shell .composer{padding:.65rem .7rem max(.7rem,env(safe-area-inset-bottom))!important}.messages-shell .composer textarea{font-size:16px!important}.messages-shell .conversation{min-height:60px}}
 @media(max-width:480px){.messages-shell .message{max-width:96%!important}.messages-shell .message p{font-size:.9rem!important}.messages-shell .messages-hero{border-radius:20px!important}.messages-shell .chat-tools{gap:.35rem!important}}
 @media(prefers-reduced-motion:reduce){.messages-shell .message,.messages-shell .conversation{transition:none!important}.messages-shell .chat-head{backdrop-filter:none}}
+
+/* Keyboard-safe mobile composer and minimum interactive targets. */
+@media(max-width:850px){
+ .messages-shell .message-layout.show-chat{height:var(--messages-chat-height,calc(100dvh - var(--messages-chat-top,0px)))!important;max-height:var(--messages-chat-height,100dvh)!important;min-height:0!important;overflow:hidden!important}
+ .messages-shell .message-layout.show-chat .chat-panel{min-height:0!important;overflow:hidden!important}
+ .messages-shell .message-layout.show-chat .messages-list{min-height:0!important;overscroll-behavior:contain}
+ .messages-shell .message-layout.show-chat .composer{flex-shrink:0;position:relative;z-index:2;padding-bottom:max(.7rem,env(safe-area-inset-bottom))!important}
+ .messages-shell .composer textarea{max-height:min(28dvh,160px);overflow-y:auto}
+ .messages-shell .composer button,.messages-shell .chat-head button,.messages-shell .load-older,.messages-shell .jump-latest{min-width:44px;min-height:44px}
+}
+.messages-shell :is(button,a,input,textarea,select):focus-visible{outline:3px solid var(--cs-wine-light,#ff8ac5)!important;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.messages-shell .conversation,.messages-shell .message,.messages-shell .composer button{transition:none!important;animation:none!important}}
