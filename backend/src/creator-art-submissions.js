@@ -2,11 +2,12 @@
  * Pending objects are private; approved copies follow the existing public-asset API.
  * No database migration is needed for pending submissions.
  */
+import { canAccessCreatorFoundry } from './staff-capabilities.js';
 const PREFIX='submissions/';
 const MAX_BYTES=2*1024*1024;
 const safeName=value=>String(value||'artwork').normalize('NFKC').toLowerCase()
   .replace(/[^a-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,64)||'artwork';
-const isCreator=user=>user&&(user.role==='admin'||user.role==='god'||(user.role==='member'&&String(user.public_title||'').trim()==='Digital Creator'));
+const isCreator=user=>Boolean(user&&user.status==='active'&&canAccessCreatorFoundry(user));
 const isPng=bytes=>bytes.length>=24&&[137,80,78,71,13,10,26,10].every((n,i)=>bytes[i]===n);
 const pngDimension=bytes=>{
  const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
