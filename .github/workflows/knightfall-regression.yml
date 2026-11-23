@@ -72,7 +72,7 @@ jobs:
           node --check public/arcade/hosted/embervale/js/knightfall-expansion.js
           node --check public/arcade/hosted/embervale/js/knightfall-touch.js
       - name: Validate social, friends and Chaosphere regressions
-        run: node --test scripts/knightfall-social-regression.test.mjs scripts/knightfall-provenance-support.test.mjs scripts/personal-bot-draft-privacy.test.mjs
+        run: node --test scripts/knightfall-social-regression.test.mjs scripts/knightfall-provenance-support.test.mjs scripts/personal-bot-draft-privacy.test.mjs scripts/message-attachment-isolation.test.mjs
       - name: Inventory live stylesheet references and duplicate arcade entry links
         run: node scripts/css-route-inventory.mjs
       - name: Inventory exact CSS rule duplication
@@ -94,7 +94,7 @@ jobs:
           node --test scripts/cinderwild-world-rules.test.mjs
           node --test backend/src/cinderwild-online-world.test.mjs
           node --test scripts/cinderwild-online-ui.test.mjs
-          node --test scripts/password-reset-security.test.mjs
+          node --test scripts/password-reset-security.test.mjs backend/src/staff-access.test.mjs
           node --test scripts/message-native-limit.test.mjs
           node --test scripts/digital-creator-access.test.mjs
           node --test scripts/arcade-repair.test.mjs scripts/arcade-asset-doctor.test.mjs
