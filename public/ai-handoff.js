@@ -42,6 +42,8 @@ function field(name,value){return elem('span','task-meta',name+': '+value)}
 const filters={area:'all',status:'open',priority:'all',verification:'all',query:'',limit:24};
 const verifiedLabels={needs_review:'Needs review',source_checked:'Source checked',ci_passed:'CI passed',deployed:'Deployed',device_verified:'Device verified'};
 const priorities={high:0,normal:1,low:2};
+// Ready is a presentation stage, not a new API status: D1 permits todo/in_progress/done only.
+const isReadyToVerify=t=>t.status==='in_progress'&&/^READY FOR VERIFICATION\b/i.test(String(t.next_step||''));
 const workstreamCounts=()=>state.tasks.reduce((map,t)=>{const area=t.area||'General';if(!map[area])map[area]={total:0,open:0,high:0,blocked:0};const a=map[area];a.total++;if(t.status!=='done')a.open++;if(t.priority==='high'&&t.status!=='done')a.high++;if(t.blocker&&t.status!=='done')a.blocked++;return map},{});
 function syncWorkstreams(groups){
  const options=Object.keys(groups).sort((a,b)=>a.localeCompare(b));
@@ -62,12 +64,13 @@ function metric(label,value,emphasis=''){
 }
 function renderTaskOverview(groups){
  const total=state.tasks.length,done=state.tasks.filter(t=>t.status==='done').length;
- const underway=state.tasks.filter(t=>t.status==='in_progress').length;
+ const underway=state.tasks.filter(t=>t.status==='in_progress'&&!isReadyToVerify(t)).length;
+ const ready=state.tasks.filter(isReadyToVerify).length;
  const blocked=state.tasks.filter(t=>t.status!=='done'&&t.blocker).length;
  const urgent=state.tasks.filter(t=>t.status!=='done'&&t.priority==='high').length;
  const needsReview=state.tasks.filter(t=>t.verification==='needs_review'||!t.verification).length;
  $('task-count').textContent='('+Math.max(0,total-done)+' open / '+total+' total)';
- $('task-metrics').replaceChildren(metric('Total tasks',total),metric('High priority open',urgent,'urgent'),metric('In progress',underway),metric('Blocked / dependent',blocked,'blocked'),metric('Completed',done),metric('Needs verification',needsReview));
+ $('task-metrics').replaceChildren(metric('Total tasks',total),metric('High priority open',urgent,'urgent'),metric('In progress',underway),metric('Ready to verify',ready),metric('Blocked / dependent',blocked,'blocked'),metric('Completed',done),metric('Needs verification',needsReview));
  const work=$('workstream-summary');work.replaceChildren();
  const entries=Object.entries(groups).sort((a,b)=>b[1].high-a[1].high||b[1].open-a[1].open||a[0].localeCompare(b[0]));
  for(const [area,c] of entries){
@@ -91,8 +94,11 @@ function sourceLink(source){
 function matchesFilters(t){
  if(filters.area!=='all'&&(t.area||'General')!==filters.area)return false;
  if(filters.status==='open'&&t.status==='done')return false;
+ if(filters.status==='ready'&&!isReadyToVerify(t))return false;
+ if(filters.status==='in_progress'&&isReadyToVerify(t))return false;
  if(filters.status==='blocked'&&(!t.blocker||t.status==='done'))return false;
- if(['todo','in_progress','done'].includes(filters.status)&&t.status!==filters.status)return false;
+ if(['todo','done'].includes(filters.status)&&t.status!==filters.status)return false;
+ if(filters.status==='in_progress'&&t.status!=='in_progress')return false;
  if(filters.priority!=='all'&&t.priority!==filters.priority)return false;
  if(filters.verification!=='all'&&(t.verification||'needs_review')!==filters.verification)return false;
  if(filters.query){
@@ -105,6 +111,8 @@ function renderTasks(){
  const groups=workstreamCounts();
  syncWorkstreams(groups);renderTaskOverview(groups);
  const list=$('task-list');list.replaceChildren();
+ const readyList=$('task-ready-list');readyList.replaceChildren();
+ const readySection=$('task-ready-section');
  const matching=state.tasks.filter(matchesFilters).sort((a,b)=>
   (a.status==='done'?1:0)-(b.status==='done'?1:0)||
   (priorities[a.priority]??1)-(priorities[b.priority]??1)||
@@ -112,11 +120,16 @@ function renderTasks(){
   (a.blocker?0:1)-(b.blocker?0:1)||
   (a.area||'General').localeCompare(b.area||'General')||a.id-b.id
  );
- $('task-filter-count').textContent='Showing '+Math.min(filters.limit,matching.length)+' of '+matching.length+' matching tasks · '+Object.keys(groups).length+' workstreams. Open an item to see evidence, blockers and next actions.';
- const more=$('more-tasks');more.hidden=matching.length<=filters.limit;
- more.textContent='Show more tasks ('+(matching.length-filters.limit)+' remaining)';
+ const readyTasks=matching.filter(isReadyToVerify);
+ const regularTasks=matching.filter(t=>!isReadyToVerify(t));
+ readySection.hidden=!readyTasks.length;
+ $('task-ready-count').textContent=readyTasks.length+' awaiting acceptance';
+ $('task-filter-count').textContent='Showing '+Math.min(filters.limit,regularTasks.length)+readyTasks.length+' of '+matching.length+' matching tasks · '+Object.keys(groups).length+' workstreams. Open an item to see evidence, blockers and next actions.';
+ const more=$('more-tasks');more.hidden=regularTasks.length<=filters.limit;
+ more.textContent='Show more tasks ('+(regularTasks.length-filters.limit)+' remaining)';
  if(!matching.length){list.append(elem('p','empty','No tasks match these filters. Clear the filters or try another workstream.'));return}
- for(const task of matching.slice(0,filters.limit)){
+ if(!regularTasks.length)list.append(elem('p','empty','All matching tasks are awaiting verification above.'));
+ for(const task of [...readyTasks,...regularTasks.slice(0,filters.limit)]){
   const box=elem('article','task '+(task.status==='done'?'done':''));
   const content=elem('div','task-content');
   const header=elem('div','task-titlebar');
@@ -152,7 +165,7 @@ function renderTasks(){
   controls.append(select);
   controls.append(button('Edit details',()=>editTask(task,box)));
   if(state.role==='owner')controls.append(button('Archive',()=>archiveTask(task),'handoff-button danger'));
-  box.append(content,controls);list.append(box);
+  box.append(content,controls);(isReadyToVerify(task)?readyList:list).append(box);
  }
 }
 function editTask(task,box){
