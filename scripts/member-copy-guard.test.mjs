@@ -20,8 +20,9 @@ test("arcade catalogs remain valid and preserve their game counts", () => {
     for (const game of catalog.games) {
       assert.equal(typeof game.id, "string");
       assert.ok(game.id.length > 0);
-      assert.equal(typeof game.title, "string");
-      assert.ok(game.title.length > 0);
+      const displayTitle = game.title ?? game.name;
+      assert.equal(typeof displayTitle, "string");
+      assert.ok(displayTitle.trim().length > 0);
     }
   }
 });
