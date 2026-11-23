@@ -202,6 +202,8 @@ async function create(event){
   ids.push(id);
  }
  if(new Set(ids).size!==ids.length){status("Every human seat must belong to a different friend.");return;}
+ if(count<1||count>4||!Number.isInteger(count)){status("Four-seat tables support one to four human players.");return;}
+ if(ids.some(id=>!friends.some(friend=>Number(friend.user_id)===id))){status("Only accepted friends may occupy invited seats. Refresh your friends list.");return;}
  const expansionIds=chosenPacks();
  if(expansionIds.length&&!$("cards-online-adult").checked){
   return status("Confirm you are 18 or older before starting an After Hours table.");
