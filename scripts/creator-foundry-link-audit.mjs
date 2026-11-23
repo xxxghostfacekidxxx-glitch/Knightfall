@@ -3,8 +3,8 @@ import {readFile,stat} from 'node:fs/promises';
 import path from 'node:path';
 const root=path.resolve('public'),html=await readFile(path.join(root,'devil-tools.html'),'utf8');
 const errors=[],warnings=[],seen=new Set();
-const anchors=new Set([...html.matchAll(/\\bid=["']([^"']+)["']/g)].map(match=>match[1]));
-for(const match of html.matchAll(/\\bhref=["']#([^"']+)["']/g)){
+const anchors=new Set([...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match=>match[1]));
+for(const match of html.matchAll(/\bhref=["']#([^"']+)["']/g)){
  let fragment;try{fragment=decodeURIComponent(match[1])}catch{errors.push('Invalid fragment encoding: '+match[1]);continue}
  if(fragment && !anchors.has(fragment))errors.push('Missing in-page target: #'+fragment);
 }
