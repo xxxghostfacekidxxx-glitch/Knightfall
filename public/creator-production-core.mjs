@@ -65,6 +65,13 @@ export function packAtlas(entries,{maxSize=2048,padding=2}={}){
  }
  throw Error('Atlas exceeds 2048px. Reduce source image sizes or pack fewer at once.');
 }
+/** Return a tile coordinate only while the pointer is actually inside the canvas. */
+export function tileAtPointer(clientX,clientY,rect,width,height){
+ if(!rect||!Number.isFinite(rect.width)||!Number.isFinite(rect.height)||rect.width<=0||rect.height<=0)return null;
+ const x=(clientX-rect.left)/rect.width,y=(clientY-rect.top)/rect.height;
+ if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x>=1||y>=1)return null;
+ return [Math.floor(x*width),Math.floor(y*height)];
+}
 export function makeTiledMap(tiles,width,height){
  if(!Number.isInteger(width)||!Number.isInteger(height)||width<4||width>40||height<4||height>30||tiles.length!==width*height)throw Error('Invalid map dimensions.');
  if(Array.from(tiles).some(n=>!Number.isInteger(n)||n<0||n>4))throw Error('Tile ID out of range.');
