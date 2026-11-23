@@ -149,5 +149,6 @@
   <script src="/miss-chaos-radar.js?v=20261111" defer></script>
 <script>
 (()=>{const select=document.getElementById("mc-full-theme");const key="kf:miss-chaos-theme";const allowed=new Set(["obsidian","hellfire","egypt","mustafar","korriban","vader","hex","anarchy","chaos","blood","astral","inferno"]);const apply=value=>{const theme=allowed.has(value)?value:"obsidian";document.body.dataset.mcRealmTheme=theme;select.value=theme;return theme};let saved="obsidian";try{saved=localStorage.getItem(key)||saved}catch{}apply(saved);select.addEventListener("change",()=>{const theme=apply(select.value);try{localStorage.setItem(key,theme)}catch{}});window.addEventListener("storage",event=>{if(event.key===key)apply(event.newValue)})})();
-</script></body>
+</script><nav aria-label="Miss Chaos creative workspaces" class="chaos-workspace-link"><a href="/chaos-code-studio.html">Open Chaos Code Studio</a></nav>
+</body>
 </html>
