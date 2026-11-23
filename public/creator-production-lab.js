@@ -35,7 +35,7 @@ function redraw(){
  const img=new ImageData(frames[frame],SIZE,SIZE);ctx.putImageData(img,0,0);
  say('lab-pixel-info','Frame '+(frame+1)+' / '+frames.length+' · '+SIZE+'×'+SIZE+' · '+history.length+' undo steps');
 }
-const pixel=(event)=>{const r=sprite.getBoundingClientRect();return [clamp(Math.floor((event.clientX-r.left)*SIZE/r.width),0,SIZE-1),clamp(Math.floor((event.clientY-r.top)*SIZE/r.height),0,SIZE-1)]};
+const pixel=event=>tileAtPointer(event.clientX,event.clientY,sprite.getBoundingClientRect(),SIZE,SIZE);
 const paint=(x,y)=>{
  const color=tool==='erase'?[0,0,0,0]:hexToRGBA($('lab-pixel-color').value);
  const at=(y*SIZE+x)*4;
@@ -52,14 +52,14 @@ function setTool(id){
  tool=id;root.querySelectorAll('[data-pixel-tool]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.pixelTool===id)));
 }
 root.querySelectorAll('[data-pixel-tool]').forEach(button=>button.addEventListener('click',()=>setTool(button.dataset.pixelTool)));
-sprite.addEventListener('pointerdown',event=>{if(event.button!==0)return;event.preventDefault();sprite.setPointerCapture(event.pointerId);saveUndo();drawing=true;const [x,y]=pixel(event);paint(x,y)});
-sprite.addEventListener('pointermove',event=>{if(!drawing||!['draw','erase'].includes(tool))return;const [x,y]=pixel(event);paint(x,y)});
+sprite.addEventListener('pointerdown',event=>{if(event.button!==0)return;const position=pixel(event);if(!position)return;event.preventDefault();sprite.setPointerCapture(event.pointerId);if(tool!=='pick')saveUndo();drawing=true;paint(...position)});
+sprite.addEventListener('pointermove',event=>{if(!drawing||!['draw','erase'].includes(tool))return;const position=pixel(event);if(position)paint(...position)});
 for(const type of ['pointerup','pointercancel','lostpointercapture'])sprite.addEventListener(type,()=>{drawing=false});
 $('lab-pixel-undo').addEventListener('click',()=>{const state=history.pop();if(!state)return;frame=state.frame;frames[frame]=state.bytes;redraw()});
-$('lab-pixel-new').addEventListener('click',()=>{if(frames.length>=12)return say('lab-status','Maximum 12 animation frames.');frames.splice(frame+1,0,frames[frame].slice());frame++;redraw()});
+$('lab-pixel-new').addEventListener('click',()=>{if(frames.length>=12)return say('lab-status','Maximum 12 animation frames.');frames.splice(frame+1,0,frames[frame].slice());frame++;history=[];redraw()});
 $('lab-pixel-previous').addEventListener('click',()=>{frame=(frame+frames.length-1)%frames.length;redraw()});
 $('lab-pixel-next').addEventListener('click',()=>{frame=(frame+1)%frames.length;redraw()});
-$('lab-pixel-remove').addEventListener('click',()=>{if(frames.length===1)return;frames.splice(frame,1);frame=Math.min(frame,frames.length-1);redraw()});
+$('lab-pixel-remove').addEventListener('click',()=>{if(frames.length===1)return;frames.splice(frame,1);frame=Math.min(frame,frames.length-1);history=[];redraw()});
 $('lab-pixel-clear').addEventListener('click',()=>{saveUndo();frames[frame]=new Uint8ClampedArray(SIZE*SIZE*4);redraw()});
 $('lab-pixel-import').addEventListener('change',async event=>{
  const file=event.target.files?.[0];if(!file)return;
