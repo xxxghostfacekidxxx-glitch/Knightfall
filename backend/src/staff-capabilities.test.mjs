@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {staffCapabilities,canAccessCreatorFoundry,canAccessModeration,canAccessEyeOfChaos,canAccessEyeOfHorus} from "./staff-capabilities.js";
+import {staffCapabilities,canAccessCreatorFoundry,canAccessModeration,canAccessEyeOfChaos,canAccessEyeOfHorus,canAccessOwnerMailbox} from "./staff-capabilities.js";
 import {botAccessPolicy} from "./bot-creator-access.js";
 
 test("Level 1 has two mutually exclusive job tracks at identical rank",()=>{
@@ -75,4 +75,17 @@ test("Admin User Command lists Creator as a separately selectable member track",
  assert.equal(staffCapabilities({role:"member",public_title:"Digital Creator"}).track,"creation");
  assert.equal(staffCapabilities({role:"member",public_title:"Digital Creator"}).can_moderate,false);
  assert.equal(staffCapabilities({role:"member"}).can_create,false);
+});
+
+test("Private mailbox capability is restricted to an active GOD account",()=>{
+ const roles=[
+  [{role:"god",status:"active"},true],
+  [{role:"god",status:"suspended"},false],
+  [{role:"admin",status:"active",is_isis:1},false],
+  [{role:"admin",status:"active"},false],
+  [{role:"moderator",status:"active"},false],
+  [{role:"member",status:"active",public_title:"Digital Creator"},false],
+  [null,false]
+ ];
+ for(const [user,allowed] of roles)assert.equal(canAccessOwnerMailbox(user),allowed,JSON.stringify(user));
 });
