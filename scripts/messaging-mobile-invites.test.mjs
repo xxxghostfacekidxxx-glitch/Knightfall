@@ -4,7 +4,7 @@ import vm from "node:vm";
 import {readFileSync} from "node:fs";
 const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
 const html=read("public/messages.html");
-const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean).at(-1);
+const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(source=>source.includes("const conversationDrafts=new Map();")&&source.includes("async function startDirectMessage("));
 const bubbles=read("public/chat-bubbles.js");
 const css=read("public/messages.css"),bubbleCss=read("public/chat-bubbles.css");
 const cards=read("public/arcade/hosted/cards-against-chaos/online.js");
