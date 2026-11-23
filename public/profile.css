@@ -465,3 +465,12 @@
   color:#fbe5a0;background:linear-gradient(105deg,rgba(9,98,86,.26),rgba(164,111,43,.3));
   border-color:#e2b861;box-shadow:0 0 24px rgba(226,184,97,.25);
 }
+
+/* Narrow-screen profile controls: preserve tap targets without horizontal overflow. */
+@media(max-width:420px){
+ .profile-shell{width:calc(100% - 24px);max-width:100%;overflow-wrap:anywhere}
+ .profile-shell .card{min-width:0;padding:1rem}
+ .profile-actions,.profile-top,.profile-stats{min-width:0;max-width:100%}
+ .profile-actions button,.profile-actions a{min-height:44px;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+ .profile-shell input,.profile-shell select,.profile-shell textarea{min-width:0;max-width:100%}
+}
