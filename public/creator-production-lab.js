@@ -1,5 +1,5 @@
 /* Knightfall Creator Production Lab, client-only workshop. No file contents leave browser. */
-import {TILE_COLORS,TILE_NAMES,clamp,hexToRGBA,floodFill,packAtlas,uniqueAtlasName,makeTiledMap,parseTiledMap} from './creator-production-core.mjs';
+import {TILE_COLORS,TILE_NAMES,clamp,hexToRGBA,floodFill,packAtlas,uniqueAtlasName,makeTiledMap,parseTiledMap,tileAtPointer} from './creator-production-core.mjs';
 const $=id=>document.getElementById(id);
 const root=$('production-workbench');
 if(root){
@@ -134,7 +134,9 @@ const drawTiles=()=>{
  say('lab-tile-info',tw+'×'+th+' tiles · '+tiles.filter(x=>x!==0).length+' painted · '+TILE_NAMES[tile]);
 };
 const placeTile=e=>{
- const r=tileCanvas.getBoundingClientRect(),x=clamp(Math.floor((e.clientX-r.left)*tw/r.width),0,tw-1),y=clamp(Math.floor((e.clientY-r.top)*th/r.height),0,th-1);
+ const position=tileAtPointer(e.clientX,e.clientY,tileCanvas.getBoundingClientRect(),tw,th);
+ if(!position)return;
+ const [x,y]=position;
  if(tile===4)tiles=tiles.map(n=>n===4?0:n);
  tiles[y*tw+x]=tile;drawTiles();
 };
