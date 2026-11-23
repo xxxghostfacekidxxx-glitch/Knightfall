@@ -124,7 +124,7 @@ function renderTasks(){
  const regularTasks=matching.filter(t=>!isReadyToVerify(t));
  readySection.hidden=!readyTasks.length;
  $('task-ready-count').textContent=readyTasks.length+' awaiting acceptance';
- $('task-filter-count').textContent='Showing '+Math.min(filters.limit,regularTasks.length)+readyTasks.length+' of '+matching.length+' matching tasks · '+Object.keys(groups).length+' workstreams. Open an item to see evidence, blockers and next actions.';
+ $('task-filter-count').textContent='Showing '+(Math.min(filters.limit,regularTasks.length)+readyTasks.length)+' of '+matching.length+' matching tasks · '+Object.keys(groups).length+' workstreams. Open an item to see evidence, blockers and next actions.';
  const more=$('more-tasks');more.hidden=regularTasks.length<=filters.limit;
  more.textContent='Show more tasks ('+(regularTasks.length-filters.limit)+' remaining)';
  if(!matching.length){list.append(elem('p','empty','No tasks match these filters. Clear the filters or try another workstream.'));return}
