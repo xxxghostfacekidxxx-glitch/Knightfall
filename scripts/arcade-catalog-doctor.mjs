@@ -10,6 +10,8 @@ for(const [i,g] of catalog.games.entries()){
  if(!id||ids.has(id))errors.push('Duplicate/missing game id: '+id+' at '+i);
  ids.add(id);
  if(!g.title||!g.genre)warnings.push(id+': missing title or genre');
+ if(g.title && String(g.title).trim().length<3)warnings.push(id+': cabinet title is too short to identify');
+ if(!g.description || String(g.description).trim().length<12)warnings.push(id+': missing useful cabinet description');
  if(route.startsWith('https://')){
    let url;try{url=new URL(route)}catch{errors.push(id+': invalid external URL');continue}
    if(url.protocol!=='https:')errors.push(id+': external URL not HTTPS');
