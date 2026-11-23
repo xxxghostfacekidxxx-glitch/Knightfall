@@ -79,7 +79,7 @@ test("new art visual engine reuses one module without intrusive CSS or unsafe HT
  for(const key of extended)assert.ok(vars.includes('data-kf-theme="'+key+'"'));
  const rootCss=read("public/theme.css");
  const imports=[...rootCss.matchAll(/@import\s+url\(["']?\/([^"'?)]+)(?:\?[^)"']*)?["']?\);/g)].map(x=>x[1]);
- assert.deepEqual(imports.slice(-3),["egyptian-eclipse-theme.css","knightfall-art-theme-variables.css","knightfall-art-theme-template.css"]);
+ assert.deepEqual(imports.slice(-4),["egyptian-eclipse-theme.css","knightfall-art-theme-variables.css","knightfall-art-theme-template.css","home-responsive.css"]);
  const fallback=read("public/theme-crew.css");
  for(const preset of extended)assert.match(fallback,new RegExp(':not\\(\\[data-kf-theme="'+preset+'"\\]\\)'));
  const home=read("public/index.html"),gallery=read("public/knightfall-art-theme-showcase.js");
