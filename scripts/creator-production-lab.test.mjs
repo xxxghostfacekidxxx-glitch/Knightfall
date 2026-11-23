@@ -75,3 +75,10 @@ test('Pixel Studio keeps strokes in bounds and clears stale undo after frame str
  assert.match(script,/frames\.splice\(frame\+1,0,frames\[frame\]\.slice\(\)\);frame\+\+;history=\[\]/);
  assert.match(script,/frames\.splice\(frame,1\);frame=Math\.min\(frame,frames\.length-1\);history=\[\]/);
 });
+
+test('mobile editors disable browser touch panning and ignore secondary pointer strokes',()=>{
+ const script=read('public/creator-production-lab.js');
+ assert.match(script,/sprite\.style\.touchAction='none'/);
+ assert.match(script,/tileCanvas\.style\.touchAction='none'/);
+ assert.equal((script.match(/isPrimary===false/g)||[]).length,2);
+});
