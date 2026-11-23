@@ -31,5 +31,7 @@ export function canAccessEyeOfHorus(user){return staffCapabilities(user).can_eye
 // Check this server-side before any future private mailbox route or attachment proxy.
 // Client-side visibility and Miss Chaos prompt instructions are not authorization.
 export function canAccessOwnerMailbox(user){
- return Boolean(user && user.status==='active' && staffCapabilities(user).can_owner_mailbox);
+ // A display title or administrator promotion must never grant access to
+ // external correspondence. The owner must be the active GOD identity.
+ return Boolean(user && user.status==='active' && user.role==='god' && staffCapabilities(user).can_owner_mailbox);
 }
