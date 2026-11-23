@@ -5,7 +5,7 @@ const html=readFileSync("public/index.html","utf8");
 const css=readFileSync("public/home-start.css","utf8");
 test("Knightfall homepage has direct signup and a safe free first step",()=>{
   assert.match(html,/<title>Knightfall/);
-  assert.match(html,/data-home-sign-in href="\/auth\.html\?mode=register&amp;next=%2Fchaos-cartridge\.html"/);
+  assert.match(html,/data-home-sign-in href="\/auth\.html\?mode=register&amp;next=%2Fprofile\.html"/);
   assert.match(html,/id="start-here"/);
   assert.match(html,/href="#start-here"/);
   assert.match(html,/href="\/chaos-cartridge\.html"/);
