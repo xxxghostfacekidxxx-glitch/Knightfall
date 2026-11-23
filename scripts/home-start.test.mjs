@@ -11,7 +11,9 @@ test("Knightfall homepage has direct signup and a safe free first step",()=>{
   assert.match(html,/href="\/chaos-cartridge\.html"/);
   assert.match(html,/href="\/community\.html"/);
   assert.match(html,/href="\/mascot-pets\.html"/);
-  assert.match(html,/Browse free games/);
+  assert.match(html,/Explore for free/);
+  assert.match(html,/class="kf-skip-link" href="#start-here"/);
+  assert.match(html,/Community Marketplace \(coming soon\)/);
   // Guard against repeating the same visible route in multiple homepage sections.
   for(const target of ["/chaos-cartridge.html","/community.html","/mascot-pets.html"])
     assert.equal(html.split('href="'+target+'"').length-1,1,target);
