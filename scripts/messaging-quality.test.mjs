@@ -8,7 +8,7 @@ const bubbles=readFileSync(new URL("../public/chat-bubbles.js",import.meta.url),
 const styles=readFileSync(new URL("../public/chat-bubbles.css",import.meta.url),"utf8");
 const ai=readFileSync(new URL("../public/miss-chaos-presence.js",import.meta.url),"utf8");
 const navigation=readFileSync(new URL("../public/nav.js",import.meta.url),"utf8");
-const inline=[...inbox.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(Boolean).pop();
+const inline=[...inbox.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).find(source=>source.includes("const conversationDrafts=new Map();")&&source.includes("async function startDirectMessage("));
 assert.ok(inline,"Messages inline controller exists");
 for(const source of [inline,bubbles,ai,navigation])new vm.Script(source);
 
