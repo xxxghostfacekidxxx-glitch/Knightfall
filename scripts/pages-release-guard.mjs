@@ -13,6 +13,7 @@ const jobs=[
  ["Protected artwork and Creator Foundry workspace regressions",["--test","scripts/knightfall-creation-preserve.test.mjs"]],
  ["Creator Foundry production editor, sprite atlas and tilemap regressions",["--test","scripts/creator-production-lab.test.mjs"]],
  ["Owner-only message archive and mail access boundaries",["--test","scripts/owner-mail-access.test.mjs"]],
+ ["Mobile navigation, profile and notification click regression",["--test","scripts/knightfall-quick-maintenance.test.mjs"]],
  ["Creator role and private owner mailbox authorization",["--test","backend/src/creator-art-submissions-role.test.mjs"]],
  ["Chaosphere scroll and Cards Against Chaos four-seat validation",["--test","scripts/chaosphere-cards-regression.test.mjs"]],
  ["Chaos Sudoku launch recovery and catalog routing",["--test","scripts/arcade-launch-recovery.test.mjs"]],
