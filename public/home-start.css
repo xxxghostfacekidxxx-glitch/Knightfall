@@ -23,4 +23,9 @@
 .kf-chaos-intro .kf-start-heading{text-align:center}
 .kf-chaos-intro .kf-start-heading h2{font-size:clamp(1.8rem,4vw,3rem)}
 .kf-chaos-categories{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:1.3rem auto 0;max-width:1050px}
-.kf-chaos-categories span{display:inline-flex;align-items:center;padding:.65rem 1rem;border:1px solid #d7b78940;border-radius:999px;background:linear-gradient(130deg,#33262e,#181922);color:#f4e7da;font-size:clamp(.72rem,1.3vw,.88rem);font-weight:650}
+.kf-chaos-categories :is(span,a){display:inline-flex;align-items:center;padding:.65rem 1rem;border:1px solid #d7b78940;border-radius:999px;background:linear-gradient(130deg,#33262e,#181922);color:#f4e7da;font-size:clamp(.72rem,1.3vw,.88rem);font-weight:650}
+
+.kf-chaos-categories a{text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.kf-chaos-categories a:hover{transform:translateY(-2px);border-color:#e8bc82;background:linear-gradient(130deg,#49303e,#23212e)}
+.kf-chaos-categories a:focus-visible{outline:3px solid #e8bc82;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.kf-chaos-categories a{transition:none}.kf-chaos-categories a:hover{transform:none}}
