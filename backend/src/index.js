@@ -2718,10 +2718,10 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!user)return json({error:"Authentication required."},401,origin);
     if(!env.MESSAGE_ATTACHMENTS)return json({error:"Private attachment storage is not configured."},503,origin);
     const id=Number(attachmentDeleteMatch[1]);
-    const row=await env.DB.prepare("SELECT id,object_key FROM message_attachments WHERE id=? AND uploader_id=? AND message_id IS NULL").bind(id,user.id).first();
+    const row=await env.DB.prepare("SELECT a.id,a.object_key FROM message_attachments a JOIN conversation_members cm ON cm.conversation_id=a.conversation_id AND cm.user_id=a.uploader_id WHERE a.id=? AND a.uploader_id=? AND a.message_id IS NULL").bind(id,user.id).first();
     if(!row)return json({error:"Pending attachment not found."},404,origin);
     await env.MESSAGE_ATTACHMENTS.delete(row.object_key);
-    await env.DB.prepare("DELETE FROM message_attachments WHERE id=?").bind(id).run();
+    await env.DB.prepare("DELETE FROM message_attachments WHERE id=? AND uploader_id=? AND message_id IS NULL").bind(id,user.id).run();
     return json({ok:true},200,origin);
   }
   const attachmentDownloadMatch=url.pathname.match(/^\/api\/messages\/attachments\/(\d+)$/);
