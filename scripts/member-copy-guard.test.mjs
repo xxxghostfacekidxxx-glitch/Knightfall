@@ -36,3 +36,16 @@ test("public AI and maker pages retain critical disclosures", () => {
   assert.match(read("public/chaos-forge.html"), /No input images, models or patterns are uploaded to Knightfall storage\./);
   assert.match(read("public/support.html"), /Donating is optional\./);
 });
+
+test("homepage discovery links resolve to existing public pages", () => {
+  const home = read("public/index.html");
+  const css = read("public/home-start.css");
+  const section = home.match(/<div class="kf-chaos-categories"[^>]*>([\s\S]*?)<\/div>/);
+  assert.ok(section, "homepage discovery section is missing");
+  const links = [...section[1].matchAll(/<a href="(\/[^"]+\.html)"/g)].map(m => m[1]);
+  assert.equal(links.length, 10, "expected ten navigable discovery categories");
+  for (const route of links) {
+    assert.doesNotThrow(() => read("public" + route), "missing destination: " + route);
+  }
+  assert.match(css, /\.kf-chaos-categories a:focus-visible/);
+});
