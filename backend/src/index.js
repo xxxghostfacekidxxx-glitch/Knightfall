@@ -2493,7 +2493,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     const {results}=await env.DB.prepare("SELECT i.id,i.game,i.description,i.page_url,i.status,i.admin_note,i.created_at,i.updated_at,u.username AS reporter_username FROM arcade_issue_reports i LEFT JOIN users u ON u.id=i.reporter_id WHERE i.status=? ORDER BY i.created_at DESC LIMIT 150").bind(status).all();
     return json({reports:results||[]},200,origin);
   }
-  if(/^\\/api\\/admin\\/arcade-issues\\/\\d+$/.test(url.pathname)&&request.method==="PATCH"){
+  if(url.pathname.startsWith("/api/admin/arcade-issues/")&&/^\d+$/.test(url.pathname.slice("/api/admin/arcade-issues/".length))&&request.method==="PATCH"){
     const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     if(!["open","resolved","dismissed"].includes(body.status))return json({error:"Invalid status."},400,origin);
