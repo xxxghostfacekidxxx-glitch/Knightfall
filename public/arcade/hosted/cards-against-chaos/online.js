@@ -4,7 +4,7 @@
 const $=id=>document.getElementById(id);
 const arcade=()=>window.AshFallArcade;
 const root="/api/arcade/chaos-cards",params=new URLSearchParams(location.search);
-let me=null,friends=[],matches=[],selected=null,busy=false;
+let me=null,friends=[],matches=[],selected=null,busy=false,openEpoch=0,refreshing=false;
 const enc=value=>encodeURIComponent(String(value));
 const display=player=>player?.display_name||player?.username||"Friend";
 const text=(id,value)=>{$(id).textContent=String(value??"");};
@@ -154,19 +154,23 @@ function renderMatch(){
  if(selected.phase==="finished")actions.append(document.createTextNode("🏆 "+humanName(selected,selected.winner)+" wins!"));
 }
 async function openMatch(id){
+ const epoch=++openEpoch;
  try{
   status("Loading saved four-player table…");
   const data=await call(root+"/"+enc(id));
+  if(epoch!==openEpoch||busy)return false;
+  if(!data.match||String(data.match.id)!==String(id))throw Error("Invalid saved table response.");
   selected=data.match;
   history.replaceState(null,"",location.pathname+"?match="+enc(id));
   renderMatch();renderList();status(selected.can_accept?"Invitation ready: choose Join game to take your seat.":"Table synced. Private hands stay private.");
   return true;
- }catch(error){status(error.message||"Unable to open this card table.");return false;}
+ }catch(error){if(epoch===openEpoch)status(error.message||"Unable to open this card table.");return false;}
 }
 async function refresh(openCurrent=true){
- if(!me)return;
+ if(!me||refreshing||(busy&&openCurrent))return;
+ refreshing=true;
  try{
-  const data=await call(root);matches=data.matches||[];renderList();
+  const data=await call(root);matches=Array.isArray(data.matches)?data.matches:[];renderList();
   if(openCurrent&&selected)await openMatch(selected.id);
   else if(!selected&&new URLSearchParams(location.search).has("match"))
    await openMatch(new URLSearchParams(location.search).get("match"));
@@ -174,11 +178,11 @@ async function refresh(openCurrent=true){
     const candidate=matches.find(match=>match.can_accept);
     if(candidate)await openMatch(candidate.id);
    }
- }catch(error){status(error.message||"Unable to load saved card tables.");}
+ }catch(error){status(error.message||"Unable to load saved card tables.");}finally{refreshing=false;}
 }
 async function mutate(action,options={}){
  if(!selected||busy)return;
- busy=true;renderMatch();
+ busy=true;++openEpoch;renderMatch();
  try{
   const data=await call(root+"/"+enc(selected.id)+"/"+action,{
    method:"POST",body:JSON.stringify({...options,version:selected.version})
@@ -189,7 +193,7 @@ async function mutate(action,options={}){
   status(action==="decline"?"Invitation declined.":"Turn saved. All four seats are accounted for.");
  }catch(error){
   status(error.message||"Move not saved. Refresh before trying again.");
-  if(error.status===409&&selected)await openMatch(selected.id);
+  if(error.status===409&&selected){const id=selected.id;busy=false;await openMatch(id);}
  }finally{busy=false;renderMatch();}
 }
 async function create(event){
@@ -208,7 +212,7 @@ async function create(event){
  if(expansionIds.length&&!$("cards-online-adult").checked){
   return status("Confirm you are 18 or older before starting an After Hours table.");
  }
- busy=true;refreshFriendInputs();
+ busy=true;++openEpoch;refreshFriendInputs();
  try{
   const response=await call(root,{method:"POST",body:JSON.stringify({
    opponent_ids:ids,expansion_ids:expansionIds,age_confirmed:$("cards-online-adult").checked
@@ -231,7 +235,7 @@ async function boot(){
   const matchId=params.get("match");
   if(matchId)await openMatch(matchId);
   try{
-   const response=await call("/api/friends");friends=response.friends||[];
+   const response=await call("/api/friends");friends=Array.isArray(response.friends)?response.friends:[];
    fillFriendChoices();
   }catch(error){
    refreshFriendInputs();
@@ -252,7 +256,8 @@ $("cards-online-human-count").addEventListener("change",refreshFriendInputs);
 $("cards-online-form").addEventListener("submit",create);
 $("cards-online-refresh").addEventListener("click",()=>refresh(true));
 $("cards-online-close").addEventListener("click",()=>{
- selected=null;$("cards-online-table").hidden=true;window.CACCabinet?.showMatch(false);
+ if(busy)return;
+ ++openEpoch;selected=null;$("cards-online-table").hidden=true;window.CACCabinet?.showMatch(false);
  history.replaceState(null,"",location.pathname);renderList();
 });
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh(true);});
