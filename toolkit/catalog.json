@@ -8,7 +8,9 @@
     "keepUpstreamLicenseAndNotices": true,
     "reviewAssetsSeparatelyFromCode": true,
     "reviewSecurityAndMaintenanceBeforeUse": true,
-    "cloudflareCompatibility": "Docker, PHP, Ruby, JVM, and long-running Node server applications do not run directly inside the current Cloudflare Pages + Workers architecture. Use these as local references or host them separately."
+    "cloudflareCompatibility": "Docker, PHP, Ruby, JVM, and long-running Node server applications do not run directly inside the current Cloudflare Pages + Workers architecture. Use these as local references or host them separately.",
+    "curatedEntriesAreReferenceOnlyUntilApproved": true,
+    "doNotCopyUIAssetsOrBranding": true
   },
   "projects": [
     {
@@ -105,10 +107,10 @@
       "kind": "game-server-admin",
       "license": "MIT",
       "repository": "https://github.com/pterodactyl/panel",
-      "mode": "clone",
+      "mode": "reference-only",
       "size": "medium",
       "use": "Game server control-panel UX, role-based operations, consoles, files and schedules.",
-      "integration": "Design reference; requires separate compatible hosting and server daemon, not Workers."
+      "integration": "Design reference; requires separate compatible hosting and server daemon, not Workers. No automated cloning or production import; review current source, dependency and trademark obligations first."
     },
     {
       "id": "pelican-panel",
@@ -116,10 +118,10 @@
       "kind": "game-server-admin",
       "license": "AGPL-3.0",
       "repository": "https://github.com/pelican-dev/panel",
-      "mode": "clone",
+      "mode": "reference-only",
       "size": "medium",
       "use": "Modern game-server panel and operational workflows.",
-      "integration": "Design reference; AGPL obligations apply to covered use, and it needs separate hosting."
+      "integration": "Design reference; AGPL obligations apply to covered use, and it needs separate hosting. No automated cloning or production import; review current source, dependency and trademark obligations first."
     },
     {
       "id": "linuxgsm",
