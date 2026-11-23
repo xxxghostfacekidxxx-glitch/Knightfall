@@ -38,7 +38,7 @@ function obstacles(){
  const result=[],seen=new Set();
  const elements=document.querySelectorAll('a[href],button,input,select,textarea,h1,h2,h3,[role="button"],[role="navigation"],[data-mc-keep-clear],#ashfall-support-footer');
  for(const el of elements){
-  if(result.length>=180)break;
+  if(result.length>=500)break;
   if(!valid(el)||seen.has(el))continue;
   seen.add(el);
   // Headings are content too. Measure painted text, not a full-width block,
@@ -54,7 +54,8 @@ function obstacles(){
   // Exclude huge general containers but include full-width sticky nav/footer bars.
   const structural=el.hasAttribute('data-mc-keep-clear')||el.id==='ashfall-support-footer'||style.position==='fixed'||style.position==='sticky';
   if((rect.width>innerWidth*.89||rect.height>innerHeight*.57)&&!structural)continue;
-  result.push({rect,weight:structural?2.5:1});
+  const critical=el.matches('textarea,input,[contenteditable="true"],[role="textbox"],button[type="submit"],.message-composer,.chat-composer,[data-mc-keep-clear]');
+  result.push({rect,weight:critical?9:structural?3:1});
  }
  return result;
 }
@@ -101,7 +102,8 @@ function recalculate(){
  }
  const currentScore=score(oldPosition,width,height,blocked);
  // Avoid flickering between corners when a page scrolls by just a few pixels.
- if(oldPosition!==winner&&currentScore-best<1.2)return;
+ // Never let anti-flicker preserve a corner over a compose field or dock control.
+ if(oldPosition!==winner&&currentScore-best<1.2&&currentScore<2)return;
  apply(winner);
 }
 function schedule(){
