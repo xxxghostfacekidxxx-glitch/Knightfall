@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {floodFill,packAtlas,uniqueAtlasName,makeTiledMap,parseTiledMap,nextPowerOfTwo,hexToRGBA} from '../public/creator-production-core.mjs';
+import {floodFill,packAtlas,uniqueAtlasName,makeTiledMap,parseTiledMap,tileAtPointer,nextPowerOfTwo,hexToRGBA} from '../public/creator-production-core.mjs';
 const read=file=>readFileSync(new URL('../'+file,import.meta.url),'utf8');
 test('pixel painter fills connected components without touching unrelated pixels',()=>{
  const pixels=new Uint8ClampedArray(4*4*4),red=[240,0,0,255],green=[0,160,0,255];
@@ -54,4 +54,15 @@ test('atlas filenames remain unique across repeated imports and reset cleanly',(
  const script=read('public/creator-production-lab.js');
  assert.match(script,/uniqueAtlasName\(f\.name,atlasNames\)/);
  assert.match(script,/atlasNames\.clear\(\)/);
+});
+
+test('tilemap painter ignores pointer drags outside canvas instead of clamping to edges',()=>{
+ const rect={left:100,top:50,width:400,height:300};
+ assert.deepEqual(tileAtPointer(100,50,rect,20,12),[0,0]);
+ assert.deepEqual(tileAtPointer(499,349,rect,20,12),[19,11]);
+ for(const [x,y] of [[99,50],[100,49],[500,200],[300,350]]){
+  assert.equal(tileAtPointer(x,y,rect,20,12),null);
+ }
+ assert.equal(tileAtPointer(100,50,{left:100,top:50,width:0,height:300},20,12),null);
+ assert.match(read('public/creator-production-lab.js'),/tileAtPointer\(e\.clientX,e\.clientY/);
 });
