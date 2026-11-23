@@ -400,3 +400,11 @@
  .messages-shell #compose-dialog #direct-start{flex:1 1 100%;min-height:44px}
  .messages-shell #compose-dialog .person-row{gap:.5rem}
 }
+
+/* The companion must not steal the mobile send button or the on-screen keyboard. */
+@media(max-width:850px){
+ body:has(.messages-shell .message-layout.show-chat) #miss-chaos-presence{right:max(8px,env(safe-area-inset-right))!important;max-width:min(58px,16vw)!important;z-index:20!important}
+ body:has(.messages-shell .message-layout.show-chat) #miss-chaos-presence #miss-chaos-launcher{width:52px!important;height:52px!important;min-width:44px;min-height:44px}
+ body:has(.messages-shell .message-layout.show-chat) #miss-chaos-presence:focus-within{max-width:min(300px,85vw)!important}
+}
+@media(max-width:360px){body:has(.messages-shell .message-layout.show-chat) #miss-chaos-presence{top:calc(var(--messages-chat-top,62px) + 58px)!important}}
