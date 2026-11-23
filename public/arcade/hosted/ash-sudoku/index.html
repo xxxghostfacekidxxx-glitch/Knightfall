@@ -40,4 +40,22 @@ function fullState(){const active=theater||document.fullscreenElement===fullRoot
 fullButton.onclick=async()=>{if(theater){theater=false;fullState();return}if(document.fullscreenElement===fullRoot||document.webkitFullscreenElement===fullRoot){try{if(document.exitFullscreen)await document.exitFullscreen();else document.webkitExitFullscreen?.()}catch{}fullState();return}try{if(fullRoot.requestFullscreen)await fullRoot.requestFullscreen();else if(fullRoot.webkitRequestFullscreen)await fullRoot.webkitRequestFullscreen();else throw Error("Fullscreen API unavailable")}catch{theater=true}fullState()};
 document.addEventListener("fullscreenchange",fullState);document.addEventListener("webkitfullscreenchange",fullState);document.addEventListener("keydown",e=>{if(e.key==="Escape"&&theater){theater=false;fullState()}});document.addEventListener("visibilitychange",()=>{if(!document.hidden)render()});setInterval(()=>{if(!finished&&!document.hidden){seconds++;$("time").textContent=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");save()}},1000);if(!load())generate("easy");else{render();$("status").textContent=finished?"Puzzle solved. Start another.":"Puzzle restored from your saved progress."}
 })();
+</script><script>
+/* Independent startup watchdog: a broken game script must never leave a silent black board. */
+(()=>{
+ const board=document.getElementById('board'),status=document.getElementById('status');
+ const check=()=>{
+  if(!board||board.children.length===81)return;
+  if(status)status.textContent='Sudoku could not start. Your saved progress has not been deleted.';
+  if(document.getElementById('sudoku-recovery'))return;
+  const panel=document.createElement('section');panel.id='sudoku-recovery';panel.setAttribute('role','alert');
+  const title=document.createElement('strong');title.textContent='Sudoku launch failed';
+  const explanation=document.createElement('p');explanation.textContent='The puzzle did not initialize. Try a fresh page load. Your existing save remains untouched.';
+  const retry=document.createElement('button');retry.type='button';retry.textContent='Retry Sudoku';retry.addEventListener('click',()=>location.reload());
+  const back=document.createElement('a');back.href='/chaos-cartridge.html';back.textContent='Back to Chaos Cartridge';
+  panel.append(title,explanation,retry,back);document.body.append(panel);
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(check,1500),{once:true});
+ else setTimeout(check,1500);
+})();
 </script></body></html>
