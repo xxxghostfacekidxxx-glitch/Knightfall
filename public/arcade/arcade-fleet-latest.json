@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-23T07:51:35.386Z",
-  "reportsFound": 10,
+  "generatedAt": "2026-11-23T19:51:46.331Z",
+  "reportsFound": 20,
   "catalogRoutes": 129,
   "targets": {
     "live": {
@@ -14,8 +14,20 @@
       "malformedReports": [],
       "failures": [],
       "coverageOk": true
+    },
+    "local": {
+      "reports": 10,
+      "expectedShards": 10,
+      "expectedRoutes": 129,
+      "coveredRoutes": 129,
+      "missingShards": [],
+      "duplicatedShards": [],
+      "duplicatedRoutes": [],
+      "malformedReports": [],
+      "failures": [],
+      "coverageOk": true
     }
   },
-  "passed": false,
-  "sourceRunId": 45134013557
+  "passed": true,
+  "sourceRunId": 45252208406
 }
