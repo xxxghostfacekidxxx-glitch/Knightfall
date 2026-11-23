@@ -2483,7 +2483,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const game=String(body.game||"").trim().slice(0,120),description=String(body.description||"").trim().slice(0,3000),page=String(body.page_url||"").trim().slice(0,350);
     if(!game||description.length<12)return json({error:"Enter a game and at least 12 characters describing the problem."},400,origin);
-    if(page&&!/^\\/(?!\\/)[a-zA-Z0-9/_?.=%&-]*$/.test(page))return json({error:"Invalid game link."},400,origin);
+    if(page&&(!page.startsWith("/")||page.startsWith("//")||/[\\\\\s<>]/.test(page)||!/^\/[a-zA-Z0-9/_?.=%&-]*$/.test(page)))return json({error:"Invalid game link."},400,origin);
     const now=new Date().toISOString();const result=await env.DB.prepare("INSERT INTO arcade_issue_reports (reporter_id,game,description,page_url,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?)").bind(user.id,game,description,page,"open",now,now).run();
     return json({ok:true,id:result.meta?.last_row_id||null},201,origin);
   }
