@@ -74,12 +74,17 @@ export function foundryLessonResponse(topic){
 export function searchPublicPages(input={}) {
   const query=String(input.query||"").trim().toLowerCase().slice(0,160);
   if(!query)return [];
-  const stop=new Set(["where","what","which","find","page","link","please","the","and","for","are","can","how","site","website","show","me","our","you","your","with","about","no"]);
+  const stop=new Set(["where","is","what","which","find","page","link","please","the","and","for","are","can","how","site","website","show","me","our","you","your","with","about","no"]);
   const tokens=[...new Set(query.match(/[a-z0-9]{2,}/g)||[])].filter(t=>!stop.has(t)).slice(0,12);
   if(!tokens.length)return [];
   return PUBLIC_PAGES.map(page=>{
     const hay=(page.title+" "+page.terms).toLowerCase();
-    const title=page.title.toLowerCase();return {...page,score:tokens.reduce((n,t)=>n+(title.includes(t)?3:hay.includes(t)?1:0),0)};
+    const title=page.title.toLowerCase();
+    // Match complete words, not incidental substrings ("is" in "Miss").
+    // A page matching more distinct query terms must outrank a generic title.
+    const words=new Set(hay.match(/[a-z0-9]{2,}/g)||[]);
+    const titleWords=new Set(title.match(/[a-z0-9]{2,}/g)||[]);
+    return {...page,score:tokens.reduce((n,t)=>n+(titleWords.has(t)?4:words.has(t)?2:0),0)};
   }).filter(page=>page.score>0).sort((a,b)=>b.score-a.score).slice(0,5)
     .map(({title,url})=>({title,url}));
 }
