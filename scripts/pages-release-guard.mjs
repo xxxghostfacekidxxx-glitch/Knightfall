@@ -8,6 +8,7 @@ const jobs=[
  ["Original Textract PDF syntax",["--check","public/chaos-textract-native-pdf.mjs"]],
  ["Original Textract OCR syntax",["--check","public/chaos-textract-native-ocr.mjs"]],
  ["Textract lab syntax",["--check","public/chaos-textract.mjs"]],
+ ["Protected Knightfall mottos, catalog counts and member disclosures",["--test","scripts/member-copy-guard.test.mjs"]],
  ["Protected artwork and Creator Foundry static audit",["scripts/knightfall-creation-preserve.mjs","--audit"]],
  ["Protected artwork and Creator Foundry workspace regressions",["--test","scripts/knightfall-creation-preserve.test.mjs"]],
  ["Creator Foundry production editor, sprite atlas and tilemap regressions",["--test","scripts/creator-production-lab.test.mjs"]],
