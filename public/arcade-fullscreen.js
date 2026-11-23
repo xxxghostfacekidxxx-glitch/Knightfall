@@ -52,6 +52,15 @@
   `;
   document.head.append(sheet);
   const nativeActive=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  let lastTrigger=null;
+  const closeTheater=()=>{
+    const open=document.querySelector(".af-game-root.af-game-theater");
+    if(!open)return false;
+    open.classList.remove("af-game-theater");
+    sync();notifyResize();
+    if(lastTrigger?.isConnected)lastTrigger.focus({preventScroll:true});
+    return true;
+  };
   const notifyResize=()=>window.dispatchEvent(new Event("resize"));
   function sync(){
     let theaterOpen=false;
@@ -68,9 +77,9 @@
     document.body.classList.toggle("af-game-theater-open",theaterOpen);
   }
   async function toggle(root){
+    lastTrigger=root.querySelector(".af-fullscreen-toggle");
     if(root.classList.contains("af-game-theater")){
-      root.classList.remove("af-game-theater");
-      sync();notifyResize();return;
+      closeTheater();return;
     }
     if(nativeActive()===root){
       try{
@@ -91,6 +100,7 @@
       root.classList.add("af-game-theater");
     }
     sync();notifyResize();
+    if(root.classList.contains("af-game-theater"))lastTrigger?.focus({preventScroll:true});
   }
   function init(){
     document.querySelectorAll(selector).forEach(root=>{
@@ -109,9 +119,10 @@
   document.addEventListener("webkitfullscreenchange",()=>{sync();notifyResize();});
   document.addEventListener("keydown",event=>{
     if(event.key!=="Escape")return;
-    const open=document.querySelector(".af-game-root.af-game-theater");
-    if(open){open.classList.remove("af-game-theater");sync();notifyResize();}
+    if(closeTheater())event.preventDefault();
   });
+  window.addEventListener("pagehide",closeTheater);
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)closeTheater();});
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
   else init();
 })();
