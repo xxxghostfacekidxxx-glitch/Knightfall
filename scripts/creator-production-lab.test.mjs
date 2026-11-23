@@ -66,3 +66,12 @@ test('tilemap painter ignores pointer drags outside canvas instead of clamping t
  assert.equal(tileAtPointer(100,50,{left:100,top:50,width:0,height:300},20,12),null);
  assert.match(read('public/creator-production-lab.js'),/tileAtPointer\(e\.clientX,e\.clientY/);
 });
+
+test('Pixel Studio keeps strokes in bounds and clears stale undo after frame structure changes',()=>{
+ const script=read('public/creator-production-lab.js');
+ assert.match(script,/const pixel=event=>tileAtPointer\(event\.clientX,event\.clientY,sprite\.getBoundingClientRect\(\),SIZE,SIZE\)/);
+ assert.match(script,/const position=pixel\(event\);if\(!position\)return/);
+ assert.match(script,/if\(position\)paint\(\.\.\.position\)/);
+ assert.match(script,/frames\.splice\(frame\+1,0,frames\[frame\]\.slice\(\)\);frame\+\+;history=\[\]/);
+ assert.match(script,/frames\.splice\(frame,1\);frame=Math\.min\(frame,frames\.length-1\);history=\[\]/);
+});
