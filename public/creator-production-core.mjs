@@ -28,6 +28,20 @@ export function floodFill(original,width,height,startX,startY,color){
  }
  return out;
 }
+/** Stable, unique atlas frame keys even when imports share filenames. */
+export function uniqueAtlasName(filename,used=new Set()){
+ const raw=String(filename||'sprite').replace(/[^a-zA-Z0-9._-]/g,'-').slice(0,75)||'sprite';
+ const stem=raw.replace(/\.(png|jpe?g|webp)$/i,'')||'sprite';
+ let candidate=raw,n=2;
+ while(used.has(candidate)){
+  const suffix='-'+n++;
+  const dot=raw.lastIndexOf('.');
+  const extension=dot>0?raw.slice(dot):'';
+  candidate=stem.slice(0,75-extension.length-suffix.length)+suffix+extension;
+ }
+ used.add(candidate);
+ return candidate;
+}
 export function packAtlas(entries,{maxSize=2048,padding=2}={}){
  if(!Array.isArray(entries)||!entries.length||entries.length>48)throw Error('Choose 1–48 raster images.');
  if(!Number.isInteger(padding)||padding<0||padding>16)throw Error('Invalid atlas spacing.');
