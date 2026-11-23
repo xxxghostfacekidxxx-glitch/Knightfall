@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {floodFill,packAtlas,makeTiledMap,parseTiledMap,nextPowerOfTwo,hexToRGBA} from '../public/creator-production-core.mjs';
+import {floodFill,packAtlas,uniqueAtlasName,makeTiledMap,parseTiledMap,nextPowerOfTwo,hexToRGBA} from '../public/creator-production-core.mjs';
 const read=file=>readFileSync(new URL('../'+file,import.meta.url),'utf8');
 test('pixel painter fills connected components without touching unrelated pixels',()=>{
  const pixels=new Uint8ClampedArray(4*4*4),red=[240,0,0,255],green=[0,160,0,255];
@@ -42,4 +42,16 @@ test('Creator Foundry exposes one authenticated local production workspace',()=>
  assert.match(script,/packAtlas\(/);assert.match(script,/makeTiledMap\(/);
  assert.doesNotMatch(script,/fetch\(|localStorage|sessionStorage/,'artwork remains local-only');
  const foundry=read('public/creator-foundry.js');assert.match(foundry,/showLocation\(/);
+});
+
+test('atlas filenames remain unique across repeated imports and reset cleanly',()=>{
+ const used=new Set();
+ const names=['sprite.png','sprite.png','sprite.png','sprite.jpg','sprite.png','a b.png','a/b.png'].map(n=>uniqueAtlasName(n,used));
+ assert.deepEqual(names,['sprite.png','sprite-2.png','sprite-3.png','sprite.jpg','sprite-4.png','a-b.png','a-b-2.png']);
+ assert.equal(new Set(names).size,names.length,'JSON frame keys must not collide');
+ used.clear();
+ assert.equal(uniqueAtlasName('sprite.png',used),'sprite.png','clearing the atlas resets names');
+ const script=read('public/creator-production-lab.js');
+ assert.match(script,/uniqueAtlasName\(f\.name,atlasNames\)/);
+ assert.match(script,/atlasNames\.clear\(\)/);
 });
