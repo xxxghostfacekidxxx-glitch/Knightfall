@@ -416,6 +416,8 @@
     toggle.setAttribute("aria-expanded", String(visible));
     toggle.setAttribute("aria-label", visible ? "Close navigation" : "Open navigation");
     if (!visible) closeGroups();
+    // Do not leave keyboard focus inside a collapsed mobile drawer.
+    if (!visible && nav.contains(document.activeElement)) toggle.focus({preventScroll:true});
   }
   toggle.addEventListener("click", () => setDrawer(!nav.classList.contains("open")));
   document.addEventListener("keydown", event => {
@@ -464,6 +466,7 @@
     if (event.key === "kf:notifications-changed") refreshNotifications();
   });
   window.addEventListener("focus", refreshNotifications);
+  window.addEventListener("pageshow", refreshNotifications);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") refreshNotifications();
   });
