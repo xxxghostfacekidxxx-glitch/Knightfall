@@ -103,3 +103,12 @@ test("ordinary admins cannot modify or recover owner and God accounts", async ()
     assert.deepEqual((await result.json()).users.map(user => user.id), [3]);
   }
 });
+
+ test("unprivileged clients cannot self-promote through administrator user mutation", async () => {
+ for (const role of ["member","moderator"]) {
+  const {request,writes}=fixture(role);
+  const response=await request("/api/admin/users/2","PATCH",{role:"god",is_admin:true});
+  assert.equal(response.status,403,role);
+  assert.deepEqual(writes,[]);
+ }
+});
