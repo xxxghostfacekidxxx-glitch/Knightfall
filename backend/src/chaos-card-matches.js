@@ -233,7 +233,15 @@ export async function handleChaosCardMatches(request,env,url,{getUser,json,rateL
   .bind(user.id,user.id,user.id,user.id,user.id,user.id).all();
   const matches=[];
   for(const row of rows.results||[]){
-   try{matches.push(visibleChaosMatch(row,user.id));}catch{/* declined or expired invitations stay private */}
+   try{
+    const state=JSON.parse(row.state_json);
+    let blocked=false;
+    for(const [seat,member] of state.members.entries()){
+     if(member==null||Number(member)===Number(user.id)||!["accepted","pending"].includes(state.invite_status[seat]))continue;
+     if(await blockedPair(env,member,user.id)){blocked=true;break;}
+    }
+    if(!blocked)matches.push(visibleChaosMatch(row,user.id));
+   }catch{/* declined or expired invitations stay private */}
   }
   return reply({matches});
  }
@@ -288,8 +296,10 @@ export async function handleChaosCardMatches(request,env,url,{getUser,json,rateL
  const state=JSON.parse(row.state_json);
  const viewer=memberSeat(state,user.id);
  if(viewer<0)return reply({error:"This match belongs to other members."},403);
- if(Number(row.player_one_id)!==Number(user.id)&&await blockedPair(env,row.player_one_id,user.id))
-  return reply({error:"This card table is unavailable."},404);
+ for(const [seat,member] of state.members.entries()){
+  if(member==null||Number(member)===Number(user.id)||!["accepted","pending"].includes(state.invite_status[seat]))continue;
+  if(await blockedPair(env,member,user.id))return reply({error:"This card table is unavailable."},404);
+ }
  if(!action&&request.method==="GET")return reply({match:visibleChaosMatch(row,user.id)});
  if(request.method!=="POST")return reply({error:"Method not allowed."},405);
  let body;try{body=await request.json();}catch{return reply({error:"Invalid JSON."},400);}
