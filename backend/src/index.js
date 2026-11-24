@@ -640,19 +640,26 @@ async function handlePersonalBotRequest(request,env,origin,url){
  const memoryMatch=path.match(/^\/api\/personal-bots\/([a-f0-9]{32})\/memory$/);
  if(memoryMatch&&(request.method==="GET"||request.method==="PUT")){
   const botId=memoryMatch[1];
-  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND deleted_at IS NULL AND owner_id=? AND deleted_at IS NULL").bind(botId,user.id).first();
+  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND owner_id=? AND deleted_at IS NULL").bind(botId,user.id).first();
   if(!owned)return json({error:"Bot not found."},404,origin);
   if(request.method==="GET"){const row=await env.DB.prepare("SELECT enabled,notes FROM personal_bot_memory WHERE bot_id=? AND owner_id=?").bind(botId,user.id).first();return json({enabled:Number(row?.enabled||0)===1,notes:row?.notes||""},200,origin);}
   const parsed=await readBoundedBotJson(request,8_500);if(parsed.error)return json({error:parsed.error},parsed.status,origin);const body=parsed.body;
   if(typeof body.enabled!=="boolean"||typeof body.notes!=="string"||body.notes.length>2000)return json({error:"Provide enabled (boolean) and notes (up to 2000 characters)."},400,origin);
-  await env.DB.prepare("INSERT INTO personal_bot_memory(bot_id,owner_id,enabled,notes,updated_at) VALUES(?,?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(bot_id) DO UPDATE SET enabled=excluded.enabled,notes=excluded.notes,updated_at=CURRENT_TIMESTAMP").bind(botId,user.id,body.enabled?1:0,body.notes).run();
+  const saved=await env.DB.prepare(`INSERT INTO personal_bot_memory(bot_id,owner_id,enabled,notes,updated_at)
+   SELECT ?,?,?,?,CURRENT_TIMESTAMP WHERE EXISTS(
+    SELECT 1 FROM personal_bots WHERE id=? AND owner_id=? AND deleted_at IS NULL
+   ) ON CONFLICT(bot_id) DO UPDATE SET enabled=excluded.enabled,notes=excluded.notes,updated_at=CURRENT_TIMESTAMP
+   WHERE personal_bot_memory.owner_id=excluded.owner_id AND EXISTS(
+    SELECT 1 FROM personal_bots WHERE id=excluded.bot_id AND owner_id=excluded.owner_id AND deleted_at IS NULL
+   )`).bind(botId,user.id,body.enabled?1:0,body.notes,botId,user.id).run();
+  if(!Number(saved.meta?.changes||0))return json({error:"Bot not found."},404,origin);
   await audit(env,user,"personal_bot.memory.update","personal_bot",null,{bot_id:botId,enabled:body.enabled});
   return json({ok:true,enabled:body.enabled,notes:body.notes},200,origin);
  }
  const historyMatch=path.match(/^\/api\/personal-bots\/([a-f0-9]{32})\/history$/);
  if(historyMatch&&request.method==="DELETE"){
   const botId=historyMatch[1];
-  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND deleted_at IS NULL AND owner_id=? AND deleted_at IS NULL").bind(botId,user.id).first();
+  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND owner_id=? AND deleted_at IS NULL").bind(botId,user.id).first();
   if(!owned)return json({error:"Bot not found."},404,origin);
   const result=await env.DB.prepare("UPDATE personal_bot_chat_messages SET deleted_at=? WHERE bot_id=? AND user_id=? AND deleted_at IS NULL").bind(new Date().toISOString(),botId,user.id).run();
   await audit(env,user,"personal_bot.history.delete","personal_bot",null,{bot_id:botId,deleted:result.meta?.changes||0});
@@ -660,7 +667,7 @@ async function handlePersonalBotRequest(request,env,origin,url){
  }
  if(historyMatch&&request.method==="GET"){
   const botId=historyMatch[1];
-  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND deleted_at IS NULL AND owner_id=? AND deleted_at IS NULL").bind(botId,user.id).first();
+  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND owner_id=? AND deleted_at IS NULL").bind(botId,user.id).first();
   if(!owned)return json({error:"Bot not found."},404,origin);
   const {results}=await env.DB.prepare("SELECT id,role,content,created_at FROM personal_bot_chat_messages WHERE bot_id=? AND user_id=? AND deleted_at IS NULL ORDER BY id DESC LIMIT 100").bind(botId,user.id).all();
   return json({messages:(results||[]).reverse()},200,origin);
@@ -1659,7 +1666,7 @@ export default { async queue(batch, env) {
     const declaredSize=Number(request.headers.get("content-length")||0);
     if(declaredSize>16000)return json({error:"Utility request too large."},413,origin);
     let body;try{const raw=await request.text();if(raw.length>16000)return json({error:"Utility request too large."},413,origin);body=JSON.parse(raw);}catch{return json({error:"Invalid JSON."},400,origin);}
-    if(!["utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","design.palette_build","research.dictionary","forge.scale_pattern","dev.code_inspect","dev.code_format","dev.diagram_flow","dev.code_diff","dev.json_shape","staff.repo_file","staff.github_health","staff.source_files","god.audit_summary","god.github_health"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
+    if(!["site.help","site.games","site.search","utility.calculate","utility.word_count","utility.convert","utility.now","forge.pattern_draft","forge.material_estimate","design.color_contrast","design.palette_build","research.dictionary","research.wikipedia","research.github_repos","research.books","research.papers","resource.met","resource.polyhaven","resource.wikidata","forge.scale_pattern","dev.code_inspect","dev.code_format","dev.diagram_flow","dev.code_diff","dev.json_shape","staff.repo_file","staff.github_health","staff.source_files","god.audit_summary","god.github_health"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
     try{
       const result=await dispatchChaosTool({name:body.name,input:body.input,principal:{id:user.id,role:user.role},handlers:{
          "forge.pattern_draft":async ({input})=>makeChaosPatternDraft(input),
