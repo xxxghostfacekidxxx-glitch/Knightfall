@@ -2365,6 +2365,15 @@ For complex questions, organize the answer clearly and provide actionable detail
     await audit(env,actor,"god_bot_profile_update","bot",null,{bot_key:match[1],fields:Object.keys(payload)});
     return json({ok:true,bot_key:match[1],posting_enabled:false},200,origin);
   }
+  if(url.pathname==="/api/force-library"){
+    if(request.method!=="GET")return json({error:"Method not allowed"},405,origin);
+    const q=(url.searchParams.get("q")||"").trim(),category=url.searchParams.get("category")||"",before=Number(url.searchParams.get("before")||Number.MAX_SAFE_INTEGER);
+    const categories=["jedi-temple","order-of-the-sith","force-studies","galactic-history","holocron-archives","lightsaber-forms"];
+    if(q.length>120||!Number.isSafeInteger(before)||before<1||(category&&!categories.includes(category)))return json({error:"Invalid search"},400,origin);
+    const result=await env.DB.prepare("SELECT t.id,t.title,t.slug,c.slug AS category,substr(t.body,1,240) AS excerpt FROM threads t JOIN categories c ON c.id=t.category_id WHERE t.deleted_at IS NULL AND c.slug IN ('jedi-temple','order-of-the-sith','force-studies','galactic-history','holocron-archives','lightsaber-forms') AND (?='' OR c.slug=?) AND (?='' OR instr(lower(t.title),lower(?))>0 OR instr(lower(t.body),lower(?))>0) AND t.id<? ORDER BY t.id DESC LIMIT 31").bind(category,category,q,q,q,before).all();
+    const rows=result.results||[],items=rows.slice(0,30);
+    return json({items,next:rows.length>30?items[items.length-1].id:null},200,origin,{"cache-control":"no-store"});
+  }
   if(url.pathname==="/api/force-academy-review"){
     const actor=await requireUser(request,env);if(!actor||actor.role!=="god")return json({error:"Forbidden"},403,origin);
     if(request.method==="GET"){
