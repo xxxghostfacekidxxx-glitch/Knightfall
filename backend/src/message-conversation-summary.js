@@ -12,12 +12,12 @@ export async function handleMessageSummary(request,env,url,{getUser,json,origin}
  if(!Number.isSafeInteger(id)||id<1)return json({error:"Invalid conversation."},400,origin);
  // Never use the administrator archive permission for member permalink lookups.
  const member=await env.DB.prepare(
-  "SELECT muted_until FROM conversation_members WHERE conversation_id=? AND user_id=?"
+  "SELECT muted_until,joined_at,joined_after_message_id FROM conversation_members WHERE conversation_id=? AND user_id=?"
  ).bind(id,user.id).first();
  if(!member)return json({error:"Conversation not found."},404,origin);
  const conversation=await env.DB.prepare(
-  "SELECT id,kind,name,created_at,updated_at FROM conversations WHERE id=?"
- ).bind(id).first();
+  "SELECT c.id,c.kind,c.name,c.created_at,COALESCE((SELECT MAX(m.created_at) FROM messages m WHERE m.conversation_id=c.id AND m.id>?),?) AS updated_at FROM conversations c WHERE c.id=?"
+ ).bind(member.joined_after_message_id,member.joined_at,id).first();
  if(!conversation)return json({error:"Conversation not found."},404,origin);
  const base={
   id:Number(conversation.id),kind:conversation.kind,

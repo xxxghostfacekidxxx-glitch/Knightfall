@@ -812,6 +812,13 @@
  .message-layout.show-chat .composer textarea{min-height:40px;max-height:min(18vh,130px)}
 }
 
+/* The full-screen mobile thread owns the touch layer while it is open.
+   Keep the global Miss Chaos dock/window beneath it so neither can cover
+   the transcript, keyboard-safe composer, or send controls. */
+@media(max-width:850px){
+ body:has(.message-layout.show-chat) #miss-chaos-presence{z-index:2147482100!important}
+}
+
 
 /* Adaptive inbox v5: give the transcript the space, not the toolbar. */
 .messages-shell .message-layout{

@@ -45,7 +45,7 @@ export async function handleMessageSearch(request,env,url,{getUser,json,origin,r
     "JOIN conversation_members cm ON cm.conversation_id=m.conversation_id AND cm.user_id=? "+
     "JOIN conversations c ON c.id=m.conversation_id "+
     "JOIN users u ON u.id=m.sender_id "+
-    "WHERE m.deleted_at IS NULL AND m.body LIKE ? ESCAPE '\\' "+
+    "WHERE m.deleted_at IS NULL AND m.id>cm.joined_after_message_id AND m.body LIKE ? ESCAPE '\\' "+
     "AND (?=0 OR m.conversation_id=?) AND (?=0 OR m.id<?) "+
     "ORDER BY m.id DESC LIMIT ?";
   const {results}=await env.DB.prepare(sql).bind(
