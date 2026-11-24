@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cinder Runs | Knightfall</title><link rel="stylesheet" href="game.css"></head>
+<body><main><header><a href="/chaos-cartridge.html">← Chaos Cartridge</a><h1>Cinder Runs</h1><p>Forge three consecutive ranks of one element. Win with nine forged points or an empty hand.</p></header>
+<section class="controls"><label>Players <select id="players"><option>2</option><option>3</option><option>4</option></select></label><button id="restart">New table</button></section>
+<p id="status" role="status" aria-live="polite"></p><section id="scores" aria-label="Scores"></section>
+<section class="table"><button id="draw">Draw from deck</button><button id="take">Take discard</button><button id="meld">Forge selected run</button><button id="discard">Discard selected card</button></section>
+<h2>Your hand</h2><section id="hand" aria-label="Your cards"></section><h2>Forged runs</h2><section id="runs"></section>
+<details><summary>Rules</summary><p>Draw one card, optionally forge any number of three-card consecutive runs in the same element, then discard one card. Opponents take their turns automatically. This cabinet is local solo play against AI; online multiplayer is not yet supported.</p></details></main><script type="module" src="game.mjs"></script></body></html>
