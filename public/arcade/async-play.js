@@ -2,7 +2,7 @@
   'use strict';
   const $=id=>document.getElementById(id),api=()=>window.AshFallArcade;
   const query=new URLSearchParams(location.search);
-  let me=null,friends=[],matches=[],selectedId=query.get('match')||'',selectedMoves=[],selectedMatch=null,moving=false,focusInvite=!!query.get('match');
+  let me=null,friends=[],matches=[],selectedId=query.get('match')||'',selectedMoves=[],selectedMatch=null,moving=false,focusInvite=!!query.get('match'),matchListRequest=0,matchDetailRequest=0;
   const nameOf=player=>player?.display_name||player?.username||'Friend';
   const showError=(error,target=$('challenge-status'))=>{target.textContent=error?.message||'The arcade service is unavailable. Try again shortly.'};
   function showAccount(user){
@@ -84,20 +84,23 @@
     }
   }
   async function openMatch(id){
-    selectedId=id;history.replaceState(null,'',location.pathname+'?match='+encodeURIComponent(id));$('match-panel').hidden=false;$('match-status').textContent='Loading saved board…';
+    const request=++matchDetailRequest;selectedId=id;history.replaceState(null,'',location.pathname+'?match='+encodeURIComponent(id));$('match-panel').hidden=false;$('match-status').textContent='Loading saved board…';
     try{
-      const data=await call('/api/arcade/turn-matches/'+encodeURIComponent(id));selectedMatch=data.match;selectedMoves=data.moves||[];
+      const data=await call('/api/arcade/turn-matches/'+encodeURIComponent(id));
+      if(request!==matchDetailRequest||selectedId!==id)return;
+      selectedMatch=data.match;selectedMoves=data.moves||[];
       $('match-title').textContent='Chaos Connect Four';renderPlayers(selectedMatch);renderBoard(selectedMatch);renderActions(selectedMatch);renderHistory(selectedMoves);renderMatches();
       if(focusInvite){focusInvite=false;requestAnimationFrame(()=>$('match-panel').scrollIntoView({behavior:'instant',block:'start'}));}
-    }catch(error){showError(error,$('match-status'));}
+    }catch(error){if(request===matchDetailRequest&&selectedId===id)showError(error,$('match-status'));}
   }
   async function refreshMatches(openSelected=false){
+    const request=++matchListRequest;
     try{
-      const data=await call('/api/arcade/turn-matches');matches=data.matches||[];renderMatches();
+      const data=await call('/api/arcade/turn-matches');if(request!==matchListRequest)return;matches=data.matches||[];renderMatches();
       if(selectedId&&openSelected&&matches.some(match=>match.id===selectedId))await openMatch(selectedId);
       else if(!selectedId&&matches.length&&query.get('match'))await openMatch(query.get('match'));
       else if(!matches.length&&selectedId){selectedId='';$('match-panel').hidden=true;}
-    }catch(error){showError(error,$('challenge-status'));}
+    }catch(error){if(request===matchListRequest)showError(error,$('challenge-status'));}
   }
   async function respond(action){
     try{await call('/api/arcade/turn-matches/'+encodeURIComponent(selectedId)+'/'+action,{method:'POST',body:'{}'});await refreshMatches(false);await openMatch(selectedId);}
@@ -135,7 +138,7 @@
   }
   $('challenge-form').addEventListener('submit',challenge);
   $('refresh-matches').addEventListener('click',()=>refreshMatches(true));
-  $('close-match').addEventListener('click',()=>{selectedId='';selectedMatch=null;$('match-panel').hidden=true;history.replaceState(null,'',location.pathname);renderMatches();});
+  $('close-match').addEventListener('click',()=>{matchDetailRequest++;selectedId='';selectedMatch=null;$('match-panel').hidden=true;history.replaceState(null,'',location.pathname);renderMatches();});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshMatches(true);});
   setInterval(()=>{if(!document.hidden)refreshMatches(true);},45000);
   boot();
