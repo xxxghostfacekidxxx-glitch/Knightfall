@@ -2368,7 +2368,7 @@ For complex questions, organize the answer clearly and provide actionable detail
   if(url.pathname==="/api/force-academy-review"){
     const actor=await requireUser(request,env);if(!actor||actor.role!=="god")return json({error:"Forbidden"},403,origin);
     if(request.method==="GET"){
-      const result=await env.DB.prepare("SELECT e.id,e.path,e.answers,e.submitted_at,u.username FROM force_academy_exams e JOIN users u ON u.id=e.user_id WHERE e.status='pending' ORDER BY e.id LIMIT 50").all();
+      const result=await env.DB.prepare("SELECT e.id,e.path,e.stage,e.answers,e.submitted_at,u.username FROM force_academy_exams e JOIN users u ON u.id=e.user_id WHERE e.status='pending' ORDER BY e.id LIMIT 50").all();
       return json({exams:result.results||[]},200,origin,{"cache-control":"no-store"});
     }
     if(request.method!=="POST")return json({error:"Method not allowed"},405,origin);
@@ -2410,11 +2410,16 @@ For complex questions, organize the answer clearly and provide actionable detail
       if(method==="POST"){
         let body;try{body=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
         if(!Array.isArray(body?.answers)||body.answers.length!==5||body.answers.some(a=>typeof a!=="string"||a.trim().length<20||a.length>3500))return json({error:"Five substantive answers required"},400,origin);
-        const result=await db.prepare("INSERT OR IGNORE INTO force_academy_exams(user_id,path,answers) SELECT ?,?,? WHERE (SELECT COUNT(*) FROM force_academy_progress WHERE user_id=? AND path=?)=7 AND NOT EXISTS(SELECT 1 FROM force_academy_exams WHERE user_id=? AND path=? AND status='passed')").bind(uid,path,JSON.stringify(body.answers.map(a=>a.trim())),uid,path,uid,path).run();
-        if(Number(result.meta?.changes)!==1)return json({error:"Complete all chapters first; only one pending or passed exam is allowed"},409,origin);
+        const stage=body.stage??1;
+        if(!Number.isInteger(stage)||stage<1||stage>4)return json({error:"Invalid stage"},400,origin);
+        const result=await db.prepare("INSERT OR IGNORE INTO force_academy_exams(user_id,path,answers,stage) SELECT ?,?,?,? WHERE (SELECT COUNT(*) FROM force_academy_progress WHERE user_id=? AND path=?)=7 AND (SELECT COUNT(DISTINCT stage) FROM force_academy_exams WHERE user_id=? AND path=? AND status='passed' AND stage<?)=? AND NOT EXISTS(SELECT 1 FROM force_academy_exams WHERE user_id=? AND path=? AND stage=? AND status IN ('pending','passed'))").bind(uid,path,JSON.stringify(body.answers.map(a=>a.trim())),stage,uid,path,uid,path,stage,stage-1,uid,path,stage).run();
+        if(Number(result.meta?.changes)!==1)return json({error:"Complete earlier stages first; this stage may already be pending or passed"},409,origin);
       }else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
-      const result=await db.prepare("SELECT id,status,score,feedback,submitted_at,reviewed_at FROM force_academy_exams WHERE user_id=? AND path=? ORDER BY id DESC LIMIT 20").bind(uid,path).all();
-      return json({exams:result.results||[],rank:(result.results||[]).some(e=>e.status==="passed")?"foundation graduate":"student"},200,origin,{"cache-control":"no-store"});
+      const result=await db.prepare("SELECT id,stage,status,score,feedback,submitted_at,reviewed_at FROM force_academy_exams WHERE user_id=? AND path=? ORDER BY id DESC LIMIT 20").bind(uid,path).all();
+      const passed=await db.prepare("SELECT DISTINCT stage FROM force_academy_exams WHERE user_id=? AND path=? AND status='passed' ORDER BY stage").bind(uid,path).all();
+      const stages=new Set((passed.results||[]).map(e=>e.stage));let level=0;while(stages.has(level+1)&&level<4)level++;
+      const ranks=path==="jedi"?["student","foundation graduate","practitioner","steward","mentor"]:["student","foundation graduate","adept","ascendant","mentor"];
+      return json({exams:result.results||[],rank:ranks[level],next_stage:level<4?level+1:null},200,origin,{"cache-control":"no-store"});
     }
     if(resource==="journal"){
       if(method==="GET"&&!rawId){
