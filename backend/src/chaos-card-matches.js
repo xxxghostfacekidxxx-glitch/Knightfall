@@ -180,6 +180,16 @@ async function blockedPair(env,a,b){
  return !!await env.DB.prepare("SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1")
  .bind(a,b,b,a).first();
 }
+export async function hasTableBlock(env,state,viewerId){
+ const viewer=Number(viewerId);
+ for(let seat=0;seat<SEAT_COUNT;seat++){
+  const other=Number(state.members[seat]);
+  if(!Number.isSafeInteger(other)||other<=0||other===viewer)continue;
+  if(!["accepted","pending"].includes(state.invite_status[seat]))continue;
+  if(await blockedPair(env,viewer,other))return true;
+ }
+ return false;
+}
 async function saveState(env,row,state,status){
  const now=new Date().toISOString();
  const updated=await env.DB.prepare(`UPDATE arcade_chaos_four_matches
