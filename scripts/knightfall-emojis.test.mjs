@@ -30,13 +30,15 @@ test("message renderer only replaces known shortcodes and escapes member text",(
 
 test("the composer mounts every custom emoji exactly once with accessible labels",()=>{
   const tray={dataset:{},children:[],append(...items){this.children.push(...items)}};
-  const doc={getElementById:id=>id==="cs-emoji-tray"?tray:null,createElement(tag){return {
+  const floatingTray={dataset:{},children:[],append(...items){this.children.push(...items)}};
+  const doc={querySelectorAll:()=>[tray,floatingTray],createElement(tag){return {
     tag,dataset:{},attrs:{},children:[],setAttribute(key,value){this.attrs[key]=value},
     append(...items){this.children.push(...items)}
   }}};
-  assert.equal(mountKnightfallEmojiPicker(doc),12);
+  assert.equal(mountKnightfallEmojiPicker(doc),24);
   assert.equal(mountKnightfallEmojiPicker(doc),0);
   assert.equal(tray.children.length,12);
+  assert.equal(floatingTray.children.length,12);
   assert.deepEqual(tray.children.map(button=>button.dataset.insertEmoji),KNIGHTFALL_EMOJIS.map(item=>item.code));
   assert.ok(tray.children.every(button=>button.attrs["aria-label"].startsWith("Insert ")&&button.children[0].tag==="img"));
 });
@@ -46,6 +48,9 @@ test("picker, sent-message rendering, server allowlist and database check share 
   assert.match(messagesPage,/window\.KnightfallEmojiReady/);
   assert.match(messagesPage,/customReactionButtons\(m\.id\)/);
   assert.match(messagesPage,/renderMessageText\(m\.deleted_at\?"\[Message deleted\]":m\.body\)/);
+  const floatingChat=readFileSync(new URL("../public/chat-bubbles.js",import.meta.url),"utf8");
+  assert.match(floatingChat,/kf-chat-emoji-tray/);
+  assert.match(floatingChat,/customEmoji\.render/);
   const custom=KNIGHTFALL_EMOJIS.map(item=>item.code);
   for(const code of custom){
     assert.ok(MESSAGE_REACTION_EMOJIS.includes(code),"API allowlist missing "+code);

@@ -6,6 +6,11 @@
   if(!Number.isSafeInteger(userId)||userId<1||document.getElementById("kf-chat-heads"))return;
   if(["/messages","/messages.html"].includes(location.pathname))return; // The full inbox already owns this route.
   const API="https://api.ash-fall.com";
+  let customEmoji=window.KnightfallEmojis||null;
+  if(!customEmoji)import("/knightfall-emojis.mjs?v=20261124-original-emojis1").then(module=>{
+    customEmoji=module;
+    module.mountKnightfallEmojiPicker?.(document);
+  }).catch(error=>console.warn("knightfall_emoji_module_unavailable",String(error)));
   const storeKey="kf-chat-heads-"+userId;
   const draftKey="kf-chat-drafts-"+userId;
   const drafts=new Map();
@@ -66,7 +71,7 @@
   const dock=el("aside","kf-chat-dock");
   dock.id="kf-chat-heads";
   dock.setAttribute("aria-label","Chaosphere conversations");
-  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
+  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><div class="kf-chat-emoji-tools"><button id="kf-chat-emoji-toggle" type="button" aria-expanded="false" aria-controls="kf-chat-emoji-tray" aria-label="Show Knightfall emojis">☻ Emoji</button><div id="kf-chat-emoji-tray" class="kf-emoji-tray" aria-label="Knightfall custom emojis" hidden></div></div><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
   // Host outside the page body so transformed game/page wrappers cannot clip or resize chat.
   document.documentElement.append(dock);
   function syncBubbleViewport(){
@@ -348,7 +353,11 @@
       const mine=Number(m.sender_id)===userId;
       const item=el("div","kf-chat-message "+(mine?"mine":"theirs"));
       item.append(el("small","kf-chat-sender",mine?"You":(m.display_name||m.username||"Member")));
-      item.append(el("p","",m.deleted_at?"[Message deleted]":String(m.body||"")));
+      const body=el("p");
+      if(m.deleted_at)body.textContent="[Message deleted]";
+      else if(customEmoji?.render)body.innerHTML=customEmoji.render(String(m.body||""),undefined,{lineBreaks:true});
+      else body.textContent=String(m.body||"");
+      item.append(body);
       fragment.append(item);
     }
     thread.replaceChildren(fragment);
@@ -475,6 +484,20 @@
     void queued.finally(()=>{if(messageSendQueues.get(id)===queued)messageSendQueues.delete(id);});
     if(state.active===id&&state.visible&&!document.hidden)input.focus({preventScroll:true});
     return queued;
+  });
+  const emojiToggle=$("#kf-chat-emoji-toggle"),emojiTray=$("#kf-chat-emoji-tray");
+  emojiToggle.addEventListener("click",()=>{
+    const opening=emojiTray.hidden;
+    emojiTray.hidden=!opening;emojiToggle.setAttribute("aria-expanded",String(opening));
+    if(opening)input.focus({preventScroll:true});
+  });
+  emojiTray.addEventListener("click",event=>{
+    const button=event.target.closest("[data-insert-emoji]");
+    if(!button)return;
+    const start=input.selectionStart??input.value.length,end=input.selectionEnd??start;
+    input.setRangeText(button.dataset.insertEmoji,start,end,"end");
+    input.dispatchEvent(new Event("input",{bubbles:true}));
+    input.focus({preventScroll:true});
   });
   input.addEventListener("keydown",event=>{
     if(event.key==="Enter"&&!event.shiftKey&&!event.isComposing){

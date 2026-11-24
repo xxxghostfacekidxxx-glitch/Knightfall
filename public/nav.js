@@ -578,18 +578,18 @@
         const startChatHeads=()=>{
           if (!document.querySelector('link[data-kf-chat-bubbles]')) {
             const sheet=document.createElement("link");
-            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261117-imp2";
+            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261124-original-emojis1";
             sheet.dataset.kfChatBubbles="true";document.head.append(sheet);
           }
           if(!window.ChaosphereImp&&!document.querySelector('script[data-kf-chaosphere-imp]')){
             const mascot=document.createElement("script");
-            mascot.src="/chaosphere-imp.js?v=20261117-imp2";
+            mascot.src="/chaosphere-imp.js?v=20261124-original-emojis1";
             mascot.dataset.kfChaosphereImp="true";
             document.body.append(mascot);
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
             const bubbles=document.createElement("script");
-            bubbles.src="/chat-bubbles.js?v=20261117-imp2";
+            bubbles.src="/chat-bubbles.js?v=20261124-original-emojis1";
             bubbles.dataset.kfChatBubbles="true";
             bubbles.dataset.userId=String(user.id);
             document.body.append(bubbles);

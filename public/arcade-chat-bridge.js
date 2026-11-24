@@ -68,17 +68,17 @@
   if(window.KnightfallChat){activate();return;}
   if(document.querySelector('script[data-kf-chat-bubbles]'))return;
   const script=document.createElement("script");
-  script.src="/chat-bubbles.js?v=20261117-imp2";
+  script.src="/chat-bubbles.js?v=20261124-original-emojis1";
   script.dataset.kfChatBubbles="true";
   script.dataset.userId=String(userId);
   script.addEventListener("load",activate,{once:true});
   document.body.appendChild(script);
  }
  function connect(userId){
-  stylesheet("/chat-bubbles.css?v=20261117-imp2");
+  stylesheet("/chat-bubbles.css?v=20261124-original-emojis1");
   if(!window.ChaosphereImp&&!document.querySelector('script[data-kf-chaosphere-imp]')){
     const mascot=document.createElement("script");
-    mascot.src="/chaosphere-imp.js?v=20261117-imp2";
+    mascot.src="/chaosphere-imp.js?v=20261124-original-emojis1";
     mascot.dataset.kfChaosphereImp="true";
     document.head.appendChild(mascot);
   }

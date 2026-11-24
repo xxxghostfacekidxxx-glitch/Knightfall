@@ -30,9 +30,12 @@ export function renderKnightfallEmojiText(value,escapeHTML=fallbackEscape,{lineB
 
 export function mountKnightfallEmojiPicker(root=typeof document!=="undefined"?document:null) {
   const doc=root?.ownerDocument||root;
-  const tray=doc?.getElementById?.("cs-emoji-tray");
-  if(!tray||tray.dataset.kfEmojiMounted==="true")return 0;
-  const buttons=KNIGHTFALL_EMOJIS.map(item=>{
+  const trays=doc?.querySelectorAll?.("#cs-emoji-tray, #kf-chat-emoji-tray");
+  if(!trays?.length)return 0;
+  let mounted=0;
+  for(const tray of trays){
+    if(tray.dataset.kfEmojiMounted==="true")continue;
+    const buttons=KNIGHTFALL_EMOJIS.map(item=>{
     const button=doc.createElement("button");
     button.type="button";button.className="kf-custom-emoji";
     button.dataset.insertEmoji=item.code;button.setAttribute("aria-label","Insert "+item.name);
@@ -40,9 +43,10 @@ export function mountKnightfallEmojiPicker(root=typeof document!=="undefined"?do
     const image=doc.createElement("img");image.src="/icons/emojis/"+item.file;
     image.alt="";image.width=28;image.height=28;image.setAttribute("aria-hidden","true");
     button.append(image);return button;
-  });
-  tray.append(...buttons);tray.dataset.kfEmojiMounted="true";
-  return buttons.length;
+    });
+    tray.append(...buttons);tray.dataset.kfEmojiMounted="true";mounted+=buttons.length;
+  }
+  return mounted;
 }
 
 if(typeof window!=="undefined"){
