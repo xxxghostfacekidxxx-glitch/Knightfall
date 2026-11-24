@@ -1,5 +1,5 @@
 export async function checkTurnstile(env, request, token) {
-  if (!env.TURNSTILE_SECRET_KEY && !env.TURNSTILE_SITE_KEY) return true;
+  // Missing configuration must not bypass registration verification.
   if (!env.TURNSTILE_SECRET_KEY || !env.TURNSTILE_SITE_KEY) return false;
   if (typeof token !== "string" || token.length === 0 || token.length > 2048) return false;
   try {
