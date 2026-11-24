@@ -36,7 +36,7 @@ function valid(el){
 }
 function obstacles(){
  const result=[],seen=new Set();
- const elements=document.querySelectorAll('a[href],button,input,select,textarea,h1,h2,h3,[role="button"],[role="navigation"],[data-mc-keep-clear],#ashfall-support-footer');
+ const elements=document.querySelectorAll('a[href],button,input,select,textarea,h1,h2,h3,[role="button"],[role="navigation"],[data-mc-keep-clear],#ashfall-support-footer,#kf-chat-heads,.kf-chat-panel,.kf-chat-head-row');
  for(const el of elements){
   if(result.length>=500)break;
   if(!valid(el)||seen.has(el))continue;
@@ -79,8 +79,12 @@ function apply(position){
  move.title='Parked '+descriptions[position]+'. Tap to move to another corner.';
  move.setAttribute('aria-label','Move Miss Chaos tools, currently '+descriptions[position]);
 }
-function activePanel(){
- return !button('miss-chaos-window')?.hidden||!button('mc-memo-panel')?.hidden;
+function occupiedSize(dock){
+ const panels=['miss-chaos-window','mc-memo-panel'].map(button).filter(el=>el&&!el.hidden&&getComputedStyle(el).display!=='none');
+ if(!panels.length)return {width:Math.max(30,dock.width),height:Math.max(24,dock.height)};
+ const panelWidth=Math.max(...panels.map(el=>el.getBoundingClientRect().width));
+ const panelHeight=Math.max(...panels.map(el=>el.getBoundingClientRect().height));
+ return {width:Math.max(dock.width,panelWidth),height:dock.height+panelHeight+10};
 }
 function recalculate(){
  frame=0;
@@ -89,11 +93,10 @@ function recalculate(){
  headerBottom=bounds && bounds.top<=1 ? Math.max(0,bounds.bottom) : 0;
  root.style.setProperty('--mc-header-bottom',headerBottom+'px');
  if(preference!=='auto'){apply(preference);return}
- if(activePanel())return;
  const dock=button('mc-dock');if(!dock)return;
  const oldPosition=root.dataset.dock||'br';
  const dockBounds=dock.getBoundingClientRect();
- const width=Math.max(30,dockBounds.width),height=Math.max(24,dockBounds.height);
+ const {width,height}=occupiedSize(dockBounds);
  const blocked=obstacles();
  let winner='br',best=Infinity;
  for(const candidate of options){
@@ -146,6 +149,9 @@ function syncFullscreenDock(){
 }
 document.addEventListener('fullscreenchange',syncFullscreenDock);
 document.addEventListener('webkitfullscreenchange',syncFullscreenDock);
+// Re-score the full chat/memo footprint after the user opens or closes it.
+document.addEventListener('click',()=>setTimeout(schedule,0),true);
+document.addEventListener('toggle',schedule,true);
 window.addEventListener('pageshow',schedule,{passive:true});
 const header=document.querySelector('body > .kf-header');
 if(header && window.ResizeObserver)new ResizeObserver(schedule).observe(header);

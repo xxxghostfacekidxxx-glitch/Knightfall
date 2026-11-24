@@ -312,7 +312,7 @@
     .catch(e=>console.warn("Miss Chaos field kit unavailable:",e.message));
   // Overlay placement and minimize controls are isolated from chat logic.
   const dockScript=document.createElement("script");
-  dockScript.src="/miss-chaos-dock.js?v=20261119-overlay-recovery1";
+  dockScript.src="/miss-chaos-dock.js?v=20261124-panel-fit";
   document.head.append(dockScript);
   };
   // This module may also load directly in the <head> on legacy routes.

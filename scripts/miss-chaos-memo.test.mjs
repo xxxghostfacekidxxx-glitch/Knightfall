@@ -32,6 +32,10 @@ test('dock has four corners, automatic control avoidance, minimize, and fullscre
  assert.ok(dock.includes('document.createRange'));
  assert.match(dock,/querySelectorAll\('a\[href\],button,input,select,textarea/);
  assert.match(dock,/function score\(position,width,height,blocked\)/);
+ assert.match(dock,/function occupiedSize\(dock\)/);
+ assert.match(dock,/#kf-chat-heads,\.kf-chat-panel,\.kf-chat-head-row/);
+ assert.match(dock,/document\.addEventListener\('click',\(\)=>setTimeout\(schedule,0\),true\)/);
+ assert.doesNotMatch(dock,/if\(activePanel\(\)\)return/);
  assert.match(dock,/root\.dataset\.minimized='true'/);
  assert.match(dock,/window\.addEventListener\(event,schedule/);
  assert.match(dock,/fullscreenchange/);
