@@ -12,9 +12,10 @@ export async function databaseRateLimit(db, bucketKey, limit, windowSeconds, now
                      ELSE request_rate_limits.count + 1 END,
         reset_at = CASE WHEN request_rate_limits.reset_at <= ?3 THEN ?2
                         ELSE request_rate_limits.reset_at END
+      WHERE request_rate_limits.reset_at <= ?3 OR request_rate_limits.count < ?4
       RETURNING count
-    `).bind(bucketKey, resetAt, now).first();
-    return Number(row?.count) <= limit;
+    `).bind(bucketKey, resetAt, now, limit).first();
+    return row != null && Number.isInteger(row.count) && row.count >= 1 && row.count <= limit;
   } catch (error) {
     console.error("rate_limit_storage_unavailable", String(error));
     // Do not silently disable security limits when storage is unavailable.
