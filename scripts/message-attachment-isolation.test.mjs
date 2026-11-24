@@ -14,6 +14,6 @@ test("attachment download denies nonmembers, other users' pending files and dele
  const route=section("const attachmentDownloadMatch","const attachmentListMatch");
  assert.match(route,/conversation_id=\? AND user_id=\?/);
  assert.match(route,/!member\|\|\(!attachment.message_id&&Number\(attachment.uploader_id\)!==Number\(user.id\)\)/);
- assert.match(route,/attachment.message_id&&attachment.deleted_at/);
+ assert.match(route,/attachment.message_id&&\(attachment.deleted_at\|\|Number\(attachment.message_id\)<=Number\(member.joined_after_message_id\)\)/);
  assert.match(route,/private, no-store/);
 });

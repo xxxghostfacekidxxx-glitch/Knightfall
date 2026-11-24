@@ -2930,13 +2930,81 @@ For complex questions, organize the answer clearly and provide actionable detail
     }
     return json({messages:results,has_more:hasMore,next_before:hasMore&&results.length?Number(results[0].id):null,admin_view:false},200,origin);
   }
-  if(conversationMatch&&request.method==="POST"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);if(!(await rateLimit(env,request,"message",60,60,user.id)))return json({error:"Message rate limit reached. Slow down."},429,origin);const conversationId=Number(conversationMatch[1]),membership=await env.DB.prepare("SELECT conversation_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id).first();if(!membership)return json({error:"Conversation not found."},404,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const message=String(body.body||"").trim();const attachmentIds=Array.isArray(body.attachment_ids)?[...new Set(body.attachment_ids.map(Number).filter(x=>Number.isSafeInteger(x)&&x>0))]:[];if(attachmentIds.length>10)return json({error:"Attach no more than 10 files to one message."},400,origin);if(!message&&attachmentIds.length===0)return json({error:"Write a message or attach a file."},400,origin);if(message&&!validText(message,4000))return json({error:"Message must be 1-4000 characters."},400,origin);if(attachmentIds.length){const pending=await env.DB.prepare("SELECT id FROM message_attachments WHERE conversation_id=? AND uploader_id=? AND message_id IS NULL AND id IN ("+attachmentIds.map(()=>"?").join(",")+")").bind(conversationId,user.id,...attachmentIds).all();if((pending.results||[]).length!==attachmentIds.length)return json({error:"One or more attachments are invalid or already sent."},400,origin);}const now=new Date().toISOString(),recipients=await env.DB.prepare("SELECT cm.user_id,cm.muted_until,u.username FROM conversation_members cm JOIN users u ON u.id=cm.user_id WHERE cm.conversation_id=? AND cm.user_id<>?").bind(conversationId,user.id).all();for(const recipient of recipients.results||[]){const blocked=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,recipient.user_id,recipient.user_id,user.id).first();if(blocked)return json({error:"Messaging is unavailable with one or more members of this conversation."},403,origin);}const row=await env.DB.prepare("INSERT INTO messages (conversation_id,sender_id,body,created_at) VALUES (?,?,?,?) RETURNING id").bind(conversationId,user.id,message,now).first();if(attachmentIds.length)await env.DB.batch(attachmentIds.map(id=>env.DB.prepare("UPDATE message_attachments SET message_id=? WHERE id=? AND conversation_id=? AND uploader_id=? AND message_id IS NULL").bind(row.id,id,conversationId,user.id)));await env.DB.prepare("UPDATE conversations SET updated_at=? WHERE id=?").bind(now,conversationId).run();queueMessageNotifications(ctx,env,recipients.results||[],user,conversationId,message,attachmentIds.length);
-      publishMessageLive(ctx,env,[user.id,...(recipients.results||[]).map(x=>x.user_id)],{
-       kind:"message",action:"created",conversationId,messageId:row.id
-     });
-     return json({id:row.id},201,origin);}
-  const messageMatch=url.pathname.match(/^\/api\/messages\/(\d+)$/);if(messageMatch&&request.method==="PATCH"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const id=Number(messageMatch[1]);const row=await env.DB.prepare("SELECT id,sender_id,deleted_at,conversation_id FROM messages WHERE id=?").bind(id).first();if(!row||row.deleted_at||row.sender_id!==user.id)return json({error:"Message not found."},404,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const message=String(body.body||"").trim();if(!validText(message,4000))return json({error:"Message must be 1-4000 characters."},400,origin);await env.DB.prepare("UPDATE messages SET body=?,edited_at=? WHERE id=?").bind(message,new Date().toISOString(),id).run();notifyConversationLive(ctx,env,row.conversation_id,"message",id,"edited");return json({ok:true},200,origin);}
-  if(messageMatch&&request.method==="DELETE"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const id=Number(messageMatch[1]);const row=await env.DB.prepare("SELECT id,sender_id,deleted_at,conversation_id FROM messages WHERE id=?").bind(id).first();if(!row||row.deleted_at||row.sender_id!==user.id)return json({error:"Message not found."},404,origin);await env.DB.prepare("UPDATE messages SET deleted_at=? WHERE id=?").bind(new Date().toISOString(),id).run();notifyConversationLive(ctx,env,row.conversation_id,"message",id,"deleted");return json({ok:true},200,origin);}
+  if(conversationMatch&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
+    if(!(await rateLimit(env,request,"message",60,60,user.id)))return json({error:"Message rate limit reached. Slow down."},429,origin);
+    const conversationId=Number(conversationMatch[1]);
+    const membership=await env.DB.prepare("SELECT conversation_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id).first();
+    if(!membership)return json({error:"Conversation not found."},404,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const message=String(body.body||"").trim();
+    const attachmentIds=Array.isArray(body.attachment_ids)?[...new Set(body.attachment_ids.map(Number).filter(x=>Number.isSafeInteger(x)&&x>0))]:[];
+    if(attachmentIds.length>10)return json({error:"Attach no more than 10 files to one message."},400,origin);
+    if(!message&&attachmentIds.length===0)return json({error:"Write a message or attach a file."},400,origin);
+    if(message&&!validText(message,4000))return json({error:"Message must be 1-4000 characters."},400,origin);
+    if(attachmentIds.length){
+      const pending=await env.DB.prepare("SELECT id FROM message_attachments WHERE conversation_id=? AND uploader_id=? AND message_id IS NULL AND id IN ("+attachmentIds.map(()=>"?").join(",")+")").bind(conversationId,user.id,...attachmentIds).all();
+      if((pending.results||[]).length!==attachmentIds.length)return json({error:"One or more attachments are invalid or already sent."},400,origin);
+    }
+    const recipients=await env.DB.prepare("SELECT cm.user_id,cm.muted_until,u.username FROM conversation_members cm JOIN users u ON u.id=cm.user_id WHERE cm.conversation_id=? AND cm.user_id<>?").bind(conversationId,user.id).all();
+    for(const recipient of recipients.results||[]){
+      const blocked=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,recipient.user_id,recipient.user_id,user.id).first();
+      if(blocked)return json({error:"Messaging is unavailable with one or more members of this conversation."},403,origin);
+    }
+    const now=new Date().toISOString();
+    // Membership is checked again in the INSERT itself. If the sender was
+    // removed after the early check, D1 inserts no row and no notification is sent.
+    const row=await env.DB.prepare(
+      "INSERT INTO messages (conversation_id,sender_id,body,created_at) "+
+      "SELECT ?,?,?,? WHERE EXISTS (SELECT 1 FROM conversation_members WHERE conversation_id=? AND user_id=?) RETURNING id"
+    ).bind(conversationId,user.id,message,now,conversationId,user.id).first();
+    if(!row)return json({error:"Conversation not found."},404,origin);
+    if(attachmentIds.length)await env.DB.batch(attachmentIds.map(id=>env.DB.prepare("UPDATE message_attachments SET message_id=? WHERE id=? AND conversation_id=? AND uploader_id=? AND message_id IS NULL").bind(row.id,id,conversationId,user.id)));
+    await env.DB.prepare("UPDATE conversations SET updated_at=? WHERE id=?").bind(now,conversationId).run();
+    // Refresh recipients after the write so a member removed during the
+    // request cannot receive a stale notification or realtime event.
+    const currentRecipients=await env.DB.prepare("SELECT cm.user_id,cm.muted_until,u.username FROM conversation_members cm JOIN users u ON u.id=cm.user_id WHERE cm.conversation_id=? AND cm.user_id<>? AND cm.joined_after_message_id<?").bind(conversationId,user.id,row.id).all();
+    queueMessageNotifications(ctx,env,currentRecipients.results||[],user,conversationId,message,attachmentIds.length);
+    publishMessageLive(ctx,env,[user.id,...(currentRecipients.results||[]).map(x=>x.user_id)],{
+      kind:"message",action:"created",conversationId,messageId:row.id
+    });
+    return json({id:row.id},201,origin);
+  }
+  const messageMatch=url.pathname.match(/^\/api\/messages\/(\d+)$/);
+  if(messageMatch&&request.method==="PATCH"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
+    const id=Number(messageMatch[1]);
+    const row=await env.DB.prepare(
+      "SELECT m.id,m.sender_id,m.deleted_at,m.conversation_id FROM messages m "+
+      "JOIN conversation_members cm ON cm.conversation_id=m.conversation_id AND cm.user_id=? "+
+      "WHERE m.id=? AND m.id>cm.joined_after_message_id"
+    ).bind(user.id,id).first();
+    if(!row||row.deleted_at||row.sender_id!==user.id)return json({error:"Message not found."},404,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const message=String(body.body||"").trim();if(!validText(message,4000))return json({error:"Message must be 1-4000 characters."},400,origin);
+    const changed=await env.DB.prepare(
+      "UPDATE messages SET body=?,edited_at=? WHERE id=? AND sender_id=? AND deleted_at IS NULL "+
+      "AND EXISTS (SELECT 1 FROM conversation_members cm WHERE cm.conversation_id=messages.conversation_id AND cm.user_id=? AND messages.id>cm.joined_after_message_id)"
+    ).bind(message,new Date().toISOString(),id,user.id,user.id).run();
+    if(Number(changed.meta?.changes||0)!==1)return json({error:"Message not found."},404,origin);
+    notifyConversationLive(ctx,env,row.conversation_id,"message",id,"edited");return json({ok:true},200,origin);
+  }
+  if(messageMatch&&request.method==="DELETE"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
+    const id=Number(messageMatch[1]);
+    const row=await env.DB.prepare(
+      "SELECT m.id,m.sender_id,m.deleted_at,m.conversation_id FROM messages m "+
+      "JOIN conversation_members cm ON cm.conversation_id=m.conversation_id AND cm.user_id=? "+
+      "WHERE m.id=? AND m.id>cm.joined_after_message_id"
+    ).bind(user.id,id).first();
+    if(!row||row.deleted_at||row.sender_id!==user.id)return json({error:"Message not found."},404,origin);
+    const changed=await env.DB.prepare(
+      "UPDATE messages SET deleted_at=? WHERE id=? AND sender_id=? AND deleted_at IS NULL "+
+      "AND EXISTS (SELECT 1 FROM conversation_members cm WHERE cm.conversation_id=messages.conversation_id AND cm.user_id=? AND messages.id>cm.joined_after_message_id)"
+    ).bind(new Date().toISOString(),id,user.id,user.id).run();
+    if(Number(changed.meta?.changes||0)!==1)return json({error:"Message not found."},404,origin);
+    notifyConversationLive(ctx,env,row.conversation_id,"message",id,"deleted");return json({ok:true},200,origin);
+  }
   if(messageMatch&&request.method==="POST"){if(!(await rateLimit(env,request,"message-report",10,600)))return json({error:"Report rate limit reached. Slow down."},429,origin);const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const id=Number(messageMatch[1]);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const reason=String(body.reason||"").trim();if(!validText(reason,1000))return json({error:"A report reason is required."},400,origin);const row=await env.DB.prepare("SELECT id,conversation_id,deleted_at FROM messages WHERE id=?").bind(id).first();if(!row||row.deleted_at)return json({error:"Message not found."},404,origin);const member=await env.DB.prepare("SELECT joined_after_message_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(row.conversation_id,user.id).first();if((!member||Number(row.id)<=Number(member.joined_after_message_id))&&!isAdmin(user))return json({error:"Message not found."},404,origin);await env.DB.prepare("INSERT INTO message_reports (message_id,reporter_id,reason,created_at) VALUES (?,?,?,?)").bind(id,user.id,reason,new Date().toISOString()).run();return json({ok:true},201,origin);}
   if(url.pathname==="/api/messages/conversations/mute"&&request.method==="POST"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const id=Number(body.conversation_id);if(!Number.isInteger(id)||id<1)return json({error:"Valid conversation is required."},400,origin);const membership=await env.DB.prepare("SELECT conversation_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(id,user.id).first();if(!membership)return json({error:"Conversation not found."},404,origin);const minutes=Number(body.minutes??0);if(!Number.isInteger(minutes)||minutes<0||minutes>43200)return json({error:"Mute duration must be between 0 and 43,200 minutes."},400,origin);const until=minutes?new Date(Date.now()+minutes*60000).toISOString():null;await env.DB.prepare("UPDATE conversation_members SET muted_until=? WHERE conversation_id=? AND user_id=?").bind(until,id,user.id).run();return json({ok:true,muted_until:until},200,origin);}
   if(url.pathname==="/api/moderation/message-reports"&&request.method==="GET"){const user=await requireUser(request,env);if(!isModerator(user))return json({error:"Moderator access required."},403,origin);const status=["open","resolved","dismissed"].includes(url.searchParams.get("status"))?url.searchParams.get("status"):"open";const {results}=await env.DB.prepare("SELECT r.id,r.message_id,r.reason,r.status,r.created_at,r.resolved_at,r.reporter_id,ru.username AS reporter_username,m.sender_id,su.username AS sender_username,su.display_name AS sender_display_name,m.body,m.conversation_id FROM message_reports r JOIN messages m ON m.id=r.message_id AND m.deleted_at IS NULL JOIN users su ON su.id=m.sender_id JOIN users ru ON ru.id=r.reporter_id WHERE r.status=? ORDER BY r.created_at ASC LIMIT 250").bind(status).all();return json({reports:results},200,origin);}
