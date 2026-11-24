@@ -15,4 +15,5 @@ async function load(reset){
  cursor=data.next;$("more").hidden=!cursor;$("status").textContent=$("results").children.length+" studies displayed.";
  }catch(e){if(g===generation)$("status").textContent=e.message}finally{if(g===generation){busy=false;$("more").disabled=false}}
 }
+const initial=new URLSearchParams(location.search).get("category");if(initial&&Array.from($("category").options).some(o=>o.value===initial))$("category").value=initial;
 $("search").onsubmit=e=>{e.preventDefault();load(true)};$("more").onclick=()=>load(false);load(true);
