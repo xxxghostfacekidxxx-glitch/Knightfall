@@ -2357,6 +2357,52 @@ For complex questions, organize the answer clearly and provide actionable detail
     await audit(env,actor,"god_bot_profile_update","bot",null,{bot_key:match[1],fields:Object.keys(payload)});
     return json({ok:true,bot_key:match[1],posting_enabled:false},200,origin);
   }
+  if(url.pathname.startsWith("/api/force-academy/")){
+    const match=url.pathname.match(/^\/api\/force-academy\/(jedi|sith)\/(enrollment|progress|journal)(?:\/(\d+))?$/);
+    if(!match)return json({error:"Unknown academy endpoint"},404,origin);
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in required"},401,origin);
+    const [,path,resource,rawId]=match,db=env.DB,uid=user.id,method=request.method;
+    if(rawId&&(resource!=="journal"||!Number.isSafeInteger(Number(rawId))||Number(rawId)<1))return json({error:"Invalid record"},400,origin);
+    if(method!=="GET"){
+      if(!await rateLimit(env,request,"force-academy-write",60,3600,uid))return json({error:"Too many requests"},429,origin);
+      if(method==="POST"&&!String(request.headers.get("content-type")||"").toLowerCase().startsWith("application/json"))return json({error:"JSON required"},415,origin);
+    }
+    const enrolled=()=>db.prepare("SELECT enrolled_at FROM force_academy_enrollments WHERE user_id=? AND path=?").bind(uid,path).first();
+    if(resource==="enrollment"){
+      if(method==="POST")await db.prepare("INSERT OR IGNORE INTO force_academy_enrollments(user_id,path) VALUES (?,?)").bind(uid,path).run();
+      else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
+      return json({enrollment:await enrolled()},200,origin,{"cache-control":"no-store"});
+    }
+    if(!await enrolled())return json({error:"Enroll first"},403,origin);
+    if(resource==="progress"){
+      if(method==="POST"){
+        let body;try{body=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
+        if(!Number.isInteger(body?.lesson)||body.lesson<1||body.lesson>7)return json({error:"Invalid lesson"},400,origin);
+        await db.prepare("INSERT OR IGNORE INTO force_academy_progress(user_id,path,lesson) VALUES (?,?,?)").bind(uid,path,body.lesson).run();
+      }else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
+      const result=await db.prepare("SELECT lesson,completed_at FROM force_academy_progress WHERE user_id=? AND path=? ORDER BY lesson").bind(uid,path).all();
+      return json({lessons:result.results||[]},200,origin,{"cache-control":"no-store"});
+    }
+    if(resource==="journal"){
+      if(method==="GET"&&!rawId){
+        const before=url.searchParams.get("before"),cursor=before===null?Number.MAX_SAFE_INTEGER:Number(before);
+        if(!Number.isSafeInteger(cursor)||cursor<1)return json({error:"Invalid cursor"},400,origin);
+        const result=await db.prepare("SELECT id,body,created_at,updated_at FROM force_academy_journal WHERE user_id=? AND path=? AND id<? ORDER BY id DESC LIMIT 20").bind(uid,path,cursor).all();
+        return json({entries:result.results||[]},200,origin,{"cache-control":"no-store"});
+      }
+      if(method==="POST"&&!rawId){
+        let body;try{body=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
+        if(typeof body?.body!=="string"||!body.body.trim()||body.body.length>12000)return json({error:"Invalid journal entry"},400,origin);
+        await db.prepare("INSERT INTO force_academy_journal(user_id,path,body) VALUES (?,?,?)").bind(uid,path,body.body.trim()).run();
+        return json({ok:true},201,origin,{"cache-control":"no-store"});
+      }
+      if(method==="DELETE"&&rawId){
+        const result=await db.prepare("DELETE FROM force_academy_journal WHERE id=? AND user_id=? AND path=?").bind(Number(rawId),uid,path).run();
+        return json({ok:Number(result.meta?.changes)===1},Number(result.meta?.changes)===1?200:404,origin,{"cache-control":"no-store"});
+      }
+    }
+    return json({error:"Method not allowed"},405,origin);
+  }
   if(url.pathname==="/api/auth/me"&&request.method==="GET")return json({user:await getUser(request,env)},200,origin);
   if(url.pathname==="/api/auth/logout"&&request.method==="POST"){const token=getCookie(request,SESSION_COOKIE);if(token)await env.SESSIONS.delete(`session:${token}`);return json({ok:true},200,origin,{"set-cookie":sessionCookie("",0)});}
   if(url.pathname==="/api/account/deletion-request"&&request.method==="POST"){
