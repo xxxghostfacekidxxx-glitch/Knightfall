@@ -86,25 +86,30 @@ setTool('draw');redraw();
 
 // FreeTexPacker-style atlas, with shelf packing and JSON metadata export.
 const atlasCanvas=$('lab-atlas-canvas'),atlasCtx=atlasCanvas.getContext('2d');
-let atlasImages=[],atlasResult=null;
+let atlasImages=[],atlasResult=null,atlasGeneration=0;
 const atlasNames=new Set();
 $('lab-atlas-input').addEventListener('change',async event=>{
  const files=Array.from(event.target.files||[]);
+ const generation=++atlasGeneration;atlasResult=null;
  if(files.length+atlasImages.length>48)return say('lab-atlas-status','Maximum 48 images per atlas.');
  for(const f of files){
   try{
    const image=await loadRaster(f);
+   if(generation!==atlasGeneration)return;
+   if(atlasImages.length>=48)throw Error('Maximum 48 images per atlas.');
    if(image.naturalWidth>2044||image.naturalHeight>2044)throw Error('Atlas images must be 2044px or smaller.');
    atlasImages.push({name:uniqueAtlasName(f.name,atlasNames),image,width:image.naturalWidth,height:image.naturalHeight});
   }catch(e){say('lab-atlas-status',e.message)}
  }
+ if(generation!==atlasGeneration)return;
  event.target.value='';atlasResult=null;
  $('lab-atlas-list').replaceChildren(...atlasImages.map(item=>{const li=document.createElement('li');li.textContent=item.name+' · '+item.width+'×'+item.height;return li}));
  if(atlasImages.length)say('lab-atlas-status',atlasImages.length+' local images ready. Click Pack sprites.');
 });
-$('lab-atlas-clear').addEventListener('click',()=>{atlasImages=[];atlasNames.clear();atlasResult=null;$('lab-atlas-list').replaceChildren();atlasCanvas.width=1;atlasCanvas.height=1;say('lab-atlas-status','Atlas cleared.')});
+$('lab-atlas-clear').addEventListener('click',()=>{atlasGeneration++;atlasImages=[];atlasNames.clear();atlasResult=null;$('lab-atlas-list').replaceChildren();atlasCanvas.width=1;atlasCanvas.height=1;say('lab-atlas-status','Atlas cleared.')});
 $('lab-atlas-pack').addEventListener('click',()=>{
  try{
+  atlasResult=null;
   atlasResult=packAtlas(atlasImages.map(({name,width,height,image})=>({name,width,height,image})));
   atlasCanvas.width=atlasResult.width;atlasCanvas.height=atlasResult.height;atlasCtx.clearRect(0,0,atlasCanvas.width,atlasCanvas.height);
   for(const f of atlasResult.frames)atlasCtx.drawImage(f.image,f.x,f.y);
