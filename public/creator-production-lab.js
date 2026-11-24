@@ -54,7 +54,7 @@ function setTool(id){
 root.querySelectorAll('[data-pixel-tool]').forEach(button=>button.addEventListener('click',()=>setTool(button.dataset.pixelTool)));
 sprite.style.touchAction='none';
 sprite.addEventListener('pointerdown',event=>{if(event.button!==0||event.isPrimary===false)return;const position=pixel(event);if(!position)return;event.preventDefault();sprite.setPointerCapture(event.pointerId);if(tool!=='pick')saveUndo();drawing=true;paint(...position)});
-sprite.addEventListener('pointermove',event=>{if(!drawing||!['draw','erase'].includes(tool))return;const position=pixel(event);if(position)paint(...position)});
+sprite.addEventListener('pointermove',event=>{if(event.isPrimary===false||!drawing||!['draw','erase'].includes(tool))return;const position=pixel(event);if(position)paint(...position)});
 for(const type of ['pointerup','pointercancel','lostpointercapture'])sprite.addEventListener(type,()=>{drawing=false});
 $('lab-pixel-undo').addEventListener('click',()=>{const state=history.pop();if(!state)return;frame=state.frame;frames[frame]=state.bytes;redraw()});
 $('lab-pixel-new').addEventListener('click',()=>{if(frames.length>=12)return say('lab-status','Maximum 12 animation frames.');frames.splice(frame+1,0,frames[frame].slice());frame++;history=[];redraw()});
@@ -146,11 +146,11 @@ const placeTile=e=>{
  if(!position)return;
  const [x,y]=position;
  if(tile===4)tiles=tiles.map(n=>n===4?0:n);
- tiles[y*tw+x]=tile;drawTiles();
+ mapGeneration++;tiles[y*tw+x]=tile;drawTiles();
 };
 tileCanvas.style.touchAction='none';
 tileCanvas.addEventListener('pointerdown',e=>{if(e.button!==0||e.isPrimary===false)return;e.preventDefault();tileDown=true;tileCanvas.setPointerCapture(e.pointerId);placeTile(e)});
-tileCanvas.addEventListener('pointermove',e=>{if(tileDown)placeTile(e)});
+tileCanvas.addEventListener('pointermove',e=>{if(e.isPrimary!==false&&tileDown)placeTile(e)});
 for(const type of ['pointerup','pointercancel','lostpointercapture'])tileCanvas.addEventListener(type,()=>tileDown=false);
 $('lab-tile-brush').addEventListener('change',e=>{tile=Number(e.target.value);drawTiles()});
 $('lab-tile-reset').addEventListener('click',()=>{
