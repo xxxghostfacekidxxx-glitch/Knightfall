@@ -33,7 +33,7 @@ for(const game of manifest.games){
   if(suspect.test(content))flags.push({file:rel,type:"possible-third-party-game-name",note:"Name similarity is not proof of copied code"});
   if(/(?:©|copyright|licensed under|SPDX-License-Identifier|based on|adapted from|forked from)/i.test(content))flags.push({file:rel,type:"copyright-or-derivation-marker"});
  }
- const notices=files.filter(f=>/(?:^|\/)(?:LICENSE|NOTICE|COPYING|SOURCE|CREDITS)(?:\.[^/]*)?$/i.test(f)).map(f=>relative(root,f).replaceAll("\\","/"));
+ const notices=files.filter(f=>/(?:^|\/)(?:LICENSE|LICENCE|NOTICE|COPYING|SOURCE|CREDITS|ATTRIBUTION|AUTHORS)(?:[-_.][^/]*)?$/i.test(f)).map(f=>relative(root,f).replaceAll("\\","/"));
  evidence.push({id:game.id,engine:game.engine,files:files.length,media:sources.length,notices,flags,review:"unverified",conclusion:"No ownership or license clearance established by automated scanning"});
 }
 const catalog=await readFile(join(root,"chaos-cartridge.html"),"utf8");
@@ -47,8 +47,9 @@ for(const game of manifest.games){
  if(/rebrand|emblem|provenance|cataloged/i.test(status))priorityReview.push({id:game.id,status,reason:"Rebranding or catalog registration is not evidence of independently authored code"});
 }
 
-const output={schema:3,statusCounts,priorityReview,duplicateMedia,runtimeDependencies,generatedAt:new Date().toISOString(),games:evidence.length,flaggedGames:evidence.filter(e=>e.flags.length).length,unverifiedGames:evidence.length,externalCatalogLinks:[...new Set(external)],disclaimer:"Static inspection only. Originality requires author/source history, asset provenance, license review, and independent gameplay QA.",entries:evidence};
+const missingNotices=evidence.filter(e=>e.notices.length===0).map(e=>e.id);
+const output={schema:4,missingNotices,statusCounts,priorityReview,duplicateMedia,runtimeDependencies,generatedAt:new Date().toISOString(),games:evidence.length,flaggedGames:evidence.filter(e=>e.flags.length).length,unverifiedGames:evidence.length,externalCatalogLinks:[...new Set(external)],disclaimer:"Static inspection only. Originality requires author/source history, asset provenance, license review, and independent gameplay QA.",entries:evidence};
 if(report){await mkdir(resolve("artifacts"),{recursive:true});await writeFile(resolve("artifacts/arcade-provenance.json"),JSON.stringify(output,null,2)+"\n")}
 console.log("Arcade provenance inventory:",output.games,"games;",output.flaggedGames,"flagged for review;",output.unverifiedGames,"not independently cleared;",duplicateMedia.length,"duplicate asset groups;",runtimeDependencies.length,"external runtime assets;",priorityReview.length,"priority provenance reviews");
 for(const e of evidence.filter(e=>e.flags.length))console.log("REVIEW",e.id,e.flags.map(f=>f.type).join(", "));
-if(strict&&evidence.some(e=>e.flags.length))process.exitCode=1;
+if(strict&&(missingNotices.length||evidence.some(e=>e.flags.length)))process.exitCode=1;
