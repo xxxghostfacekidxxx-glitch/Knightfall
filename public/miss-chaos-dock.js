@@ -60,10 +60,12 @@ function obstacles(){
  return result;
 }
 function anchorBox(position,width,height){
- const widthWindow=Math.max(280,window.innerWidth),heightWindow=Math.max(360,window.innerHeight);
+ const visual=window.visualViewport;
+ const widthWindow=Math.max(280,visual?.width||window.innerWidth),heightWindow=Math.max(240,visual?.height||window.innerHeight);
  const gap=window.innerWidth<500?10:16;
- const left=position.endsWith('r')?widthWindow-width-gap:gap;
- const top=position.startsWith('b')?heightWindow-height-gap:headerBottom+gap;
+ const offsetLeft=visual?.offsetLeft||0,offsetTop=visual?.offsetTop||0;
+ const left=offsetLeft+(position.endsWith('r')?widthWindow-width-gap:gap);
+ const top=position.startsWith('b')?offsetTop+heightWindow-height-gap:Math.max(offsetTop,headerBottom)+gap;
  return {left,top,right:left+width,bottom:top+height,width,height};
 }
 function score(position,width,height,blocked){
@@ -92,6 +94,11 @@ function recalculate(){
  const bounds=header?.getBoundingClientRect();
  headerBottom=bounds && bounds.top<=1 ? Math.max(0,bounds.bottom) : 0;
  root.style.setProperty('--mc-header-bottom',headerBottom+'px');
+ const visual=window.visualViewport;
+ // The layout viewport can extend behind the on-screen keyboard. Keep the dock
+ // inside the actually visible area and re-score when pinch zoom moves it.
+ root.style.setProperty('--mc-visual-top',(visual?.offsetTop||0)+'px');
+ root.style.setProperty('--mc-visual-bottom-clearance',Math.max(0,window.innerHeight-((visual?.offsetTop||0)+(visual?.height||window.innerHeight)))+'px');
  if(preference!=='auto'){apply(preference);return}
  const dock=button('mc-dock');if(!dock)return;
  const oldPosition=root.dataset.dock||'br';
@@ -136,6 +143,10 @@ restore.addEventListener('click',()=>{
    button('miss-chaos-launcher')?.click();
 });
 for(const event of ['scroll','resize','orientationchange'])window.addEventListener(event,schedule,{passive:true});
+if(window.visualViewport){
+ window.visualViewport.addEventListener('resize',schedule,{passive:true});
+ window.visualViewport.addEventListener('scroll',schedule,{passive:true});
+}
 // Native fullscreen hides document siblings. Place the dock inside a fullscreen
 // GAME CONTAINER instead of deliberately hiding it from the player.
 function syncFullscreenDock(){

@@ -1729,6 +1729,19 @@
       "featured": false
     },
     {
+      "id": "cinder-sequence",
+      "title": "Cinder Sequences",
+      "route": "/arcade/cinder-sequence.html",
+      "description": "Draw and discard to forge three same-sigil cards in consecutive ranks. Race Lydibug, Butters or Eddie to three sequences.",
+      "genre": "Card",
+      "collection": "family",
+      "device": "touch",
+      "source": "",
+      "notes": "Original Knightfall game with local bot opponents.",
+      "links": [],
+      "featured": false
+    },
+    {
       "id": "cards-against-chaos",
       "title": "Cards Against Chaos",
       "route": "/arcade/hosted/cards-against-chaos/index.html",

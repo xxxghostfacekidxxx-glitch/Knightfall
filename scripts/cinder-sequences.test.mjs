@@ -26,3 +26,9 @@ test("bot moves preserve card conservation",()=>{
   assert.equal(cards.length,36);assert.equal(new Set(cards.map(c=>c.id)).size,36);
  }
 });
+test("an exhausted table ends cleanly with the current score leader",()=>{
+ const s=newGame(2);s.deck=[];s.discard=[];s.scores=[2,1];s.phase="draw";
+ assert.equal(move(s,0,{type:"draw",from:"deck"}),true);
+ assert.equal(s.phase,"finished");
+ assert.equal(s.winner,0);
+});

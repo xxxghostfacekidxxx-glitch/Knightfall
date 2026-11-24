@@ -12,6 +12,11 @@ test("public capability dispatches to actual search handler", async () => {
   const result = await executeChaosCapability({name:"site.search",input:{query:"Miss Chaos"},handlers:publicChaosHandlers,usedCalls:0});
   assert.ok(result.results.some(page=>page.url==="/miss-chaos.html"));
 });
+test("Miss Chaos finds the original game rules and asynchronous card tables",()=>{
+ assert.equal(searchPublicPages({query:"Cinder Sequences rules"})[0]?.url,"/arcade/cinder-sequence.html");
+ assert.equal(searchPublicPages({query:"Cards Against Chaos invite friends"})[0]?.url,"/arcade/hosted/cards-against-chaos/index.html");
+ assert.equal(searchPublicPages({query:"take a turn later"})[0]?.url,"/arcade/async-play.html");
+});
 test("no matches returns empty results", () => {
   assert.deepEqual(searchPublicPages({query:"zzzz-no-matches"}),[]);
 });

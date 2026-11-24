@@ -27,7 +27,10 @@ export function move(state,seat,action,rng=Math.random){
    const top=state.discard.pop();state.deck=shuffleDeck(state.discard,rng);state.discard=[top];
   }
   const source=action.from==="discard"?state.discard:action.from==="deck"?state.deck:null;
-  if(!source?.length)return false;
+  if(!source?.length){
+   if(!state.deck.length&&!state.discard.length){state.winner=state.scores.indexOf(Math.max(...state.scores));state.phase="finished";return true;}
+   return false;
+  }
   hand.push(source.pop());state.phase="meld";return true;
  }
  if(action.type==="meld"&&state.phase==="meld"){

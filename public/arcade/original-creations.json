@@ -32,6 +32,16 @@
       "status": "committed; browser QA pending"
     },
     {
+      "id": "cinder-sequence",
+      "name": "Cinder Sequences",
+      "genre": "Card",
+      "sprites": [],
+      "notes": "Original 2–4 seat meld-and-discard card game with three local bot opponents.",
+      "engine": "/arcade/cinder-sequence.html",
+      "assets": [],
+      "status": "playable original build; browser QA planned"
+    },
+    {
       "id": "cinder-drift",
       "name": "Cinder Drift",
       "genre": "Shooter",

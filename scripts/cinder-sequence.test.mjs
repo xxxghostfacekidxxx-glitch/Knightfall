@@ -1,8 +1,41 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {createDeck,newSequenceGame,sequenceMove,canPlace,sequenceScore} from "../public/arcade/cinder-sequence.mjs";
-test("deck has 48 unique cards",()=>{const d=createDeck();assert.equal(d.length,48);assert.equal(new Set(d.map(c=>c.id)).size,48)});
-test("invalid moves do not mutate state",()=>{const s=newSequenceGame(()=>0);const before=JSON.stringify(s);assert.equal(sequenceMove(s,{type:"place",chain:9,cardId:s.hand[0].id}),null);assert.equal(JSON.stringify(s),before)});
-test("chains require consecutive ranks and different suits",()=>{const c={rank:4,suit:"ash"};assert.equal(canPlace({rank:5,suit:"moon"},[c]),true);assert.equal(canPlace({rank:5,suit:"ash"},[c]),false);assert.equal(canPlace({rank:6,suit:"moon"},[c]),false)});
-test("discarding conserves all cards and eventually ends game",()=>{let s=newSequenceGame(()=>0);while(s.status==="playing"){s=sequenceMove(s,{type:"discard",cardId:s.hand[0].id});assert.equal(s.deck.length+s.hand.length+s.discard.length+s.chains.flat().length,48)}assert.equal(s.status,"lost");assert.equal(s.turn,48)});
-test("completed chains score bonuses and win",()=>{let s=newSequenceGame();const deck=createDeck();s={...s,deck:[],hand:deck.filter(c=>c.rank<=3),chains:[[deck[0],deck[13],deck[26]],[deck[12],deck[25],deck[38]],[deck[24],deck[37],deck[2]]],status:"playing"};s.hand=[deck[39],deck[3],deck[15]];for(const [i,c] of s.hand.entries())s=sequenceMove(s,{type:"place",chain:i,cardId:c.id});assert.equal(s.status,"won");assert.equal(sequenceScore(s),195)});
+import {createDeck,newGame,validSequence,move} from "../public/arcade/cinder-sequences.mjs";
+
+test("the Cinder Sequences game uses one unique 36-card rules deck",()=>{
+ const deck=createDeck();
+ assert.equal(deck.length,36);
+ assert.equal(new Set(deck.map(card=>card.id)).size,36);
+});
+
+test("illegal melds and out-of-turn moves leave the table unchanged",()=>{
+ const state=newGame(2,()=>0.5),before=JSON.stringify(state);
+ assert.equal(move(state,1,{type:"draw",from:"deck"}),false);
+ assert.equal(JSON.stringify(state),before);
+ assert.equal(move(state,0,{type:"draw",from:"deck"}),true);
+ const afterDraw=JSON.stringify(state);
+ assert.equal(move(state,0,{type:"meld",ids:["ash-1","ash-2","moon-3"]}),false);
+ assert.equal(JSON.stringify(state),afterDraw);
+});
+
+test("sequences require same sigil and three consecutive ranks",()=>{
+ const deck=createDeck();
+ assert.equal(validSequence([deck[0],deck[1],deck[2]]),true);
+ assert.equal(validSequence([deck[0],deck[1],deck[10]]),false);
+ assert.equal(validSequence([deck[0],deck[9],deck[18]]),false);
+});
+
+test("a legal meld scores, refills the hand and ends at three sequences",()=>{
+ const state=newGame(2,()=>0.5);
+ state.hands[0]=createDeck().slice(0,5);
+ assert.equal(move(state,0,{type:"draw",from:"deck"}),true);
+ assert.equal(move(state,0,{type:"meld",ids:["ash-1","ash-2","ash-3"]}),true);
+ assert.equal(state.scores[0],1);
+ assert.equal(state.hands[0].length,6);
+ state.scores[0]=2;
+ state.phase="meld";
+ state.hands[0]=createDeck().slice(0,3);
+ assert.equal(move(state,0,{type:"meld",ids:["ash-1","ash-2","ash-3"]}),true);
+ assert.equal(state.winner,0);
+ assert.equal(state.phase,"finished");
+});

@@ -5,6 +5,9 @@
 export const PUBLIC_PAGES = Object.freeze([
   {title:"Miss Chaos",url:"/miss-chaos.html",terms:"ai assistant conversation history memory voice astrology"},
   {title:"Chaos Cartridge",url:"/chaos-cartridge.html",terms:"arcade games game catalog play puzzle action"},
+  {title:"Cards Against Chaos",url:"/arcade/hosted/cards-against-chaos/index.html",terms:"original card game four seats friends invite asynchronous async turn-based turn based judge answer black prompt white cards"},
+  {title:"Cinder Sequences",url:"/arcade/cinder-sequence.html",terms:"original card game rules sequence meld draw discard sigils ash ember moon thorn bots AI opponents"},
+  {title:"Async Arcade Matches",url:"/arcade/async-play.html",terms:"play turn later asynchronous async challenge friend board card game connect four take a turn"},
   {title:"Chaosphere Messenger",url:"/chaosphere.html",terms:"messaging chat messages inbox friends messenger"},
   {title:"Members",url:"/members.html",terms:"find people search members profiles community"},
   {title:"Forums",url:"/community.html",terms:"forum discussions topics comments madhouse"},
@@ -74,7 +77,7 @@ export function foundryLessonResponse(topic){
 export function searchPublicPages(input={}) {
   const query=String(input.query||"").trim().toLowerCase().slice(0,160);
   if(!query)return [];
-  const stop=new Set(["where","is","what","which","find","page","link","please","the","and","for","are","can","how","site","website","show","me","our","you","your","with","about","no"]);
+  const stop=new Set(["where","is","what","which","find","page","link","please","the","and","for","are","can","how","site","website","show","me","our","you","your","with","about","no","matches"]);
   const tokens=[...new Set(query.match(/[a-z0-9]{2,}/g)||[])].filter(t=>!stop.has(t)).slice(0,12);
   if(!tokens.length)return [];
   return PUBLIC_PAGES.map(page=>{
