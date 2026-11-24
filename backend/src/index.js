@@ -2652,14 +2652,37 @@ For complex questions, organize the answer clearly and provide actionable detail
     ]);
     if(blockedByMe||blockedMe)return json({error:"Friend requests aren't available for this member."},403,origin);
     const existing=await env.DB.prepare("SELECT id,requester_id,addressee_id,status FROM friend_requests WHERE (requester_id=? AND addressee_id=?) OR (requester_id=? AND addressee_id=?) ORDER BY id DESC LIMIT 1").bind(user.id,target.id,target.id,user.id).first();
-    if(existing?.status==="accepted")return json({error:"You're already friends."},409,origin);
-    if(existing?.status==="pending"&&existing.requester_id===user.id)return json({error:"Friend request already sent."},409,origin);
+    if(existing?.status==="accepted")return json({ok:true,status:"accepted",request_id:existing.id},200,origin);
+    if(existing?.status==="pending"&&existing.requester_id===user.id)return json({ok:true,status:"pending",request_id:existing.id},200,origin);
     const now=new Date().toISOString();
     if(existing?.status==="pending"&&existing.addressee_id===user.id){await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=?").bind(now,existing.id).run();await createNotification(env,{userId:target.id,actorId:user.id,kind:"friend_accepted",targetType:"user",targetId:user.id,title:"Friend request accepted",body:"@"+user.username+" accepted your friend request.",url:"/profile.html?username="+encodeURIComponent(user.username)});return json({ok:true,status:"accepted",request_id:existing.id},200,origin);}
+    let requestId=existing?.id||null;
     if(existing)await env.DB.prepare("UPDATE friend_requests SET requester_id=?,addressee_id=?,status='pending',created_at=?,updated_at=? WHERE id=?").bind(user.id,target.id,now,now,existing.id).run();
-    else await env.DB.prepare("INSERT INTO friend_requests (requester_id,addressee_id,status,created_at,updated_at) VALUES (?,?,'pending',?,?)").bind(user.id,target.id,now,now).run();
+    else{
+      try{
+        const created=await env.DB.prepare("INSERT INTO friend_requests (requester_id,addressee_id,status,created_at,updated_at) VALUES (?,?,'pending',?,?) RETURNING id").bind(user.id,target.id,now,now).first();
+        requestId=created?.id||null;
+      }catch(error){
+        if(!String(error).includes("UNIQUE"))throw error;
+        const raced=await env.DB.prepare("SELECT id,requester_id,addressee_id,status FROM friend_requests WHERE (requester_id=? AND addressee_id=?) OR (requester_id=? AND addressee_id=?) ORDER BY id DESC LIMIT 1").bind(user.id,target.id,target.id,user.id).first();
+        if(!raced)throw error;
+        requestId=raced.id;
+        if(raced.status==="accepted")return json({ok:true,status:"accepted",request_id:requestId},200,origin);
+        if(raced.status==="pending"&&raced.requester_id===user.id)return json({ok:true,status:"pending",request_id:requestId},200,origin);
+        if(raced.status==="pending"&&raced.addressee_id===user.id){
+          const accepted=await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=? AND status='pending' AND addressee_id=?").bind(now,requestId,user.id).run();
+          if(Number(accepted.meta?.changes||0)===1)await createNotification(env,{userId:target.id,actorId:user.id,kind:"friend_accepted",targetType:"user",targetId:user.id,title:"Friend request accepted",body:"@"+user.username+" accepted your friend request.",url:"/profile.html?username="+encodeURIComponent(user.username)});
+          else{
+            const latest=await env.DB.prepare("SELECT status FROM friend_requests WHERE id=?").bind(requestId).first();
+            if(latest?.status!=="accepted")return json({error:"That friend request changed before it could be accepted. Refresh and try again."},409,origin);
+          }
+          return json({ok:true,status:"accepted",request_id:requestId},200,origin);
+        }
+        await env.DB.prepare("UPDATE friend_requests SET requester_id=?,addressee_id=?,status='pending',created_at=?,updated_at=? WHERE id=?").bind(user.id,target.id,now,now,requestId).run();
+      }
+    }
     await createNotification(env,{userId:target.id,actorId:user.id,kind:"friend_request",targetType:"user",targetId:user.id,title:"New friend request",body:"@"+user.username+" sent you a friend request.",url:"/friends.html"});
-    return json({ok:true,status:"pending"},201,origin);
+    return json({ok:true,status:"pending",request_id:requestId},existing?200:201,origin);
   }
   const friendRequestMatch=url.pathname.match(/^\/api\/friends\/([0-9]+)$/);
   if(friendRequestMatch&&request.method==="PATCH"){
