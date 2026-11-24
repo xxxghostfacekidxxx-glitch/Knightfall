@@ -2380,7 +2380,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     return json({ok:Number(result.meta?.changes)===1,status},Number(result.meta?.changes)===1?200:409,origin,{"cache-control":"no-store"});
   }
   if(url.pathname.startsWith("/api/force-academy/")){
-    const match=url.pathname.match(/^\/api\/force-academy\/(jedi|sith)\/(enrollment|progress|journal|exam|credential|mentorship)(?:\/(\d+))?$/);
+    const match=url.pathname.match(/^\/api\/force-academy\/(jedi|sith)\/(enrollment|progress|journal|exam|credential|mentorship|mentors)(?:\/(\d+))?$/);
     if(!match)return json({error:"Unknown academy endpoint"},404,origin);
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in required"},401,origin);
     const [,path,resource,rawId]=match,db=env.DB,uid=user.id,method=request.method;
@@ -2404,6 +2404,20 @@ For complex questions, organize the answer clearly and provide actionable detail
       }else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
       const result=await db.prepare("SELECT lesson,completed_at FROM force_academy_progress WHERE user_id=? AND path=? ORDER BY lesson").bind(uid,path).all();
       return json({lessons:result.results||[]},200,origin,{"cache-control":"no-store"});
+    }
+    if(resource==="mentors"){
+      if(method==="POST"){
+        let b;try{b=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
+        if(typeof b?.listed!=="boolean")return json({error:"Invalid preference"},400,origin);
+        if(b.listed){
+          const qualified=await db.prepare("SELECT COUNT(DISTINCT stage) AS n FROM force_academy_exams WHERE user_id=? AND path=? AND status='passed'").bind(uid,path).first();
+          if(Number(qualified?.n)!==4)return json({error:"Mentor rank required"},403,origin);
+          await db.prepare("INSERT OR IGNORE INTO force_mentor_directory(user_id,path) VALUES (?,?)").bind(uid,path).run();
+        }else await db.prepare("DELETE FROM force_mentor_directory WHERE user_id=? AND path=?").bind(uid,path).run();
+      }else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
+      const own=await db.prepare("SELECT 1 AS listed FROM force_mentor_directory WHERE user_id=? AND path=?").bind(uid,path).first();
+      const result=await db.prepare("SELECT d.user_id,u.username FROM force_mentor_directory d JOIN users u ON u.id=d.user_id WHERE d.path=? AND d.user_id<>? AND u.status='active' AND (SELECT COUNT(DISTINCT stage) FROM force_academy_exams e WHERE e.user_id=d.user_id AND e.path=d.path AND e.status='passed')=4 ORDER BY u.username LIMIT 100").bind(path,uid).all();
+      return json({listed:!!own,mentors:result.results||[]},200,origin,{"cache-control":"no-store"});
     }
     if(resource==="mentorship"){
       if(method==="POST"){
