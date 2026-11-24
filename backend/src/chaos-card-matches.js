@@ -232,6 +232,27 @@ async function notifyTurns(env,createNotification,row,actorId,previous=null){
    "Your four-player card table is ready. Take your turn whenever you like.",actorId);
  }
 }
+async function readBoundedMatchJson(request,maxBytes){
+ const declared=Number(request.headers.get("content-length")||0);
+ if(Number.isFinite(declared)&&declared>maxBytes)return {error:"Request body is too large.",status:413};
+ if(!request.body)return {error:"Invalid JSON.",status:400};
+ const reader=request.body.getReader(),chunks=[];let size=0;
+ try{
+  while(true){
+   const {done,value}=await reader.read();if(done)break;
+   size+=value.byteLength;
+   if(size>maxBytes){await reader.cancel();return {error:"Request body is too large.",status:413};}
+   chunks.push(value);
+  }
+ }catch{return {error:"Invalid JSON.",status:400};}
+ const bytes=new Uint8Array(size);let offset=0;
+ for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+ try{
+  const body=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes));
+  if(!body||typeof body!=="object"||Array.isArray(body))throw Error("Expected an object");
+  return {body};
+ }catch{return {error:"Invalid JSON.",status:400};}
+}
 export async function handleChaosCardMatches(request,env,url,{getUser,json,rateLimit,origin,createNotification}){
  if(!url.pathname.startsWith(ROOT))return null;
  const user=await getUser(request,env);
@@ -263,8 +284,7 @@ export async function handleChaosCardMatches(request,env,url,{getUser,json,rateL
   return reply({matches});
  }
  if(url.pathname===ROOT&&request.method==="POST"){
-  let body;try{body=await request.json();}catch{return reply({error:"Invalid JSON."},400);}
-  if(!body||typeof body!=="object"||Array.isArray(body))return reply({error:"Invalid match setup."},400);
+  const parsed=await readBoundedMatchJson(request,8_000);if(parsed.error)return reply({error:parsed.error},parsed.status);const body=parsed.body;
   const raw=body.opponent_ids===undefined?(body.opponent_id==null?[]:[body.opponent_id]):body.opponent_ids;
   if(!Array.isArray(raw)||raw.length>3)return reply({error:"Choose between one and four human players."},400);
   const invited=raw.map(Number);
@@ -319,8 +339,7 @@ export async function handleChaosCardMatches(request,env,url,{getUser,json,rateL
  }
  if(!action&&request.method==="GET")return reply({match:visibleChaosMatch(row,user.id)});
  if(request.method!=="POST")return reply({error:"Method not allowed."},405);
- let body;try{body=await request.json();}catch{return reply({error:"Invalid JSON."},400);}
- if(!body||typeof body!=="object"||Array.isArray(body))return reply({error:"Invalid card action."},400);
+ const parsed=await readBoundedMatchJson(request,2_000);if(parsed.error)return reply({error:parsed.error},parsed.status);const body=parsed.body;
  if(!Number.isSafeInteger(body.version)||body.version!==Number(row.version))
   return reply({error:"Table changed. Refresh and try again.",conflict:true},409);
  let status=row.status;
