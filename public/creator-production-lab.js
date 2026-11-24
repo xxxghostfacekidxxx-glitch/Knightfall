@@ -126,7 +126,7 @@ $('lab-atlas-json').addEventListener('click',()=>{
 
 // Tiled-style local tilemap painter with compatible JSON and companion tile PNG.
 const tileCanvas=$('lab-tile-canvas'),tileCtx=tileCanvas.getContext('2d');
-let tw=20,th=12,tiles=new Array(tw*th).fill(0),tile=1,tileDown=false;
+let mapGeneration=0,tw=20,th=12,tiles=new Array(tw*th).fill(0),tile=1,tileDown=false;
 const tileSize=32;
 const drawTiles=()=>{
  tileCanvas.width=tw*tileSize;tileCanvas.height=th*tileSize;
@@ -156,15 +156,16 @@ $('lab-tile-brush').addEventListener('change',e=>{tile=Number(e.target.value);dr
 $('lab-tile-reset').addEventListener('click',()=>{
  const w=Number($('lab-map-width').value),h=Number($('lab-map-height').value);
  if(!Number.isInteger(w)||w<4||w>40||!Number.isInteger(h)||h<4||h>30)return say('lab-tile-status','Map must be 4–40 wide and 4–30 high.');
- tw=w;th=h;tiles=new Array(tw*th).fill(0);drawTiles();say('lab-tile-status','New blank map ready.');
+ mapGeneration++;tw=w;th=h;tiles=new Array(tw*th).fill(0);drawTiles();say('lab-tile-status','New blank map ready.');
 });
 $('lab-tile-import').addEventListener('change',async event=>{
  const f=event.target.files?.[0];if(!f)return;
+ const generation=++mapGeneration;
  try{
   if(f.size>512*1024)throw Error('Map JSON must be smaller than 512 KB.');
-  const imported=parseTiledMap(await f.text());tw=imported.width;th=imported.height;tiles=imported.tiles;
+  const imported=parseTiledMap(await f.text());if(generation!==mapGeneration)return;tw=imported.width;th=imported.height;tiles=imported.tiles;
   $('lab-map-width').value=tw;$('lab-map-height').value=th;drawTiles();say('lab-tile-status','Imported compatible Tiled JSON locally.');
- }catch(error){say('lab-tile-status',error.message)}event.target.value='';
+ }catch(error){say('lab-tile-status',error.message)}if(event.target.files?.[0]===f)event.target.value='';
 });
 $('lab-tile-json').addEventListener('click',()=>{
  download(new Blob([JSON.stringify(makeTiledMap(tiles,tw,th),null,2)],{type:'application/json'}),'knightfall-map.json');
