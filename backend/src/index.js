@@ -2380,7 +2380,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     return json({ok:Number(result.meta?.changes)===1,status},Number(result.meta?.changes)===1?200:409,origin,{"cache-control":"no-store"});
   }
   if(url.pathname.startsWith("/api/force-academy/")){
-    const match=url.pathname.match(/^\/api\/force-academy\/(jedi|sith)\/(enrollment|progress|journal|exam)(?:\/(\d+))?$/);
+    const match=url.pathname.match(/^\/api\/force-academy\/(jedi|sith)\/(enrollment|progress|journal|exam|credential)(?:\/(\d+))?$/);
     if(!match)return json({error:"Unknown academy endpoint"},404,origin);
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in required"},401,origin);
     const [,path,resource,rawId]=match,db=env.DB,uid=user.id,method=request.method;
@@ -2404,6 +2404,13 @@ For complex questions, organize the answer clearly and provide actionable detail
       }else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
       const result=await db.prepare("SELECT lesson,completed_at FROM force_academy_progress WHERE user_id=? AND path=? ORDER BY lesson").bind(uid,path).all();
       return json({lessons:result.results||[]},200,origin,{"cache-control":"no-store"});
+    }
+    if(resource==="credential"){
+      if(method!=="GET")return json({error:"Method not allowed"},405,origin);
+      const result=await db.prepare("SELECT stage,reviewed_at FROM force_academy_exams WHERE user_id=? AND path=? AND status='passed' ORDER BY stage").bind(uid,path).all();
+      const records=result.results||[],ranks=path==="jedi"?["student","foundation graduate","practitioner","steward","mentor"]:["student","foundation graduate","adept","ascendant","mentor"];
+      let level=0;while(level<4&&records.some(e=>e.stage===level+1))level++;
+      return json({path,rank:ranks[level],level,earned_at:records.find(e=>e.stage===level)?.reviewed_at||null,issuer:"Knightfall Force Academy",recognition:"Internal community recognition; not accredited"},200,origin,{"cache-control":"no-store"});
     }
     if(resource==="exam"){
       if(rawId)return json({error:"Invalid record"},400,origin);
