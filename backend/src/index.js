@@ -999,6 +999,14 @@ async function handleMediaAlbums(request,env,origin,url){
 }
 
 
+function decodeNewsText(value){
+  const named={amp:"&",quot:'"',apos:"'",lt:"<",gt:">",nbsp:" ",ndash:"–",mdash:"—",lsquo:"‘",rsquo:"’",ldquo:"“",rdquo:"”",hellip:"…"};
+  return String(value||"").replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,"$1").replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi,(all,key)=>{
+    if(key[0]!=="#")return named[key.toLowerCase()]??all;
+    const n=key[1].toLowerCase()==="x"?parseInt(key.slice(2),16):Number(key.slice(1));
+    return Number.isInteger(n)&&n>0&&n<=0x10ffff&&!(n>=0xd800&&n<=0xdfff)?String.fromCodePoint(n):all;
+  }).trim();
+}
 // Curated source feeds only; never copy article bodies or publish without a valid link.
 async function publishScheduledBotNews(env) {
   const feeds=[
@@ -1019,7 +1027,7 @@ async function publishScheduledBotNews(env) {
     const xml=(await response.text()).slice(0,300000);
     const item=xml.match(/<item\b[^>]*>([\s\S]*?)<\/item>/i)?.[1];
     if(!item)continue;
-    const decode=v=>v.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,"$1").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&lt;/g,"<").replace(/&gt;/g,">").trim();
+    const decode=decodeNewsText;
     const title=decode(item.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]||"").slice(0,160);
     let link=decode(item.match(/<link[^>]*>([\s\S]*?)<\/link>/i)?.[1]||"");
     let parsed;try{parsed=new URL(link)}catch{continue}
@@ -1029,7 +1037,7 @@ async function publishScheduledBotNews(env) {
     for(const param of [...parsed.searchParams.keys()])if(/^(utm_|fbclid$|gclid$)/i.test(param))parsed.searchParams.delete(param);
     parsed.searchParams.sort();link=parsed.href;
     if(await env.DB.prepare("SELECT 1 FROM god_bot_news_log WHERE bot_key=? AND article_url=?").bind(bot.bot_key,link).first())continue;
-    const category=await env.DB.prepare("SELECT id FROM categories WHERE slug=?").bind(feed.key==="order-66-6"?"star-wars":"music").first();
+    const category=await env.DB.prepare("SELECT id FROM categories WHERE slug=?").bind(feed.key==="order-66-6"?"star-wars-news":"music").first();
     if(!category)continue;
     // D1 batch is transactional. The thread insert is conditional on the
     // immediately preceding claim, so a competing scheduler cannot publish twice.
@@ -2316,9 +2324,9 @@ For complex questions, organize the answer clearly and provide actionable detail
       await audit(env,actor,"god_bot_reply","post",result.id,{bot_key:bot.bot_key,thread_id:id});
       return json({ok:true,id:result.id,thread_id:id},201,origin);
     }
-    const title=String(input.title||"").trim();
+    const title=decodeNewsText(input.title);
     if(!validText(title,160))return json({error:"Title required (max 160)"},400,origin);
-    const category=await env.DB.prepare("SELECT id,slug FROM categories WHERE slug=?").bind(bot.bot_key==="order-66-6"?"star-wars":"music").first();
+    const category=await env.DB.prepare("SELECT id,slug FROM categories WHERE slug=?").bind(bot.bot_key==="order-66-6"?"star-wars-news":"music").first();
     if(!category)return json({error:"Bot category not deployed"},409,origin);
     const slug=await uniqueSlug(title,env);
     const result=await env.DB.prepare("INSERT INTO threads(category_id,user_id,title,slug,body,created_at,updated_at) VALUES(?,?,?,?,?,?,?) RETURNING id").bind(category.id,bot.user_id,title,slug,"AI Bot · Automated account\n\n"+content,now,now).first();
