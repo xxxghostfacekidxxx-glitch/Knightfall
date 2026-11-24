@@ -9,6 +9,8 @@ import {handleMascotPassport,publicPassportBadges} from './mascot-passport.js';
 import {handleMascotRoom} from './mascot-room-api.js';
 import {PET_AFFINITIES,affinityFor,stagesFor,growthFor} from './mascot-lineages.js';
 import {handleMascotFurniture,FURNITURE} from './mascot-furniture.js';
+import {petLevel} from './mascot-progression.js';
+import {handleMascotArena} from './mascot-arena.js';
 export const SPECIES_PERSONALITIES=Object.freeze({
  boogie:['Defiant','Midnight music, pink lightning and impossible schemes','A neon-goth mouse-fox with a razor-sharp grin and a heart hidden beneath the noise.'],
  moxie:['Curious','Moonlight and abandoned lanterns','A velvet-winged scout who finds the beauty in forgotten places.'],
@@ -158,7 +160,7 @@ async function walletFor(env,user){
 }
 const shop=Object.values(PET_ACCESSORIES);
 
-export function petLevel(experience){return 1+Math.floor(Math.sqrt(Math.max(0,Number(experience)||0)/40));}
+export {petLevel} from './mascot-progression.js';
 export function petVitals(pet,now=Date.now()){
  const ago=(stamp,baseline=pet.adopted_at)=>{
   const t=Date.parse(stamp||baseline);
@@ -312,6 +314,8 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
  }
  const user=await getUser(request,env);
  if(!user)return respond({error:'Sign in to use your mascot sanctuary.'},401);
+ const arenaResponse=await handleMascotArena(request,env,url,user,{json,rateLimit,origin});
+ if(arenaResponse)return arenaResponse;
  const adventureResponse=await handleMascotAdventures(request,env,url,user,{json,rateLimit,origin,petLevel,speciesCatalog:MASCOT_SPECIES});
  if(adventureResponse)return adventureResponse;
  const passportResponse=await handleMascotPassport(request,env,url,user,{json,rateLimit,origin});

@@ -20,7 +20,7 @@
   </header>
   <nav class="sanctuary-directory" aria-label="Sanctuary sections">
     <a href="#my-pets-section">Collection</a><a href="#companion-bestiary">Bestiary</a><a href="#adoption-gallery">Adoption</a>
-    <a href="/mascot-room.html">Pet rooms</a><a href="#sanctuary-expeditions">Expeditions</a>
+    <a href="/mascot-room.html">Pet rooms</a><a href="#sanctuary-expeditions">Expeditions</a><a href="#pet-arena">Pet arena</a>
     <a href="#sanctuary-hatchery">Hatchery</a><a href="#sanctuary-wardrobe">Wardrobe</a>
     <a href="#species-trials-title">Trials</a><a href="#cinder-catch">Cinder Catch</a><a href="#sanctuary-passport">Passport</a>
   </nav>
@@ -62,6 +62,12 @@
    <p class="pet-shop-intro">Every misfit has a story. Start up to three missions per day (reset at midnight UTC), complete the care challenge and earn 75 Cinders plus a Rescue Shell. No paywalls or random rewards.</p>
    <p id="adventure-status" role="status" aria-live="polite">Loading missions…</p>
    <div id="pet-quests" class="pet-quest-grid"></div>
+  </section>
+  <section id="pet-arena" class="pet-arena" aria-labelledby="pet-arena-title">
+   <div class="sanctuary-section-heading"><h2 id="pet-arena-title">⚔️ Sanctuary Arena · PvE</h2><span>One bout per companion each day</span></div>
+   <p class="pet-shop-intro">Challenge a server-resolved rival. Every result earns capped practice XP; there are no paid boosts, random prizes or Cinders in the arena.</p>
+   <p id="pet-arena-status" role="status" aria-live="polite">Loading arena roster…</p>
+   <div id="pet-arena-roster" class="pet-arena-roster"></div>
   </section>
   <section id="cinder-catch" aria-labelledby="cinder-catch-heading">
    <div class="sanctuary-section-heading"><h2 id="cinder-catch-heading">🎮 Cinder Catch · Pet Activity</h2><span>Touch · Keyboard · Desktop</span></div>
@@ -120,6 +126,7 @@
 <script src="/mascot-pet-life.js?v=20261111" defer></script>
 <script src="/mascot-sanctuary-deck.js?v=20261103-sanctuary-deck1&rev=20261111" defer></script>
 <script src="/mascot-adventures.js?v=20261102-adventures1" defer></script>
+<script src="/mascot-arena.js?v=20261124-arena1" defer></script>
 <script src="/mascot-passport.js?v=20261102-passport1" defer></script>
 <script src="/mascot-cinder-catch.js?v=20261102-cinder-catch2" defer></script>
 </body></html>

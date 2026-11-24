@@ -228,3 +228,9 @@
 .pet-moments li{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;color:#ddd4e5;font-size:.73rem}
 .pet-moments li time{color:#a99caf;font-size:.68rem;white-space:nowrap}
 .pet-moments-empty{color:#a99caf;font-size:.75rem}
+.pet-arena-roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:.8rem}
+.pet-arena-card{display:grid;grid-template-columns:64px minmax(0,1fr);align-items:center;gap:.7rem;padding:.85rem;border:1px solid #a56abd45;border-radius:16px;background:linear-gradient(145deg,#201a31,#12101d)}
+.pet-arena-card img{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 0 10px #e85cb240)}
+.pet-arena-card strong,.pet-arena-card small{display:block}.pet-arena-card small{margin-top:.2rem;color:#c3b5cf;font-size:.76rem}
+.pet-arena-card button{grid-column:1/-1;min-height:44px;border:1px solid #c34d9c;border-radius:12px;background:#4b2454;color:#fff;font-weight:800}
+.pet-arena-card button:disabled{opacity:.6}.pet-arena-card .arena-win{color:#c9ff83}.pet-arena-card .arena-loss{color:#ff9aa9}
