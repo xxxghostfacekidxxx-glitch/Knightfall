@@ -105,3 +105,13 @@ test("suspended and deleted identities lose every capability even if their old r
   }
  }
 });
+
+test("suspended bot creators cannot inherit stale slot or advanced-builder grants",()=>{
+ const grant={title:"Digital Creator",unlimited_slots:1,advanced_builder:1};
+ for(const status of ["suspended","deleted"]){
+  const policy=botAccessPolicy({role:"member",public_title:"Digital Creator",status},0,grant);
+  assert.equal(policy.unlimited,false,status);
+  assert.equal(policy.limit,5,status);
+  assert.equal(policy.advanced_builder,false,status);
+ }
+});
