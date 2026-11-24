@@ -13,8 +13,12 @@ if(modules){
  if(new Set(paths).size!==paths.length)errors.push('Duplicate submodule path');
 }
 const ignored=await read('.gitignore')||'';
+const rules=ignored.split(/\r?\n/).map(x=>x.trim()).filter(x=>x&&!x.startsWith('#'));
+for(const pattern of ['.dev.vars*','.env*','toolkit/vendor/']){
+ if(!rules.includes(pattern))errors.push('Missing required ignore rule: '+pattern);
+}
 for(const pattern of ['node_modules/','.env','*.log']){
- if(!ignored.includes(pattern))warnings.push('Consider ignoring '+pattern);
+ if(!rules.some(rule=>rule===pattern||rule===pattern+'*'))warnings.push('Consider ignoring '+pattern);
 }
 console.log(JSON.stringify({gitmodules:modules?'present':'absent',errors,warnings},null,2));
 if(errors.length)process.exitCode=1;
