@@ -21,6 +21,7 @@ import { handleChaosForgeVision } from "./chaos-forge-vision.js";
 import { inspectChaosChatImage } from "./chaos-chat-image.js";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { shouldDeliverStoredNotification } from "./notification-delivery-policy.js";
+import { hasBlockedGroupPair } from "../message-group-policy.mjs";
 import { checkTurnstile } from "./turnstile.js";
 import { handleBotSlotShop } from "./member-shop-checkout.js";
 import { handleStripeBilling } from "./stripe-billing.js";
@@ -2707,9 +2708,11 @@ For complex questions, organize the answer clearly and provide actionable detail
     let payload;try{payload=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
     const id=Number(friendRequestMatch[1]),action=String(payload?.action||"");
     if(!Number.isSafeInteger(id)||id<1||!["accept","decline"].includes(action))return json({error:"Invalid friend request action."},400,origin);
-    const row=await env.DB.prepare("SELECT id,requester_id FROM friend_requests WHERE id=? AND addressee_id=? AND status='pending'").bind(id,user.id).first();
-    if(!row)return json({error:"Incoming friend request not found."},404,origin);
     const now=new Date().toISOString(),status=action==="accept"?"accepted":"declined";
+    const row=await env.DB.prepare("SELECT id,requester_id,status FROM friend_requests WHERE id=? AND addressee_id=?").bind(id,user.id).first();
+    if(!row)return json({error:"Incoming friend request not found."},404,origin);
+    if(row.status===status)return json({ok:true,status,already_handled:true},200,origin);
+    if(row.status!=="pending")return json({error:"That friend request was already handled.",status:row.status},409,origin);
     const changed=await env.DB.prepare("UPDATE friend_requests SET status=?,updated_at=? WHERE id=? AND addressee_id=? AND status='pending'").bind(status,now,id,user.id).run();
     if(Number(changed.meta?.changes||0)!==1){
       const latest=await env.DB.prepare("SELECT status FROM friend_requests WHERE id=? AND addressee_id=?").bind(id,user.id).first();
@@ -2854,8 +2857,9 @@ For complex questions, organize the answer clearly and provide actionable detail
       if(Number(count?.n||0)+add.length>50)return json({error:"Groups can have up to 50 members."},400,origin);
       if(!add.length)return json({error:"Those members are already in this group."},400,origin);
       const addIds=add.map(x=>Number(x.id));
-      const blocked=await env.DB.prepare("SELECT 1 AS ok FROM user_blocks WHERE (blocker_id=? AND blocked_id IN ("+addIds.map(()=>"?").join(",")+")) OR (blocked_id=? AND blocker_id IN ("+addIds.map(()=>"?").join(",")+")) LIMIT 1").bind(user.id,...addIds,user.id,...addIds).first();
-      if(blocked)return json({error:"Messaging is restricted between you and one or more selected members."},403,origin);
+      const currentMembers=await env.DB.prepare("SELECT user_id FROM conversation_members WHERE conversation_id=?").bind(conversationId).all();
+      const memberIds=[...(currentMembers.results||[]).map(row=>row.user_id),...addIds];
+      if(await hasBlockedGroupPair(env.DB,memberIds))return json({error:"Messaging is restricted between members of this group."},403,origin);
       const now=new Date().toISOString();
       await env.DB.batch(add.map(x=>env.DB.prepare(
         "INSERT INTO conversation_members (conversation_id,user_id,joined_at,last_read_at,joined_after_message_id) "+
@@ -2893,8 +2897,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     const active=(found.results||[]).filter(x=>x.status==="active");
     if(active.length!==usernames.length)return json({error:"One or more members were not found or are not active."},400,origin);
     const ids=active.map(x=>Number(x.id));
-    const blocked=await env.DB.prepare("SELECT 1 AS ok FROM user_blocks WHERE (blocker_id=? AND blocked_id IN ("+ids.map(()=>"?").join(",")+")) OR (blocked_id=? AND blocker_id IN ("+ids.map(()=>"?").join(",")+")) LIMIT 1").bind(user.id,...ids,user.id,...ids).first();
-    if(blocked)return json({error:"A group cannot be created because messaging is restricted between some members."},403,origin);
+    if(await hasBlockedGroupPair(env.DB,[user.id,...ids]))return json({error:"A group cannot be created because messaging is restricted between some members."},403,origin);
     const now=new Date().toISOString();
     const conv=await env.DB.prepare("INSERT INTO conversations (kind,name,created_by,created_at,updated_at) VALUES ('group',?,?,?,?) RETURNING id").bind(name,user.id,now,now).first();
     const members=[user.id,...ids];

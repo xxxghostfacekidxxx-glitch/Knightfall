@@ -17,6 +17,17 @@ test("mutual friend requests accept atomically and notify only the winning trans
   assert.ok(branch.indexOf("changed.meta")<branch.indexOf("createNotification("));
 });
 
+test("retries of an already handled incoming request return its final state",()=>{
+  const start=backend.indexOf('if(friendRequestMatch&&request.method==="PATCH"){');
+  const end=backend.indexOf('if(url.pathname==="/api/discover"',start);
+  assert.ok(start>=0&&end>start,"expected the friend request action route");
+  const route=backend.slice(start,end);
+  assert.match(route,/SELECT id,requester_id,status FROM friend_requests WHERE id=\? AND addressee_id=\?/);
+  assert.match(route,/if\(row\.status===status\)return json\(\{ok:true,status,already_handled:true\},200,origin\)/);
+  assert.match(route,/if\(row\.status!=="pending"\)return json\(\{error:"That friend request was already handled\.",status:row\.status\},409,origin\)/);
+  assert.match(route,/latest\?\.status===status\)return json\(\{ok:true,status,already_handled:true\},200,origin\)/);
+});
+
 test("friend reloads ignore stale responses and request actions lock while pending",()=>{
   assert.match(inbox,/friendData=\{friends:\[\],incoming:\[\],outgoing:\[\]\},friendLoadToken=0/);
   assert.match(inbox,/const token=\+\+friendLoadToken,d=await api\("\/api\/friends"\);if\(token!==friendLoadToken\)return/);
