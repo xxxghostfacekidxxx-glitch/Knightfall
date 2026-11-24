@@ -159,3 +159,26 @@ test('malformed JSON on public assistance route fails without storing a ticket',
  assert.equal(response.status,400);
  assert.equal(f.store.size,0);
 });
+
+test('staff mutations reject foreign origins, oversized bodies and malformed payloads without writes',async()=>{
+ const f=fixture({admin:true});
+ const created=await f.route('/api/privacy/deletion-assistance','POST',good);
+ const id=(await created.json()).request_id;
+ const path='/api/admin/privacy-assistance/'+id;
+ const key=PRIVACY_HELP_PREFIX+id;
+ const before=JSON.stringify(f.store.get(key));
+ const expiry=JSON.stringify(f.expirations.get(key));
+ for(const [origin,type,body,status] of [
+  ['https://evil.example','application/json','{"status":"reviewing"}',403],
+  ['https://ash-fall.com','text/plain','{"status":"reviewing"}',415],
+  ['https://ash-fall.com','application/json',JSON.stringify({status:'reviewing',operator_note:'x'.repeat(3000)}),413],
+  ['https://ash-fall.com','application/json','{',400],
+  ['https://ash-fall.com','application/json','null',400],
+  ['https://ash-fall.com','application/json','[]',400]
+ ]){
+  const req=new Request('https://api.ash-fall.com'+path,{method:'PATCH',headers:{Origin:origin,'content-type':type},body});
+  assert.equal((await handlePrivacyAssistance(req,f.env,new URL(req.url),f.deps)).status,status);
+  assert.equal(JSON.stringify(f.store.get(key)),before);
+  assert.equal(JSON.stringify(f.expirations.get(key)),expiry);
+ }
+});
