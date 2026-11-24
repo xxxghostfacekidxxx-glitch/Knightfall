@@ -2380,7 +2380,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     return json({ok:Number(result.meta?.changes)===1,status},Number(result.meta?.changes)===1?200:409,origin,{"cache-control":"no-store"});
   }
   if(url.pathname.startsWith("/api/force-academy/")){
-    const match=url.pathname.match(/^\/api\/force-academy\/(jedi|sith)\/(enrollment|progress|journal|exam|credential)(?:\/(\d+))?$/);
+    const match=url.pathname.match(/^\/api\/force-academy\/(jedi|sith)\/(enrollment|progress|journal|exam|credential|mentorship)(?:\/(\d+))?$/);
     if(!match)return json({error:"Unknown academy endpoint"},404,origin);
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in required"},401,origin);
     const [,path,resource,rawId]=match,db=env.DB,uid=user.id,method=request.method;
@@ -2404,6 +2404,22 @@ For complex questions, organize the answer clearly and provide actionable detail
       }else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
       const result=await db.prepare("SELECT lesson,completed_at FROM force_academy_progress WHERE user_id=? AND path=? ORDER BY lesson").bind(uid,path).all();
       return json({lessons:result.results||[]},200,origin,{"cache-control":"no-store"});
+    }
+    if(resource==="mentorship"){
+      if(method==="POST"){
+        let b;try{b=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
+        let result;
+        if(b?.action==="request"){
+          if(!Number.isSafeInteger(b.mentor_id)||b.mentor_id<1||b.mentor_id===uid)return json({error:"Invalid mentor"},400,origin);
+          result=await db.prepare("INSERT OR IGNORE INTO force_academy_mentorship(learner_id,mentor_id,path) SELECT ?,?,? WHERE (SELECT COUNT(DISTINCT stage) FROM force_academy_exams WHERE user_id=? AND path=? AND status='passed')=4 AND EXISTS(SELECT 1 FROM users WHERE id=? AND status='active')").bind(uid,b.mentor_id,path,b.mentor_id,path,b.mentor_id).run();
+        }else if(["accept","decline","end"].includes(b?.action)&&Number.isSafeInteger(b.id)&&b.id>0){
+          if(b.action==="end")result=await db.prepare("UPDATE force_academy_mentorship SET status='ended',updated_at=CURRENT_TIMESTAMP WHERE id=? AND path=? AND (learner_id=? OR mentor_id=?) AND status IN ('pending','active')").bind(b.id,path,uid,uid).run();
+          else result=await db.prepare("UPDATE force_academy_mentorship SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND path=? AND mentor_id=? AND status='pending'").bind(b.action==="accept"?"active":"declined",b.id,path,uid).run();
+        }else return json({error:"Invalid mentorship action"},400,origin);
+        if(Number(result.meta?.changes)!==1)return json({error:"Relationship unavailable or already changed"},409,origin);
+      }else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
+      const result=await db.prepare("SELECT id,learner_id,mentor_id,status,created_at,updated_at FROM force_academy_mentorship WHERE path=? AND (learner_id=? OR mentor_id=?) ORDER BY id DESC LIMIT 50").bind(path,uid,uid).all();
+      return json({relationships:result.results||[],member_id:uid},200,origin,{"cache-control":"no-store"});
     }
     if(resource==="credential"){
       if(method!=="GET")return json({error:"Method not allowed"},405,origin);
