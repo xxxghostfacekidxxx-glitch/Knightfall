@@ -98,7 +98,9 @@ function recalculate(){
  // The layout viewport can extend behind the on-screen keyboard. Keep the dock
  // inside the actually visible area and re-score when pinch zoom moves it.
  root.style.setProperty('--mc-visual-top',(visual?.offsetTop||0)+'px');
+ root.style.setProperty('--mc-visual-left',(visual?.offsetLeft||0)+'px');
  root.style.setProperty('--mc-visual-bottom-clearance',Math.max(0,window.innerHeight-((visual?.offsetTop||0)+(visual?.height||window.innerHeight)))+'px');
+ root.style.setProperty('--mc-visual-right-clearance',Math.max(0,window.innerWidth-((visual?.offsetLeft||0)+(visual?.width||window.innerWidth)))+'px');
  if(preference!=='auto'){apply(preference);return}
  const dock=button('mc-dock');if(!dock)return;
  const oldPosition=root.dataset.dock||'br';
