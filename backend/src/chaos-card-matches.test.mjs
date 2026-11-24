@@ -218,3 +218,13 @@ test("pending invitations do not reveal game prompt or result",()=>{
  assert.equal(match.result,null);
  assert.deepEqual(match.hand,[]);
 });
+
+test("table blocks apply to non-host human pairs and ignore expired invitations",async()=>{
+ const state=table(4);
+ const queries=[];
+ const env={DB:{prepare(sql){assert.match(sql,/user_blocks/);return {bind(...ids){queries.push(ids);return {async first(){return ids[0]===24&&ids[1]===31?{ok:1}:null;}}}}}}};
+ assert.equal(await hasTableBlock(env,state,24),true);
+ assert.ok(queries.some(ids=>ids[0]===24&&ids[1]===31));
+ state.invite_status[2]="expired";
+ assert.equal(await hasTableBlock(env,state,24),false);
+});
