@@ -82,7 +82,7 @@
         if(sort==="newest")return new Date(b.created_at||b.updated_at)-new Date(a.created_at||a.updated_at);
         return Number(b.pinned||0)-Number(a.pinned||0)||new Date(b.updated_at)-new Date(a.updated_at);
       });
-      threadsEl.innerHTML=visible.length?visible.map(t=>'<article class="thread-card"><div><a href="/thread.html?id='+encodeURIComponent(t.id)+'">'+escapeHtml(t.title)+'</a><p>'+escapeHtml(t.category_name)+' · '+escapeHtml(t.display_name||t.username||"Member")+' · '+escapeHtml(formatDate(t.updated_at))+'</p></div><span>'+Number(t.reply_count||0)+' '+(Number(t.reply_count||0)===1?"reply":"replies")+'</span></article>').join(""):"<p class='empty-state'>"+(query?"No threads match that search. Try another phrase.":"No threads here yet. Be the first to make a little noise.")+"</p>";
+      threadsEl.innerHTML=visible.length?visible.map(t=>'<article class="thread-card"><div><a href="/thread.html?id='+encodeURIComponent(t.id)+'">'+escapeHtml(t.title)+'</a><p>'+escapeHtml(t.category_name)+' · '+escapeHtml(t.display_name||t.username||"Member")+(Number(t.automated)===1?' · AI Bot':'')+' · '+escapeHtml(formatDate(t.updated_at))+'</p></div><span>'+Number(t.reply_count||0)+' '+(Number(t.reply_count||0)===1?"reply":"replies")+'</span></article>').join(""):"<p class='empty-state'>"+(query?"No threads match that search. Try another phrase.":"No threads here yet. Be the first to make a little noise.")+"</p>";
     }
     async function loadCategories(){
       const r=await fetch(API+"/api/categories",{credentials:"include",cache:"no-store"});
