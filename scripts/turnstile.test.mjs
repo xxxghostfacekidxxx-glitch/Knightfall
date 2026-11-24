@@ -5,8 +5,8 @@ import { checkTurnstile } from "../backend/src/turnstile.js";
 const request = new Request("https://api.ash-fall.com/api/auth/register");
 const enabled = { TURNSTILE_SECRET_KEY: "test-secret", TURNSTILE_SITE_KEY: "test-site" };
 
-test("challenge is optional until both configuration values exist", async () => {
-  assert.equal(await checkTurnstile({}, request, ""), true);
+test("missing challenge configuration fails closed", async () => {
+  assert.equal(await checkTurnstile({}, request, ""), false);
 });
 
 test("configured challenge rejects missing tokens without network access", async () => {
