@@ -121,7 +121,7 @@ for (const filename of ["chaos-glitch.css","miss-chaos-presence.css"]){
   assert.doesNotMatch(read("../public/"+filename),/#(?:ff55d8|c6ff45)/i,
     "Miss Chaos character skin must use its own colors, not Gravewave");
 }
-assert.match(nav,/chat-bubbles\.css\?v=20261124-original-emojis1/);
+assert.match(nav,/chat-bubbles\.css\?v=20261124-original-emojis2/);
 assert.match(read("../public/miss-chaos-presence.js"),/miss-chaos-presence\.css\?v=20\d{6}-[a-z0-9-]+/);
 for (const path of ["/arcade-polish.css","/chaos-cartridge-theme.css","/chat-bubbles.css","/miss-chaos-presence.css"]){
   assert.ok(read("../public/_headers").includes(path+"\n  Cache-Control: no-cache"),
