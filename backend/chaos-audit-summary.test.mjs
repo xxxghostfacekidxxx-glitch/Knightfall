@@ -32,3 +32,20 @@ test("God capability requires a trusted handler and verified principal",async()=
 test("loader not provided is rejected",()=>{
   assert.throws(()=>createChaosAuditSummaryHandler({}),/Trusted audit report loader/);
 });
+
+test("rejects contradictory missing scanner output",()=>{
+  assert.throws(()=>normalizeChaosAuditSummary({...fixture,biome:{hasOutput:false,reportedErrors:1,reportedWarnings:0}}),/Inconsistent Biome/);
+  assert.equal(normalizeChaosAuditSummary({...fixture,biome:{hasOutput:false,reportedErrors:0,reportedWarnings:0}}).biome.hasOutput,false);
+});
+test("denied principals never invoke report loader",async()=>{
+  let reads=0;
+  const handler=createChaosAuditSummaryHandler({loadReport:async()=>{reads++;return fixture;}});
+  for(const principal of [null,{id:"admin",role:"admin"},{id:"isis",role:"isis"},{role:"god"}]){
+    await assert.rejects(handler({principal}),/Not authorized/);
+  }
+  assert.equal(reads,0);
+});
+test("nested scanner payloads cannot escape counts-only contract",()=>{
+  const clean=normalizeChaosAuditSummary({...fixture,semgrep:{...fixture.semgrep,raw:"SECRET_SENTINEL"},biome:{...fixture.biome,token:"SECRET_SENTINEL"}});
+  assert.doesNotMatch(JSON.stringify(clean),/SECRET_SENTINEL/);
+});
