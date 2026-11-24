@@ -27,14 +27,19 @@ export function normalizeChaosAuditSummary(raw) {
   if (Object.values(severity).reduce((a,b)=>a+b,0) !== findings) {
     throw new Error("Inconsistent audit summary totals.");
   }
+  const reportedErrors = count(biome.reportedErrors);
+  const reportedWarnings = count(biome.reportedWarnings);
+  if (!biome.hasOutput && (reportedErrors || reportedWarnings)) {
+    throw new Error("Inconsistent Biome output totals.");
+  }
   return {
     schemaVersion: 1,
     tool: "knightfall-developer-arsenal",
     semgrep: { findings, severity, scannerErrors: count(semgrep.scannerErrors) },
     biome: {
       hasOutput: biome.hasOutput,
-      reportedErrors: count(biome.reportedErrors),
-      reportedWarnings: count(biome.reportedWarnings)
+      reportedErrors,
+      reportedWarnings
     },
     note: "Aggregate counts only; findings are not verified repairs."
   };
