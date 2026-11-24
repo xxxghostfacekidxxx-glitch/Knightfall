@@ -18,3 +18,8 @@ test('history load rejects stale conversation results and duplicate messages', (
 test('refresh avoids racing with older history loading', () => {
   assert.match(html, /async function refreshCurrent\(\)\{if\(!currentId\|\|loading\|\|loadingOlder\)return/);
 });
+
+test('history paging follows the server has-more cursor signal', () => {
+  assert.match(html, /\$\("#load-older"\)\.hidden=d\.has_more!==true/);
+  assert.match(html, /if\(d\.has_more!==true\)button\.hidden=true/);
+});

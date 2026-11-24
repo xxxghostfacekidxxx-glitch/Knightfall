@@ -2663,7 +2663,16 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(existing?.status==="accepted")return json({ok:true,status:"accepted",request_id:existing.id},200,origin);
     if(existing?.status==="pending"&&existing.requester_id===user.id)return json({ok:true,status:"pending",request_id:existing.id},200,origin);
     const now=new Date().toISOString();
-    if(existing?.status==="pending"&&existing.addressee_id===user.id){await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=?").bind(now,existing.id).run();await createNotification(env,{userId:target.id,actorId:user.id,kind:"friend_accepted",targetType:"user",targetId:user.id,title:"Friend request accepted",body:"@"+user.username+" accepted your friend request.",url:"/profile.html?username="+encodeURIComponent(user.username)});return json({ok:true,status:"accepted",request_id:existing.id},200,origin);}
+    if(existing?.status==="pending"&&existing.addressee_id===user.id){
+      const changed=await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=? AND status='pending' AND addressee_id=?").bind(now,existing.id,user.id).run();
+      if(Number(changed.meta?.changes||0)!==1){
+        const latest=await env.DB.prepare("SELECT status FROM friend_requests WHERE id=? AND (requester_id=? OR addressee_id=?)").bind(existing.id,user.id,user.id).first();
+        if(latest?.status==="accepted")return json({ok:true,status:"accepted",request_id:existing.id,already_handled:true},200,origin);
+        return json({error:"That friend request changed before it could be accepted. Refresh and try again."},409,origin);
+      }
+      await createNotification(env,{userId:target.id,actorId:user.id,kind:"friend_accepted",targetType:"user",targetId:user.id,title:"Friend request accepted",body:"@"+user.username+" accepted your friend request.",url:"/profile.html?username="+encodeURIComponent(user.username)});
+      return json({ok:true,status:"accepted",request_id:existing.id},200,origin);
+    }
     let requestId=existing?.id||null;
     if(existing)await env.DB.prepare("UPDATE friend_requests SET requester_id=?,addressee_id=?,status='pending',created_at=?,updated_at=? WHERE id=?").bind(user.id,target.id,now,now,existing.id).run();
     else{
