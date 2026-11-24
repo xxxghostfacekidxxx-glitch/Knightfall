@@ -2357,8 +2357,22 @@ For complex questions, organize the answer clearly and provide actionable detail
     await audit(env,actor,"god_bot_profile_update","bot",null,{bot_key:match[1],fields:Object.keys(payload)});
     return json({ok:true,bot_key:match[1],posting_enabled:false},200,origin);
   }
+  if(url.pathname==="/api/force-academy-review"){
+    const actor=await requireUser(request,env);if(!actor||actor.role!=="god")return json({error:"Forbidden"},403,origin);
+    if(request.method==="GET"){
+      const result=await env.DB.prepare("SELECT e.id,e.path,e.answers,e.submitted_at,u.username FROM force_academy_exams e JOIN users u ON u.id=e.user_id WHERE e.status='pending' ORDER BY e.id LIMIT 50").all();
+      return json({exams:result.results||[]},200,origin,{"cache-control":"no-store"});
+    }
+    if(request.method!=="POST")return json({error:"Method not allowed"},405,origin);
+    if(!String(request.headers.get("content-type")||"").toLowerCase().startsWith("application/json"))return json({error:"JSON required"},415,origin);
+    let b;try{b=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
+    if(!Number.isSafeInteger(b?.id)||b.id<1||!Array.isArray(b.scores)||b.scores.length!==5||b.scores.some(n=>!Number.isInteger(n)||n<0||n>4)||typeof b.feedback!=="string"||!b.feedback.trim()||b.feedback.length>4000)return json({error:"Invalid assessment"},400,origin);
+    const score=b.scores.reduce((a,n)=>a+n,0),status=score>=15&&b.scores.every(n=>n>0)?"passed":"revision";
+    const result=await env.DB.prepare("UPDATE force_academy_exams SET status=?,score=?,feedback=?,reviewer_id=?,reviewed_at=CURRENT_TIMESTAMP WHERE id=? AND status='pending' AND user_id<>?").bind(status,score,b.feedback.trim(),actor.id,b.id,actor.id).run();
+    return json({ok:Number(result.meta?.changes)===1,status},Number(result.meta?.changes)===1?200:409,origin,{"cache-control":"no-store"});
+  }
   if(url.pathname.startsWith("/api/force-academy/")){
-    const match=url.pathname.match(/^\/api\/force-academy\/(jedi|sith)\/(enrollment|progress|journal)(?:\/(\d+))?$/);
+    const match=url.pathname.match(/^\/api\/force-academy\/(jedi|sith)\/(enrollment|progress|journal|exam)(?:\/(\d+))?$/);
     if(!match)return json({error:"Unknown academy endpoint"},404,origin);
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in required"},401,origin);
     const [,path,resource,rawId]=match,db=env.DB,uid=user.id,method=request.method;
@@ -2382,6 +2396,17 @@ For complex questions, organize the answer clearly and provide actionable detail
       }else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
       const result=await db.prepare("SELECT lesson,completed_at FROM force_academy_progress WHERE user_id=? AND path=? ORDER BY lesson").bind(uid,path).all();
       return json({lessons:result.results||[]},200,origin,{"cache-control":"no-store"});
+    }
+    if(resource==="exam"){
+      if(rawId)return json({error:"Invalid record"},400,origin);
+      if(method==="POST"){
+        let body;try{body=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
+        if(!Array.isArray(body?.answers)||body.answers.length!==5||body.answers.some(a=>typeof a!=="string"||a.trim().length<20||a.length>3500))return json({error:"Five substantive answers required"},400,origin);
+        const result=await db.prepare("INSERT OR IGNORE INTO force_academy_exams(user_id,path,answers) SELECT ?,?,? WHERE (SELECT COUNT(*) FROM force_academy_progress WHERE user_id=? AND path=?)=7 AND NOT EXISTS(SELECT 1 FROM force_academy_exams WHERE user_id=? AND path=? AND status='passed')").bind(uid,path,JSON.stringify(body.answers.map(a=>a.trim())),uid,path,uid,path).run();
+        if(Number(result.meta?.changes)!==1)return json({error:"Complete all chapters first; only one pending or passed exam is allowed"},409,origin);
+      }else if(method!=="GET")return json({error:"Method not allowed"},405,origin);
+      const result=await db.prepare("SELECT id,status,score,feedback,submitted_at,reviewed_at FROM force_academy_exams WHERE user_id=? AND path=? ORDER BY id DESC LIMIT 20").bind(uid,path).all();
+      return json({exams:result.results||[],rank:(result.results||[]).some(e=>e.status==="passed")?"foundation graduate":"student"},200,origin,{"cache-control":"no-store"});
     }
     if(resource==="journal"){
       if(method==="GET"&&!rawId){
