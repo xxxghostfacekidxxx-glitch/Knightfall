@@ -14,13 +14,16 @@ for(const [i,g] of catalog.games.entries()){
  if(!g.description || String(g.description).trim().length<12)warnings.push(id+': missing useful cabinet description');
  if(route.startsWith('https://')){
    let url;try{url=new URL(route)}catch{errors.push(id+': invalid external URL');continue}
+   if(routes.has(url.href))errors.push(id+': duplicate external launch URL with '+routes.get(url.href));
+   else routes.set(url.href,id);
    if(url.protocol!=='https:')errors.push(id+': external URL not HTTPS');
    if(g.collection!=='external')warnings.push(id+': remote game not marked external');
    entries.push({id,route,status:'external-unverified'});continue;
  }
  if(!route.startsWith('/')||route.startsWith('//')||route.includes('\\')||route.includes('?')&&route.split('?')[0]==='') {errors.push(id+': unsafe/nonabsolute local route '+route);continue}
  let url;try{url=new URL(route,'https://ash-fall.com')}catch{errors.push(id+': invalid route');continue}
- const decoded=decodeURIComponent(url.pathname);
+ let decoded;try{decoded=decodeURIComponent(url.pathname)}catch{errors.push(id+': malformed percent encoding');continue}
+ if(decoded.includes('\\')||decoded.includes('\0')){errors.push(id+': unsafe decoded route');continue}
  const target=path.resolve(root,'.'+decoded);
  if(!target.startsWith(root+path.sep)){errors.push(id+': route escapes public directory');continue}
  const launch=url.pathname+url.search+url.hash;
