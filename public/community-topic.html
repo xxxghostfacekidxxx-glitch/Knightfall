@@ -69,14 +69,14 @@
         const [categoryData,me]=await Promise.all([get("/api/categories"),get("/api/auth/me").catch(()=>({user:null}))]);
         const cats=categoryData.categories||[];
         category=cats.find(c=>String(c.id)===String(requestedId));
-        if(!category||!(topicNames.has(normalize(category.name))||["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history"].includes(category.slug)))throw Error("That community topic could not be found.");
+        if(!category||!(topicNames.has(normalize(category.name))||["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history","holocron-archives"].includes(category.slug)))throw Error("That community topic could not be found.");
         const displayName=normalize(category.name).startsWith("general discussion")?"General Discussions":category.name;
         titleEl.textContent=displayName;descriptionEl.textContent=category.description||"Open discussion for the Ash-Fall community.";
         document.title=displayName+" | Ash-Fall";
         document.getElementById("topic-kicker").textContent="COMMUNITY / "+displayName.toUpperCase();
         document.getElementById("topic-threads-heading").textContent=displayName+" Threads";
         const branches=document.createElement("nav");branches.className="profile-actions";branches.setAttribute("aria-label","Star Wars subcategories");
-        const links=category.slug==="star-wars"?cats.filter(c=>["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history"].includes(c.slug)):["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history"].includes(category.slug)?cats.filter(c=>c.slug==="star-wars"):[];
+        const links=category.slug==="star-wars"?cats.filter(c=>["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history","holocron-archives"].includes(c.slug)):["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history","holocron-archives"].includes(category.slug)?cats.filter(c=>c.slug==="star-wars"):[];
         for(const child of links){const link=document.createElement("a");link.className="action";link.href="/community-topic.html?category_id="+encodeURIComponent(child.id);link.textContent=child.name;branches.append(link);}
         if(links.length)descriptionEl.after(branches);
         const user=me.user||null;
