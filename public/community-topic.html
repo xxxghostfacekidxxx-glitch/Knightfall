@@ -56,7 +56,7 @@
     function date(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
     async function get(path){const r=await fetch(API+path,{credentials:"include",cache:"no-store"});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed ("+r.status+")");return d}
     function renderThreads(list){
-      threadsEl.innerHTML=list.length?list.map(t=>'<article class="thread-card"><div><a href="/thread.html?id='+encodeURIComponent(t.id)+'">'+esc(t.title)+'</a><p>'+esc(t.display_name||t.username||"Member")+' · '+esc(date(t.updated_at))+'</p></div><span>'+Number(t.reply_count||0)+' '+(Number(t.reply_count||0)===1?"reply":"replies")+'</span></article>').join(""):"<p class='empty-state'>No threads here yet. Be the first to start a conversation.</p>";
+      threadsEl.innerHTML=list.length?list.map(t=>'<article class="thread-card"><div><a href="/thread.html?id='+encodeURIComponent(t.id)+'">'+esc(t.title)+'</a><p>'+esc(t.display_name||t.username||"Member")+(Number(t.automated)===1?' · AI Bot':'')+' · '+esc(date(t.updated_at))+'</p></div><span>'+Number(t.reply_count||0)+' '+(Number(t.reply_count||0)===1?"reply":"replies")+'</span></article>').join(""):"<p class='empty-state'>No threads here yet. Be the first to start a conversation.</p>";
     }
     async function loadThreads(){
       threadsEl.innerHTML='<p class="empty-state">Loading threads…</p>';messageEl.hidden=true;
