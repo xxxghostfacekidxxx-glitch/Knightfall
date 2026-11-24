@@ -11,7 +11,7 @@ export function botAccessPolicy(user,extraSlots=0,grant=null,premium=false) {
   const tier=permissions.staff?"staff":premium?"premium":"member";
   const base=premium?10:5;
   return {
-    limit:unlimited?null:base+purchased,
+    limit:!active?0:unlimited?null:base+purchased,
     unlimited,
     tier,
     advanced_builder:active&&(permissions.advanced_bot_builder || (role==="member"&&Number(grant?.advanced_builder)===1)),
