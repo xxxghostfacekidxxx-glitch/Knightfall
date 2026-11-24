@@ -33,7 +33,7 @@ for(const game of manifest.games){
   if(suspect.test(content))flags.push({file:rel,type:"possible-third-party-game-name",note:"Name similarity is not proof of copied code"});
   if(/(?:©|copyright|licensed under|SPDX-License-Identifier|based on|adapted from|forked from)/i.test(content))flags.push({file:rel,type:"copyright-or-derivation-marker"});
  }
- const notices=files.filter(f=>/(?:^|\/)(?:LICENSE|LICENCE|NOTICE|COPYING|SOURCE|CREDITS|ATTRIBUTION|AUTHORS)(?:[-_.][^/]*)?$/i.test(f)).map(f=>relative(root,f).replaceAll("\\","/"));
+ const notices=files.filter(f=>/(?:^|\/)(?:LICENSE|LICENCE|NOTICE|COPYING|SOURCE|CREDITS|ATTRIBUTION|AUTHORS)(?:[-_.][^/]*)?$/i.test(f)||/(?:^|\/)(?:licenses?|licences?)\/[^/]+\.(?:txt|md|html)$/i.test(f)).map(f=>relative(root,f).replaceAll("\\","/"));
  evidence.push({id:game.id,engine:game.engine,files:files.length,media:sources.length,notices,flags,review:"unverified",conclusion:"No ownership or license clearance established by automated scanning"});
 }
 const catalog=await readFile(join(root,"chaos-cartridge.html"),"utf8");
