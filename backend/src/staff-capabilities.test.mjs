@@ -89,3 +89,19 @@ test("Private mailbox capability is restricted to an active GOD account",()=>{
  ];
  for(const [user,allowed] of roles)assert.equal(canAccessOwnerMailbox(user),allowed,JSON.stringify(user));
 });
+
+test("suspended and deleted identities lose every capability even if their old role remains",()=>{
+ for(const status of ["suspended","deleted","pending"]){
+  for(const user of [
+   {role:"god",status},{role:"admin",is_isis:1,status},
+   {role:"moderator",status},{role:"member",public_title:"Digital Creator",status}
+  ]){
+   const caps=staffCapabilities(user);
+   assert.equal(caps.level,0,JSON.stringify(user));
+   assert.equal(caps.can_moderate,false,JSON.stringify(user));
+   assert.equal(caps.can_create,false,JSON.stringify(user));
+   assert.equal(caps.can_eye_of_chaos,false,JSON.stringify(user));
+   assert.equal(caps.can_delegate_approval,false,JSON.stringify(user));
+  }
+ }
+});

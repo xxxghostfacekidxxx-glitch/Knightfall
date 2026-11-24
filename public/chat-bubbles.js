@@ -7,7 +7,7 @@
   if(["/messages","/messages.html"].includes(location.pathname))return; // The full inbox already owns this route.
   const API="https://api.ash-fall.com";
   let customEmoji=window.KnightfallEmojis||null;
-  if(!customEmoji)import("/knightfall-emojis.mjs?v=20261124-original-emojis1").then(module=>{
+  if(!customEmoji)import("/knightfall-emojis.mjs?v=20261124-original-emojis2").then(module=>{
     customEmoji=module;
     module.mountKnightfallEmojiPicker?.(document);
   }).catch(error=>console.warn("knightfall_emoji_module_unavailable",String(error)));

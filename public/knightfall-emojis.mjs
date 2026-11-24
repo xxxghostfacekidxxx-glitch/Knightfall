@@ -12,7 +12,12 @@ export const KNIGHTFALL_EMOJIS = Object.freeze([
   {code:":kf-dice:",name:"Loaded with Chaos",file:"chaos-dice.svg"},
   {code:":kf-paw:",name:"Trouble Paw",file:"trouble-paw.svg"},
   {code:":kf-crown:",name:"Cinder Crown",file:"cinder-crown.svg"},
-  {code:":kf-venomrose:",name:"Venom Rose",file:"venom-rose.svg"}
+  {code:":kf-venomrose:",name:"Venom Rose",file:"venom-rose.svg"},
+  {code:":kf-screambean:",name:"Scream Bean",file:"scream-bean.svg"},
+  {code:":kf-moltenhalo:",name:"Molten Halo",file:"molten-halo.svg"},
+  {code:":kf-brokenhalo:",name:"Broken Halo",file:"broken-halo.svg"},
+  {code:":kf-nightbite:",name:"Night Bite",file:"night-bite.svg"},
+  {code:":kf-littlemenace:",name:"Little Menace",file:"little-menace.svg"}
 ]);
 
 const byCode = new Map(KNIGHTFALL_EMOJIS.map(item=>[item.code,item]));

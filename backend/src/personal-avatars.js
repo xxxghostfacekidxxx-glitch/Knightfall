@@ -50,6 +50,14 @@ const PRODUCTS=Object.freeze([{id:'avatar_slot',slots:1,cost_cinders:600,label:'
 const respond=(json,value,status=200,origin)=>json(value,status,origin);
 function cleanName(value){if(typeof value!=='string')return null;const name=value.trim().replace(/\s+/g,' ');return name.length>=1&&name.length<=32?name:null;}
 function cleanAvatar(value){if(!value||typeof value!=='object'||Array.isArray(value))return null;const result={};for(const [field,choices] of Object.entries(FIELDS)){const choice=value[field]===undefined?DEFAULTS[field]:value[field];if(!choices.has(choice))return null;result[field]=choice;}return result;}
+export async function canViewPersonalAvatar(env,owner,viewer){
+ if(viewer&&Number(viewer.id)===Number(owner.id))return true;
+ if(!viewer||owner.profile_visibility==='private')return false;
+ const blocked=await env.DB.prepare('SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) UNION SELECT 1 FROM social_user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1').bind(viewer.id,owner.id,owner.id,viewer.id,viewer.id,owner.id,owner.id,viewer.id).first();
+ if(blocked)return false;
+ if(owner.profile_visibility!=='friends')return true;
+ return Boolean(await env.DB.prepare("SELECT 1 FROM friend_requests WHERE status='accepted' AND ((requester_id=? AND addressee_id=?) OR (requester_id=? AND addressee_id=?)) LIMIT 1").bind(viewer.id,owner.id,owner.id,viewer.id).first());
+}
 async function wallet(env,user){
  await env.DB.prepare('INSERT OR IGNORE INTO user_wallets(user_id,balance) VALUES(?,?)').bind(user.id,(user.username==='knightfall'||['admin','moderator','god'].includes(user.role))?1000000:2000).run();
  const row=await env.DB.prepare('SELECT balance FROM user_wallets WHERE user_id=?').bind(user.id).first();return Number(row?.balance||0);
@@ -67,11 +75,10 @@ export async function handlePersonalAvatars(request,env,url,{getUser,json,rateLi
  if(publicMatch&&request.method==='GET'){
   const owner=await env.DB.prepare("SELECT id,username,profile_visibility,status FROM users WHERE username=? COLLATE NOCASE AND status='active'").bind(publicMatch[1]).first();
   if(!owner)return send({error:'Profile not found.'},404);
-  const viewer=await getUser(request,env),self=viewer&&Number(viewer.id)===Number(owner.id),staff=viewer&&['moderator','admin','god'].includes(viewer.role);
-  if(!self&&!staff){
-   const blocked=viewer?await env.DB.prepare('SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) UNION SELECT 1 FROM social_user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1').bind(viewer.id,owner.id,owner.id,viewer.id,viewer.id,owner.id,owner.id,viewer.id).first():null;
-   if(blocked||owner.profile_visibility==='private')return send({error:'Profile not found.'},404);
-   if(owner.profile_visibility==='friends'){if(!viewer)return send({error:'Sign in to view this profile.'},401);const friend=await env.DB.prepare("SELECT 1 FROM friend_requests WHERE status='accepted' AND ((requester_id=? AND addressee_id=?) OR (requester_id=? AND addressee_id=?)) LIMIT 1").bind(viewer.id,owner.id,owner.id,viewer.id).first();if(!friend)return send({error:'Profile unavailable.'},403);}
+  const viewer=await getUser(request,env);
+  if(!await canViewPersonalAvatar(env,owner,viewer)){
+   if(!viewer&&owner.profile_visibility==='friends')return send({error:'Sign in to view this profile.'},401);
+   return send({error:owner.profile_visibility==='friends'?'Profile unavailable.':'Profile not found.'},owner.profile_visibility==='friends'?403:404);
   }
   const row=await env.DB.prepare('SELECT name,avatar_json,updated_at FROM personal_avatars WHERE user_id=? AND is_active=1').bind(owner.id).first();
   let avatar=null;try{avatar=row?JSON.parse(row.avatar_json):null}catch{}

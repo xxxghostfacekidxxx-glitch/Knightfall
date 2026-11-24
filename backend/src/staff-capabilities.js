@@ -2,12 +2,15 @@
 // Knightfall ceremonial ranks layered on top of the existing permission system.
 // Only the live, accepted partnership record may mark an admin as Isis.
 export function staffCapabilities(user) {
+  // A stale role on a suspended/deleted account must not keep authority when
+  // capabilities are evaluated outside the normal session lookup path.
+  const active=user?.status===undefined||user?.status==='active';
   const role=String(user?.role||"member").trim().toLowerCase();
   const title=String(user?.public_title||"").trim().toLowerCase();
-  const god=role==="god",admin=god||role==="admin";
-  const isis=role==="admin"&&Number(user?.is_isis)===1;
-  const moderator=role==="moderator";
-  const digitalCreator=role==="member" && title==="digital creator";
+  const god=active&&role==="god",admin=active&&(god||role==="admin");
+  const isis=active&&role==="admin"&&Number(user?.is_isis)===1;
+  const moderator=active&&role==="moderator";
+  const digitalCreator=active&&role==="member" && title==="digital creator";
   const canModerate=admin||moderator;
   // Moderators have the moderation track only. Creator Foundry and advanced
   // bot building are granted to administrators, God, and verified creators.
