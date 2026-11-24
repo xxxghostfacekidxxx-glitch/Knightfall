@@ -547,6 +547,14 @@ async function load(){
      return;
    }
    if(!d?.user?.username)throw Error("Profile data was incomplete. Please retry.");
+   if(Number(d.user.automated)===1){
+     const u=d.user;
+     const shortcuts=document.getElementById("profile-quick-links");
+     if(shortcuts){shortcuts.hidden=true;shortcuts.replaceChildren();}
+     const avatar=safeExternalUrl(u.avatar_url);
+     root.innerHTML='<article class="profile-top"><div class="profile-identity">'+(avatar?'<img class="avatar-img" alt="" src="'+esc(avatar)+'" referrerpolicy="no-referrer">':'<div class="avatar" aria-hidden="true">'+esc((u.display_name||u.username).slice(0,1).toUpperCase())+'</div>')+'<div><p class="eyebrow">AI Bot · Automated account</p><h1>'+esc(u.display_name||u.username)+'</h1><p>@'+esc(u.username)+'</p></div></div><p>'+esc(u.bio||"Automated Knightfall service account.")+'</p><p class="notice">This is a non-login service identity, not a human member.</p><a class="action" href="/community.html">Return to The Madhouse</a></article>';
+     return;
+   }
    const me=await api("/api/auth/me").catch(()=>({user:null}));
    const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile,!!me.user);try{await window.KnightfallMisfitAvatars.ready;const personal=await api("/api/avatars/profile/"+encodeURIComponent(d.user.username));if(personal.avatar){const avatarNode=root.querySelector('.profile-top .avatar-img,.profile-top .avatar');if(avatarNode){const frame=document.createElement('div');frame.className='personal-avatar-frame';frame.setAttribute('aria-label',(personal.name||'Personal misfit avatar')+' is the personal representation for '+(d.user.display_name||d.user.username));const misfit=document.createElement('div');misfit.className='personal-avatar';misfit.setAttribute('aria-hidden','true');misfit.innerHTML=window.KnightfallMisfitAvatars.render(personal.avatar);const label=document.createElement('span');label.className='personal-avatar-label';label.textContent=personal.name||'Personal misfit';frame.append(misfit,label);avatarNode.replaceWith(frame);}}}catch(error){console.warn("Personal avatar unavailable",error)}refreshProfileJump();applyProfileLayout(d.profile_layout);
    // Optional modules must not make an otherwise valid public profile disappear.
