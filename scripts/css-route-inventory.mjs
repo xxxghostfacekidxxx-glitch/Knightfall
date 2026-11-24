@@ -92,9 +92,20 @@ for (const {path,body} of sources.filter(x=>/^[^/]+\.html$/.test(x.path))) {
       invalidTopLevelLinks.push({page:path,href:link});
   }
   for(const [href,count] of counts){
+    const categoriesStart=path==="index.html"?staticHtml.indexOf('<div class="kf-chaos-categories"'):-1;
+    const atlasStart=path==="index.html"?staticHtml.indexOf('<section class="kf-realm-atlas"'):-1;
+    const categoriesEnd=categoriesStart>=0?staticHtml.indexOf("</div>",categoriesStart):-1;
+    const atlasEnd=atlasStart>=0?staticHtml.indexOf("</section>",atlasStart):-1;
+    const categories=categoriesStart>=0&&categoriesEnd>categoriesStart?staticHtml.slice(categoriesStart,categoriesEnd):"";
+    const atlas=atlasStart>=0&&atlasEnd>atlasStart?staticHtml.slice(atlasStart,atlasEnd):"";
+    // Homepage category shortcuts and Realm Atlas cards are separate discovery
+    // surfaces. Preserve both entry points, but only allow exactly one link in
+    // each section so accidental copies inside either surface still fail CI.
+    const intentionalHomeCrossNavigation=path==="index.html"&&count===2&&
+      categories.includes(`href="${href}"`)&&atlas.includes(`href="${href}"`);
     const roleSplit=path==="devil-tools.html"&&href==="/mascot-pets.html"&&count===2&&
       body.includes('id="foundry-public-preview"')&&body.includes('id="workshop" class="hidden"');
-    if(count>1&&!roleSplit)topLevelDuplicates.push({page:path,href,count});
+    if(count>1&&!roleSplit&&!intentionalHomeCrossNavigation)topLevelDuplicates.push({page:path,href,count});
   }
 }
 console.log("TOP-LEVEL REPEATED LOCAL LINKS (REVIEW): " + JSON.stringify(topLevelDuplicates));
