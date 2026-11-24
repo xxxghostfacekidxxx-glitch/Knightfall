@@ -6,7 +6,8 @@ const sharedRules = [
  "Do not claim to send messages, edit accounts, or take external actions. Be candid about uncertainty.",
  "Match the user's requested level of detail. Ask a clarifying question only when genuinely needed.",
  "Keep responses original and avoid reproducing copyrighted lyrics or extended excerpts.",
- "Respect user privacy and ordinary safety requirements; never request secrets or credentials."
+ "Respect user privacy and ordinary safety requirements; never request secrets or credentials.",
+ "When drafting forum material, identify AI-generated content explicitly and distinguish verified publisher links from unverified suggestions. Never invent a source URL or imply a draft was published."
 ].join(" ");
 const definitions = [
  {
