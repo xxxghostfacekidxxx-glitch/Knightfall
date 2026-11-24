@@ -13,10 +13,11 @@
     button.disabled = true;
     status.textContent = "Packaging Hell & High Orbit for offline testing…";
     try {
-      const [html, css, js, pixelWorld, pixelBattle, spriteAtlas, pauseMenu, dialogue, social, refreshCss] = await Promise.all([
+      const [html, css, js, moveModule, pixelWorld, pixelBattle, spriteAtlas, pauseMenu, dialogue, social, refreshCss] = await Promise.all([
         load("/monster-mmo.html"),
         load("/monster-mmo.css"),
         load("/monster-mmo.js"),
+        load("/monster-mmo-moves.js"),
         load("/monster-mmo-pixel-world.js"),
         load("/monster-mmo-pixel-battle.js"),
         load("/monster-mmo-sprite-atlas.js"),
@@ -45,7 +46,9 @@
       const safePause = pauseMenu.replace(/<\/script/gi, "<\\/script");
       const safeDialogue = dialogue.replace(/<\/script/gi, "<\\/script");
       const safeSocial = social.replace(/<\/script/gi, "<\\/script");
-      const safeJs = js.replace(/<\/script/gi, "<\\/script");
+      const moveImport = 'import {MOVES,ensureLoadout,equipMove,spendMove} from "./monster-mmo-moves.js";';
+      if (!js.startsWith(moveImport)) throw new Error("Move catalog import changed. The offline bundle needs updating.");
+      const safeJs = (moveModule.replace(/\bexport\s+/g, "") + "\n" + js.slice(moveImport.length)).replace(/<\/script/gi, "<\\/script");
       let bundled = html.replace(cssTag, () => "<style>" + safeCss + "</style>")
         .replace(/<link rel="stylesheet" href="\/visual-refresh\.css[^"]*">/, () => "<style>" + refreshCss.replace(/<\/style/gi,"<\\/style") + "</style>")
         // The live arcade recovery/fullscreen helper is site-only and must not

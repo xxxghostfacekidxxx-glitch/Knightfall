@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v96";
+const CACHE_NAME = "knightfall-shell-v97";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -18,6 +18,10 @@ const APP_SHELL = [
   "/realm-theme-engine.css",
   "/global-design-controls.css",
   "/arcade-repair.js",
+  "/monster-mmo.html",
+  "/monster-mmo.css",
+  "/monster-mmo.js",
+  "/monster-mmo-moves.js",
   "/arcade/cinder-sequence.html",
   "/arcade/cinder-sequences.mjs",
   "/card-deck-skins.css",

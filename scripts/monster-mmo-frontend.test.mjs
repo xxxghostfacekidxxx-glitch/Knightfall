@@ -6,6 +6,7 @@ import {runInNewContext} from "node:vm";
 const js=readFileSync("public/monster-mmo.js","utf8");
 const html=readFileSync("public/monster-mmo.html","utf8");
 const css=readFileSync("public/monster-mmo.css","utf8");
+const moves=readFileSync("public/monster-mmo-moves.js","utf8");
 test("creature frontend parses as a module",()=>{
  const result=spawnSync(process.execPath,["--check","--input-type=module"],{input:js,encoding:"utf8"});
  assert.equal(result.status,0,result.stderr);
@@ -140,8 +141,8 @@ test("twenty original monsters include six evolution lines",()=>{
 test("offline battles support charged specials and guarding without changing staging actions",()=>{
  assert.ok(html.includes('data-action="special"'));
  assert.ok(html.includes('data-action="guard"'));
- assert.match(js,/function battleStrike\(attacker,defender,special=false,quick=false,movePower=null\)/);
- assert.match(js,/if\(\["attack","special","guard","quick","mend"\]\.includes\(name\)\)/);
+ assert.match(js,/function battleStrike\(attacker,defender,special=false,quick=false,movePower=null,moveType=null\)/);
+ assert.match(js,/if\(\["attack","special","guard","quick","mend","move"\]\.includes\(name\)\)/);
  assert.match(js,/lead\.energy-=2/);
  assert.match(js,/guarding\?\.35:1/);
  assert.doesNotMatch(js,/connected&&\["special","guard"\]\.includes\(b\.dataset\.action\)/);
@@ -150,7 +151,7 @@ test("offline battles support charged specials and guarding without changing sta
 test("offline battle adds original move names, status damage and accessible visual effects",()=>{
  assert.ok(html.includes('id="battle-effect"'));
  assert.match(js,/const speciesMoves=/);
- assert.match(js,/function inflictStatus\(attacker,defender\)/);
+ assert.match(js,/function inflictStatus\(attacker,defender,moveType=attacker\.type\)/);
  assert.match(js,/function statusTick\(target\)/);
  assert.match(js,/function showBattleEffect\(kind,message,combat=\{\}\)/);
  assert.match(js,/if\(evolutionMessage\.includes\("EVOLVED"\)\)showBattleEffect/);
@@ -227,12 +228,17 @@ test("pixel battle renderer is present in both online and offline builds",()=>{
 
 test("offline creatures unlock four named moves by level without trusting client moves in staging",()=>{
  for(let i=0;i<4;i++)assert.ok(html.includes('data-move-slot="'+i+'"'));
- assert.match(js,/const moveLearnsets=/);
- assert.match(js,/const moveUnlockLevels=\[1,1,3,6\]/);
- assert.match(js,/function learnedMoves\(creature\)/);
+ assert.match(js,/import \{MOVES,ensureLoadout,equipMove,spendMove\}/);
+ assert.match(moves,/export function learnset\(creature\)/);
+ assert.match(moves,/export function ensureLoadout\(creature\)/);
+ assert.match(moves,/export function equipMove\(creature,slot,id\)/);
+ assert.match(js,/function offlineLoadoutMoves\(creature\)/);
+ assert.match(js,/Configure four moves/);
+ assert.match(js,/select\.setAttribute\("aria-label",p\.name\+" move slot "/);
  assert.match(js,/if\(name==="move"\)/);
- assert.match(js,/chosen\.unlocked/);
- assert.match(js,/extra\.movePower/);
+ assert.match(js,/spendMove\(lead,chosen\.id\)/);
+ assert.match(js,/extra\.moveType=result\.move\.type/);
+ assert.match(js,/persist\(\);log\(p\.name\+" updated move slot/);
  assert.match(js,/b\.dataset\.moveSlot!==undefined/);
  assert.match(js,/if\(connected\)\{const previousLead=[\s\S]*?const data=await request\("\/api\/game\/action"/);
 });
@@ -439,8 +445,9 @@ test("offline four-move PP belongs to each creature and survives switches",()=>{
  assert.equal(ensureOfflineMovePp(second)[2],15,"other party members retain their PP");
  first.movePp=[999,-4,"bad",7];
  assert.equal(Array.from(ensureOfflineMovePp(first)).join(","),"30,0,15,7");
- assert.match(js,/const pp=ensureOfflineMovePp\(lead\)/);
- assert.match(js,/pp\[index\]--/);
+ assert.match(js,/movePpById\[id\]=MOVES\[id\]\.pp/);
+ assert.match(js,/movePpById\[move\.id\]/);
+ assert.match(moves,/spendMove\(attacker,id/);
  assert.doesNotMatch(js,/battle\.movePp\[index\]--/,"encounter must not own the attacking creature's PP");
- assert.match(js,/p\.movePp=\[\.\.\.OFFLINE_MOVE_PP_LIMITS\]/,"camp rest must restore all four slots");
+ assert.match(js,/p\.movePp=\[\.\.\.OFFLINE_MOVE_PP_LIMITS\]/,"legacy slot PP remains compatible with camp rest");
 });

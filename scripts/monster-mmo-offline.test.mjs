@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 const read = p => readFileSync("public/" + p, "utf8");
 test("admin can download a complete single-file offline creature game", async () => {
-  const assets = new Map(["monster-mmo.html","monster-mmo.css","monster-mmo.js","monster-mmo-pixel-world.js","monster-mmo-pixel-battle.js","monster-mmo-sprite-atlas.js","monster-mmo-pause-menu.js","monster-mmo-dialogue.js","monster-mmo-social.js","visual-refresh.css"].map(p => ["/" + p, read(p)]));
+  const assets = new Map(["monster-mmo.html","monster-mmo.css","monster-mmo.js","monster-mmo-moves.js","monster-mmo-pixel-world.js","monster-mmo-pixel-battle.js","monster-mmo-sprite-atlas.js","monster-mmo-pause-menu.js","monster-mmo-dialogue.js","monster-mmo-social.js","visual-refresh.css"].map(p => ["/" + p, read(p)]));
   let clickHandler, blob, filename;
   const button = { disabled: false, addEventListener(type, handler) { if (type === "click") clickHandler = handler; } };
   const status = { textContent: "" };
@@ -36,5 +36,7 @@ test("admin can download a complete single-file offline creature game", async ()
   assert.ok(!html.includes('src="/monster-mmo-engine-bridge.js"'));
   const match = html.match(/<script>([\s\S]*?)<\/script>/);
   assert.ok(match, "Embedded game script must be present");
+  assert.match(match[1], /const MOVES=/, "Stable move catalog must be bundled into standalone game");
+  assert.doesNotMatch(match[1], /from ["']\.\/monster-mmo-moves\.js["']/, "Standalone build must not depend on a separate module file");
   assert.doesNotThrow(() => new vm.Script(match[1]));
 });

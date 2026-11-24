@@ -43,8 +43,13 @@ export function ensureLoadout(creature){
  const equipped=[...new Set(Array.isArray(creature.equippedMoveIds)?creature.equippedMoveIds:[])].filter(id=>owned.includes(id)).slice(0,4);
  for(const id of owned)if(equipped.length<4&&!equipped.includes(id))equipped.push(id);
  creature.equippedMoveIds=equipped;
- const previous=creature.movePp&&typeof creature.movePp==="object"?creature.movePp:{};
- creature.movePp=Object.fromEntries(owned.map(id=>[id,Number.isInteger(previous[id])?Math.max(0,Math.min(MOVES[id].pp,previous[id])):MOVES[id].pp]));
+ const previous=creature.movePpById&&typeof creature.movePpById==="object"&&!Array.isArray(creature.movePpById)?creature.movePpById:{};
+ const legacy=Array.isArray(creature.movePp)?creature.movePp:null;
+ creature.movePpById=Object.fromEntries(owned.map(id=>{
+  const slot=equipped.indexOf(id),old=previous[id];
+  const saved=Number.isInteger(old)?old:slot>=0&&Number.isInteger(legacy?.[slot])?legacy[slot]:MOVES[id].pp;
+  return [id,Math.max(0,Math.min(MOVES[id].pp,saved))];
+ }));
  return creature;
 }
 export function equipMove(creature,slot,id){
@@ -57,11 +62,20 @@ export function useMove(attacker,defender,id,typeMultiplier=()=>1,rng=Math.rando
  ensureLoadout(attacker);
  if(!attacker.equippedMoveIds.includes(id)||!MOVES[id])return {error:"Move is not equipped"};
  const move=MOVES[id];
- if(attacker.movePp[id]<=0)return {error:"No PP remaining"};
- attacker.movePp[id]--;
+ if(attacker.movePpById[id]<=0)return {error:"No PP remaining"};
+ attacker.movePpById[id]--;
  if(rng()*100>=move.accuracy)return {miss:true,damage:0,move};
  const modifier=move.type==="normal"?1:typeMultiplier(move.type,defender.type);
  const damage=Math.max(1,Math.round((attacker.attack+2)*move.power/55*modifier));
  defender.hp=Math.max(0,defender.hp-damage);
  return {damage,move,multiplier:modifier};
+}
+
+export function spendMove(attacker,id,rng=Math.random){
+ ensureLoadout(attacker);
+ if(!MOVES[id]||!attacker.equippedMoveIds.includes(id))return {error:"Move is not equipped"};
+ if(attacker.movePpById[id]<=0)return {error:"No PP remaining"};
+ const move=MOVES[id];
+ attacker.movePpById[id]--;
+ return {move,miss:rng()*100>=move.accuracy};
 }

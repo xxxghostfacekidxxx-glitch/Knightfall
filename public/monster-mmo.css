@@ -520,3 +520,4 @@ body{background:radial-gradient(ellipse at 52% -20%,#2d214d 0,transparent 52%),l
  .pad button{min-height:42px}
 }
 @media(prefers-reduced-motion:reduce){.pad button{transition:none!important}}
+.monster-move-loadout{flex-basis:100%;margin:.45rem 0;padding:.55rem .7rem;border:1px solid #ff55cc55;border-radius:9px;background:#0b0d16}.monster-move-loadout summary{color:#caff45;cursor:pointer;font-weight:750}.monster-move-loadout>small{display:block;color:#c3bdcb;margin:.35rem 0}.monster-move-loadout label{display:flex;align-items:center;gap:.6rem;margin:.4rem 0;color:#cfc7d8;font-size:.85rem}.monster-move-loadout select{flex:1;min-width:0;max-width:100%;padding:.55rem;background:#11121d;border:1px solid #ff55cc80;color:#fff;border-radius:7px}.monster-move-loadout select:focus-visible{outline:3px solid #caff45;outline-offset:2px}
