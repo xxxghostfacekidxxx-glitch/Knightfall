@@ -20,6 +20,8 @@
     "dt-workspace-16": "developer-bench"
   };
 
+  const normalizeSearch = value => String(value || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const aliases = { audio: "sound music sfx waveform", art: "artwork illustration sprites graphics", animation: "motion frames spritesheet", publishing: "release export deployment", licensing: "license attribution copyright spdx", multiplayer: "networking online co-op websocket", testing: "qa diagnostics regression browser" };
   function init() {
     const workspaces = [...workshop.querySelectorAll("[data-workspace]")];
     const groups = [...catalog.querySelectorAll("[data-group]")].map(section => ({
@@ -37,13 +39,15 @@
     let previousLink;
 
     function filter() {
-      const terms = search.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      const terms = normalizeSearch(search.value).split(/\s+/).filter(Boolean);
       let total = 0;
       for (const { section, cards } of groups) {
         let matches = 0;
         for (const { element, target, text } of cards) {
           const inCategory = category === "all" || category === section.dataset.group;
-          const index = (text + " " + (target?.textContent || "")).toLowerCase();
+          const base = normalizeSearch(text + " " + (target?.textContent || ""));
+          const words = new Set(base.split(" "));
+          const index = base + " " + Object.entries(aliases).filter(([key, synonyms]) => words.has(key) || normalizeSearch(synonyms).split(" ").some(word => words.has(word))).map(([key, synonyms]) => key + " " + synonyms).join(" ");
           element.hidden = !inCategory || !terms.every(term => index.includes(term));
           if (!element.hidden) matches++;
         }
