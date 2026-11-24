@@ -1,0 +1,18 @@
+"use strict";
+const $=id=>document.getElementById(id);
+const path=new URLSearchParams(location.search).get("path")==="sith"?"sith":"jedi";
+const names=path==="jedi"?["Awareness","Knowledge","Compassion","Discipline","Service","Impermanence","Accountability"]:["Passion","Strength","Power","Victory","Liberation","Shadow","Responsibility"];
+const prefix=path==="jedi"?"jedi-testament-":"sith-flame-";
+const api="https://api.ash-fall.com";
+let cursor=null, busy=false, generation=0;
+$("academy").dataset.path=path;$("heading").textContent=path==="jedi"?"Jedi Temple Academy":"Order of the Sith Academy";
+$("forum").href="/community-topic.html?category_id="+(path==="jedi"?33:34);
+async function request(route,method="GET",body){const res=await fetch(api+"/api/force-academy/"+path+"/"+route,{method,credentials:"include",cache:"no-store",...(method==="POST"?{headers:{"content-type":"application/json"},body:JSON.stringify(body||{})}:{})});const data=await res.json().catch(()=>({}));if(!res.ok)throw Error(data.error||"Request failed ("+res.status+")");return data}
+function status(s){$("status").textContent=s}
+async function action(fn){if(busy)return;busy=true;try{await fn()}catch(e){status(e.message)}finally{busy=false}}
+async function lessons(){const [data,forum]=await Promise.all([request("progress"),fetch(api+"/api/threads?category_id="+(path==="jedi"?33:34),{credentials:"include",cache:"no-store"}).then(r=>r.json()).catch(()=>({}))]);const done=new Set(data.lessons.map(x=>Number(x.lesson)));$("progress").value=done.size;$("count").textContent=done.size+" of 7 chapters completed";$("lessons").replaceChildren();names.forEach((name,i)=>{const li=document.createElement("li"),t=(forum.threads||[]).find(t=>t.slug===prefix+name.toLowerCase()||String(t.title).endsWith(": "+name));const a=document.createElement("a");a.href=t?"/thread.html?id="+encodeURIComponent(t.id):$("forum").href;a.textContent=name;li.append(a,document.createTextNode(" "));const b=document.createElement("button");b.textContent=done.has(i+1)?"Completed":"Mark studied";b.disabled=done.has(i+1);b.onclick=()=>action(async()=>{await request("progress","POST",{lesson:i+1});await lessons();status("Progress saved.")});li.append(b);$("lessons").append(li)})}
+async function entries(reset=true){const g=++generation;if(reset){cursor=null;$("entries").replaceChildren()}const data=await request("journal"+(cursor?"?before="+cursor:""));if(g!==generation)return;for(const entry of data.entries){const article=document.createElement("article"),date=document.createElement("p"),body=document.createElement("p"),button=document.createElement("button");date.textContent=entry.created_at;body.textContent=entry.body;button.textContent="Delete reflection";button.onclick=()=>{if(confirm("Delete this reflection permanently?"))action(async()=>{await request("journal/"+entry.id,"DELETE");await entries();status("Reflection deleted.")})};article.append(date,body,button);$("entries").append(article);cursor=entry.id}$("older").hidden=data.entries.length<20}
+async function initialize(){const d=await request("enrollment");$("enroll").hidden=!!d.enrollment;$("member").hidden=!d.enrollment;if(d.enrollment){await Promise.all([lessons(),entries()]);status("Enrolled. Your study records are available.")}else status("Enrollment is voluntary.")}
+$("enroll").onclick=()=>action(async()=>{await request("enrollment","POST",{});await initialize()});
+$("journal-form").onsubmit=e=>{e.preventDefault();action(async()=>{const body=$("entry").value;await request("journal","POST",{body});if($("entry").value===body)$("entry").value="";await entries();status("Reflection saved.")})};
+$("older").onclick=()=>action(()=>entries(false));action(initialize);
