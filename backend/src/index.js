@@ -1031,13 +1031,14 @@ async function publishScheduledBotNews(env) {
     if(await env.DB.prepare("SELECT 1 FROM god_bot_news_log WHERE bot_key=? AND article_url=?").bind(bot.bot_key,link).first())continue;
     const category=await env.DB.prepare("SELECT id FROM categories WHERE slug=?").bind(feed.key==="order-66-6"?"star-wars":"music").first();
     if(!category)continue;
-    const claim=await env.DB.prepare("INSERT OR IGNORE INTO god_bot_news_log(bot_key,slot_key,article_url,created_at) VALUES(?,?,?,CURRENT_TIMESTAMP)").bind(bot.bot_key,key,link).run();
-    if(!claim.meta?.changes)continue;
-    try{
-      const slug=await uniqueSlug(title,env);
-      const source=feed.key==="order-66-6"?"Star Wars News Net":"Billboard";
-      await env.DB.prepare("INSERT INTO threads(category_id,user_id,title,slug,body,created_at,updated_at) VALUES(?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)").bind(category.id,bot.user_id,title,slug,"AI Bot · Automated news curator\n\nNews from "+source+".\n\nRead the original article: "+link).run();
-    }catch(error){await env.DB.prepare("DELETE FROM god_bot_news_log WHERE bot_key=? AND slot_key=?").bind(bot.bot_key,key).run();throw error}
+    // D1 batch is transactional. The thread insert is conditional on the
+    // immediately preceding claim, so a competing scheduler cannot publish twice.
+    const slug=await uniqueSlug(title,env);
+    const source=feed.key==="order-66-6"?"Star Wars News Net":"Billboard";
+    await env.DB.batch([
+      env.DB.prepare("INSERT OR IGNORE INTO god_bot_news_log(bot_key,slot_key,article_url,created_at) SELECT ?,?,?,CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM god_bot_news_log WHERE bot_key=? AND article_url=?)").bind(bot.bot_key,key,link,bot.bot_key,link),
+      env.DB.prepare("INSERT INTO threads(category_id,user_id,title,slug,body,created_at,updated_at) SELECT ?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP WHERE changes()=1").bind(category.id,bot.user_id,title,slug,"AI Bot · Automated news curator\n\nNews from "+source+".\n\nRead the original article: "+link)
+    ]);
   }
 }
 
