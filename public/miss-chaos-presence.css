@@ -131,4 +131,4 @@
 #miss-chaos-presence .mc-head{background:linear-gradient(125deg,#ff2f9218,#161428)}
 #miss-chaos-presence .mc-head img{border-color:#ff2f92}
 #miss-chaos-presence #mc-mood{background:#1d1429;color:#d4c4df}
-body.zombie-immersive-open #miss-chaos-p
+#miss-chaos-presence.mc-overlay-suspended{visibility:hidden!important;pointer-events:none!important}

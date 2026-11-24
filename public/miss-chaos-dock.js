@@ -90,6 +90,7 @@ function occupiedSize(dock){
 }
 function recalculate(){
  frame=0;
+ syncOverlaySuspension();
  const header=document.querySelector('body > .kf-header');
  const bounds=header?.getBoundingClientRect();
  headerBottom=bounds && bounds.top<=1 ? Math.max(0,bounds.bottom) : 0;
@@ -117,6 +118,19 @@ function recalculate(){
  // Never let anti-flicker preserve a corner over a compose field or dock control.
  if(oldPosition!==winner&&currentScore-best<1.2&&currentScore<2)return;
  apply(winner);
+}
+// Page dialogs and custom modal sheets own the foreground while they are open.
+// Keeping the dock mounted but visually and interactively suspended prevents
+// its very high utility layer from covering confirmation, upload, or auth UI.
+function syncOverlaySuspension(){
+ const blocking=[...document.querySelectorAll('dialog[open],[aria-modal="true"],[role="dialog"][data-overlay-blocking="true"]')]
+  .some(el=>{
+   if(root.contains(el))return false;
+   if(el.hidden)return false;
+   const style=getComputedStyle(el);
+   return style.display!=='none'&&style.visibility!=='hidden'&&Number(style.opacity)!==0;
+  });
+ root.classList.toggle('mc-overlay-suspended',blocking);
 }
 function schedule(){
  if(frame)return;
@@ -171,9 +185,9 @@ if(header && window.ResizeObserver)new ResizeObserver(schedule).observe(header);
 // Observe newly mounted sticky bars and footers without changing page layout.
 if(window.MutationObserver){
  const observer=new MutationObserver(records=>{
-  if(records.some(r=>[...r.addedNodes].some(n=>n.nodeType===1&&!root.contains(n))))schedule();
+  if(records.some(r=>r.type==='attributes'?!root.contains(r.target):[...r.addedNodes].some(n=>n.nodeType===1&&!root.contains(n))))schedule();
  });
- observer.observe(document.body,{childList:true,subtree:false});
+ observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['open','hidden','aria-modal','aria-hidden','class','style']});
 }
 root.dataset.minimized=initiallyMinimized?'true':'false';
 restore.hidden=!initiallyMinimized;

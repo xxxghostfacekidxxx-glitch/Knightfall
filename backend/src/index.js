@@ -2665,7 +2665,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(existing?.status==="pending"&&existing.requester_id===user.id)return json({ok:true,status:"pending",request_id:existing.id},200,origin);
     const now=new Date().toISOString();
     if(existing?.status==="pending"&&existing.addressee_id===user.id){
-      const changed=await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=? AND status='pending' AND addressee_id=?").bind(now,existing.id,user.id).run();
+      const changed=await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=? AND status='pending' AND addressee_id=? AND NOT EXISTS (SELECT 1 FROM user_blocks b WHERE (b.blocker_id=friend_requests.requester_id AND b.blocked_id=friend_requests.addressee_id) OR (b.blocker_id=friend_requests.addressee_id AND b.blocked_id=friend_requests.requester_id))").bind(now,existing.id,user.id).run();
       if(Number(changed.meta?.changes||0)!==1){
         const latest=await env.DB.prepare("SELECT status FROM friend_requests WHERE id=? AND (requester_id=? OR addressee_id=?)").bind(existing.id,user.id,user.id).first();
         if(latest?.status==="accepted")return json({ok:true,status:"accepted",request_id:existing.id,already_handled:true},200,origin);
@@ -2675,10 +2675,22 @@ For complex questions, organize the answer clearly and provide actionable detail
       return json({ok:true,status:"accepted",request_id:existing.id},200,origin);
     }
     let requestId=existing?.id||null;
-    if(existing)await env.DB.prepare("UPDATE friend_requests SET requester_id=?,addressee_id=?,status='pending',created_at=?,updated_at=? WHERE id=?").bind(user.id,target.id,now,now,existing.id).run();
+    if(existing){
+      const reopened=await env.DB.prepare("UPDATE friend_requests SET requester_id=?,addressee_id=?,status='pending',created_at=?,updated_at=? WHERE id=? AND status=? AND EXISTS (SELECT 1 FROM users WHERE id=? AND status='active') AND NOT EXISTS (SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?))").bind(user.id,target.id,now,now,existing.id,existing.status,target.id,user.id,target.id,target.id,user.id).run();
+      if(Number(reopened.meta?.changes||0)!==1){
+        const stillBlocked=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,target.id,target.id,user.id).first();
+        if(stillBlocked)return json({error:"Friend requests aren't available for this member."},403,origin);
+        return json({error:"That friend request changed before it could be sent. Refresh and try again."},409,origin);
+      }
+    }
     else{
       try{
-        const created=await env.DB.prepare("INSERT INTO friend_requests (requester_id,addressee_id,status,created_at,updated_at) VALUES (?,?,'pending',?,?) RETURNING id").bind(user.id,target.id,now,now).first();
+        const created=await env.DB.prepare("INSERT INTO friend_requests (requester_id,addressee_id,status,created_at,updated_at) SELECT ?,?,'pending',?,? WHERE EXISTS (SELECT 1 FROM users WHERE id=? AND status='active') AND NOT EXISTS (SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?)) RETURNING id").bind(user.id,target.id,now,now,target.id,user.id,target.id,target.id,user.id).first();
+        if(!created){
+          const stillBlocked=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,target.id,target.id,user.id).first();
+          if(stillBlocked)return json({error:"Friend requests aren't available for this member."},403,origin);
+          return json({error:"That member is no longer available. Refresh and try again."},409,origin);
+        }
         requestId=created?.id||null;
       }catch(error){
         if(!String(error).includes("UNIQUE"))throw error;
@@ -2688,7 +2700,7 @@ For complex questions, organize the answer clearly and provide actionable detail
         if(raced.status==="accepted")return json({ok:true,status:"accepted",request_id:requestId},200,origin);
         if(raced.status==="pending"&&raced.requester_id===user.id)return json({ok:true,status:"pending",request_id:requestId},200,origin);
         if(raced.status==="pending"&&raced.addressee_id===user.id){
-          const accepted=await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=? AND status='pending' AND addressee_id=?").bind(now,requestId,user.id).run();
+          const accepted=await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=? AND status='pending' AND addressee_id=? AND NOT EXISTS (SELECT 1 FROM user_blocks b WHERE (b.blocker_id=friend_requests.requester_id AND b.blocked_id=friend_requests.addressee_id) OR (b.blocker_id=friend_requests.addressee_id AND b.blocked_id=friend_requests.requester_id))").bind(now,requestId,user.id).run();
           if(Number(accepted.meta?.changes||0)===1)await createNotification(env,{userId:target.id,actorId:user.id,kind:"friend_accepted",targetType:"user",targetId:user.id,title:"Friend request accepted",body:"@"+user.username+" accepted your friend request.",url:"/profile.html?username="+encodeURIComponent(user.username)});
           else{
             const latest=await env.DB.prepare("SELECT status FROM friend_requests WHERE id=?").bind(requestId).first();
@@ -2696,7 +2708,12 @@ For complex questions, organize the answer clearly and provide actionable detail
           }
           return json({ok:true,status:"accepted",request_id:requestId},200,origin);
         }
-        await env.DB.prepare("UPDATE friend_requests SET requester_id=?,addressee_id=?,status='pending',created_at=?,updated_at=? WHERE id=?").bind(user.id,target.id,now,now,requestId).run();
+        const reopened=await env.DB.prepare("UPDATE friend_requests SET requester_id=?,addressee_id=?,status='pending',created_at=?,updated_at=? WHERE id=? AND status=? AND EXISTS (SELECT 1 FROM users WHERE id=? AND status='active') AND NOT EXISTS (SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?))").bind(user.id,target.id,now,now,requestId,raced.status,target.id,user.id,target.id,target.id,user.id).run();
+        if(Number(reopened.meta?.changes||0)!==1){
+          const stillBlocked=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,target.id,target.id,user.id).first();
+          if(stillBlocked)return json({error:"Friend requests aren't available for this member."},403,origin);
+          return json({error:"That friend request changed before it could be sent. Refresh and try again."},409,origin);
+        }
       }
     }
     await createNotification(env,{userId:target.id,actorId:user.id,kind:"friend_request",targetType:"user",targetId:user.id,title:"New friend request",body:"@"+user.username+" sent you a friend request.",url:"/friends.html"});
@@ -2713,7 +2730,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!row)return json({error:"Incoming friend request not found."},404,origin);
     if(row.status===status)return json({ok:true,status,already_handled:true},200,origin);
     if(row.status!=="pending")return json({error:"That friend request was already handled.",status:row.status},409,origin);
-    const changed=await env.DB.prepare("UPDATE friend_requests SET status=?,updated_at=? WHERE id=? AND addressee_id=? AND status='pending'").bind(status,now,id,user.id).run();
+    const changed=await env.DB.prepare("UPDATE friend_requests SET status=?,updated_at=? WHERE id=? AND addressee_id=? AND status='pending' AND (?='declined' OR NOT EXISTS (SELECT 1 FROM user_blocks b WHERE (b.blocker_id=friend_requests.requester_id AND b.blocked_id=friend_requests.addressee_id) OR (b.blocker_id=friend_requests.addressee_id AND b.blocked_id=friend_requests.requester_id)))").bind(status,now,id,user.id,status).run();
     if(Number(changed.meta?.changes||0)!==1){
       const latest=await env.DB.prepare("SELECT status FROM friend_requests WHERE id=? AND addressee_id=?").bind(id,user.id).first();
       if(latest?.status===status)return json({ok:true,status,already_handled:true},200,origin);

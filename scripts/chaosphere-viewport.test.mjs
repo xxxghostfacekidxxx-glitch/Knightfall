@@ -5,7 +5,7 @@ import {readFileSync} from "node:fs";
 
 const html=readFileSync(new URL("../public/messages.html",import.meta.url),"utf8");
 const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
- .map(x=>x[1]).filter(Boolean).pop();
+ .map(x=>x[1]).find(source=>source.includes("function syncMessagesViewport(){"))||"";
 const start=inline.indexOf("function syncMessagesViewport(){");
 const end=inline.indexOf("\nsyncMessagesViewport();",start);
 assert.ok(start>=0&&end>start,"Message viewport function exists");

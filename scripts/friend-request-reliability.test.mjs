@@ -17,6 +17,19 @@ test("mutual friend requests accept atomically and notify only the winning trans
   assert.ok(branch.indexOf("changed.meta")<branch.indexOf("createNotification("));
 });
 
+test("friend writes recheck block and recipient state atomically",()=>{
+  const start=backend.indexOf('if(url.pathname==="/api/friends/request"&&request.method==="POST"){');
+  const end=backend.indexOf('const friendRequestMatch=',start);
+  assert.ok(start>=0&&end>start,"expected the friend request creation route");
+  const route=backend.slice(start,end);
+  assert.match(route,/INSERT INTO friend_requests[\s\S]*?SELECT \?,\?,'pending',\?,\? WHERE EXISTS \(SELECT 1 FROM users WHERE id=\? AND status='active'\) AND NOT EXISTS \(SELECT 1 FROM user_blocks/);
+  assert.match(route,/UPDATE friend_requests SET requester_id=\?,addressee_id=\?,status='pending'[\s\S]*?AND status=\? AND EXISTS \(SELECT 1 FROM users WHERE id=\? AND status='active'\) AND NOT EXISTS \(SELECT 1 FROM user_blocks/);
+  assert.equal((route.match(/NOT EXISTS \(SELECT 1 FROM user_blocks b WHERE/g)||[]).length,2,
+    "both reciprocal-acceptance paths must honor a block that races the initial lookup");
+  assert.match(route,/if\(Number\(reopened\.meta\?\.changes\|\|0\)!==1\)/);
+  assert.ok(route.indexOf("if(!created)")<route.indexOf('kind:"friend_request"'),"failed conditional writes must not notify the target");
+});
+
 test("retries of an already handled incoming request return its final state",()=>{
   const start=backend.indexOf('if(friendRequestMatch&&request.method==="PATCH"){');
   const end=backend.indexOf('if(url.pathname==="/api/discover"',start);

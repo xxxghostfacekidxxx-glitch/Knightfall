@@ -25,13 +25,15 @@ test("dock has a verified Osiris/Isis mode switch, distinct per-mode draft and c
  assert.match(popup,/companion:assistantMode==="standard"\?undefined:assistantMode/);
 });
 test("floating popup uses stable viewport coordinates without squashing its avatar and chat composer",()=>{
- assert.match(style,/#miss-chaos-presence #miss-chaos-window\{\s*position:fixed!important/);
- assert.match(style,/height:min\(640px,calc\(100dvh - 116px\)\)!important/);
- assert.match(style,/\.mc-head>img\{/);
- assert.match(style,/aspect-ratio:1\/1/);
- assert.match(style,/#miss-chaos-presence #mc-messages\{flex:1 1 0!important;min-height:58px!important/);
- assert.match(style,/max-width:calc\(100vw - 24px\)/);
- assert.match(style,/@media\(max-width:600px\)/);
+ assert.match(style,/#miss-chaos-presence\{[^}]*position:fixed/);
+ assert.match(style,/#miss-chaos-presence #miss-chaos-window,#miss-chaos-presence #mc-memo-panel\{position:absolute/);
+ assert.match(style,/height:min\(550px,calc\(100dvh - 115px\)\)/);
+ assert.match(style,/\.mc-head img\{/);
+ assert.match(style,/#miss-chaos-launcher img\{width:46px;height:46px/);
+ assert.match(style,/#mc-messages\{display:flex;flex:1;flex-direction:column;gap:\.65rem;overflow-y:auto/);
+ assert.match(style,/#mc-input\{flex:1;min-width:0;max-height:110px/);
+ assert.match(style,/width:min\(404px,calc\(100vw - 24px\)\)/);
+ assert.match(style,/@media\(max-width:480px\)/);
 });
 test("full chat and floating popup both offer one opt-in image that is never stored as bytes",()=>{
  for(const html of [fullHtml,isisHtml]){
