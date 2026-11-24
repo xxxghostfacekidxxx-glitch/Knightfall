@@ -2693,7 +2693,12 @@ For complex questions, organize the answer clearly and provide actionable detail
     const row=await env.DB.prepare("SELECT id,requester_id FROM friend_requests WHERE id=? AND addressee_id=? AND status='pending'").bind(id,user.id).first();
     if(!row)return json({error:"Incoming friend request not found."},404,origin);
     const now=new Date().toISOString(),status=action==="accept"?"accepted":"declined";
-    await env.DB.prepare("UPDATE friend_requests SET status=?,updated_at=? WHERE id=? AND addressee_id=? AND status='pending'").bind(status,now,id,user.id).run();
+    const changed=await env.DB.prepare("UPDATE friend_requests SET status=?,updated_at=? WHERE id=? AND addressee_id=? AND status='pending'").bind(status,now,id,user.id).run();
+    if(Number(changed.meta?.changes||0)!==1){
+      const latest=await env.DB.prepare("SELECT status FROM friend_requests WHERE id=? AND addressee_id=?").bind(id,user.id).first();
+      if(latest?.status===status)return json({ok:true,status,already_handled:true},200,origin);
+      return json({error:"That friend request was already handled.",status:latest?.status||null},409,origin);
+    }
     if(status==="accepted")await createNotification(env,{userId:row.requester_id,actorId:user.id,kind:"friend_accepted",targetType:"user",targetId:user.id,title:"Friend request accepted",body:"@"+user.username+" accepted your friend request.",url:"/profile.html?username="+encodeURIComponent(user.username)});
     return json({ok:true,status},200,origin);
   }
