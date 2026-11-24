@@ -52,4 +52,5 @@ const output={schema:4,missingNotices,statusCounts,priorityReview,duplicateMedia
 if(report){await mkdir(resolve("artifacts"),{recursive:true});await writeFile(resolve("artifacts/arcade-provenance.json"),JSON.stringify(output,null,2)+"\n")}
 console.log("Arcade provenance inventory:",output.games,"games;",output.flaggedGames,"flagged for review;",output.unverifiedGames,"not independently cleared;",duplicateMedia.length,"duplicate asset groups;",runtimeDependencies.length,"external runtime assets;",priorityReview.length,"priority provenance reviews");
 for(const e of evidence.filter(e=>e.flags.length))console.log("REVIEW",e.id,e.flags.map(f=>f.type).join(", "));
+for(const id of missingNotices)console.log("MISSING NOTICE",id);
 if(strict&&(missingNotices.length||evidence.some(e=>e.flags.length)))process.exitCode=1;
