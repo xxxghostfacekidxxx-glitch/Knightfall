@@ -1,8 +1,9 @@
 // KV-free fallback for rate limits. Atomic D1 upsert prevents concurrent bypass.
 export async function databaseRateLimit(db, bucketKey, limit, windowSeconds, now = Date.now()) {
-  if (!db || !bucketKey || !Number.isInteger(limit) || limit < 1 ||
-      !Number.isInteger(windowSeconds) || windowSeconds < 1) return false;
+  if (!db || typeof bucketKey !== "string" || !bucketKey.trim() || bucketKey.length > 512 || !Number.isSafeInteger(now) || now < 0 || !Number.isSafeInteger(limit) || limit < 1 ||
+      !Number.isSafeInteger(windowSeconds) || windowSeconds < 1) return false;
   const resetAt = now + windowSeconds * 1000;
+  if (!Number.isSafeInteger(resetAt)) return false;
   try {
     const row = await db.prepare(`
       INSERT INTO request_rate_limits (bucket_key, count, reset_at)
