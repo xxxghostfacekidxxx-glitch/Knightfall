@@ -76,6 +76,22 @@ test("wild Eight requires human suit choice; CPU selects majority suit",()=>{
  assert.equal(h.suit,"♥");
  assert.equal(h.turn,0);
 });
+test("local two-player turns hide hands between players and let both choose wild suits",()=>{
+ const g=new CinderEightsGame(randomSeed(77));
+ g.turn=1;g.over=false;g.awaitingSuit=false;g.suit="♠";g.pile=[{r:"Q",s:"♠"}];
+ g.hands[1]=[{r:"8",s:"♣"},{r:"A",s:"♥"}];
+ const move=g.play(1,0,{humanWild:true});
+ assert.equal(move.kind,"choose-suit");
+ assert.equal(g.turn,1);
+ assert.equal(g.chooseSuit("♦",0),false);
+ assert.equal(g.chooseSuit("♦",1),true);
+ assert.equal(g.turn,0);
+ g.turn=1;
+ const draw=g.drawPlayer(1);
+ assert.equal(draw.ok,true);
+ assert.equal(g.turn,0);
+ assert.equal(g.hands[1].length,2);
+});
 test("a deadlocked empty deck ends as a tie, never an infinite pass loop",()=>{
  const g=new CinderEightsGame(randomSeed(3));
  g.deck=[];g.pile=[{r:"A",s:"♠"}];g.hands=[[{r:"2",s:"♥"}],[{r:"3",s:"♦"}]];g.suit="♠";g.turn=0;
@@ -83,8 +99,8 @@ test("a deadlocked empty deck ends as a tie, never an infinite pass loop",()=>{
  r=g.cpuMove();assert.equal(r.kind,"draw");assert.equal(g.over,true);assert.equal(g.winner,null);
  assert.equal(g.cpuMove().ok,false);assert.equal(g.drawHuman().ok,false);
 });
-test("mobile cabinet has accessible card controls, fullscreen and shared Deck Locker",()=>{
- for(const id of ["eights-root","full","new","draw","hand","choose","cpu-hand","top-card","active-suit","status","count-cpu","count-hand","count-deck","you-wins","cpu-wins"]){
+test("mobile cabinet has accessible card controls, local duel, fullscreen and shared Deck Locker",()=>{
+ for(const id of ["eights-root","full","new","draw","hand","choose","cpu-hand","top-card","active-suit","status","count-cpu","count-hand","count-deck","you-wins","cpu-wins","game-mode","pass-screen","pass-ready"]){
   assert.match(gameHTML,new RegExp('id="'+id+'"'),id+" missing");
  }
  assert.match(gameHTML,/card-deck-skins\.css/);
@@ -95,7 +111,12 @@ test("mobile cabinet has accessible card controls, fullscreen and shared Deck Lo
  assert.match(frontend,/eights-focus/);
  assert.match(frontend,/aria-pressed/);
  assert.match(frontend,/newGame\(\)/);
+ assert.match(frontend,/game\.drawPlayer\(player\)/);
+ assert.match(frontend,/game\.play\(player,index,\{humanWild:hotseat\|\|player===0\}\)/);
+ assert.match(frontend,/hand\.replaceChildren\(\.\.\.\(covered\?\[\]:game\.hands\[activePlayer\]\.map\(cardElement\)\)\)/);
+ assert.match(gameHTML,/Local two-player pass-and-play/);
  assert.match(css,/@media\(max-width:470px\)/);
  assert.match(css,/scroll-snap-type:x proximity/);
  assert.match(css,/#eights-root:fullscreen/);
+ assert.match(css,/\.eights-pass-screen\[hidden\]\{display:none\}/);
 });

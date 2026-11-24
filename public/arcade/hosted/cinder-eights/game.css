@@ -20,11 +20,18 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var
 .eights-intro h1{font:950 clamp(3rem,7.9vw,6rem)/.91 Impact,'Arial Black',system-ui,sans-serif;margin:9px 0;letter-spacing:-.04em;color:#fef6ff;text-shadow:0 18px 32px #0006}
 .eights-intro h1 span{color:var(--e-pink)}
 .eights-intro p{margin:12px 0 0;max-width:640px;color:var(--e-muted);font-size:.9rem}
+.eights-mode{display:grid;gap:5px;width:min(100%,320px);margin-top:16px;color:#ddc3e5;font-size:.67rem;font-weight:950;letter-spacing:.12em}
+.eights-mode select{min-height:44px;padding:9px 12px;border:1px solid #a968be;border-radius:10px;background:#171321;color:var(--e-soft);font-weight:800}
 .eights-streak{border:1px solid #a65db773;border-radius:16px;background:linear-gradient(130deg,#281832,#191424);padding:15px 20px;min-width:235px}
 .eights-streak span{display:block;font-size:.72rem;letter-spacing:.1em;color:#cbacd0;font-weight:850}
 .eights-streak strong{display:block;color:var(--e-lime);font-size:1.7rem;font-weight:950;line-height:1.2}
 .eights-streak small{display:block;color:#ac9ab7}
 .eights-table{border:1px solid #8f55a376;border-radius:24px;background:radial-gradient(ellipse 75% 90% at 50% 10%,#2d1b46 0,#17152c 60%,#0c0f19 100%);padding:clamp(15px,2.7vw,30px);box-shadow:0 18px 50px #0007,inset 0 1px #ffffff16;position:relative;isolation:isolate;min-width:0}
+.eights-pass-screen{position:absolute;z-index:8;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;border:1px solid #ff75dc;border-radius:23px;background:radial-gradient(ellipse at 50% 20%,#342043,#090910 76%);text-align:center}
+.eights-pass-screen[hidden]{display:none}
+.eights-pass-screen>span{color:var(--e-lime);font-size:2.4rem;text-shadow:0 0 22px #baff7380}
+.eights-pass-screen h2{margin:0;color:var(--e-pink);font-size:clamp(1.35rem,4vw,2rem);letter-spacing:.16em}
+.eights-pass-screen p{max-width:440px;color:#e7d8ef}
 .eights-table::before{content:"";position:absolute;inset:9px;border:1px solid #ffffff14;border-radius:19px;pointer-events:none}
 .eights-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 0 16px;border-bottom:1px solid #ffffff16}
 .eights-state{font-size:.72rem;font-weight:950;letter-spacing:.16em;color:#f5cee9}
@@ -82,6 +89,6 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var
 body.eights-focus{overflow:hidden}
 body.eights-focus #eights-root{position:fixed;z-index:2147482000;inset:0;width:100vw;max-width:none;height:100dvh;overflow-y:auto;background:radial-gradient(ellipse at center,#282038,#080913);padding:10px}
 #eights-root:fullscreen .eights-table,body.eights-focus .eights-table{min-height:calc(100dvh - 155px)}
-@media(max-width:760px){.eights-intro{grid-template-columns:1fr}.eights-streak{min-width:0;display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:10px 14px}.eights-table{padding:14px}.eights-center{min-height:170px}.eights-stack,.eights-discard{width:95px;min-width:95px;height:140px}.eights-cpu-hand{min-height:94px}.eights-cpu-hand .playing-card.back{height:77px}.eights-streak strong{font-size:1.3rem}}
+@media(max-width:760px){.eights-intro{grid-template-columns:1fr}.eights-streak{min-width:0;display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:10px 14px}.eights-table{padding:14px}.eights-center{min-height:170px}.eights-stack,.eights-discard{width:95px;min-width:95px;height:140px}.eights-cpu-hand{min-height:94px}.eights-cpu-hand .playing-card.back{height:77px}.eights-streak strong{font-size:1.3rem}.eights-pass-screen{inset:0;border-radius:22px;padding:18px}}
 @media(max-width:470px){.eights-brand{display:none}.eights-header{gap:8px}.eights-header a{font-size:.71rem}.eights-control{gap:6px}.eights-button{padding:.53rem .7rem;min-height:40px;font-size:.76rem}.eights-intro h1{font-size:3.6rem}.eights-topline{align-items:flex-start}.eights-meta span{font-size:.63rem}.eights-center{gap:3px;padding:6px;grid-template-columns:1fr 1fr 1fr}.eights-stack,.eights-discard{width:83px;min-width:83px;height:120px}.eights-discard .suit{font-size:2.8rem}.eights-cpu-hand{gap:2px}.eights-cpu-hand .playing-card.back{height:65px;min-width:16px;width:38px;flex-basis:38px}.eights-active-suit strong{font-size:1.7rem}#hand button.af-deck-card{flex-basis:114px;height:147px}.eights-card-suit{font-size:2.7rem}#hand{min-height:170px}.eights-help{padding:10px 12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}

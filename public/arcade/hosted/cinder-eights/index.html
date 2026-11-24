@@ -24,13 +24,16 @@
  </header>
  <section class="eights-intro" aria-labelledby="eights-title">
   <div>
-   <span class="eights-eyebrow">SOLO CARD GAME / YOU VS THE CPU</span>
+   <span id="mode-eyebrow" class="eights-eyebrow">SOLO CARD GAME / YOU VS THE CPU</span>
    <h1 id="eights-title">CINDER <span>EIGHTS.</span></h1>
-   <p>Match suit or rank, throw wild Eights to change the rules, and empty your hand before the CPU does. All style, zero actual gambling.</p>
+   <p id="mode-description">Match suit or rank, throw wild Eights to change the rules, and empty your hand before the CPU does. All style, zero actual gambling.</p>
+   <label class="eights-mode">TABLE MODE
+    <select id="game-mode"><option value="cpu">Solo vs. the Void</option><option value="local">Local two-player pass-and-play</option></select>
+   </label>
   </div>
   <div class="eights-streak" aria-label="Local win statistics">
    <div><span>YOUR VICTORIES</span><strong id="you-wins">0</strong></div>
-   <div><span>CPU VICTORIES</span><strong id="cpu-wins">0</strong></div>
+   <div><span id="opponent-wins-label">CPU VICTORIES</span><strong id="cpu-wins">0</strong></div>
    <small>Saved on this device</small>
   </div>
  </section>
@@ -39,13 +42,13 @@
    <strong id="turn-indicator" class="eights-state is-turn">YOUR TURN</strong>
    <div class="eights-meta">
     <span>YOU <b id="count-hand">7</b></span>
-    <span>CPU <b id="count-cpu">7</b></span>
+    <span><span id="count-opponent-label">CPU</span> <b id="count-cpu">7</b></span>
     <span>DRAW PILE <b id="count-deck">37</b></span>
     <span>PLAYS <b id="round-moves">0</b></span>
    </div>
   </div>
-  <section class="eights-opponent" aria-label="Computer player, cards face down">
-   <h2>✦ THE COMPUTER <span>· AN EXTREMELY SMUG OPPONENT</span></h2>
+   <section class="eights-opponent" aria-label="Opponent cards face down">
+   <h2>✦ <span id="opponent-name">THE COMPUTER · AN EXTREMELY SMUG OPPONENT</span></h2>
    <div id="cpu-hand" class="eights-cpu-hand" aria-label="CPU cards hidden"></div>
   </section>
   <section class="eights-center" aria-label="Card pile and current suit">
@@ -61,8 +64,13 @@
   </section>
   <p id="status" class="eights-status" role="status" aria-live="polite">Your turn.</p>
   <div id="choose" aria-label="Choose a new suit after playing an Eight"></div>
+  <div id="pass-screen" class="eights-pass-screen" hidden role="dialog" aria-modal="true" aria-labelledby="pass-title">
+   <span aria-hidden="true">✦</span><h2 id="pass-title">PASS THE TABLE</h2>
+   <p id="pass-copy">Hand the device to the next player. Their cards stay hidden until they are ready.</p>
+   <button type="button" id="pass-ready" class="eights-button primary">I have the device · show my hand</button>
+  </div>
   <section class="eights-your-hand" aria-label="Your playing cards">
-   <div class="eights-hand-head"><h2>♠ YOUR HAND</h2><small>Tap a playable card · swipe to see more</small></div>
+   <div class="eights-hand-head"><h2 id="hand-owner">♠ YOUR HAND</h2><small>Tap a playable card · swipe to see more</small></div>
    <div id="hand" aria-label="Your available cards"></div>
    <div class="eights-actionbar">
     <button type="button" id="draw" class="eights-button draw">Draw &amp; pass</button>

@@ -44,7 +44,7 @@ export class CinderEightsGame {
   if(card)this.hands[player].push(card);
   return card||null;
  }
- play(player,index){
+ play(player,index,{humanWild=player===0}={}){
   if(this.over||this.awaitingSuit||this.turn!==player)return {ok:false,reason:"Not your turn"};
   const hand=this.hands[player];
   if(!Number.isInteger(index)||index<0||index>=hand.length)return {ok:false,reason:"No such card"};
@@ -55,7 +55,7 @@ export class CinderEightsGame {
    this.over=true;this.winner=player;
    return {ok:true,kind:"win",card,winner:player};
   }
-  if(card.r==="8"&&player===0){
+  if(card.r==="8"&&humanWild){
    this.awaitingSuit=true;
    return {ok:true,kind:"choose-suit",card};
   }
@@ -67,19 +67,20 @@ export class CinderEightsGame {
   this.turn=1-player;
   return {ok:true,kind:"played",card};
  }
- chooseSuit(suit){
-  if(this.over||!this.awaitingSuit||!validSuit(suit))return false;
-  this.suit=suit;this.awaitingSuit=false;this.turn=1;
+ chooseSuit(suit,player=0){
+  if(this.over||!this.awaitingSuit||this.turn!==player||!validSuit(suit))return false;
+  this.suit=suit;this.awaitingSuit=false;this.turn=1-player;
   return true;
  }
- drawHuman(){
-  if(this.over||this.turn!==0||this.awaitingSuit)return {ok:false,reason:"Cannot draw right now"};
-  const card=this.drawFor(0);
-  this.turn=1;this.moves++;
+ drawPlayer(player){
+  if(this.over||this.turn!==player||this.awaitingSuit||(player!==0&&player!==1))return {ok:false,reason:"Cannot draw right now"};
+  const card=this.drawFor(player);
+  this.turn=1-player;this.moves++;
   this.stalled=card?0:this.stalled+1;
   if(this.stalled>=2){this.over=true;this.winner=null;return {ok:true,kind:"draw",card:null};}
   return {ok:true,kind:card?"drawn":"passed",card};
  }
+ drawHuman(){return this.drawPlayer(0)}
  cpuMove(){
   if(this.over||this.turn!==1||this.awaitingSuit)return {ok:false,reason:"CPU cannot move"};
   const hand=this.hands[1];
@@ -102,6 +103,6 @@ export class CinderEightsGame {
  checkIntegrity(){
   const cards=[...this.deck,...this.hands[0],...this.hands[1],...this.pile];
   const ids=cards.map(cardLabel);
-  return cards.length===52&&new Set(ids).size===52&&!this.over&&(!this.awaitingSuit||this.turn===0);
+  return cards.length===52&&new Set(ids).size===52&&!this.over&&(!this.awaitingSuit||(this.turn===0||this.turn===1));
  }
 }

@@ -2,11 +2,11 @@ import {CinderEightsGame,SUITS,cardLabel} from "./engine.mjs";
 const $=id=>document.getElementById(id);
 const main=$("eights-root"),status=$("status"),hand=$("hand"),choose=$("choose");
 const KEY="ashfall:cinder-eights:record:v2";
-let game=null,timer=null,generation=0,playingRound=false,focusMode=false;
-let record={you:0,cpu:0};
+let game=null,timer=null,generation=0,playingRound=false,focusMode=false,hotseat=false,covered=false;
+let record={you:0,cpu:0,player2:0};
 try{
  const raw=JSON.parse(localStorage.getItem(KEY)||"{}");
- for(const who of ["you","cpu"])if(Number.isSafeInteger(raw?.[who])&&raw[who]>=0&&raw[who]<=1000000)record[who]=raw[who];
+ for(const who of ["you","cpu","player2"])if(Number.isSafeInteger(raw?.[who])&&raw[who]>=0&&raw[who]<=1000000)record[who]=raw[who];
 }catch{}
 const name=card=>card?.r==="8"?"Wild Eight "+card.s:cardLabel(card);
 function announce(text){
@@ -21,7 +21,7 @@ function wins(){
 }
 function scoreRound(){
  if(!game.over||game.winner===null)return;
- const who=game.winner===0?"you":"cpu";
+ const who=game.winner===0?"you":hotseat?"player2":"cpu";
  record[who]=Math.min(1000000,record[who]+1);
  try{localStorage.setItem(KEY,JSON.stringify(record))}catch{}
  wins();
@@ -40,19 +40,29 @@ function cardElement(card,i){
  const suit=document.createElement("span");suit.className="eights-card-suit";suit.textContent=card.s;
  const foot=document.createElement("span");foot.className="eights-card-foot";foot.textContent="KF / "+String(i+1).padStart(2,"0");
  btn.append(mark,suit,foot);
- btn.disabled=game.over||game.turn!==0||game.awaitingSuit||!game.canPlay(card);
+ btn.disabled=game.over||covered||(!hotseat&&game.turn!==0)||game.awaitingSuit||!game.canPlay(card);
  btn.addEventListener("click",()=>humanPlay(i));
  return btn;
 }
 function render(note){
  wins();
+ const activePlayer=hotseat?game.turn:0,opponent=1-activePlayer,humanTurn=hotseat||game.turn===0;
+ $("mode-eyebrow").textContent=hotseat?"LOCAL CARD GAME / PASS-AND-PLAY DUEL":"SOLO CARD GAME / YOU VS THE CPU";
+ $("mode-description").textContent=hotseat?"Trade the device between turns, hide each hand during the pass, and race to empty your cards. All style, zero actual gambling.":"Match suit or rank, throw wild Eights to change the rules, and empty your hand before the CPU does. All style, zero actual gambling.";
+ $("opponent-name").textContent=hotseat?"PLAYER "+(opponent+1)+" · HAND HIDDEN":"THE COMPUTER · AN EXTREMELY SMUG OPPONENT";
+ $("count-opponent-label").textContent=hotseat?"PLAYER "+(opponent+1):"CPU";
+ $("opponent-wins-label").textContent=hotseat?"PLAYER 2 VICTORIES":"CPU VICTORIES";
+ $("hand-owner").textContent=hotseat?"♠ PLAYER "+(activePlayer+1)+" HAND":"♠ YOUR HAND";
+ $("pass-screen").hidden=!covered;
+ $("pass-copy").textContent="Hand the device to Player "+(game.turn+1)+". Their cards stay hidden until they are ready.";
+ $("pass-ready").textContent="Player "+(game.turn+1)+" is ready · show hand";
  $("count-deck").textContent=String(game.remaining);
- $("count-cpu").textContent=String(game.hands[1].length);
- $("count-hand").textContent=String(game.hands[0].length);
+ $("count-cpu").textContent=String(game.hands[opponent].length);
+ $("count-hand").textContent=String(game.hands[activePlayer].length);
  $("active-suit").textContent=game.suit;
  $("round-moves").textContent=String(game.moves);
- $("turn-indicator").textContent=game.over?"ROUND FINISHED":game.awaitingSuit?"CHOOSE THE SUIT":game.turn===0?"YOUR TURN":"CPU THINKING";
- $("turn-indicator").className="eights-state "+(game.turn===0&&!game.over?"is-turn":"");
+ $("turn-indicator").textContent=game.over?"ROUND FINISHED":covered?"PASS THE DEVICE":game.awaitingSuit?"CHOOSE THE SUIT":humanTurn?(hotseat?"PLAYER "+(activePlayer+1)+" TURN":"YOUR TURN"):"CPU THINKING";
+ $("turn-indicator").className="eights-state "+(humanTurn&&!game.over&&!covered?"is-turn":"");
  const top=game.top,discard=$("top-card");
  discard.className="playing-card eights-discard "+(top.s==="♥"||top.s==="♦"?"red":"black");
  discard.replaceChildren();
@@ -60,14 +70,14 @@ function render(note){
  const icon=document.createElement("strong");icon.className="suit";icon.textContent=top.s;
  const foot=document.createElement("small");foot.textContent="DISCARD";
  discard.append(corner,icon,foot);
- hand.replaceChildren(...game.hands[0].map(cardElement));
+ hand.replaceChildren(...(covered?[]:game.hands[activePlayer].map(cardElement)));
  $("cpu-hand").replaceChildren();
- for(let i=0;i<game.hands[1].length;i++){
+ for(let i=0;i<game.hands[opponent].length;i++){
   const back=document.createElement("span");back.className="playing-card back";
   back.setAttribute("aria-hidden","true");back.textContent="✦";$("cpu-hand").append(back);
  }
  choose.replaceChildren();
- if(game.awaitingSuit&&!game.over){
+ if(game.awaitingSuit&&!game.over&&!covered){
   const label=document.createElement("strong");label.textContent="YOUR EIGHT, YOUR RULES · PICK A SUIT";choose.append(label);
   for(const suit of SUITS){
    const btn=document.createElement("button");btn.type="button";btn.textContent=suit;
@@ -77,7 +87,7 @@ function render(note){
    choose.append(btn);
   }
  }
- $("draw").disabled=game.over||game.turn!==0||game.awaitingSuit;
+ $("draw").disabled=game.over||covered||(!hotseat&&game.turn!==0)||game.awaitingSuit;
  if(note)announce(note);
  else if(game.over)announce(game.winner===null?"DRAW. No cards left to draw and neither player can move.":game.winner===0?"YOU WIN! The CPU's ego has been legally declared missing.":"CPU WINS. Its smugness is almost unbearable.");
  else if(game.awaitingSuit)announce("Eight played. Choose a suit to make the CPU miserable.");
@@ -85,6 +95,7 @@ function render(note){
  else announce("CPU is choosing its next terrible idea…");
 }
 function queueCpu(){
+ if(hotseat)return;
  const token=++generation;
  clearTimeout(timer);
  timer=setTimeout(()=>{
@@ -94,34 +105,44 @@ function queueCpu(){
   render(move.kind==="draw"?"DRAW. Neither player can make another move.":move.kind==="win"?"CPU played "+name(move.card)+" and emptied its hand.":move.kind==="passed"?"CPU passed. Your turn.":"CPU played "+name(move.card)+(move.card.r==="8"?", switched to "+game.suit:"")+".");
  },460);
 }
+function handoff(note){covered=true;render(note);$("pass-ready").focus();}
 function humanPlay(index){
- const move=game.play(0,index);
+ const player=hotseat?game.turn:0;
+ const move=game.play(player,index,{humanWild:hotseat||player===0});
  if(!move.ok)return;
  registerProgress();
  if(move.kind==="win"){scoreRound();render("YOU WIN! Your last card was "+name(move.card)+".");return;}
  if(move.kind==="choose-suit"){render();return;}
+ if(hotseat){handoff("Player "+(player+1)+" played "+name(move.card)+". Pass the table to Player "+(game.turn+1)+".");return;}
  render("You played "+name(move.card)+".");
  queueCpu();
 }
 function selectSuit(suit){
- if(!game.chooseSuit(suit))return;
+ const player=hotseat?game.turn:0;
+ if(!game.chooseSuit(suit,player))return;
+ if(hotseat){handoff("Player "+(player+1)+" changed the suit. Pass the table to Player "+(game.turn+1)+".");return;}
  render("You changed the suit to "+suit+". The CPU is probably filing a complaint.");
  queueCpu();
 }
 function draw(){
- const move=game.drawHuman();
+ const player=hotseat?game.turn:0;
+ const move=game.drawPlayer(player);
  if(!move.ok)return;
  registerProgress();
- render(move.kind==="draw"?"DRAW. Neither player can make another move.":move.kind==="drawn"?"You drew one card and passed.":"No cards left to draw; your turn passes.");
+ render(move.kind==="draw"?"DRAW. Neither player can make another move.":move.kind==="drawn"?(hotseat?"Player "+(player+1)+" drew one card and passed.":"You drew one card and passed."):(hotseat?"Player "+(player+1)+" passed the turn.":"No cards left to draw; your turn passes."));
+ if(hotseat&&!game.over){handoff("Player "+(player+1)+" passed. Hand the device to Player "+(game.turn+1)+".");return;}
  if(!game.over)queueCpu();
 }
 function newGame(){
  clearTimeout(timer);timer=null;generation++;playingRound=false;
+ hotseat=$("game-mode").value==="local";covered=false;
  game=new CinderEightsGame();
- render("Fresh deck. Seven cards each. Your move.");
+ render(hotseat?"Fresh deck. Player 1 starts. Pass the device after every turn.":"Fresh deck. Seven cards each. Your move.");
 }
 $("draw").addEventListener("click",draw);
 $("new").addEventListener("click",newGame);
+$("game-mode").addEventListener("change",newGame);
+$("pass-ready").addEventListener("click",()=>{covered=false;render("Player "+(game.turn+1)+", your hand is ready.");$("hand").querySelector("button")?.focus();});
 let isNative=()=>document.fullscreenElement===main||document.webkitFullscreenElement===main;
 function updateFull(){
  const active=isNative()||focusMode;
