@@ -79,7 +79,7 @@
         const branches=document.createElement("nav");branches.className="profile-actions";branches.setAttribute("aria-label","Star Wars subcategories");
         const links=category.slug==="star-wars"?cats.filter(c=>["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history","holocron-archives","star-wars-news"].includes(c.slug)):["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history","holocron-archives","star-wars-news"].includes(category.slug)?cats.filter(c=>c.slug==="star-wars"):[];
         for(const child of links){const link=document.createElement("a");link.className="action";link.href="/community-topic.html?category_id="+encodeURIComponent(child.id);link.textContent=child.name;branches.append(link);}
-        if(links.length)descriptionEl.after(branches);
+        if(links.length){const library=document.createElement("a");library.className="action";library.href="/force-library.html";library.textContent="Search the Force Library";branches.append(library);descriptionEl.after(branches);}
         const user=me.user||null;
         if(user){createLink.hidden=false;createLink.href="/create-thread.html?category_id="+encodeURIComponent(category.id);accountNote.textContent="Signed in as "+(user.display_name||user.username)+". Your thread can join this conversation."}
         else{createLink.hidden=true;accountNote.innerHTML='You can read the discussions without an account. <a href="/auth.html?next='+encodeURIComponent("/create-thread.html?category_id="+category.id)+'">Sign in or create an account</a> to start a thread.'}
