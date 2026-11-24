@@ -187,7 +187,7 @@ if(window.MutationObserver){
  const observer=new MutationObserver(records=>{
   if(records.some(r=>r.type==='attributes'?!root.contains(r.target):[...r.addedNodes].some(n=>n.nodeType===1&&!root.contains(n))))schedule();
  });
- observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['open','hidden','aria-modal','aria-hidden','class','style']});
+ observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['open','hidden','aria-modal','aria-hidden','class']});
 }
 root.dataset.minimized=initiallyMinimized?'true':'false';
 restore.hidden=!initiallyMinimized;

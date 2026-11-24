@@ -31,7 +31,7 @@ test("Miss Chaos yields its floating dock to visible page dialogs",()=>{
 
 test("overlay arbitration tracks modal state without observing its own style writes",()=>{
   assert.match(dock,/dialog\[open\],\[aria-modal="true"\],\[role="dialog"\]\[data-overlay-blocking="true"\]/);
-  assert.match(dock,/attributes:true,attributeFilter:\['open','hidden','aria-modal','aria-hidden','class','style'\]/);
+  assert.match(dock,/attributes:true,attributeFilter:\['open','hidden','aria-modal','aria-hidden','class'\]/);
   assert.match(dock,/r\.type==='attributes'\?!root\.contains\(r\.target\)/);
   assert.match(css,/\.mc-overlay-suspended\{visibility:hidden!important;pointer-events:none!important\}/);
   assert.doesNotMatch(css,/body\.zombie-immersive-open #miss-chaos-p\s*$/);
