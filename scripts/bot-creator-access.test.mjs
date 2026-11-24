@@ -35,3 +35,8 @@ assert.match(backend,/AS public_title/);
 assert.match(foundry,/id="bot-forge" data-workspace hidden/);
 assert.match(home,/id="home-activity-composer"/);
 console.log("Server rules, database trigger, homepage and Foundry integration verified.");
+
+for(const role of ["member","god","admin","moderator"]){
+ const denied=botAccessPolicy({role,status:"suspended"},100,{unlimited_slots:1,advanced_builder:1},true);
+ assert.deepEqual([denied.limit,denied.unlimited,denied.advanced_builder],[0,false,false]);
+}
