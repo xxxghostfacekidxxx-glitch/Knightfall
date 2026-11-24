@@ -45,10 +45,6 @@ function memberSeat(state,viewerId){
  return state.members.findIndex((id,index)=>id!=null&&Number(id)===Number(viewerId)&&
  ["accepted","pending"].includes(state.invite_status[index]));
 }
-function joinedSeat(state,viewerId){
- return state.members.findIndex((id,index)=>id!=null&&Number(id)===Number(viewerId)&&
- state.invite_status[index]==="accepted");
-}
 function botForIndex(state,index){
  const used=state.invite_status.slice(0,index).filter(x=>x!=="accepted").length;
  return CHAOS_CARD_BOTS[used];
@@ -85,10 +81,6 @@ function aiCard(state,bot){
 }
 export function activeCardPeers(state,viewerId){
  return state.members.filter((id,seat)=>id!=null&&Number(id)!==Number(viewerId)&&["accepted","pending"].includes(state.invite_status[seat]));
-}
-async function hasTableBlock(env,state,viewerId){
- for(const peer of activeCardPeers(state,viewerId))if(await blockedPair(env,viewerId,peer))return true;
- return false;
 }
 function winnerChoice(state,index){
  const chosen=state.choices[index];
@@ -222,15 +214,17 @@ export function shouldNotifyChaosCardTurn(previous,state,seat){
 async function notifyTurns(env,createNotification,row,actorId,previous=null){
  if(row.status!=="active"&&row.status!=="completed")return;
  const state=JSON.parse(row.state_json);
+ const notices=[];
  for(let seat=0;seat<SEAT_COUNT;seat++){
   if(!shouldNotifyChaosCardTurn(previous,state,seat))continue;
   const id=state.members[seat];if(Number(id)===Number(actorId))continue;
   const action=chaosCardTurnAction(state,seat);
-  await notify(env,createNotification,row,id,"Cards Against Chaos · "+action,
+  notices.push(notify(env,createNotification,row,id,"Cards Against Chaos · "+action,
    action==="See the round winner"||action==="See the final scores"?
    "Your four-player card table has an update to review.":
-   "Your four-player card table is ready. Take your turn whenever you like.",actorId);
+   "Your four-player card table is ready. Take your turn whenever you like.",actorId));
  }
+ await Promise.all(notices);
 }
 async function readBoundedMatchJson(request,maxBytes){
  const declared=Number(request.headers.get("content-length")||0);

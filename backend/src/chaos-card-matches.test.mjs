@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {BLACK,WHITE} from "./chaos-card-deck.js";
 import {EXPANSION_PACKS} from "../../public/arcade/hosted/cards-against-chaos/expansion-packs.js";
 import {THEME_DRAW_SHARE,validatedPacks,drawThemedCard,putBackThemedCard} from "../../public/arcade/hosted/cards-against-chaos/deck-mixer.js";
-import {activeCardPeers,CHAOS_CARD_BOTS,newChaosState,startChaosTable,beginChaosRound,playChaosCard,judgeChaosCard,visibleChaosMatch,handleChaosCardMatches,chaosCardTurnAction,shouldNotifyChaosCardTurn} from "./chaos-card-matches.js";
+import {activeCardPeers,CHAOS_CARD_BOTS,newChaosState,startChaosTable,beginChaosRound,playChaosCard,judgeChaosCard,visibleChaosMatch,handleChaosCardMatches,hasTableBlock,chaosCardTurnAction,shouldNotifyChaosCardTurn} from "./chaos-card-matches.js";
 
 const ids=[17,24,31,44];
 const row=(state,status="active")=>({
