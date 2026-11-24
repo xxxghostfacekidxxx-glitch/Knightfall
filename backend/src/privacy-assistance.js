@@ -110,8 +110,12 @@ export async function handlePrivacyAssistance(request, env, url, { getUser, json
     return reply({ tickets, next_cursor: listing.list_complete ? null : listing.cursor });
   }
   if (detail && request.method === 'PATCH') {
-    let payload;
-    try { payload = await request.json(); } catch { return reply({ error: 'Invalid JSON.' }, 400); }
+    if (request.headers.get('Origin') !== origin || !/^https:\/\/(?:www\.)?ash-fall\.com$/.test(origin)) return reply({ error: 'Invalid request origin.' }, 403);
+    if (!(request.headers.get('content-type') || '').toLowerCase().startsWith('application/json')) return reply({ error: 'Submit the form as JSON.' }, 415);
+    const parsed = await parseLimitedPrivacyJson(request);
+    if (parsed.error) return reply({ error: parsed.error }, parsed.status);
+    const payload = parsed.value;
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return reply({ error: 'Invalid request.' }, 400);
     const status = String(payload?.status || '');
     if (!['reviewing','awaiting_verification','closed'].includes(status)) return reply({ error: 'Invalid assistance status.' }, 400);
     const suppliedNote = typeof payload?.operator_note === 'string' ? payload.operator_note.trim() : null;
