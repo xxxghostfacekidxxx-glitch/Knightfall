@@ -7,6 +7,7 @@ const source=read("public/card-deck-skins.js");
 const css=read("public/card-deck-skins.css");
 const catalog=JSON.parse(read("public/arcade/catalog.json"));
 const shop=read("public/cinder-shop.html");
+const sw=read("public/sw.js");
 const paths=[...new Set(catalog.games.filter(g=>g.genre==="Card").map(g=>g.route.split("#")[0]))];
 
 function startWardrobe(memory=new Map()){
@@ -80,12 +81,15 @@ test("former premium skins stored locally can be selected without purchase",()=>
 });
 
 test("every catalogued card-game entry imports the same asset pipeline",()=>{
- assert.equal(paths.length,4,"new Card catalog routes must be opted into deck skins explicitly");
+ assert.equal(paths.length,5,"every current Card catalog route must be opted into deck skins explicitly");
  for(const route of paths){
   const html=read("public"+route);
   assert.match(html,/<link[^>]+card-deck-skins\.css\?v=/,route+" missing shared skin CSS");
   assert.match(html,/<script[^>]+card-deck-skins\.js\?v=/,route+" missing shared skin selector");
  }
+ assert.match(sw,/"\/arcade\/cinder-sequence\.html"/,"Cinder Sequences must remain launchable offline");
+ assert.match(sw,/"\/card-deck-skins\.css"/,"Shared deck styles must be available offline");
+ assert.match(sw,/"\/card-deck-skins\.js"/,"Shared deck selector must be available offline");
  assert.match(read("public/arcade-card-room.html"),/recordDeal\('chaos-war'\)/);
  assert.match(read("public/arcade-card-room.html"),/recordDeal\('chaos-freecell'\)/);
  assert.match(read("public/arcade/hosted/cinder-eights/game.js"),/className="af-deck-card "/);

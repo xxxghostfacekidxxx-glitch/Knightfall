@@ -14,7 +14,7 @@ export const FREE_TIER_BUDGETS = Object.freeze({
 export function quotaStatus(usage, limit) {
   if (!Number.isFinite(usage) || usage < 0 || !Number.isFinite(limit) || limit <= 0) return "unknown";
   const fraction = usage / limit;
-  return fraction >= 1 ? "exhausted" : fraction >= 0.9 ? "critical" : fraction >= 0.7 ? "warning" : "healthy";
+  return fraction >= 1 ? "exhausted" : fraction >= 0.9 ? "critical" : fraction >= 0.75 ? "elevated" : fraction >= 0.5 ? "warning" : "healthy";
 }
 
 export async function handleQuotaGuardian(request, env, url, { requireUser, json, origin }) {
@@ -25,9 +25,18 @@ export async function handleQuotaGuardian(request, env, url, { requireUser, json
   if (!user || user.role !== "god") return json({ error: "Forbidden." }, 403, origin);
   const rows = await env.DB.prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN reset_at <= ? THEN 1 ELSE 0 END) AS expired FROM request_rate_limits").bind(Date.now()).first();
   const workerTraffic = await readWorkerTraffic(env);
+  const workerRequestBudget = workerTraffic.available
+    ? {
+        used: workerTraffic.requests,
+        reference_limit: FREE_TIER_BUDGETS.worker_requests_daily,
+        status: quotaStatus(workerTraffic.requests, FREE_TIER_BUDGETS.worker_requests_daily),
+        thresholds_percent: [50, 75, 90]
+      }
+    : { status: "unknown", thresholds_percent: [50, 75, 90] };
   return json({
     ok: true,
     worker_traffic: workerTraffic,
+    worker_request_budget: workerRequestBudget,
     collected_at: new Date().toISOString(),
     provider_usage_available: false,
     provider_usage_note: "Daily Cloudflare account usage is not connected. Limits are reference values, not consumption measurements.",

@@ -109,7 +109,7 @@ test("Worker config contains a SQLite-backed hibernating Durable Object class",(
 
 test("read receipts publish only when a member advances their read cursor",()=>{
  const worker=readFileSync(new URL("./index.js",import.meta.url),"utf8");
- assert.match(worker,/SELECT conversation_id,last_read_at FROM conversation_members WHERE conversation_id=\? AND user_id=\?/);
+ assert.match(worker,/SELECT conversation_id,last_read_at,joined_after_message_id FROM conversation_members WHERE conversation_id=\? AND user_id=\?/);
  assert.match(worker,/if\(!membership\.last_read_at\|\|String\(membership\.last_read_at\)<String\(readThrough\)\)/);
  assert.match(worker,/notifyConversationLive\(ctx,env,conversationId,"read",readMessageId,"changed"\)/);
 });

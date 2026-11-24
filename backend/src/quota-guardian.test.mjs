@@ -31,9 +31,15 @@ test("route ignores other endpoints and rejects mutation", async () => {
   assert.equal((await handleQuotaGuardian({ method: "POST" }, env, url, deps("god"))).status, 405);
 });
 test("quota status reports threshold correctly", () => {
-  assert.equal(quotaStatus(69, 100), "healthy");
-  assert.equal(quotaStatus(70, 100), "warning");
+  assert.equal(quotaStatus(49, 100), "healthy");
+  assert.equal(quotaStatus(50, 100), "warning");
+  assert.equal(quotaStatus(75, 100), "elevated");
   assert.equal(quotaStatus(90, 100), "critical");
   assert.equal(quotaStatus(100, 100), "exhausted");
   assert.equal(quotaStatus(null, FREE_TIER_BUDGETS.kv_writes_daily), "unknown");
+});
+
+test("dashboard exposes threshold bands without treating unavailable usage as zero", async () => {
+  const result = await handleQuotaGuardian(request, env, url, deps("god"));
+  assert.deepEqual(result.body.worker_request_budget, { status: "unknown", thresholds_percent: [50, 75, 90] });
 });

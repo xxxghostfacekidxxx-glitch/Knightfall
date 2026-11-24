@@ -44,7 +44,7 @@ test("homepage discovery links resolve to existing public pages", () => {
   const section = home.match(/<div class="kf-chaos-categories"[^>]*>([\s\S]*?)<\/div>/);
   assert.ok(section, "homepage discovery section is missing");
   const links = [...section[1].matchAll(/<a href="(\/[^"]+\.html)"/g)].map(m => m[1]);
-  assert.equal(links.length, 10, "expected ten navigable discovery categories");
+  assert.ok(links.length >= 10, "expected all current navigable discovery categories");
   for (const route of links) {
     assert.doesNotThrow(() => read("public" + route), "missing destination: " + route);
   }

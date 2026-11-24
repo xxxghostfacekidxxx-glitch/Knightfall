@@ -79,7 +79,7 @@ test('three illustrated public gateways are real local assets and remain availab
   assert.ok(chrome.includes('/assets/knightfall/gateway-'+part+'.svg'),'Site uses '+part+' illustration');
   assert.ok(sw.includes('/assets/knightfall/gateway-'+part+'.svg'),'PWA caches '+part+' illustration');
  }
- assert.ok(read('index.html').includes('class="kf-start-grid"'),'Visible home entry card grid exists');
+ assert.match(read('index.html'),/class="[^"]*\bkf-start-grid\b[^"]*"/,'Visible home entry card grid exists');
 });
 
 test('style source keeps balanced declarations and no unsupported remote assets',()=>{
