@@ -75,6 +75,7 @@
         document.title=displayName+" | Ash-Fall";
         document.getElementById("topic-kicker").textContent="COMMUNITY / "+displayName.toUpperCase();
         document.getElementById("topic-threads-heading").textContent=displayName+" Threads";
+        if(["jedi-temple","order-of-the-sith"].includes(category.slug)){const academy=document.createElement("a");academy.href="/force-academy.html?path="+(category.slug==="jedi-temple"?"jedi":"sith");academy.textContent="Enter the Academy";document.querySelector(".topic-actions").append(academy);}
         const branches=document.createElement("nav");branches.className="profile-actions";branches.setAttribute("aria-label","Star Wars subcategories");
         const links=category.slug==="star-wars"?cats.filter(c=>["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history","holocron-archives"].includes(c.slug)):["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history","holocron-archives"].includes(category.slug)?cats.filter(c=>c.slug==="star-wars"):[];
         for(const child of links){const link=document.createElement("a");link.className="action";link.href="/community-topic.html?category_id="+encodeURIComponent(child.id);link.textContent=child.name;branches.append(link);}
