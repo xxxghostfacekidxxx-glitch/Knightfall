@@ -83,6 +83,13 @@ function aiCard(state,bot){
  for(const card of offer.filter((_,i)=>offer.indexOf(chosen)!==i))putBackThemedCard(state,"white",card,WHITE,EXPANSION_PACKS);
  return chosen;
 }
+export function activeCardPeers(state,viewerId){
+ return state.members.filter((id,seat)=>id!=null&&Number(id)!==Number(viewerId)&&["accepted","pending"].includes(state.invite_status[seat]));
+}
+async function hasTableBlock(env,state,viewerId){
+ for(const peer of activeCardPeers(state,viewerId))if(await blockedPair(env,viewerId,peer))return true;
+ return false;
+}
 function winnerChoice(state,index){
  const chosen=state.choices[index];
  if(!chosen)return false;
@@ -151,13 +158,13 @@ export function visibleChaosMatch(row,viewerId){
  return {
   id:row.id,status:row.status,version:Number(row.version),created_at:row.created_at,updated_at:row.updated_at,
   seats:seatsFor(row,state),viewer_seat:viewer,human_count:state.invite_status.filter(x=>x==="accepted").length,
-  round:state.round,phase:state.phase,judge:state.judge,prompt:state.prompt,
+  round:state.round,phase:state.phase,judge:state.judge,prompt:joined?state.prompt:"",
   active_packs:state.active_packs||[],theme_draw_share:(state.active_packs||[]).length?THEME_DRAW_SHARE:0,
   scores:state.scores,submitted_count:Object.keys(state.submitted).length,
   submitted_by_me:state.submitted[viewer]!==undefined,
   hand:canPlay?[...state.hands[viewer]]:[],
   choices:canJudge?state.choices.map((c,index)=>({index,card:c.card})):[],
-  result:["results","finished"].includes(state.phase)?state.result:null,
+  result:joined&&["results","finished"].includes(state.phase)?state.result:null,
   can_play:canPlay,can_judge:canJudge,
   can_next:row.status==="active"&&joined&&state.phase==="results",
   can_accept:row.status==="lobby"&&state.invite_status[viewer]==="pending",
