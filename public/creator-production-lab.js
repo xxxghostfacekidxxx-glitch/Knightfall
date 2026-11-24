@@ -64,14 +64,16 @@ $('lab-pixel-remove').addEventListener('click',()=>{if(frames.length===1)return;
 $('lab-pixel-clear').addEventListener('click',()=>{saveUndo();frames[frame]=new Uint8ClampedArray(SIZE*SIZE*4);redraw()});
 $('lab-pixel-import').addEventListener('change',async event=>{
  const file=event.target.files?.[0];if(!file)return;
+ const targetFrame=frames[frame];
  try{
   const img=await loadRaster(file),c=document.createElement('canvas');c.width=c.height=SIZE;
   const g=c.getContext('2d',{willReadFrequently:true});g.imageSmoothingEnabled=false;g.clearRect(0,0,SIZE,SIZE);
   const ratio=Math.min(SIZE/img.naturalWidth,SIZE/img.naturalHeight),w=Math.max(1,Math.floor(img.naturalWidth*ratio)),h=Math.max(1,Math.floor(img.naturalHeight*ratio));
   g.drawImage(img,Math.floor((SIZE-w)/2),Math.floor((SIZE-h)/2),w,h);
+  if(event.target.files?.[0]!==file||frames[frame]!==targetFrame)return;
   saveUndo();frames[frame]=new Uint8ClampedArray(g.getImageData(0,0,SIZE,SIZE).data);
   redraw();say('lab-status','Image loaded locally and scaled to 32×32.');
- }catch(error){say('lab-status',error.message)}event.target.value='';
+ }catch(error){say('lab-status',error.message)}if(event.target.files?.[0]===file)event.target.value='';
 });
 function frameStrip(){
  const canvas=document.createElement('canvas');canvas.width=SIZE*frames.length;canvas.height=SIZE;
