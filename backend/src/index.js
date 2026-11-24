@@ -1021,10 +1021,14 @@ async function publishScheduledBotNews(env) {
     if(!item)continue;
     const decode=v=>v.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,"$1").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&lt;/g,"<").replace(/&gt;/g,">").trim();
     const title=decode(item.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]||"").slice(0,160);
-    const link=decode(item.match(/<link[^>]*>([\s\S]*?)<\/link>/i)?.[1]||"");
+    let link=decode(item.match(/<link[^>]*>([\s\S]*?)<\/link>/i)?.[1]||"");
     let parsed;try{parsed=new URL(link)}catch{continue}
     const allowed=feed.key==="order-66-6"?"starwarsnewsnet.com":"billboard.com";
-    if(parsed.protocol!=="https:"||!(parsed.hostname===allowed||parsed.hostname.endsWith("."+allowed))||!title)continue;
+    if(parsed.protocol!=="https:"||parsed.username||parsed.password||parsed.port||!(parsed.hostname===allowed||parsed.hostname==="www."+allowed)||parsed.pathname==="/"||!title)continue;
+    parsed.hash="";
+    for(const param of [...parsed.searchParams.keys()])if(/^(utm_|fbclid$|gclid$)/i.test(param))parsed.searchParams.delete(param);
+    parsed.searchParams.sort();link=parsed.href;
+    if(await env.DB.prepare("SELECT 1 FROM god_bot_news_log WHERE bot_key=? AND article_url=?").bind(bot.bot_key,link).first())continue;
     const category=await env.DB.prepare("SELECT id FROM categories WHERE slug=?").bind(feed.key==="order-66-6"?"star-wars":"music").first();
     if(!category)continue;
     const claim=await env.DB.prepare("INSERT OR IGNORE INTO god_bot_news_log(bot_key,slot_key,article_url,created_at) VALUES(?,?,?,CURRENT_TIMESTAMP)").bind(bot.bot_key,key,link).run();
