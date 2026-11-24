@@ -102,7 +102,7 @@ function matchesFilters(t){
  if(filters.priority!=='all'&&t.priority!==filters.priority)return false;
  if(filters.verification!=='all'&&(t.verification||'needs_review')!==filters.verification)return false;
  if(filters.query){
-  const content=[t.title,t.details,t.area,t.next_step,t.blocker,t.source_url].join(' ').toLowerCase();
+  const content=['#'+t.id,'ID '+t.id,t.title,t.details,t.area,t.next_step,t.blocker,t.source_url].join(' ').toLowerCase();
   if(!content.includes(filters.query))return false;
  }
  return true;
@@ -129,11 +129,12 @@ function renderTasks(){
  more.textContent='Show more tasks ('+(regularTasks.length-filters.limit)+' remaining)';
  if(!matching.length){list.append(elem('p','empty','No tasks match these filters. Clear the filters or try another workstream.'));return}
  if(!regularTasks.length)list.append(elem('p','empty','All matching tasks are awaiting verification above.'));
- for(const task of [...readyTasks,...regularTasks.slice(0,filters.limit)]){
+ const visibleTasks=[...readyTasks,...regularTasks.slice(0,filters.limit)];
+ for(const [index,task] of visibleTasks.entries()){
   const box=elem('article','task '+(task.status==='done'?'done':''));
   const content=elem('div','task-content');
   const header=elem('div','task-titlebar');
-  header.append(elem('h3','',task.title),elem('span','workstream-tag',task.area||'General'));
+  header.append(elem('h3','',(index+1)+'. '+task.title),elem('span','workstream-tag',task.area||'General'));
   content.append(header);
   const chips=elem('div','task-tags');
   chips.append(elem('span','priority '+task.priority,task.priority+' priority'));
@@ -149,7 +150,7 @@ function renderTasks(){
   }
   const src=sourceLink(task.source_url);if(src)content.append(src);
   const foot=elem('div','task-footer');
-  foot.append(field('Updated',task.updated_at||task.created_at),field('Revision',task.version));
+  foot.append(field('Task ID','#'+task.id),field('Updated',task.updated_at||task.created_at),field('Revision',task.version));
   content.append(foot);
   const controls=elem('div','task-controls');
   const select=elem('select');
