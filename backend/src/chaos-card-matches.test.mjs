@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {BLACK,WHITE} from "./chaos-card-deck.js";
 import {EXPANSION_PACKS} from "../../public/arcade/hosted/cards-against-chaos/expansion-packs.js";
 import {THEME_DRAW_SHARE,validatedPacks,drawThemedCard,putBackThemedCard} from "../../public/arcade/hosted/cards-against-chaos/deck-mixer.js";
-import {CHAOS_CARD_BOTS,newChaosState,startChaosTable,beginChaosRound,playChaosCard,judgeChaosCard,visibleChaosMatch,handleChaosCardMatches,chaosCardTurnAction,shouldNotifyChaosCardTurn} from "./chaos-card-matches.js";
+import {activeCardPeers,CHAOS_CARD_BOTS,newChaosState,startChaosTable,beginChaosRound,playChaosCard,judgeChaosCard,visibleChaosMatch,handleChaosCardMatches,chaosCardTurnAction,shouldNotifyChaosCardTurn} from "./chaos-card-matches.js";
 
 const ids=[17,24,31,44];
 const row=(state,status="active")=>({
@@ -199,4 +199,22 @@ test("account required before exposing private game data",async()=>{
  });
  assert.equal(result.status,401);
  assert.ok(!JSON.stringify(result).includes("hands"));
+});
+
+test("table block checks include every active peer, not just the host",()=>{
+ const state=newChaosState(17,[24,31,44]);
+ assert.deepEqual(activeCardPeers(state,24),[17,31,44]);
+ state.invite_status[2]="declined";
+ state.invite_status[3]="expired";
+ assert.deepEqual(activeCardPeers(state,24),[17]);
+});
+test("pending invitations do not reveal game prompt or result",()=>{
+ const state=newChaosState(17,[24]);
+ state.prompt="Private prompt";
+ state.result={card:"Private answer"};
+ state.phase="results";
+ const match=visibleChaosMatch(row(state,"lobby"),24);
+ assert.equal(match.prompt,"");
+ assert.equal(match.result,null);
+ assert.deepEqual(match.hand,[]);
 });
