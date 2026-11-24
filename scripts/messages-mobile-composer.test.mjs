@@ -7,7 +7,7 @@ const css=readFileSync(new URL("../public/messages.css",import.meta.url),"utf8")
 const mobileComposer=css.slice(css.lastIndexOf("Keep every composer control visible"));
 
 test("mobile thread composer keeps text entry, attachments, emoji and send controls",()=>{
-  assert.match(html,/messages\.css\?v=20261124-mobile-composer1/);
+  assert.match(html,/messages\.css\?v=20261124-original-emojis1/);
   assert.match(html,/<form id="composer" class="composer"/);
   for(const id of ["body","attach-file","cs-emoji-toggle","character-count"])
     assert.match(html,new RegExp(`id="${id}"`));

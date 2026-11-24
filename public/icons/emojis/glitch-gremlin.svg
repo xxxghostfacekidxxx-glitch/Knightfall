@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Glitch Gremlin">
+<defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#c4ff52"/><stop offset="1" stop-color="#36d6ad"/></linearGradient></defs>
+<path d="m27 44-9-22 27 12m56 10 9-22-27 12" fill="#8d54cf" stroke="#25152f" stroke-width="7" stroke-linejoin="round"/><path d="M22 74c0-27 18-43 42-43s42 16 42 43-18 39-42 39S22 101 22 74Z" fill="url(#g)" stroke="#25152f" stroke-width="7"/>
+<path d="M39 62h18v9H39zm34 0h17v9H73z" fill="#25152f"/><path d="M41 86h44l-7 12H49Z" fill="#25152f" stroke="#25152f" stroke-width="5" stroke-linejoin="round"/><path d="m54 88 5 8 6-8 6 8 6-8" fill="none" stroke="#fff" stroke-width="4"/>
+<path d="M8 53h17m-9 10h8m78-9h18m-17 10h10M37 14h24m27 99h19" stroke="#ff5fae" stroke-width="6" stroke-linecap="round"/><path d="M57 24h16" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+</svg>

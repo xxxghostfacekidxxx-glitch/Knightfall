@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Cinder Crown">
+<defs><linearGradient id="c" x2=".8" y2="1"><stop stop-color="#fff18a"/><stop offset="1" stop-color="#e78c47"/></linearGradient></defs>
+<path d="m18 42 28 19 18-41 18 41 28-19-9 52H27Z" fill="url(#c)" stroke="#342031" stroke-width="7" stroke-linejoin="round"/><path d="M28 94h72v17H28Z" fill="#c94786" stroke="#342031" stroke-width="7" stroke-linejoin="round"/>
+<circle cx="18" cy="38" r="8" fill="#8af5d2" stroke="#342031" stroke-width="5"/><circle cx="64" cy="18" r="8" fill="#ff83c7" stroke="#342031" stroke-width="5"/><circle cx="110" cy="38" r="8" fill="#8af5d2" stroke="#342031" stroke-width="5"/><path d="m48 75 16-10 16 10-16 12Z" fill="#33203a" stroke="#332031" stroke-width="4" stroke-linejoin="round"/><circle cx="64" cy="74" r="4" fill="#baff68"/>
+</svg>

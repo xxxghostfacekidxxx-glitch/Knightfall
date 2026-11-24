@@ -71,7 +71,7 @@ Migration `0024_starting_cinders.sql` raises each existing wallet to a minimum s
 
 ## Message reactions (0026)
 
-Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. The authenticated API only returns reactions for messages in a conversation the requester belongs to, and reaction writes verify both message existence and conversation membership. The UI supports a curated set of eight emoji and refreshes reaction counts when the conversation is rendered or polled. Apply the migration through the guarded production migration workflow and verify the table/index before treating reactions as available in production.
+Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. The authenticated API only returns reactions for messages in a conversation the requester belongs to, and reaction writes verify both message existence and conversation membership. Migration 0213 expands the constraint to the eight standard reactions plus Knightfall's original shortcode family. Apply the new migration through the guarded production migration workflow before treating custom reactions as available in production.
 
 
 ## Group conversations (0027)
@@ -257,3 +257,9 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - Applied the reviewed SQL through the authorized Cloudflare D1 query API, verified all five tables, and recorded `0136_shop_commerce_foundation.sql` in the migration ledger afterward. The normal Wrangler migration workflow was **not** used.
 - New seller APIs check authentication and shop ownership, and public endpoints return only seller-published policy fields and approved product variant fields (never supplier SKU or cost). `backend/src/shop-commerce.test.mjs` checks validation, access, and read-only order behavior.
 - No live checkout, Stripe onboarding, supplier automation, shipment tracking, or financial fulfillment is enabled. These tables are foundation only.
+
+## Knightfall original emoji reactions · 0213 (November 24, 2026)
+
+- `0213_knightfall_emoji_reactions.sql` preserves existing reaction rows while rebuilding the reaction table with a strict allowlist for eight standard reactions and twelve `:kf-...:` reactions. Unknown values remain rejected by both the API and database.
+- The original artwork lives in `public/icons/emojis/`; `public/knightfall-emojis.mjs` is the shared catalog used by the composer, message renderer, server allowlist, and migration consistency tests.
+- The source migration passed a local SQLite migration/read-back check. Production D1 has not been changed by this source update; apply it through the guarded production migration workflow and verify preserved rows and indexes before enabling the new Worker release.

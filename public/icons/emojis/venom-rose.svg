@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Venom Rose">
+<defs><linearGradient id="r" x2=".8" y2="1"><stop stop-color="#ff8bcb"/><stop offset="1" stop-color="#ad43b4"/></linearGradient></defs>
+<path d="M65 72q-8 25-2 44" fill="none" stroke="#c5ff69" stroke-width="7" stroke-linecap="round"/><path d="M63 95Q43 78 29 92q17 15 34 9m4-18q17-24 37-13-13 22-38 24" fill="#52d99e" stroke="#254034" stroke-width="5" stroke-linejoin="round"/>
+<path d="M64 73C32 76 24 52 40 39c-3-20 20-29 33-16 17-12 38 4 30 23 18 15 7 37-17 34-7 9-17 8-22-7Z" fill="url(#r)" stroke="#38203b" stroke-width="7" stroke-linejoin="round"/>
+<path d="M64 62c-20-12-2-28 8-18 8-12 25-3 15 10-4 6-14 10-23 17-8-7-18-13-21-20-5-12 11-18 17-6" fill="#ffcc76" stroke="#6e315d" stroke-width="4" stroke-linejoin="round"/><path d="m23 64-8 3 8 5m84-42 9-3-7-6" fill="none" stroke="#c8ff69" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

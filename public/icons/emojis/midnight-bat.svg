@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Midnight Bat">
+<defs><linearGradient id="b" x2=".8" y2="1"><stop stop-color="#a77cff"/><stop offset="1" stop-color="#42316e"/></linearGradient></defs>
+<path d="M64 45C48 28 29 23 11 27l10 23L7 68l24-5 10 25 13-15 10 29 10-29 13 15 10-25 24 5-14-18 10-23c-18-4-37 1-53 18Z" fill="url(#b)" stroke="#23162f" stroke-width="7" stroke-linejoin="round"/>
+<path d="M43 58q8-8 16 0v9q-8 7-16 0zm26 0q8-8 16 0v9q-8 7-16 0z" fill="#c8ff71" stroke="#23162f" stroke-width="4"/><path d="M50 81q14 11 28 0" fill="none" stroke="#23162f" stroke-width="5" stroke-linecap="round"/><path d="M64 17v12m-36-4 8 10m64-10-8 10" stroke="#ffd76a" stroke-width="5" stroke-linecap="round"/>
+</svg>

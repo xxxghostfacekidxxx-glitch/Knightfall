@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Eye of Chaos">
+<defs><linearGradient id="e" x2="1" y2="1"><stop stop-color="#55f5cf"/><stop offset="1" stop-color="#b372ff"/></linearGradient></defs>
+<path d="M11 64Q35 27 64 27t53 37Q93 101 64 101T11 64Z" fill="#201a32" stroke="url(#e)" stroke-width="8" stroke-linejoin="round"/>
+<path d="M33 64q13-18 31-18t31 18Q82 82 64 82T33 64Z" fill="#f4e8ff" stroke="#291934" stroke-width="5"/><circle cx="64" cy="64" r="13" fill="#62ffd5" stroke="#291934" stroke-width="5"/><path d="m64 49 5 15-5 15-5-15Z" fill="#27142f"/><path d="M64 9v11m0 88v11M9 64h11m88 0h11M25 25l8 8m62 62 8 8m0-78-8 8m-62 62-8 8" stroke="#ffd36e" stroke-width="5" stroke-linecap="round"/>
+</svg>

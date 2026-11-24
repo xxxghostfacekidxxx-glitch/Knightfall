@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Trouble Paw">
+<defs><linearGradient id="p" x2=".8" y2="1"><stop stop-color="#ff92d5"/><stop offset="1" stop-color="#a25bea"/></linearGradient></defs>
+<ellipse cx="64" cy="84" rx="34" ry="27" fill="url(#p)" stroke="#2b1935" stroke-width="7"/><ellipse cx="32" cy="47" rx="13" ry="18" transform="rotate(-24 32 47)" fill="url(#p)" stroke="#2b1935" stroke-width="6"/><ellipse cx="58" cy="37" rx="13" ry="18" transform="rotate(-5 58 37)" fill="url(#p)" stroke="#2b1935" stroke-width="6"/><ellipse cx="84" cy="40" rx="13" ry="18" transform="rotate(15 84 40)" fill="url(#p)" stroke="#2b1935" stroke-width="6"/><ellipse cx="105" cy="59" rx="12" ry="16" transform="rotate(35 105 59)" fill="url(#p)" stroke="#2b1935" stroke-width="6"/>
+<path d="M51 80q13-13 26 0 14 14 2 20-11 5-17-1-7 6-18 1-11-7 7-20Z" fill="#c9ff6a" stroke="#2b1935" stroke-width="5" stroke-linejoin="round"/><path d="m32 24-4-8m32 0V7m31 9 4-8" stroke="#fff0a6" stroke-width="4" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Void Star">
+<defs><linearGradient id="s" x2=".9" y2="1"><stop stop-color="#85ffe1"/><stop offset="1" stop-color="#a36aff"/></linearGradient></defs>
+<path d="m64 10 13 35 38-9-23 31 25 25-39-3-14 29-14-29-39 3 25-25-23-31 38 9Z" fill="url(#s)" stroke="#21152f" stroke-width="7" stroke-linejoin="round"/>
+<circle cx="64" cy="66" r="17" fill="#24182f" stroke="#ffe47c" stroke-width="5"/><circle cx="58" cy="62" r="3" fill="#fff"/><circle cx="70" cy="70" r="3" fill="#fff"/><path d="M25 18 30 9m73 18 9-5M17 101l9 3" stroke="#ff78c7" stroke-width="5" stroke-linecap="round"/>
+</svg>

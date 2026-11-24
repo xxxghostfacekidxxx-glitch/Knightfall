@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Reborn in Ash">
+<defs><linearGradient id="f" x2=".8" y2="1"><stop stop-color="#ffe66d"/><stop offset=".48" stop-color="#ff765f"/><stop offset="1" stop-color="#df3c9b"/></linearGradient></defs>
+<path d="M68 13c6 23-9 28-2 44 5-10 15-14 15-27 20 18 31 37 25 59-5 20-22 31-43 31S20 106 19 83c-1-18 12-33 27-48-3 18 4 23 10 27 8-17 2-31 12-49Z" fill="url(#f)" stroke="#382035" stroke-width="7" stroke-linejoin="round"/>
+<path d="M64 67c-2 12-13 17-12 30 1 9 7 15 14 15s15-6 15-16c0-9-7-17-17-29Z" fill="#fff0a6" stroke="#8a365e" stroke-width="5"/><path d="m32 99 9-4m48 3 8-5M28 81l8 2" stroke="#ebd4ef" stroke-width="4" stroke-linecap="round"/>
+</svg>
