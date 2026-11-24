@@ -37,7 +37,15 @@ export function move(state,seat,action,rng=Math.random){
   state.hands[seat]=hand.filter(c=>!action.ids.includes(c.id));
   state.discard.push(...cards);state.scores[seat]++;
   if(state.scores[seat]>=3){state.winner=seat;state.phase="finished";}
-  else state.phase="discard";
+  else {
+   // Refill the hand after scoring so later sequences remain possible.
+   while(state.hands[seat].length<6){
+    if(!state.deck.length&&state.discard.length>1){const top=state.discard.pop();state.deck=shuffleDeck(state.discard,rng);state.discard=[top];}
+    if(!state.deck.length)break;
+    state.hands[seat].push(state.deck.pop());
+   }
+   state.phase="discard";
+  }
   return true;
  }
  if(action.type==="discard"&&["meld","discard"].includes(state.phase)){
