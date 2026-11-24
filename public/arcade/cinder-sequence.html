@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cinder Sequence | Knightfall</title><style>
+body{background:#120e1c;color:#f6edf9;font:16px system-ui;margin:0;padding:clamp(12px,4vw,36px)}main{max-width:850px;margin:auto}a{color:#f6a5df}button{font:inherit;color:inherit;background:#30243e;border:1px solid #b782cf;border-radius:12px;padding:12px;min-height:48px;cursor:pointer}button:disabled{opacity:.45;cursor:default}button[aria-pressed=true]{outline:3px solid #f5d176}button:focus-visible{outline:3px solid white}.hand,.chains{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}.chain{flex:1;min-width:145px;text-align:left}.card{min-width:75px;display:grid;gap:4px}.card strong{font-size:1.5rem}.ash{color:#d0d5e0}.ember{color:#ff9970}.moon{color:#b6baff}.thorn{color:#a8e8ad}#status{min-height:3em}h1{font-size:clamp(2rem,6vw,3rem)}@media(prefers-reduced-motion:no-preference){button{transition:background .15s}button:hover:not(:disabled){background:#49365d}}
+</style></head><body><main><a href="/chaos-cartridge.html">← Chaos Cartridge</a><h1>Cinder Sequence</h1><p>Build three chains of four cards. Each next rank must be exactly one higher and use a different sigil. Discard unwanted cards to draw replacements. Finish before your hand runs dry.</p><p id="stats"></p><h2>Chains</h2><div class="chains" id="chains"></div><h2>Your hand</h2><div class="hand" id="hand"></div><button id="discard" disabled>Discard selected card</button> <button id="restart">New game</button><p id="status" role="status" aria-live="polite"></p></main><script type="module">
+import {newSequenceGame,sequenceMove,canPlace,sequenceScore} from "./cinder-sequence.mjs";
+let state=newSequenceGame(),selected=null;
+const $=id=>document.getElementById(id),sigils={ash:"◆",ember:"✦",moon:"☾",thorn:"✿"};
+function move(action){const next=sequenceMove(state,{...action,cardId:selected});if(!next)return;state=next;selected=null;render();}
+function render(){
+ const card=state.hand.find(c=>c.id===selected);
+ $("stats").textContent="Score "+sequenceScore(state)+" · "+state.deck.length+" cards in reserve · Turn "+state.turn;
+ $("hand").replaceChildren();$("chains").replaceChildren();
+ for(const c of state.hand){const b=document.createElement("button");b.className="card "+c.suit;b.type="button";b.textContent=sigils[c.suit]+" "+c.rank+" · "+c.suit;b.setAttribute("aria-pressed",String(c.id===selected));b.disabled=state.status!=="playing";b.onclick=()=>{selected=c.id;render();};$("hand").append(b);}
+ state.chains.forEach((chain,i)=>{const b=document.createElement("button");b.className="chain";b.textContent="Chain "+(i+1)+": "+(chain.map(c=>sigils[c.suit]+c.rank).join(" → ")||"Empty");b.disabled=state.status!=="playing"||!canPlace(card,chain);b.onclick=()=>move({type:"place",chain:i});$("chains").append(b);});
+ $("discard").disabled=!card||state.status!=="playing";
+ $("status").textContent=state.status==="won"?"All three chains forged. Victory!":state.status==="lost"?"The deck is exhausted. Final score: "+sequenceScore(state):card?"Choose a highlighted chain or discard "+card.suit+" "+card.rank+".":"Select a card to begin.";
+}
+$("discard").onclick=()=>move({type:"discard"});$("restart").onclick=()=>{state=newSequenceGame();selected=null;render();};render();
+</script></body></html>
