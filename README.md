@@ -5,8 +5,8 @@ The Ash-Fall community site and its Cloudflare Pages frontend.
 ## Current layout
 
 - `public/` - static site files served by Cloudflare Pages
-- `public/index.html` - landing page
-- `public/homepage.html` - forum/community page
+- `public/index.html` - sole canonical homepage at `/`; no repository-root HTML entrypoint
+- `public/homepage.html` - legacy local/offline fallback; Cloudflare Pages redirects `/homepage`, `/homepage.html`, `/landing`, and `/landing.html` to `/` using `public/_redirects`
 - `public/*.css` - page styles
 - `backend/` - Cloudflare Worker API and D1 migrations; excluded from the public Pages output
 - `wrangler.jsonc` - Cloudflare Pages configuration
