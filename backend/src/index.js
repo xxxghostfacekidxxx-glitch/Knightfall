@@ -2136,7 +2136,8 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!reset||!reset.user_id)return json({error:"This reset link is invalid or has expired. Request a new one."},400,origin);
     await env.SESSIONS.delete(key);
     const passwordHash=await hashPassword(password),now=new Date().toISOString();
-    await env.DB.prepare("UPDATE users SET password_hash=?,updated_at=? WHERE id=? AND status='active' AND NOT EXISTS(SELECT 1 FROM god_bot_accounts WHERE user_id=users.id)").bind(passwordHash,now,reset.user_id).run();
+    const changed=await env.DB.prepare("UPDATE users SET password_hash=?,updated_at=? WHERE id=? AND status='active' AND NOT EXISTS(SELECT 1 FROM god_bot_accounts WHERE user_id=users.id)").bind(passwordHash,now,reset.user_id).run();
+    if(Number(changed.meta?.changes)!==1)return json({error:"This reset link is invalid or has expired. Request a new one."},400,origin);
     const sessions=await env.SESSIONS.list({prefix:"session:"});for(const item of sessions.keys||[]){const session=await env.SESSIONS.get(item.name,"json");if(session?.user_id===reset.user_id)await env.SESSIONS.delete(item.name);}
     const target=await env.DB.prepare("SELECT id,username FROM users WHERE id=?").bind(reset.user_id).first();
     if(target)await audit(env,{id:reset.user_id,username:target.username},"password.reset.self","user",reset.user_id,{method:"email_token"});
