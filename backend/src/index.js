@@ -2811,8 +2811,11 @@ For complex questions, organize the answer clearly and provide actionable detail
       const addIds=add.map(x=>Number(x.id));
       const blocked=await env.DB.prepare("SELECT 1 AS ok FROM user_blocks WHERE (blocker_id=? AND blocked_id IN ("+addIds.map(()=>"?").join(",")+")) OR (blocked_id=? AND blocker_id IN ("+addIds.map(()=>"?").join(",")+")) LIMIT 1").bind(user.id,...addIds,user.id,...addIds).first();
       if(blocked)return json({error:"Messaging is restricted between you and one or more selected members."},403,origin);
-      const now=new Date().toISOString(),cutoff=await env.DB.prepare("SELECT COALESCE(MAX(id),0) AS id FROM messages WHERE conversation_id=?").bind(conversationId).first();
-      await env.DB.batch(add.map(x=>env.DB.prepare("INSERT INTO conversation_members (conversation_id,user_id,joined_at,last_read_at,joined_after_message_id) VALUES (?,?,?,?,?)").bind(conversationId,Number(x.id),now,null,Number(cutoff?.id||0))));
+      const now=new Date().toISOString();
+      await env.DB.batch(add.map(x=>env.DB.prepare(
+        "INSERT INTO conversation_members (conversation_id,user_id,joined_at,last_read_at,joined_after_message_id) "+
+        "SELECT ?,?,?,?,COALESCE(MAX(id),0) FROM messages WHERE conversation_id=?"
+      ).bind(conversationId,Number(x.id),now,null,conversationId)));
       await env.DB.prepare("UPDATE conversations SET updated_at=? WHERE id=?").bind(now,conversationId).run();
       return json({ok:true,added:add.length},200,origin);
     }
