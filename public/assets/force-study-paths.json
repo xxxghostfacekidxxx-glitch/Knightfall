@@ -11,6 +11,48 @@
         "Ancient Sith civilization",
         "Great Hyperspace War",
         "Exar Kun and the Great Sith War"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Je'daii and Tython",
+          "body": "Dawn of the Jedi depicts an ancient order on Tython seeking balance between light and dark. This Legends account must not be treated as the established origin of the Canon Jedi.",
+          "question": "Compare balance as an institutional ideal with balance as a personal practice.",
+          "source": "Dawn of the Jedi: Force Storm",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "Early Jedi schisms",
+          "body": "Legends accounts describe disagreements over the permissible uses of the Force and the emergence of rival traditions. Different stories cover different conflicts; a single simplified origin story obscures these distinctions.",
+          "question": "How can institutions preserve disagreement without encouraging coercion?",
+          "source": "The Essential Guide to the Force",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Ancient Sith civilization",
+          "body": "Tales of the Jedi portrays a Sith civilization with its own history, hierarchy and traditions. The word Sith can refer to a people or an order depending on the historical context.",
+          "question": "Explain why distinguishing ethnicity from institutional membership matters.",
+          "source": "Tales of the Jedi: The Golden Age of the Sith",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "Great Hyperspace War",
+          "body": "The Golden Age of the Sith and Fall of the Sith Empire portray a succession struggle and conflict between the ancient Sith Empire and Republic. Read these as Legends narratives rather than Canon chronology.",
+          "question": "How can competition for leadership undermine collective goals?",
+          "source": "Tales of the Jedi: The Fall of the Sith Empire",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Exar Kun and the Great Sith War",
+          "body": "Exar Kun's transformation and alliance with Ulic Qel-Droma illustrate ambition, manipulation and the consequences of pursuing forbidden knowledge in Legends.",
+          "question": "Distinguish intellectual curiosity from entitlement to power.",
+          "source": "Tales of the Jedi: Dark Lords of the Sith; The Sith War",
+          "status": "draft; source review pending"
+        }
       ]
     },
     {
@@ -23,6 +65,48 @@
         "Jedi Civil War",
         "Kreia and the Jedi Exile",
         "Vitiate and the Sith Empire"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Mandalorian Wars",
+          "body": "The Knights of the Old Republic games portray disagreement over Jedi intervention in the Mandalorian Wars. Revan's decision to fight is central to later conflicts.",
+          "question": "Compare the risks of intervention and nonintervention without assuming either is always right.",
+          "source": "Knights of the Old Republic; Knights of the Old Republic II",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "Revan and Malak",
+          "body": "The first game explores former Jedi leaders who become Sith and a protagonist whose identity is revealed through the story. Player choices complicate claims about a single narrative outcome.",
+          "question": "What is the relationship between memory, responsibility and identity?",
+          "source": "Knights of the Old Republic",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Jedi Civil War",
+          "body": "The conflict between Revan and Malak's Sith forces and the Republic provides a setting for examining loyalty, institutional fracture and redemption.",
+          "question": "How does a movement change when its leaders prioritize victory over its original purpose?",
+          "source": "Knights of the Old Republic",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "Kreia and the Jedi Exile",
+          "body": "Kreia challenges both Jedi and Sith assumptions and questions dependence on the Force. Her claims are a character's perspective, not necessarily the game's final philosophical verdict.",
+          "question": "Identify a persuasive claim and a counterargument to it.",
+          "source": "Knights of the Old Republic II: The Sith Lords",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Vitiate and the Sith Empire",
+          "body": "The Old Republic depicts a long-lived Sith Emperor and a renewed imperial state. Its narratives examine competing loyalties and the consequences of concentrated authority.",
+          "question": "Compare personal power with institutional resilience.",
+          "source": "Star Wars: The Old Republic",
+          "status": "draft; source review pending"
+        }
       ]
     },
     {
@@ -84,6 +168,48 @@
         "Daoist noncoercive action",
         "Nietzschean self-overcoming",
         "Ancient theories of soul"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Stoic agency",
+          "body": "Epictetus distinguishes what depends on our judgment and choice from external outcomes. This is not a demand to suppress emotion or ignore injustice.",
+          "question": "Separate a current concern into choices you can make and outcomes you cannot guarantee.",
+          "source": "Epictetus, Enchiridion; Discourses",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "Buddhist impermanence",
+          "body": "Buddhist traditions teach impermanence and examine how clinging contributes to suffering. Interpretations vary across schools; nonattachment is not indifference.",
+          "question": "Describe a changing experience without assuming it defines your permanent identity.",
+          "source": "Stanford Encyclopedia of Philosophy: Buddha",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Daoist noncoercive action",
+          "body": "Wu wei is often interpreted as action without excessive forcing. Daoist texts use paradox and imagery rather than prescribing one universal technique.",
+          "question": "Identify a situation where less interference could improve an outcome.",
+          "source": "Daodejing; Zhuangzi",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "Nietzschean self-overcoming",
+          "body": "Nietzsche examines self-transformation, inherited values and the creation of meaning. His account of power is disputed and cannot be reduced to domination.",
+          "question": "Identify an inherited assumption and evaluate whether it serves your considered values.",
+          "source": "Nietzsche, Thus Spoke Zarathustra; Stanford Encyclopedia of Philosophy: Nietzsche",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Ancient theories of soul",
+          "body": "Plato and Aristotle offer different accounts of soul, life and human capacities. Their concepts are not interchangeable with fictional Force metaphysics.",
+          "question": "Compare two accounts of personal identity and state what each leaves unexplained.",
+          "source": "Plato, Phaedo; Aristotle, De Anima",
+          "status": "draft; source review pending"
+        }
       ]
     },
     {
