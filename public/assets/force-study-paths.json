@@ -411,6 +411,47 @@
           "status": "draft; source review pending"
         }
       ]
+    },
+    {
+      "id": "force-abilities",
+      "title": "Encyclopedia of Force abilities",
+      "classification": "mixed continuity",
+      "units": [
+        "Telekinesis and perception",
+        "Precognition and visions",
+        "Healing and restoration",
+        "Mind influence and ethical boundaries",
+        "Force lightning in fictional narratives",
+        "Concealment and projection",
+        "Rare abilities and continuity disputes"
+      ]
+    },
+    {
+      "id": "artifacts",
+      "title": "Sacred artifacts and locations",
+      "classification": "mixed continuity",
+      "units": [
+        "Jedi and Sith holocrons",
+        "Kyber crystals",
+        "Tython and Ahch-To",
+        "Korriban and Moraband",
+        "Jedha and sacred traditions",
+        "Exegol and Sith heritage"
+      ]
+    },
+    {
+      "id": "living-religion",
+      "title": "Living spiritual traditions and religious literacy",
+      "classification": "real-world religion and philosophy",
+      "units": [
+        "Jediism as a contemporary movement",
+        "Diversity among Jedi communities",
+        "Contemporary Sith-inspired philosophies",
+        "Ritual and symbolism",
+        "Voluntary membership and freedom of conscience",
+        "Religious literacy and source evaluation",
+        "Ethical leadership and safeguarding"
+      ]
     }
   ],
   "status": "Proposed reading sequences, not accredited courses or verified source summaries."
