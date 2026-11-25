@@ -1323,5 +1323,108 @@
       "title": "Reading the mythology",
       "body": "These are fictional beliefs and narrative themes, not claims about real supernatural phenomena. Distinguish in-universe testimony, game events and editorial interpretation; later works may revise earlier accounts."
     }
+  ],
+  "timeline": [
+    {
+      "era": "Primordial age",
+      "event": "Anu and Tathamet; origins of the cosmic realms",
+      "source": "Book of Cain"
+    },
+    {
+      "era": "Eternal Conflict",
+      "event": "Angels and demons contest the Worldstone",
+      "source": "Book of Cain"
+    },
+    {
+      "era": "Creation of Sanctuary",
+      "event": "Inarius and Lilith establish a refuge; nephalem emerge",
+      "source": "The Sin War"
+    },
+    {
+      "era": "Sin War",
+      "event": "Rival faiths compete for humanity; Uldyssian intervenes",
+      "source": "The Sin War trilogy"
+    },
+    {
+      "era": "Dark Exile",
+      "event": "Prime Evils are banished to Sanctuary",
+      "source": "Diablo II"
+    },
+    {
+      "era": "Horadric era",
+      "event": "Horadrim imprison the Prime Evils",
+      "source": "Diablo II"
+    },
+    {
+      "era": "Tristram crisis",
+      "event": "Diablo emerges beneath the cathedral",
+      "source": "Diablo"
+    },
+    {
+      "era": "Dark Wanderer",
+      "event": "Prime Evils return; Worldstone destroyed",
+      "source": "Diablo II and Lord of Destruction"
+    },
+    {
+      "era": "Aftermath",
+      "event": "Worldstone fragments threaten Sanctuary",
+      "source": "Diablo Immortal"
+    },
+    {
+      "era": "Black Soulstone crisis",
+      "event": "Prime Evil returns; Malthael later attacks humanity",
+      "source": "Diablo III and Reaper of Souls"
+    },
+    {
+      "era": "Return of Lilith",
+      "event": "Cathedral and Lilith compete for humanity",
+      "source": "Diablo IV"
+    },
+    {
+      "era": "Nahantu",
+      "event": "Neyrelle carries Mephisto's soulstone into the jungle",
+      "source": "Vessel of Hatred"
+    },
+    {
+      "era": "Skovos",
+      "event": "Conflict with Mephisto extends to Skovos",
+      "source": "Lord of Hatred"
+    }
+  ],
+  "related": [
+    [
+      "Lilith",
+      "Inarius",
+      "The Nephalem",
+      "Creation of Sanctuary"
+    ],
+    [
+      "Tal Rasha",
+      "Baal",
+      "The Horadrim",
+      "Soulstones"
+    ],
+    [
+      "Tyrael",
+      "Malthael",
+      "Angiris Council",
+      "Crystal Arch"
+    ],
+    [
+      "Mephisto",
+      "Zakarum",
+      "Khalim",
+      "Compelling Orb"
+    ],
+    [
+      "Rathma",
+      "Trag'Oul",
+      "The Balance"
+    ],
+    [
+      "Akarat",
+      "Spirit Realm",
+      "Spirit Guardians"
+    ]
   ]
 }
