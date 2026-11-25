@@ -104,6 +104,69 @@
       "title": "Nightsisters",
       "url": "https://www.starwars.com/databank/nightsisters",
       "note": "Dathomirian magical tradition distinct from the Jedi and Sith. Compare its fictional institutional independence and appearances in The Clone Wars and Ahsoka."
+    },
+    {
+      "classification": "canon",
+      "title": "Yoda",
+      "url": "https://www.starwars.com/databank/yoda",
+      "note": "Study the tension between institutional tradition, humility and learning from failure.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "Obi-Wan Kenobi",
+      "url": "https://www.starwars.com/databank/obi-wan-kenobi",
+      "note": "Explore duty, mentorship, loyalty and grief across the prequel and original trilogies.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "Qui-Gon Jinn",
+      "url": "https://www.starwars.com/databank/qui-gon-jinn",
+      "note": "Examine independent judgment and the living Force in The Phantom Menace.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "Luke Skywalker",
+      "url": "https://www.starwars.com/databank/luke-skywalker",
+      "note": "Compare compassion, redemption and the difficulties of rebuilding an institution.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "Darth Vader",
+      "url": "https://www.starwars.com/databank/darth-vader",
+      "note": "Examine the fictional consequences of fear, attachment, coercion and loss of agency.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "Emperor Palpatine",
+      "url": "https://www.starwars.com/databank/emperor-palpatine-darth-sidious",
+      "note": "Study manipulation and institutional collapse as cautionary fictional examples.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "Ahsoka Tano",
+      "url": "https://www.starwars.com/databank/ahsoka-tano",
+      "note": "Explore identity and ethical agency outside formal Jedi membership.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "Dathomir",
+      "url": "https://www.starwars.com/databank/dathomir",
+      "note": "Study the relationship between place, culture and Nightsister traditions.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "Mortis",
+      "url": "https://www.starwars.com/databank/mortis",
+      "note": "Examine the symbolic cosmology of the Father, Son and Daughter; distinguish narrative symbolism from literal metaphysics.",
+      "verification": "pending source review"
     }
   ],
   "researchQueue": [
@@ -112,6 +175,8 @@
     "Ancient Jedi and Sith chronology",
     "Real-world Sith-inspired communities",
     "Comparative Stoicism, Buddhism, Daoism and Nietzsche",
-    "Holocron character biographies and conflicting interpretations"
+    "Holocron character biographies and conflicting interpretations",
+    "Compare each Master against primary screen appearances",
+    "Review all candidate URLs before treating them as verified evidence"
   ]
 }
