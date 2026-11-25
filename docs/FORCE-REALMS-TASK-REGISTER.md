@@ -34,3 +34,5 @@ Advanced manuscript expansion: 13aa09936f3387b939a5ecd82b9a82709549faa9; six cha
 Training plans: b86405f1ae8ecfacd0ab365ae950de8174137e84; 74 scheduled assignments, local progress only. Live board sync unverified.
 
 Order integration: cbb031bfa544c8fe9f6833f743efd375392a8c32 Jedi homepage; e21e270fee16a1b6dfc6b24a3a2f3db1509fb483 Sith homepage; 72c5a5b7a4c1125844aa749a7934ae091ee490f6 living charters; order-specific practice and training selection. Live board sync unverified.
+
+Order charters: c00a6f8c0ecbc2f33ab9511c6f961b84162fd634; reader and navigation added. Live board sync unverified.
