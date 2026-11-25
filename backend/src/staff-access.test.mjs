@@ -82,7 +82,7 @@ test("both staff roles can read public Chaos Lab settings and update public pers
 test("private lab and vault keep their owner gate", async () => {
   for (const [role, username, expected] of [
     ["admin", "staff-fixture", 403],
-    ["admin", "knightfall", 200],
+    ["admin", "knightfall", 403], // Owner gate requires active god role, not username.
     ["god", "god-fixture", 200],
     ["member", "member-fixture", 403]
   ]) {

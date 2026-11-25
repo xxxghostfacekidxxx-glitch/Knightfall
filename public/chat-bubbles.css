@@ -298,3 +298,12 @@
 #kf-chat-heads #kf-chat-launcher{border-color:var(--cs-glow);box-shadow:0 3px 18px #000b,0 0 12px color-mix(in srgb,var(--cs-glow) 45%,transparent)}
 #kf-chat-heads .kf-chat-day-marker{display:flex;align-items:center;gap:8px;color:#d6c8df;font-size:10px;white-space:nowrap;margin:6px 0}
 #kf-chat-heads .kf-chat-day-marker::before,#kf-chat-heads .kf-chat-day-marker::after{content:"";flex:1;height:1px;background:color-mix(in srgb,var(--cs-glow) 25%,transparent)}
+
+/* Ascendant conversation organization and keyboard-safe filters. */
+#kf-chat-heads #kf-chat-filters{display:flex;flex-wrap:wrap;gap:4px;padding:0 9px 8px}
+#kf-chat-heads #kf-chat-filters button{border:1px solid #ffffff26;border-radius:999px;padding:4px 8px;min-height:28px;color:#e8e0ed;background:var(--cs-side);font-size:11px}
+#kf-chat-heads #kf-chat-filters button[aria-pressed=true]{border-color:var(--cs-glow);background:color-mix(in srgb,var(--cs-own-a) 35%,var(--cs-back));color:#fff}
+#kf-chat-heads #kf-chat-favorite{flex:none;display:grid;place-items:center;min-width:28px;min-height:28px;padding:0;border:1px solid #ffffff32;border-radius:8px;background:var(--cs-side);color:var(--cs-glow);font-size:18px}
+#kf-chat-heads #kf-chat-favorite[aria-pressed=true]{border-color:var(--cs-glow);background:var(--cs-own-b);color:#fff}
+#kf-chat-heads .kf-chat-recent-item:focus-visible{outline-color:var(--cs-glow)}
+@media(max-width:400px){#kf-chat-heads .kf-chat-panel-header{gap:5px}#kf-chat-heads #kf-chat-filters{gap:3px}#kf-chat-heads #kf-chat-filters button{padding-inline:6px}}

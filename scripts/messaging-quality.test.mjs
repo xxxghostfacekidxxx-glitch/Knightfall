@@ -109,3 +109,5 @@ test("Ascendant includes favorites, groups and draft filters with local account 
  assert.equal(ctx.inboxFilterMatches({id:42,kind:"group"},"groups"),true);assert.equal(ctx.inboxFilterMatches({id:42,kind:"direct"},"groups"),false);
 });
 test("Ascendant preserves theme choices and date grouping across messenger surfaces",()=>{assert.match(inbox,/chaosphere-ascendant\.css/);assert.match(inline,/function updateTranscriptDates/);assert.match(bubbles,/allowedThemes=new Set/);assert.match(bubbles,/kf-chat-day-marker/);assert.match(styles,/#kf-chat-heads\[data-cs-theme="egypt"\]/);});
+
+test("floating favorites use the same account-scoped key as the full inbox",()=>{assert.match(bubbles,/favoritesKey="kf-cs-favorites-"\+userId/);assert.match(bubbles,/data-kf-filter="favorites"/);assert.match(bubbles,/data-kf-filter="drafts"/);assert.match(bubbles,/data-kf-filter="groups"/);assert.match(bubbles,/favoriteIds\.has\(id\)/);assert.match(bubbles,/key===pendingRenderKey/);});

@@ -30,6 +30,11 @@
   }
   const state={conversations:[],heads:[],active:null,visible:false,loading:false,sending:false,threadToken:0,unread:0,lastThreadKey:""};
   const messageSendQueues=new Map();
+  const favoritesKey="kf-cs-favorites-"+userId;
+  let recentFilter="all",favoriteIds=new Set();
+  function loadFavorites(){try{const ids=JSON.parse(localStorage.getItem(favoritesKey)||"[]");favoriteIds=new Set(Array.isArray(ids)?ids.map(Number).filter(id=>Number.isSafeInteger(id)&&id>0).slice(-200):[]);}catch{}}
+  function toggleFavorite(id){if(!getConversation(id))return;if(favoriteIds.has(id))favoriteIds.delete(id);else favoriteIds.add(id);try{localStorage.setItem(favoritesKey,JSON.stringify([...favoriteIds].slice(-200)))}catch{}renderPanel();}
+  loadFavorites();window.addEventListener("storage",event=>{if(event.key===favoritesKey){loadFavorites();if(state.visible)renderPanel();}});
   const attachmentDrafts=new Map(),uploadingConversations=new Set(),removingConversations=new Set();
   const attachmentDraftKey="kf-chat-attachment-drafts-"+userId;
   let pickerConversation=null;
@@ -94,7 +99,7 @@ async function api(path,opts={}){
   function syncTheme(value){let selected=value;try{if(!selected)selected=localStorage.getItem(themeKey)}catch{}dock.dataset.csTheme=allowedThemes.has(selected)?selected:"obsidian";}
   syncTheme();window.addEventListener("storage",event=>{if(event.key===themeKey)syncTheme(event.newValue)});window.addEventListener("kf:chaosphere-theme",event=>syncTheme(event.detail?.theme));
   dock.setAttribute("aria-label","Chaosphere conversations");
-  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><div class="kf-chat-emoji-tools"><button id="kf-chat-emoji-toggle" type="button" aria-expanded="false" aria-controls="kf-chat-emoji-tray" aria-label="Show Knightfall emojis">☻ Emoji</button><button id="kf-chat-attach" type="button" aria-label="Attach files">📎 Attach</button><input id="kf-chat-file" type="file" accept="image/*,application/pdf,text/plain,.docx" multiple hidden><div id="kf-chat-pending" class="kf-chat-pending" hidden></div><div id="kf-chat-emoji-tray" class="kf-emoji-tray" aria-label="Knightfall custom emojis" hidden></div></div><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
+  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><button id="kf-chat-favorite" type="button" aria-label="Favorite conversation" aria-pressed="false" hidden>☆</button><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-filters" role="group" aria-label="Filter conversations"><button type="button" data-kf-filter="all" aria-pressed="true">All</button><button type="button" data-kf-filter="unread" aria-pressed="false">Unread</button><button type="button" data-kf-filter="favorites" aria-pressed="false">★ Favorites</button><button type="button" data-kf-filter="groups" aria-pressed="false">Groups</button><button type="button" data-kf-filter="drafts" aria-pressed="false">Drafts</button></div><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><div class="kf-chat-emoji-tools"><button id="kf-chat-emoji-toggle" type="button" aria-expanded="false" aria-controls="kf-chat-emoji-tray" aria-label="Show Knightfall emojis">☻ Emoji</button><button id="kf-chat-attach" type="button" aria-label="Attach files">📎 Attach</button><input id="kf-chat-file" type="file" accept="image/*,application/pdf,text/plain,.docx" multiple hidden><div id="kf-chat-pending" class="kf-chat-pending" hidden></div><div id="kf-chat-emoji-tray" class="kf-emoji-tray" aria-label="Knightfall custom emojis" hidden></div></div><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
   // Host outside the page body so transformed game/page wrappers cannot clip or resize chat.
   document.documentElement.append(dock);
   function syncBubbleViewport(){
@@ -277,6 +282,7 @@ async function api(path,opts={}){
     window.dispatchEvent(new CustomEvent("kf:chat-visibility",{detail:{open:state.visible}}));
   }
   function showList(){
+    loadFavorites();
     if(state.active)rememberDraft(state.active,input.value);
     state.active=null;state.threadToken++;state.lastThreadKey="";
     announce("");
@@ -324,27 +330,27 @@ async function api(path,opts={}){
     }
   }
   function renderRecent(){
+    const scroll=recent.scrollTop,focused=document.activeElement?.closest?.("[data-kf-recent-id]")?.dataset.kfRecentId;
     recent.replaceChildren();
     if(!state.conversations.length){
       recent.append(el("p","kf-chat-empty","No conversations yet. Start one from your inbox."));
       return;
     }
     const query=$("#kf-chat-search").value.trim().toLowerCase();
-    const filtered=state.conversations.filter(c=>!query||(
-      nameOf(c)+" "+String(c.other_username||"")+" "+String(c.group_name||"")
-    ).toLowerCase().includes(query));
+    const filtered=state.conversations.filter(c=>{const id=Number(c.id),matches=!query||(nameOf(c)+" "+String(c.other_username||"")+" "+String(c.group_name||"")+" "+String(c.last_body||"")).toLowerCase().includes(query);return matches&&(recentFilter==="all"||recentFilter==="unread"&&Number(c.unread_count)>0||recentFilter==="favorites"&&favoriteIds.has(id)||recentFilter==="groups"&&c.kind==="group"||recentFilter==="drafts"&&(drafts.has(id)||!!attachmentDrafts.get(id)?.length));}).sort((a,b)=>Number(favoriteIds.has(Number(b.id)))-Number(favoriteIds.has(Number(a.id))));
     if(!filtered.length){recent.append(el("p","kf-chat-empty","No matching conversations."));return;}
     for(const c of filtered.slice(0,25)){
       const button=el("button","kf-chat-recent-item");
-      button.type="button";
+      button.type="button";button.dataset.kfRecentId=String(c.id);
       const avatar=el("span","kf-chat-recent-avatar");avatar.append(avatarContent(c));
       const copy=el("span","kf-chat-recent-copy");
-      copy.append(el("strong","",nameOf(c)),el("small","",String(c.last_body||"Open conversation").slice(0,105)));
+      const id=Number(c.id),draft=drafts.get(id);copy.append(el("strong","",(favoriteIds.has(id)?"★ ":"")+nameOf(c)),el("small","",draft?"Draft · "+draft.slice(0,90):attachmentDrafts.get(id)?.length?"Draft · attachments":String(c.last_body||"Open conversation").slice(0,105)));
       button.append(avatar,copy);
       if(Number(c.unread_count)>0)button.append(el("b","kf-chat-recent-count",String(Math.min(99,Number(c.unread_count)))));
       button.addEventListener("click",()=>openConversation(Number(c.id)));
       recent.append(button);
     }
+    recent.scrollTop=scroll;if(focused&&/^\d+$/.test(focused))recent.querySelector('[data-kf-recent-id="'+focused+'"]')?.focus({preventScroll:true});
   }
   function renderPanel(){
     const c=getConversation(state.active);
@@ -354,7 +360,8 @@ async function api(path,opts={}){
     $("#kf-chat-subtitle").textContent=selected?(selected.kind==="group"?"Group conversation":"Private messages"):"Message without leaving this page";
     $("#kf-chat-full").href=inboxUrl(state.active);
     $("#kf-chat-back").hidden=!selected;
-    $("#kf-chat-search-wrap").hidden=!!selected;
+    $("#kf-chat-search-wrap").hidden=!!selected;$("#kf-chat-filters").hidden=!!selected;
+    const star=$("#kf-chat-favorite"),isFavorite=!!selected&&favoriteIds.has(Number(selected.id));star.hidden=!selected;star.textContent=isFavorite?"★":"☆";star.setAttribute("aria-pressed",String(isFavorite));star.setAttribute("aria-label",isFavorite?"Remove conversation from favorites":"Favorite conversation");
     recent.hidden=!!selected;thread.hidden=!selected;composer.hidden=!selected;
     if(!selected){renderRecent();return;}
     const blocked=!!Number(selected.messaging_blocked);
@@ -483,6 +490,8 @@ async function api(path,opts={}){
   $("#kf-chat-launcher").addEventListener("click",()=>state.visible?setVisible(false):showList());
   $("#kf-chat-back").addEventListener("click",showList);
   $("#kf-chat-search").addEventListener("input",renderRecent);
+  $("#kf-chat-favorite").addEventListener("click",()=>toggleFavorite(state.active));
+  $("#kf-chat-filters").addEventListener("click",event=>{const button=event.target.closest("[data-kf-filter]");if(!button)return;recentFilter=button.dataset.kfFilter;for(const item of $("#kf-chat-filters").querySelectorAll("button"))item.setAttribute("aria-pressed",String(item===button));renderRecent();});
   input.addEventListener("input",()=>{if(state.active)rememberDraft(state.active,input.value);});
   window.addEventListener("kf:floating-panel-open",event=>{
     if(event.detail?.panel!=="member-chat"&&state.visible)setVisible(false);
@@ -503,10 +512,12 @@ async function api(path,opts={}){
     });
     return photoLoader.then(()=>window.KnightfallPhotoUpload.prepareAttachment(file));
   }
+  let pendingRenderKey="";
   function drawAttachmentDraft(){
     const id=state.active,items=attachmentDrafts.get(id)||[],busy=uploadingConversations.has(id)||removingConversations.has(id),blocked=!!Number(getConversation(id)?.messaging_blocked);
     attachButton.disabled=!id||busy||blocked;
     attachButton.textContent=busy?"Uploading…":"📎 Attach";
+    const key=JSON.stringify([id,busy,blocked,items.map(a=>[a.id,a.filename])]);if(key===pendingRenderKey)return;pendingRenderKey=key;
     pendingBox.replaceChildren();pendingBox.hidden=!items.length;
     for(const a of items){
       const chip=el("span","kf-chat-pending-chip");
