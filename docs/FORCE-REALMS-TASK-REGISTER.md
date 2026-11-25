@@ -52,3 +52,5 @@ Force archive reference selection now filters unsafe URLs before ranking. Sanctu
 Sanctuary scope revised by owner: consolidated fictional religious mythology and lore only; no separate academies, ranks or mentor fleet. Added 17 thematic lore drafts alongside eight historical entries. Source review and live board sync pending.
 
 Sanctuary expansion: 33 additional entries and three reviewed Blizzard article links; campaign and religious lore drafts require individual primary source checks. Live board and production pending.
+
+Sanctuary: 12 additional entries supported by four consulted official Blizzard articles, including Lord of Hatred (2026), Spirit Realm and Skovos; detailed campaign outcomes and older primary sources pending. Live sync and production pending.
