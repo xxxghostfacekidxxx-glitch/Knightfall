@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "reviewed": "2026-11-24",
+  "policy": "Summaries are original research notes, not reproduced source text. Distinguish fictional continuity, living beliefs, scholarship and legal jurisdiction. No automatic doctrinal adoption.",
+  "entries": [
+    {
+      "classification": "canon",
+      "title": "Jedi Order",
+      "url": "https://www.starwars.com/databank/jedi-order",
+      "note": "Republic-era peacekeepers; study institutional responsibility and its limitations."
+    },
+    {
+      "classification": "canon",
+      "title": "Sith",
+      "url": "https://www.starwars.com/databank/sith",
+      "note": "Fictional dark-side order pursuing power; distinguish its conduct from Knightfall's living interpretation."
+    },
+    {
+      "classification": "canon",
+      "title": "Jedi holocron",
+      "url": "https://www.starwars.com/databank/jedi-holocron",
+      "note": "Force-accessed archive preserving teachings across generations."
+    },
+    {
+      "classification": "canon",
+      "title": "Sith holocron",
+      "url": "https://www.starwars.com/databank/sith-holocron",
+      "note": "Dark-side archive; study its role in Rebels and the Malachor narrative."
+    },
+    {
+      "classification": "canon",
+      "title": "Lightsaber",
+      "url": "https://www.starwars.com/databank/lightsaber",
+      "note": "Fictional kyber-powered instrument; examine symbolism and narrative uses."
+    },
+    {
+      "classification": "living",
+      "title": "Temple of the Jedi Order doctrine",
+      "url": "https://www.templeofthejediorder.org/index.php/doctrine",
+      "note": "Primary source for one organization's religious beliefs and ethical framework."
+    },
+    {
+      "classification": "living",
+      "title": "Temple of the Jedi training",
+      "url": "https://templeofthejedi.org/faq",
+      "note": "Separate organization describing staged learning, practical assessment and mentorship."
+    },
+    {
+      "classification": "scholarship",
+      "title": "Markus Altena Davidsen: The Jedi Community",
+      "url": "https://scholarworks.iu.edu/journals/index.php/ndif/article/view/24283",
+      "note": "Academic history of Jedi identity, online origins and distinctions between Jediist and Jedi Realist approaches."
+    },
+    {
+      "classification": "legal",
+      "title": "UK Charity Commission decision",
+      "url": "https://assets.publishing.service.gov.uk/media/5a7f1b5c40f0b62305b851d9/Temple_of_the_Jedi_Order_FINAL_DECISION.pdf",
+      "note": "2016 decision concerning a particular charity application; not a universal ruling on Jediism."
+    }
+  ],
+  "researchQueue": [
+    "Legends primary publications and continuity boundaries",
+    "Seven lightsaber forms and source-specific descriptions",
+    "Ancient Jedi and Sith chronology",
+    "Real-world Sith-inspired communities",
+    "Comparative Stoicism, Buddhism, Daoism and Nietzsche",
+    "Holocron character biographies and conflicting interpretations"
+  ]
+}
