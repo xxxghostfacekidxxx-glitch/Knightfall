@@ -289,6 +289,64 @@
         "Darth Traya and the Sith Triumvirate",
         "Vitiate and imperial institutions",
         "Darth Bane and the Rule of Two"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Marka Ragnos",
+          "body": "Legends depicts Ragnos as an influential Sith ruler whose death precipitates a succession dispute. His legacy illustrates the fragility of authority dependent on one individual.",
+          "question": "Design a succession principle that does not depend on personal loyalty.",
+          "source": "Tales of the Jedi: The Golden Age of the Sith",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "Naga Sadow",
+          "body": "Sadow's rivalry with Ludo Kressh illustrates competing approaches to imperial expansion and preservation.",
+          "question": "Compare ambition with institutional stewardship.",
+          "source": "Tales of the Jedi: The Golden Age of the Sith",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Exar Kun",
+          "body": "Kun's pursuit of ancient knowledge becomes intertwined with domination and allegiance to Sith traditions.",
+          "question": "When should a teacher challenge a student's ambitions?",
+          "source": "Tales of the Jedi: Dark Lords of the Sith",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "Revan and Malak",
+          "body": "Their relationship illustrates how shared military experience need not produce stable political loyalty.",
+          "question": "Distinguish loyalty to a person from loyalty to principles.",
+          "source": "Knights of the Old Republic",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Sith Triumvirate",
+          "body": "Traya, Nihilus and Sion embody distinct relationships with power, dependence and suffering. Their philosophical positions are not interchangeable.",
+          "question": "Compare the limitations of their respective worldviews.",
+          "source": "Knights of the Old Republic II",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 6,
+          "title": "Vitiate",
+          "body": "The Old Republic portrays imperial institutions under a ruler whose interests can diverge sharply from those of his subjects.",
+          "question": "What safeguards prevent an institution becoming an extension of one person's will?",
+          "source": "Star Wars: The Old Republic",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 7,
+          "title": "Darth Bane",
+          "body": "Bane's Rule of Two is a fictional response to Sith rivalry. Canon and Legends differ in the detail available about his life.",
+          "question": "Evaluate the tradeoff between concentrated authority and institutional resilience.",
+          "source": "The Clone Wars: Sacrifice; Darth Bane trilogy (Legends)",
+          "status": "draft; source review pending"
+        }
       ]
     },
     {
@@ -302,6 +360,56 @@
         "Order 66 and survivors",
         "Luke Skywalker and reconstruction",
         "Institutional accountability and reform"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Ancient origins",
+          "body": "Canon and Legends provide different accounts of early Jedi history. The Je'daii narrative belongs to Legends; do not merge chronologies without labeling them.",
+          "question": "Explain how conflicting historical traditions can be presented responsibly.",
+          "source": "Dawn of the Jedi; The Last Jedi",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "High Republic",
+          "body": "The High Republic publishing initiative depicts Jedi operating during an earlier period of Republic expansion, facing challenges to their ideals and public responsibilities.",
+          "question": "How should a public-serving institution measure its success?",
+          "source": "Light of the Jedi",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Late Republic",
+          "body": "The prequel films and The Clone Wars depict the Jedi becoming military leaders while attempting to maintain their peacekeeping identity.",
+          "question": "Identify a conflict between institutional duty and personal conscience.",
+          "source": "Attack of the Clones; The Clone Wars",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "Order 66 and survivors",
+          "body": "Revenge of the Sith depicts the destruction of the Jedi as an organized institution; later stories explore survivors and divergent responses.",
+          "question": "How can knowledge and values survive the loss of an institution?",
+          "source": "Revenge of the Sith; Rebels",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Luke and reconstruction",
+          "body": "The original and sequel trilogies portray Luke's development and later difficulties rebuilding the Jedi. Legends offers a distinct reconstruction narrative.",
+          "question": "Compare restoring a tradition with reforming it.",
+          "source": "Return of the Jedi; The Last Jedi; Jedi Academy trilogy (Legends)",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 6,
+          "title": "Accountability and reform",
+          "body": "The fictional Jedi experience invites examination of authority, secrecy, dissent and public responsibility. Knightfall's real community governance should be evaluated independently.",
+          "question": "Draft an accountability safeguard that protects members and permits appeal.",
+          "source": "The Clone Wars: The Wrong Jedi; original Knightfall reflection",
+          "status": "draft; source review pending"
+        }
       ]
     }
   ],
