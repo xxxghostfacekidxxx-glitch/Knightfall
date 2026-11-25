@@ -50,3 +50,5 @@ Academy integration: added Order-specific resource navigation without modifying 
 Force archive reference selection now filters unsafe URLs before ranking. Sanctuary sister realm initiated with three original traditions and eight fictional history drafts; source review, production and live board sync pending.
 
 Sanctuary scope revised by owner: consolidated fictional religious mythology and lore only; no separate academies, ranks or mentor fleet. Added 17 thematic lore drafts alongside eight historical entries. Source review and live board sync pending.
+
+Sanctuary expansion: 33 additional entries and three reviewed Blizzard article links; campaign and religious lore drafts require individual primary source checks. Live board and production pending.
