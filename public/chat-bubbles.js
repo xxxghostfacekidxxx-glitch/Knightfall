@@ -561,20 +561,23 @@
     }catch(error){if(state.visible)announce("Chat could not refresh. "+error.message);}
     finally{tickRunning=false;}
   }
-  let bubbleLiveDelay=0;
-  if(window.KnightfallLive)window.KnightfallLive.subscribe(event=>{
-    if(event.type==="status"){if(event.connected)tick().catch(()=>{});return;}
-    if(event.type!=="message-event"||document.hidden)return;
-    if(event.kind==="typing"||event.kind==="read")return;
-    clearTimeout(bubbleLiveDelay);
-    bubbleLiveDelay=setTimeout(async()=>{
-      try{
-        await refreshConversations({force:true});
-        if(state.visible&&state.active===event.conversationId)await refreshThread();
-      }catch(error){if(state.visible)announce("Live chat update failed. "+error.message);}
-    },120);
-  });
+  let bubbleLiveDelay=0,liveBound=false,liveUnsubscribe=null;
+  function bindLive(){
+    if(liveBound||typeof window.KnightfallLive?.subscribe!=="function")return;
+    liveBound=true;
+    try{
+      liveUnsubscribe=window.KnightfallLive.subscribe(event=>{
+        if(event.type==="status"){if(event.connected)void tick();return;}
+        if(event.type!=="message-event"||document.hidden||event.kind==="typing"||event.kind==="read")return;
+        clearTimeout(bubbleLiveDelay);
+        bubbleLiveDelay=setTimeout(()=>{void tick();},120);
+      });
+    }catch(error){liveBound=false;console.warn("Chat realtime unavailable; polling continues",error);}
+  }
+  bindLive();
+  window.addEventListener("visibilitychange",()=>{if(!document.hidden){bindLive();void tick();}});
+
   tick();
-  const timer=setInterval(()=>{if(!document.hidden)tick();},15000);
-  window.addEventListener("pagehide",event=>{if(!event.persisted)clearInterval(timer);});
+  const timer=setInterval(()=>{if(!document.hidden){bindLive();void tick();}},15000);
+  window.addEventListener("pagehide",event=>{if(!event.persisted){clearInterval(timer);clearTimeout(bubbleLiveDelay);if(typeof liveUnsubscribe==="function")liveUnsubscribe();}});
 })();
