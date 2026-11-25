@@ -10,6 +10,7 @@ Maintain this register with every Force Realms implementation batch. Live board 
 | Research catalogue: 36 leads | source_checked | Verify URLs and expand catalogue |
 | Original manuscripts: 20 chapters | in_progress | Index supplementary chapters and verify archive coverage |
 | Canon and Legends timelines | in_progress | 28 draft entries, reader and AI retrieval implemented; verify sources and browser behavior |
+| Force encyclopedia | in_progress | 17 draft entries and backend retrieval; add reader and verify sources |
 | Academy assessments | todo | Map readings to assessments |
 | Governance and ceremonies | in_progress | Implement authorized workflows |
 | Five recovered themes | source_checked | Verify production artwork and theme previews |
@@ -20,3 +21,5 @@ Latest evidence: 915746dbabb61b0ae45d31b633361a3e93308abc (Master teaching conte
 Latest batch: 55ee059cb37dc9baf05cf85663367cb63e41dc17 historical dataset; backend retrieval committed. Live board sync still unverified.
 
 Latest expansion: 23cba4def6bd0c192e6e8fe8adf7d0b84b706d38 dataset; 04b8f5d242264a239ff4d74a756e3cdc44bd88fa reader; 37f5372807b6b4c5b7327034ae415d470dea6a47 filtering. Live board sync unverified.
+
+Latest encyclopedia dataset: 77ea4ac384ee7824c2603b4cc9220781a9e06f98. Live board sync unverified.
