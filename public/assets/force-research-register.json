@@ -167,6 +167,76 @@
       "url": "https://www.starwars.com/databank/mortis",
       "note": "Examine the symbolic cosmology of the Father, Son and Daughter; distinguish narrative symbolism from literal metaphysics.",
       "verification": "pending source review"
+    },
+    {
+      "classification": "legends",
+      "title": "Dawn of the Jedi: Force Storm",
+      "url": "https://www.darkhorse.com/",
+      "note": "Primary publication lead for Je'daii and Tython; locate exact issue and edition before citing.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "legends",
+      "title": "Tales of the Jedi",
+      "url": "https://www.darkhorse.com/",
+      "note": "Publication lead for ancient Sith empires, Naga Sadow and Exar Kun; distinguish individual story arcs.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "legends",
+      "title": "Knights of the Old Republic",
+      "url": "https://www.aspyr.com/",
+      "note": "Game publication lead for Revan and Malak; distinguish player-dependent outcomes from later continuity.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "legends",
+      "title": "The Old Republic",
+      "url": "https://www.swtor.com/",
+      "note": "Official game source lead for Vitiate and later Old Republic institutions.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "World Between Worlds",
+      "url": "https://www.starwars.com/databank/world-between-worlds",
+      "note": "Investigate access, narrative constraints and chronology in Rebels and Ahsoka.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "canon",
+      "title": "Kyber crystal",
+      "url": "https://www.starwars.com/databank/kyber-crystal",
+      "note": "Study crystal symbolism and fictional lightsaber construction.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "philosophy",
+      "title": "Daoism",
+      "url": "https://plato.stanford.edu/entries/daoism/",
+      "note": "Investigate naturalness, noncoercive action and competing interpretations.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "philosophy",
+      "title": "Buddha",
+      "url": "https://plato.stanford.edu/entries/buddha/",
+      "note": "Investigate suffering, impermanence and non-self without equating Buddhist doctrine with Jediism.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "philosophy",
+      "title": "Epictetus",
+      "url": "https://plato.stanford.edu/entries/epictetus/",
+      "note": "Compare agency and judgments with both orders' practical disciplines.",
+      "verification": "pending source review"
+    },
+    {
+      "classification": "philosophy",
+      "title": "Ancient theories of soul",
+      "url": "https://plato.stanford.edu/entries/ancient-soul/",
+      "note": "Compare historical accounts of soul and life without asserting equivalence to the Force.",
+      "verification": "pending source review"
     }
   ],
   "researchQueue": [
