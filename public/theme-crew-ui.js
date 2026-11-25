@@ -270,13 +270,26 @@ $("theme-crew-rollback").addEventListener("click",()=>publish(true));
 $("theme-crew-refresh").addEventListener("click",()=>{lock(true);load().catch(e=>announce(e.message)).finally(()=>lock(false))});
 $("theme-crew-plan-form").addEventListener("submit",async event=>{
  event.preventDefault();
- const mood=$("theme-crew-mood").value.trim();
- if(!mood){$("theme-crew-plan-result").textContent="Enter a creative direction.";return}
+ if(busy)return;
+ const mood=$("theme-crew-mood").value.trim(),output=$("theme-crew-plan-result");
+ if(!mood||mood.length>200){output.textContent="Enter a creative direction of 1–200 characters.";return}
+ lock(true);
+ output.textContent="Building a reviewed theme proposal…";
+ let recommendation=null;
  try{
   const {plan,preset}=await req("/plan","POST",{mood});
-  choose(plan.preset);
-  $("theme-crew-plan-result").textContent="Morgue Mason recommends "+preset.name+". "+plan.reason+" Preview it before publishing.";
- }catch(e){$("theme-crew-plan-result").textContent="Planner failed: "+e.message}
+  if(!plan||!Object.hasOwn(presets,plan.preset)||!preset?.name)throw Error("Planner returned an unavailable preset. Refresh the console.");
+  recommendation={plan,preset};
+ }catch(e){output.textContent="Planner failed: "+e.message}
+ finally{lock(false)}
+ if(recommendation){
+  const {plan,preset}=recommendation;
+  presetFilter=ART_THEMES.has(plan.preset)?"art":"classic";
+  for(const element of document.querySelectorAll("[data-theme-filter]"))element.setAttribute("aria-pressed",String(element.dataset.themeFilter===presetFilter));
+  drawPresets();choose(plan.preset);
+  output.textContent="Morgue Mason recommends "+preset.name+". "+plan.reason+" Preview it before publishing.";
+ }
+
 });
 if(["ash-fall.com","www.ash-fall.com"].includes(location.hostname.toLowerCase())){
  boot();
