@@ -1192,6 +1192,47 @@
           "status": "Editorial draft; primary source verification pending"
         }
       ]
+    },
+    {
+      "title": "Religious symbols and sacred testimony",
+      "entries": [
+        {
+          "title": "The Crystal Arch",
+          "body": "Celestial origin and identity.",
+          "source": "Diablo III",
+          "status": "Editorial interpretation; primary source review pending"
+        },
+        {
+          "title": "The Worldstone as symbol",
+          "body": "A narrative symbol of contested creation and mortal potential.",
+          "source": "The Sin War; Diablo II",
+          "status": "Editorial interpretation; primary source review pending"
+        },
+        {
+          "title": "The Cathedral's Light",
+          "body": "Religious authority and salvation are recurring themes in the Cathedral's teachings.",
+          "source": "Diablo IV",
+          "status": "Editorial interpretation; primary source review pending"
+        },
+        {
+          "title": "The Book of Cain as testimony",
+          "body": "An in-universe scholar's account, not necessarily an omniscient narrator.",
+          "source": "Book of Cain",
+          "status": "Editorial interpretation; primary source review pending"
+        },
+        {
+          "title": "The Book of Tyrael as testimony",
+          "body": "Celestial and mortal perspectives on the conflict.",
+          "source": "Book of Tyrael",
+          "status": "Editorial interpretation; primary source review pending"
+        },
+        {
+          "title": "The Book of Adria as testimony",
+          "body": "An occult perspective whose narrator's motives matter.",
+          "source": "Book of Adria",
+          "status": "Editorial interpretation; primary source review pending"
+        }
+      ]
     }
   ],
   "references": [
@@ -1259,6 +1300,28 @@
       "title": "Original Diablo manual",
       "url": "https://ftp.blizzard.com/pub/misc/Diablo.PDF",
       "note": "Primary historical franchise source."
+    }
+  ],
+  "overview": [
+    {
+      "title": "Creation and division",
+      "body": "Diablo's creation myth traces the cosmic struggle to Anu and Tathamet. Their destruction precedes the emergence of the High Heavens and Burning Hells. The Eternal Conflict is the struggle of their descendants, not a simple guarantee that angels are benevolent."
+    },
+    {
+      "title": "Sanctuary and mortal freedom",
+      "body": "Inarius and Lilith create a refuge from the conflict. Their descendants, the nephalem, possess both angelic and demonic ancestry. The Worldstone becomes central to the struggle over their potential."
+    },
+    {
+      "title": "Faith and authority",
+      "body": "The Cathedral of Light and Triune illustrate rival claims to spiritual authority. Zakarum, the Priests of Rathma and other traditions show that Sanctuary's religious landscape cannot be reduced to allegiance to either cosmic army."
+    },
+    {
+      "title": "Death, corruption and renewal",
+      "body": "Possession, soulstones and the return of demons connect the franchise's history to questions of identity and mortality. The Balance and Spirit Realm offer distinct perspectives on life and death."
+    },
+    {
+      "title": "Reading the mythology",
+      "body": "These are fictional beliefs and narrative themes, not claims about real supernatural phenomena. Distinguish in-universe testimony, game events and editorial interpretation; later works may revise earlier accounts."
     }
   ]
 }
