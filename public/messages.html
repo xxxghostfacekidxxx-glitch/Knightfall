@@ -396,6 +396,8 @@ $("#composer").onsubmit=async e=>{
   body=draft.trim(),attachment_ids=pendingAttachments.map(x=>Number(x.id));
  if(!body&&!attachment_ids.length)return;
  if(attachmentUploads){status("Finish the current upload before sending.");return;}
+ if(body.length>4000){status("Your restored draft exceeds 4,000 characters. Split it into smaller messages before sending.");return;}
+ if(attachment_ids.length>10){status("Your restored draft has more than 10 attachments. Remove some before sending.");return;}
  // The input clears BEFORE the network request: a second message can be
  // composed and queued while the first is still on the way to the server.
  if(field.value===draft){
@@ -431,7 +433,7 @@ $("#composer").onsubmit=async e=>{
     field.value=existing?draft+"\n"+existing:draft;
     field.dispatchEvent(new Event("input",{bubbles:true}));
     pendingAttachments.push(...queuedAttachments);drawPendingAttachments();
-    status("Message not sent: "+error.message+" Draft restored. Retry Send.");
+    status("Send not confirmed: "+error.message+" Draft restored. Check the conversation before retrying.");
    }else{
     const existing=conversationDrafts.get(conversationId)||"";
     rememberConversationDraft(conversationId,existing?draft+"\n"+existing:draft);
