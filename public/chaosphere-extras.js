@@ -49,30 +49,25 @@
  transcript.addEventListener("click",event=>{
   const photo=event.target.closest("a.message-attachment.image-preview");
   if(photo&&typeof HTMLDialogElement!=="undefined"&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey){
-   const href=photo.getAttribute("href"),thumbnail=photo.querySelector("img");
-   if(href&&thumbnail){
-    const url=new URL(href,location.origin),apiOrigin="https://api.ash-fall.com";
-    if((url.origin===location.origin||url.origin===apiOrigin)&&url.protocol==="https:"){
-     let lightbox=document.getElementById("cs-image-lightbox");
-     if(!lightbox){
-      lightbox=document.createElement("dialog");
-      lightbox.id="cs-image-lightbox";lightbox.className="cs-image-lightbox";
-      lightbox.setAttribute("aria-label","Message photo preview");
-      lightbox.innerHTML='<div class="cs-image-stage"><button class="cs-image-close" type="button" aria-label="Close photo preview">×</button><img alt=""><div class="cs-image-caption"><strong></strong><a target="_blank" rel="noopener noreferrer">Open original</a></div></div>';
-      document.body.append(lightbox);
-      lightbox.querySelector(".cs-image-close").addEventListener("click",()=>lightbox.close());
-      lightbox.addEventListener("click",click=>{if(click.target===lightbox)lightbox.close()});
-      lightbox.addEventListener("close",()=>lightbox.querySelector("img").removeAttribute("src"));
-     }
-     const image=lightbox.querySelector("img");
-     image.src=thumbnail.getAttribute("src")||href;
-     image.alt=thumbnail.alt||"Message attachment";
-     lightbox.querySelector(".cs-image-caption strong").textContent=photo.querySelector(".attachment-info strong")?.textContent||"Photo attachment";
-     lightbox.querySelector(".cs-image-caption a").href=url.href;
-     if(typeof lightbox.showModal==="function"){
-      event.preventDefault();lightbox.showModal();return;
-     }
+   const allowed=anchor=>{try{const url=new URL(anchor.href,location.origin);return url.protocol==="https:"&&(url.origin===location.origin||url.origin==="https://api.ash-fall.com")&&/^\/api\/messages\/attachments\/\d+$/.test(url.pathname)}catch{return false}};
+   const gallery=Array.from(transcript.querySelectorAll("a.message-attachment.image-preview")).filter(allowed);
+   if(gallery.includes(photo)){
+    let lightbox=document.getElementById("cs-image-lightbox");
+    if(!lightbox){
+     lightbox=document.createElement("dialog");lightbox.id="cs-image-lightbox";lightbox.className="cs-image-lightbox";lightbox.setAttribute("aria-label","Message photo gallery");
+     lightbox.innerHTML='<div class="cs-image-stage"><button class="cs-image-close" type="button" aria-label="Close photo preview">×</button><div class="cs-image-navigation"><button type="button" data-photo-prev aria-label="Previous image">‹</button><span data-photo-count></span><button type="button" data-photo-next aria-label="Next image">›</button></div><div class="cs-image-viewport"><img alt="" referrerpolicy="no-referrer"></div><div class="cs-image-caption"><strong></strong><button type="button" data-photo-zoom aria-pressed="false">Zoom</button><a target="_blank" rel="noopener noreferrer">Open original</a></div></div>';
+     document.body.append(lightbox);
     }
+    let index=gallery.indexOf(photo),zoomed=false;
+    const image=lightbox.querySelector("img"),previous=lightbox.querySelector("[data-photo-prev]"),next=lightbox.querySelector("[data-photo-next]"),zoom=lightbox.querySelector("[data-photo-zoom]");
+    const show=()=>{const current=gallery[index],thumb=current.querySelector("img");image.src=current.href;image.alt=thumb?.alt||"Message attachment";lightbox.querySelector(".cs-image-caption strong").textContent=current.querySelector(".attachment-info strong")?.textContent||image.alt;lightbox.querySelector(".cs-image-caption a").href=current.href;lightbox.querySelector("[data-photo-count]").textContent=(index+1)+" / "+gallery.length;previous.disabled=index===0;next.disabled=index===gallery.length-1;zoomed=false;image.classList.remove("cs-image-zoomed");zoom.setAttribute("aria-pressed","false");};
+    const move=delta=>{index=Math.max(0,Math.min(gallery.length-1,index+delta));show();};
+    previous.onclick=()=>move(-1);next.onclick=()=>move(1);zoom.onclick=()=>{zoomed=!zoomed;image.classList.toggle("cs-image-zoomed",zoomed);zoom.setAttribute("aria-pressed",String(zoomed));};
+    lightbox.querySelector(".cs-image-close").onclick=()=>lightbox.close();
+    lightbox.onclick=click=>{if(click.target===lightbox)lightbox.close();};
+    lightbox.onkeydown=key=>{if(key.key==="ArrowLeft"||key.key==="ArrowRight"){key.preventDefault();move(key.key==="ArrowLeft"?-1:1);}};
+    lightbox.onclose=()=>{image.removeAttribute("src");lightbox.onkeydown=null;previous.onclick=null;next.onclick=null;zoom.onclick=null;photo.focus?.({preventScroll:true});};
+    if(typeof lightbox.showModal==="function"){event.preventDefault();show();lightbox.showModal();return;}
    }
   }
   const button=event.target.closest("[data-quote-message]");
@@ -118,6 +113,13 @@
    announce("Your browser can't paste this image as a file. Use the + button to attach it.");
   }
  });
+ // Desktop drop target uses the existing conversation-scoped upload flow.
+ let dragDepth=0;
+ const fileDrag=event=>Array.from(event.dataTransfer?.types||[]).includes("Files");
+ composer.addEventListener("dragenter",event=>{if(!fileDrag(event)||composer.hidden||body.disabled)return;event.preventDefault();dragDepth++;composer.classList.add("cs-drop-active");});
+ composer.addEventListener("dragover",event=>{if(fileDrag(event)&&!body.disabled){event.preventDefault();event.dataTransfer.dropEffect="copy";}});
+ composer.addEventListener("dragleave",()=>{dragDepth=Math.max(0,dragDepth-1);if(!dragDepth)composer.classList.remove("cs-drop-active");});
+ composer.addEventListener("drop",event=>{dragDepth=0;composer.classList.remove("cs-drop-active");if(!fileDrag(event))return;event.preventDefault();if(body.disabled||composer.hidden)return;const picker=document.getElementById("attachment-input"),attach=document.getElementById("attach-file");if(!picker||attach?.disabled){announce("Finish the current upload first.");return;}const files=Array.from(event.dataTransfer.files||[]);if(!files.length||files.length>10){announce("Choose up to 10 files.");return;}try{const transfer=new DataTransfer();files.forEach(file=>transfer.items.add(file));picker.files=transfer.files;picker.dispatchEvent(new Event("change",{bubbles:true}));}catch{announce("Use the attachment button to add these files.");}});
  document.addEventListener("keydown",event=>{
   if(event.key==="Escape"&&!tray.hidden)closeTray();
  });

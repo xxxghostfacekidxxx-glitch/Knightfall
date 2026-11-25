@@ -149,3 +149,11 @@
 .messages-shell .cs-bookmark-row button{color:#f3e9fb;background:var(--cs-faint);border:1px solid var(--cs-edge);border-radius:8px;padding:8px;text-align:left;overflow-wrap:anywhere}
 .messages-shell [data-cs-bookmark][aria-pressed=true]{color:#f7d281}
 @media(max-height:500px){.messages-shell .cs-compose-format button{min-height:25px;padding:2px 6px}.messages-shell .cs-compose-preview{max-height:60px}}
+
+.messages-shell #composer.cs-drop-active{outline:2px dashed var(--cs-glow,#ff8ed0);outline-offset:-5px;background:var(--cs-faint)!important}
+#cs-image-lightbox .cs-image-navigation{display:flex;justify-content:center;align-items:center;gap:12px;padding:8px;color:#f6eafb}
+#cs-image-lightbox .cs-image-navigation button,#cs-image-lightbox [data-photo-zoom]{min-height:36px;min-width:36px;border:1px solid #c0a1d260;border-radius:9px;background:#251b32;color:#fff;font-size:15px}
+#cs-image-lightbox .cs-image-navigation button:disabled{opacity:.35}
+#cs-image-lightbox .cs-image-viewport{overflow:auto;max-height:68dvh;text-align:center;overscroll-behavior:contain}
+#cs-image-lightbox .cs-image-viewport img{display:block;max-width:100%;max-height:65dvh;margin:auto;object-fit:contain}
+#cs-image-lightbox .cs-image-viewport img.cs-image-zoomed{width:200%;max-width:none;max-height:none}

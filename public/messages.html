@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/chaosphere-neon.css?v=20261125-neon2">
 <link rel="stylesheet" href="/chaosphere-next.css?v=20261121-next1">
 <link rel="stylesheet" href="/chaosphere-themes.css?v=20261121-themes1">
-<link rel="stylesheet" href="/chaosphere-ascendant.css?v=20261125-apotheosis1">
+<link rel="stylesheet" href="/chaosphere-ascendant.css?v=20261125-apotheosis2">
 <script>window.KnightfallEmojiReady=new Promise(resolve=>{window.__resolveKnightfallEmoji=resolve})</script>
 <script type="module" src="/knightfall-emojis.mjs?v=20261125-noir1"></script>
 <script src="/chaosphere-format.js?v=20261125-apotheosis1"></script>
@@ -919,7 +919,7 @@ $("#enable-notifications").addEventListener("click",()=>{location.href="/notific
 $("#phone-push-help").addEventListener("click",()=>{location.href="/notifications.html"});
 window.addEventListener("beforeunload",()=>{if(pollHandle)clearInterval(pollHandle);if(typingPollHandle)clearInterval(typingPollHandle);if(presenceHandle)clearInterval(presenceHandle);if(memberSearchHandle)clearTimeout(memberSearchHandle);if(archiveSearchHandle)clearTimeout(archiveSearchHandle)});
 </script>
-<script src="/chaosphere-extras.js?v=20261125-apotheosis1" defer></script>
+<script src="/chaosphere-extras.js?v=20261125-apotheosis2" defer></script>
 <script>
 (()=>{const input=document.getElementById("kf-trouble-spice");const output=document.getElementById("kf-trouble-spice-label");const labels=["Sweet","Sassy","Spicy","Unhinged"];const key="kf:trouble-spice";let saved=0;try{saved=Number(localStorage.getItem(key))||0}catch{}input.value=Math.max(0,Math.min(3,saved));output.textContent=labels[Number(input.value)];input.addEventListener("input",()=>{const n=Number(input.value);output.textContent=labels[n];try{localStorage.setItem(key,String(n))}catch{}})})();
 </script></body></html>

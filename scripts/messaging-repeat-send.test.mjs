@@ -23,7 +23,7 @@ function inbox(){
   $,currentId:7,conversationDrafts:drafts,messageSendQueues:new Map(),
   pendingAttachments:[],attachmentUploads:0,historyPinnedConversationId:null,
   sendingConversation:null,sendingAttachmentIds:new Set(),typingHandle:null,
-  currentUser:{id:3},document:{hidden:false},Event,Number,JSON,Set,
+  currentUser:{id:3},window:{},document:{hidden:false},Event,Number,JSON,Set,
   clearTimeout,console,
   rememberConversationDraft(id,text){if(text)drafts.set(id,text);else drafts.delete(id)},
   drawPendingAttachments(){},activeConversation:()=>({id:7,messaging_blocked:0}),
@@ -80,7 +80,7 @@ function bubble(){
  const state={active:7,visible:true,sending:false};
  const requests=[],sent=[],drafts=new Map();
  const ctx={
-  composer,input,state,drafts,messageSendQueues:new Map(),attachmentDrafts:new Map(),uploadingConversations:new Set(),removingConversations:new Set(),saveAttachmentDraft(){},drawAttachmentDraft(){},updatePendingDelivery(){},document:{hidden:false},
+  composer,input,state,drafts,messageSendQueues:new Map(),attachmentDrafts:new Map(),uploadingConversations:new Set(),removingConversations:new Set(),saveAttachmentDraft(){},drawAttachmentDraft(){},updatePendingDelivery(){},window:{},document:{hidden:false},
   Number,JSON,console,
   getConversation:id=>({id,messaging_blocked:0}),
   rememberDraft(id,value){if(value)drafts.set(id,value);else drafts.delete(id);},
@@ -89,7 +89,7 @@ function bubble(){
   api(path,opts){const req=deferred();requests.push(req);sent.push({path,body:JSON.parse(opts.body)});return req.promise;}
  };
  vm.createContext(ctx);
- const a=bubbles.indexOf('composer.addEventListener("submit"'),b=bubbles.indexOf('const emojiToggle=',a);
+ const a=bubbles.indexOf('composer.addEventListener("submit"'),b=bubbles.indexOf('const formatToggle=',a);
  assert.ok(a>0&&b>a);
  vm.runInContext(bubbles.slice(a,b),ctx);
  return {ctx,composer,input,state,requests,sent,button};
