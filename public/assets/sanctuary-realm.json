@@ -514,6 +514,244 @@
           "status": "Supported by official overview; detailed campaign review pending"
         }
       ]
+    },
+    {
+      "title": "Sin War: faith and power",
+      "entries": [
+        {
+          "title": "Mefis, Dialon and Bala",
+          "body": "The Triune concealed demonic patrons behind religious identities.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/23725427/diablo-ii-the-story-so-far",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "The Prophet",
+          "body": "Inarius established a rival faith to retain influence over mortals.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/23725427/diablo-ii-the-story-so-far",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Awakening",
+          "body": "Lilith restored access to dormant ancestral abilities, inspiring a revolt led by Uldyssian.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/23725427/diablo-ii-the-story-so-far",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "The sacrifice",
+          "body": "Uldyssian relinquished his power and life to prevent catastrophe.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/23725427/diablo-ii-the-story-so-far",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "The ancient bargain",
+          "body": "The opposing cosmic factions agreed to leave humanity's choice open, while Inarius became Mephisto's prisoner.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/23725427/diablo-ii-the-story-so-far",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Forgotten history",
+          "body": "Human memories of the conflict were suppressed.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/23725427/diablo-ii-the-story-so-far",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Jered Cain",
+          "body": "Horadric mage involved in imprisoning Diablo beneath Tristram.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/23725427/diablo-ii-the-story-so-far",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Lazarus",
+          "body": "Archbishop whose corruption helped bring about the tragedy of Tristram.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/23725427/diablo-ii-the-story-so-far",
+          "status": "Official overview consulted; primary work review pending"
+        }
+      ]
+    },
+    {
+      "title": "Sacred orders and disciplines",
+      "entries": [
+        {
+          "title": "Vizjerei assassins",
+          "body": "An order concerned with policing renegade magic users.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://diablo2.blizzard.com/en-us/",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Paladin faith",
+          "body": "Religious conviction underpins protective and martial magic.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://diablo2.blizzard.com/en-us/",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Amazon disciplines",
+          "body": "Martial traditions combine supernatural abilities with specialized weapons.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://diablo2.blizzard.com/en-us/",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Elemental sorcery",
+          "body": "Practitioners wield elemental forces through learned magic.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://diablo2.blizzard.com/en-us/",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Druidic disciplines",
+          "body": "Nature magic includes elemental powers and shapeshifting.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://diablo2.blizzard.com/en-us/",
+          "status": "Official overview consulted; primary work review pending"
+        }
+      ]
+    },
+    {
+      "title": "Literary archive",
+      "entries": [
+        {
+          "title": "Scales of the Serpent",
+          "body": "Novel in the Sin War trilogy; reading lead.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Bibliographic lead; full work not reviewed"
+        },
+        {
+          "title": "The Veiled Prophet",
+          "body": "Final Sin War novel; reading lead.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Bibliographic lead; full work not reviewed"
+        },
+        {
+          "title": "Demonsbane",
+          "body": "Early franchise fiction; compare against later continuity.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Book of Cain",
+          "body": "Illustrated lore compendium.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Bibliographic lead; full work not reviewed"
+        },
+        {
+          "title": "The Order",
+          "body": "Novel associated with the Diablo III era.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Sword of Justice",
+          "body": "Comic series associated with the Diablo III era.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Storm of Light",
+          "body": "Novel associated with the Reaper of Souls era.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Wrath",
+          "body": "Animated short exploring celestial conflict.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Official overview consulted; primary work review pending"
+        }
+      ]
+    },
+    {
+      "title": "Relics and celestial justice",
+      "entries": [
+        {
+          "title": "El'druin",
+          "body": "Tyrael's sword, associated with Justice.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Council vote",
+          "body": "Auriel and Itherael supported humanity's continued existence.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Tyrael's mortality",
+          "body": "Tyrael gave up angelic existence to aid Sanctuary and later assumed the aspect of Wisdom.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+          "status": "Official overview consulted; primary work review pending"
+        }
+      ]
+    },
+    {
+      "title": "Scholarly testimonies",
+      "entries": [
+        {
+          "title": "Book of Tyrael",
+          "body": "In-universe compendium combining Tyrael's account, Leah's letters and Cain's writings.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/10580514/diablo-iii-book-of-tyrael-pre-orders-now-available",
+          "status": "Bibliographic lead; full work not reviewed"
+        },
+        {
+          "title": "House of Leoric",
+          "body": "The compendium includes a family tree connecting major Tristram figures.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/10580514/diablo-iii-book-of-tyrael-pre-orders-now-available",
+          "status": "Official overview consulted; primary work review pending"
+        }
+      ]
+    },
+    {
+      "title": "Adria and the Coven",
+      "entries": [
+        {
+          "title": "The Coven",
+          "body": "Adria belonged to this occult organization before dedicating herself to Diablo.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/22882128/book-of-adria-a-diablo-beastiary-now-available",
+          "status": "Official overview consulted; primary work review pending"
+        },
+        {
+          "title": "Book of Adria",
+          "body": "In-universe bestiary and account of supernatural beings; individual creature entries require review.",
+          "source": "Blizzard official overview",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/22882128/book-of-adria-a-diablo-beastiary-now-available",
+          "status": "Bibliographic lead; full work not reviewed"
+        }
+      ]
+    },
+    {
+      "title": "Early franchise sources",
+      "entries": [
+        {
+          "title": "Original Diablo manual",
+          "body": "Early account of cosmic conflict and mortal choice; compare against later continuity.",
+          "source": "1996 game manual",
+          "sourceUrl": "https://ftp.blizzard.com/pub/misc/Diablo.PDF",
+          "status": "Official manual excerpt reviewed"
+        }
+      ]
     }
   ],
   "references": [
@@ -551,6 +789,36 @@
       "title": "Seasonal lore",
       "url": "https://news.blizzard.com/en-gb/article/24297205/diablo-iv-what-s-next-panel-recap",
       "note": "Official Blizzard article consulted; supports linked entries."
+    },
+    {
+      "title": "Blizzard: Sin War: faith and power",
+      "url": "https://news.blizzard.com/en-us/article/23725427/diablo-ii-the-story-so-far",
+      "note": "Official source consulted."
+    },
+    {
+      "title": "Blizzard: Sacred orders and disciplines",
+      "url": "https://diablo2.blizzard.com/en-us/",
+      "note": "Official source consulted."
+    },
+    {
+      "title": "Blizzard: Literary archive",
+      "url": "https://news.blizzard.com/en-us/article/13423479/tyrael-hero-spotlight",
+      "note": "Official source consulted."
+    },
+    {
+      "title": "Blizzard: Scholarly testimonies",
+      "url": "https://news.blizzard.com/en-us/article/10580514/diablo-iii-book-of-tyrael-pre-orders-now-available",
+      "note": "Official source consulted."
+    },
+    {
+      "title": "Blizzard: Adria and the Coven",
+      "url": "https://news.blizzard.com/en-us/article/22882128/book-of-adria-a-diablo-beastiary-now-available",
+      "note": "Official source consulted."
+    },
+    {
+      "title": "Original Diablo manual",
+      "url": "https://ftp.blizzard.com/pub/misc/Diablo.PDF",
+      "note": "Primary historical franchise source."
     }
   ]
 }
