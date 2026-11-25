@@ -10,3 +10,5 @@ Independent Knightfall fictional mythology archive. No academies or living relig
 - [ ] Verify primary sources and existing research links
 - [ ] Expand novels, bestiary, sacred traditions and campaign outcomes
 - [ ] Synchronize live Between the Flames board
+
+Research batch: 29 new entries, six official sources consulted, full literary works still pending. Existing source labels retained; older links require separate verification.
