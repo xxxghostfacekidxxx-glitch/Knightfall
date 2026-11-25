@@ -1683,6 +1683,7 @@ function spawnPB(x, z, a, homing, kind = 'normal') {
   b.x = x; b.z = z; b.vx = Math.sin(a) * BULLET_SPEED; b.vz = Math.cos(a) * BULLET_SPEED;
   b.life = 0.85; b.homing = homing; b.target = null; b.retarget = 0; b.dmg = player.overdrive > 0 ? 2 : 1;
   b.kind = kind; b.pierce = kind === 'rail' ? 3 : 0; b.struck = kind === 'rail' ? new Set() : null;
+  if (kind === 'gravity') { b.dmg = 2; }
   if (kind === 'rail') { b.dmg = 3; b.vx *= 1.25; b.vz *= 1.25; }
   pBullets.push(b);
 }
@@ -2448,7 +2449,8 @@ function registerKill(x, z, base, hex) {
   // Reward sustained precision once per chain milestone, without increasing the bomb cap.
   if (G.combo % 40 === 0) {
     player.overdrive = 8;
-    player.special = G.combo % 80 === 0 ? 'rail' : 'chain';
+    player.special = ['chain', 'rail', 'orbit', 'gravity'][(Math.floor(G.combo / 40) - 1) % 4];
+    player.specialCd = 0;
     popup(player.x, player.z, 'OVERDRIVE', '#ff2e88', 1.6);
     const bonus = 250 * G.mult;
     addScore(bonus);
@@ -2464,7 +2466,7 @@ function fire() {
   const P = player, a = Math.atan2(P.aimX, P.aimZ);
   const fx = Math.sin(a), fz = Math.cos(a), rx = -fz, rz = fx;
   const nx = P.x + fx * 1.2, nz = P.z + fz * 1.2, homing = P.homing > 0;
-  const special = P.overdrive > 0 ? P.special : 'normal';
+  const special = P.overdrive > 0 && ['chain','rail','gravity'].includes(P.special) ? P.special : 'normal';
   spawnPB(nx + rx * 0.34, nz + rz * 0.34, a, homing && special !== 'rail', special);
   spawnPB(nx - rx * 0.34, nz - rz * 0.34, a, homing);
   if (P.overdrive > 0 && P.spread <= 0) for (const o of [-0.22, 0.22]) spawnPB(nx, nz, a + o, homing);
@@ -2555,6 +2557,7 @@ function updatePlayer(dt) {
   P.dashCd = Math.max(0, P.dashCd - dt);
   P.bombCd = Math.max(0, P.bombCd - dt);
   P.overdrive = Math.max(0, P.overdrive - dt);
+  updateOrbital(P, dt);
   P.spread = Math.max(0, P.spread - dt);
   P.rapid = Math.max(0, P.rapid - dt);
   P.homing = Math.max(0, P.homing - dt);
@@ -2627,6 +2630,28 @@ function updateBullets(dt) {
     if (b.life <= 0 || Math.abs(b.x) > HX + 1 || Math.abs(b.z) > HZ + 1) removeAt(eBullets, i, ebPool);
   }
 }
+function gravityImpact(x, z) {
+  rings.add(x, z, COL.pbHoming, .5, 8, .45);
+  for (const e of enemies) {
+    if (e.dead || e.spawn > 0) continue;
+    const dx = x - e.x, dz = z - e.z, d = Math.hypot(dx, dz);
+    if (d > .2 && d < 9) { const force = 16 * (1 - d / 9); e.vx += dx / d * force; e.vz += dz / d * force; }
+  }
+}
+function updateOrbital(P, dt) {
+  if (P.overdrive <= 0 || P.special !== 'orbit') return;
+  P.specialCd = Math.max(0, P.specialCd - dt);
+  if (P.specialCd > 0) return;
+  P.specialCd = .18;
+  for (let i = 0; i < 3; i++) {
+    const a = G.time * 5 + i * TAU / 3;
+    const x = P.x + Math.cos(a) * 3.4, z = P.z + Math.sin(a) * 3.4;
+    for (const e of enemies) {
+      if (e.dead || e.spawn > 0) continue;
+      if ((e.x-x)**2 + (e.z-z)**2 < (e.r + .85)**2) damageEnemy(e, 2, Math.cos(a), Math.sin(a));
+    }
+  }
+}
 function chainArc(source, vx, vz) {
   let from = source;
   const visited = new Set([source]);
@@ -2661,6 +2686,7 @@ function collide() {
         b.struck?.add(e);
         damageEnemy(e, b.dmg, b.vx, b.vz);
         if (b.kind === 'chain') chainArc(e, b.vx, b.vz);
+        if (b.kind === 'gravity') gravityImpact(e.x, e.z);
         if (b.pierce > 0) { b.pierce--; continue; }
         hit = true; break;
       }
@@ -2936,7 +2962,7 @@ function updateHUD(rdt) {
   setHidden(hud.pw.shield, 'pw-shield', !P.shield);
   const od = $('pw-overdrive');
   setHidden(od, 'pw-overdrive', !(P.overdrive > 0));
-  put(od.querySelector('span'), 'specialMode', P.special === 'rail' ? 'RAILGUN' : 'CHAIN ARC');
+  put(od.querySelector('span'), 'specialMode', ({rail:'RAILGUN',chain:'CHAIN ARC',orbit:'BLADES',gravity:'GRAVITY'})[P.special] || 'OVERDRIVE');
   setBar(od.querySelector('i'), 'pwb-overdrive', (P.overdrive || 0) / 8);
   const ready = (1 - P.dashCd / DASH_CD).toFixed(2);
   if (hud.cache.get('dashReady') !== ready) { hud.cache.set('dashReady', ready); hud.dashBtn.style.setProperty('--ready', ready); }
@@ -3009,7 +3035,7 @@ function clearWorld() {
 function resetPlayer() {
   Object.assign(player, {
     x: 0, z: HZ * 0.25, vx: 0, vz: 0, yaw: Math.PI, bank: 0, aimX: 0, aimZ: -1, alive: true, lives: 3, bombs: 2, shield: 0,
-    invuln: 1.5, fireCd: 0, dashCd: 0, dashT: -1, dashId: 0, bombCd: 0, ghostT: 0, spread: 0, rapid: 0, homing: 0, overdrive: 0, special: 'normal',
+    invuln: 1.5, fireCd: 0, dashCd: 0, dashT: -1, dashId: 0, bombCd: 0, ghostT: 0, spread: 0, rapid: 0, homing: 0, overdrive: 0, special: 'normal', specialCd: 0,
   });
   trail.reset();
 }
@@ -3292,9 +3318,22 @@ function updateWellUniforms() {
   for (const w of wells) { if (k >= MAX_WELLS) break; arr[k++].set(w.x, w.z, w.well, 5.5); }
   for (; k < MAX_WELLS; k++) arr[k].z = 0;
 }
+const orbitalMesh = new THREE.InstancedMesh(new THREE.OctahedronGeometry(.65), new THREE.MeshBasicMaterial({color: 0xffb020}), 3);
+orbitalMesh.frustumCulled = false;
+orbitalMesh.visible = false;
+scene.add(orbitalMesh);
 function syncScene(dt) {
   const P = player;
   const showShip = (G.state === 'playing' || G.state === 'paused') && P.alive;
+  orbitalMesh.visible = showShip && P.overdrive > 0 && P.special === 'orbit';
+  if (orbitalMesh.visible) {
+    for (let i = 0; i < 3; i++) {
+      const a = G.time * 5 + i * TAU / 3;
+      _p.set(P.x + Math.cos(a)*3.4, ENTITY_Y, P.z + Math.sin(a)*3.4);
+      _q.setFromAxisAngle(UP, -a); _s.set(.7,.7,2.2); _m.compose(_p,_q,_s); orbitalMesh.setMatrixAt(i,_m);
+    }
+    orbitalMesh.instanceMatrix.needsUpdate = true;
+  }
   ship.visible = showShip && !(P.invuln > 0 && P.dashT <= 0 && Math.floor(P.invuln * 18) % 2 === 0);
   ship.position.set(P.x, ENTITY_Y + Math.sin(G.time * 3.2) * 0.07, P.z);
   ship.rotation.set(0, P.yaw, P.bank);
