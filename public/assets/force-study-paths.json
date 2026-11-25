@@ -424,6 +424,64 @@
         "Force lightning in fictional narratives",
         "Concealment and projection",
         "Rare abilities and continuity disputes"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Telekinesis and perception",
+          "body": "The films portray movement of objects and awareness beyond ordinary senses as fictional Force abilities. Training, concentration and narrative circumstances matter; these depictions are not evidence of real paranormal powers.",
+          "question": "Distinguish observation from inference.",
+          "source": "The Empire Strikes Back",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "Precognition and visions",
+          "body": "Anakin's visions illustrate the danger of interpreting possible futures as inevitable. Yoda emphasizes uncertainty about the future.",
+          "question": "How might a prediction change the behavior of the person receiving it?",
+          "source": "Revenge of the Sith",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Healing and restoration",
+          "body": "Canon depicts Force healing in The Rise of Skywalker and The Mandalorian. The stories suggest costs and limits rather than a universal cure.",
+          "question": "Compare fictional healing symbolism with practical caregiving.",
+          "source": "The Rise of Skywalker; The Mandalorian",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "Mind influence",
+          "body": "The Jedi mind trick raises questions about consent even when used for apparently benevolent purposes. Fictional necessity is not a justification for real manipulation.",
+          "question": "When does persuasion become coercion?",
+          "source": "A New Hope",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Force lightning",
+          "body": "Force lightning functions as a visual expression of destructive power in several films. Its association with Sith characters is not proof that every continuity treats it identically.",
+          "question": "Compare power as spectacle with power as responsibility.",
+          "source": "Return of the Jedi",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 6,
+          "title": "Concealment and projection",
+          "body": "Luke's projection in The Last Jedi demonstrates a fictional distinction between physical presence and perceived presence. Concealment traditions vary across expanded lore.",
+          "question": "What distinguishes appearance from evidence?",
+          "source": "The Last Jedi",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 7,
+          "title": "Rare abilities",
+          "body": "Expanded stories introduce unusual abilities with differing constraints. Catalogue each by work and continuity rather than constructing a universal power ranking.",
+          "question": "Create a source-specific comparison of two fictional abilities.",
+          "source": "Primary screen and published stories",
+          "status": "draft; source review pending"
+        }
       ]
     },
     {
@@ -437,6 +495,56 @@
         "Korriban and Moraband",
         "Jedha and sacred traditions",
         "Exegol and Sith heritage"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Holocrons",
+          "body": "Holocrons preserve teachings in fictional Jedi and Sith traditions. Rebels depicts their use and interaction; individual artifacts may have different properties.",
+          "question": "Design a knowledge archive that distinguishes authority from evidence.",
+          "source": "Star Wars Rebels: The Holocrons of Fate",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "Kyber crystals",
+          "body": "The Clone Wars and Rogue One depict kyber crystals in spiritual, technological and political contexts.",
+          "question": "Compare sacred symbolism with the consequences of resource exploitation.",
+          "source": "The Clone Wars: The Gathering; Rogue One",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Tython and Ahch-To",
+          "body": "Tython appears in both continuities with differing histories. Ahch-To is associated with ancient Jedi heritage in the sequel films.",
+          "question": "Explain why shared place names do not establish shared chronology.",
+          "source": "The Mandalorian: The Tragedy; The Last Jedi",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "Korriban and Moraband",
+          "body": "Moraband appears in The Clone Wars as an ancient Sith world; Korriban is prominent in Legends. Preserve source-specific terminology.",
+          "question": "Construct a glossary that records alternate names and their contexts.",
+          "source": "The Clone Wars: Sacrifice; Knights of the Old Republic",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Jedha",
+          "body": "Rogue One presents Jedha as a pilgrimage destination with multiple Force-related traditions and a contested sacred landscape.",
+          "question": "How can a community respect different traditions sharing a sacred place?",
+          "source": "Rogue One",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 6,
+          "title": "Exegol",
+          "body": "The Rise of Skywalker depicts Exegol as a hidden center of Sith activity. Distinguish what the film establishes from later explanations.",
+          "question": "Compare secrecy as a narrative device with transparency as a governance value.",
+          "source": "The Rise of Skywalker",
+          "status": "draft; source review pending"
+        }
       ]
     },
     {
@@ -451,6 +559,64 @@
         "Voluntary membership and freedom of conscience",
         "Religious literacy and source evaluation",
         "Ethical leadership and safeguarding"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Contemporary Jediism",
+          "body": "Some real-world communities draw ethical and spiritual inspiration from Jedi fiction. Their beliefs and organizational structures differ; fictional canon is not automatically religious doctrine.",
+          "question": "Compare a community's self-description with independent scholarship.",
+          "source": "Temple of the Jedi Order doctrine; Markus Davidsen research",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "Community diversity",
+          "body": "Jedi-inspired groups may differ on metaphysics, ritual, training and membership. Avoid treating one organization's statements as representative of all practitioners.",
+          "question": "Identify two differences between published community statements.",
+          "source": "Public community doctrine and membership documents",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Sith-inspired philosophy",
+          "body": "Contemporary Sith-inspired approaches should be studied through their own published statements, not assumed to endorse fictional villainy. Knightfall's doctrine is an independent proposal.",
+          "question": "Distinguish self-development from domination of others.",
+          "source": "Community primary sources; Knightfall original manuscripts",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "Ritual and symbolism",
+          "body": "Ritual can express commitments, mark transitions and build community without requiring supernatural claims. Participation should be voluntary.",
+          "question": "Design a symbolic ritual with an explicit opt-out.",
+          "source": "Original Knightfall reflection",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Freedom of conscience",
+          "body": "Membership must not require surrendering personal judgment or accepting coercion. Members should be free to question, decline practices and leave.",
+          "question": "Write a clear statement protecting voluntary participation.",
+          "source": "Universal Declaration of Human Rights, Article 18",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 6,
+          "title": "Religious literacy",
+          "body": "Separate insider testimony, independent scholarship, legal classification and fictional narrative. Each answers different questions.",
+          "question": "Classify four sources and explain their limitations.",
+          "source": "Religious studies methodology; research register",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 7,
+          "title": "Ethical leadership",
+          "body": "Accountability, transparent rules, consent and accessible appeals help protect members. Spiritual rank should not grant unchecked personal authority.",
+          "question": "Propose a conflict-of-interest rule and an independent appeal process.",
+          "source": "Original Knightfall governance reflection",
+          "status": "draft; source review pending"
+        }
       ]
     }
   ],
