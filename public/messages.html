@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/chaosphere-neon.css?v=20261125-neon2">
 <link rel="stylesheet" href="/chaosphere-next.css?v=20261121-next1">
 <link rel="stylesheet" href="/chaosphere-themes.css?v=20261121-themes1">
-<link rel="stylesheet" href="/chaosphere-ascendant.css?v=20261125-noir1">
+<link rel="stylesheet" href="/chaosphere-ascendant.css?v=20261125-noir2">
 <script>window.KnightfallEmojiReady=new Promise(resolve=>{window.__resolveKnightfallEmoji=resolve})</script>
 <script type="module" src="/knightfall-emojis.mjs?v=20261125-noir1"></script>
 <script src="/chaosphere-themes.js?v=20261125-ascendant1" defer></script>
@@ -74,6 +74,11 @@
     <div id="history-search-results" class="history-search-results"></div>
     <button id="history-search-more" type="button" class="secondary" hidden>Load more matches</button>
   </dialog>
+  <dialog id="cs-media-dialog" class="compose-dialog cs-media-dialog" aria-labelledby="cs-media-title">
+    <header class="compose-dialog-head"><div><p class="eyebrow">CHAOSPHERE / SHARED HISTORY</p><h2 id="cs-media-title">Shared media</h2><p id="cs-media-conversation"></p></div><button id="cs-media-close" type="button" class="icon-button" aria-label="Close shared media">×</button></header>
+    <div class="cs-media-filters" role="group" aria-label="Shared media filters"><button type="button" data-cs-media-kind="all" aria-pressed="true">All</button><button type="button" data-cs-media-kind="images" aria-pressed="false">Images</button><button type="button" data-cs-media-kind="files" aria-pressed="false">Files</button></div>
+    <p id="cs-media-status" role="status" aria-live="polite"></p><div id="cs-media-results" class="cs-media-results"></div><button id="cs-media-more" type="button" class="secondary" hidden>Load older media</button>
+  </dialog>
   <section class="message-layout">
     <aside class="conversation-panel">
       <div class="panel-title"><div><p class="eyebrow">YOUR SPACE</p><strong>Messages</strong></div><div class="inbox-toolbar"><button id="search-all-messages" type="button" title="Search message history" aria-label="Search all messages">⌕</button><button id="refresh" aria-label="Refresh conversations" title="Refresh">↻</button></div></div>
@@ -82,7 +87,7 @@
       <div class="cs-filter-tools" role="group" aria-label="More conversation filters"><button type="button" class="inbox-filter" data-inbox-filter="favorites" aria-pressed="false">★ Favorites</button><button type="button" class="inbox-filter" data-inbox-filter="groups" aria-pressed="false">Groups</button><button type="button" class="inbox-filter" data-inbox-filter="drafts" aria-pressed="false">Drafts</button></div><div id="cs-list-count" class="cs-list-count" aria-live="polite"></div><div id="conversations" class="conversation-list"></div>
     </aside>
     <section class="chat-panel">
-      <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Knightfall.</small></span></div><div class="chat-tools"><button id="cs-favorite" type="button" aria-pressed="false" aria-label="Favorite conversation" title="Favorite conversation" hidden>☆</button><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><details id="chat-more" class="chat-more"><summary aria-label="More conversation options">⋯ <span>Options</span></summary><div class="chat-more-panel"><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><a id="connect-four-chat-invite" class="chaos-card-chat-invite" href="/arcade/async-play.html" hidden title="Join this friend's Connect Four challenge">🎮 Join Connect Four</a><button id="history-search-open" type="button" title="Search message history">⌕ Search</button><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="message-live-state" class="message-live-state" role="status" aria-live="polite">Connecting…</span><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></details></div></div>
+      <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Knightfall.</small></span></div><div class="chat-tools"><button id="cs-favorite" type="button" aria-pressed="false" aria-label="Favorite conversation" title="Favorite conversation" hidden>☆</button><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><details id="chat-more" class="chat-more"><summary aria-label="More conversation options">⋯ <span>Options</span></summary><div class="chat-more-panel"><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><a id="connect-four-chat-invite" class="chaos-card-chat-invite" href="/arcade/async-play.html" hidden title="Join this friend's Connect Four challenge">🎮 Join Connect Four</a><button id="cs-media-open" type="button" title="Browse shared images and files">▧ Shared media</button><button id="history-search-open" type="button" title="Search message history">⌕ Search</button><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="message-live-state" class="message-live-state" role="status" aria-live="polite">Connecting…</span><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></details></div></div>
       <div id="cs-delivery-strip" class="cs-delivery-strip" role="status" aria-live="polite" hidden></div><div id="typing-indicator" class="typing-indicator" role="status" aria-live="polite" hidden></div><button id="jump-latest" class="jump-latest" type="button" hidden>↓ Jump to latest</button><button id="load-older" class="load-older" hidden>Load older messages</button><div id="messages" class="messages-list"><div class="cs-welcome"><img src="/icons/chaosphere.svg" alt="" width="96" height="96"><h2>Your signal is waiting.</h2><p>Select a conversation, or start something new.</p><button type="button" class="primary" data-cs-start>Start a conversation</button></div></div><button id="cs-scroll-latest" class="cs-scroll-latest" type="button" hidden>↓ Latest messages</button><div id="conversation-restricted" class="conversation-restricted" role="status" hidden>Messaging is paused because one of these accounts has blocked the other. Existing messages remain available to read.</div>
       <form id="composer" class="composer" hidden>
         <div class="composer-main"><textarea id="body" maxlength="4000" rows="1" placeholder="Write a message..." aria-label="Message text"></textarea><div id="cs-emoji-tray" class="cs-emoji-tray" aria-label="Choose emoji" hidden><button type="button" data-insert-emoji="🔥" aria-label="Fire emoji">🔥</button><button type="button" data-insert-emoji="🖤" aria-label="Black heart emoji">🖤</button><button type="button" data-insert-emoji="😈" aria-label="Smiling demon emoji">😈</button><button type="button" data-insert-emoji="💀" aria-label="Skull emoji">💀</button><button type="button" data-insert-emoji="😂" aria-label="Laughing emoji">😂</button><button type="button" data-insert-emoji="🥺" aria-label="Pleading emoji">🥺</button><button type="button" data-insert-emoji="🎮" aria-label="Game emoji">🎮</button><button type="button" data-insert-emoji="✨" aria-label="Sparkles emoji">✨</button></div><div id="pending-attachments" class="pending-attachments" aria-live="polite" hidden></div></div><input id="attachment-input" type="file" hidden multiple accept="image/*,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><div class="cs-compose-tools"><button id="attach-file" type="button" class="attach-file" aria-label="Attach photo or file" title="Attach photo or file">＋</button><button id="cs-emoji-toggle" type="button" aria-label="Insert emoji" aria-controls="cs-emoji-tray" aria-expanded="false" title="Choose emoji">☺</button></div>
@@ -681,6 +686,44 @@ function openHistorySearch(){
 }
 $("#search-all-messages").addEventListener("click",openHistorySearch);
 $("#history-search-open").addEventListener("click",openHistorySearch);
+const sharedMediaDialog=$("#cs-media-dialog"),sharedMediaResults=$("#cs-media-results"),sharedMediaStatus=$("#cs-media-status"),sharedMediaMore=$("#cs-media-more");
+let sharedMediaState={id:null,kind:"all",before:null,busy:false,seen:new Set()};
+function setSharedMediaFilter(kind){
+ if(!["all","images","files"].includes(kind))return;
+ sharedMediaState={id:sharedMediaState.id,kind,before:null,busy:false,seen:new Set()};
+ sharedMediaResults.replaceChildren();sharedMediaMore.hidden=true;
+ for(const button of sharedMediaDialog.querySelectorAll("[data-cs-media-kind]"))button.setAttribute("aria-pressed",String(button.dataset.csMediaKind===kind));
+ void loadSharedMedia();
+}
+async function loadSharedMedia(){
+ const state=sharedMediaState;if(!state.id||state.busy||!sharedMediaDialog.open)return;
+ state.busy=true;sharedMediaMore.disabled=true;sharedMediaStatus.textContent="Loading shared media…";
+ try{
+  const query=new URLSearchParams({gallery:"1",kind:state.kind});if(state.before)query.set("before",String(state.before));
+  const data=await api("/api/messages/conversations/"+state.id+"/attachments?"+query);
+  if(sharedMediaState!==state||!sharedMediaDialog.open)return;
+  if(data.gallery!==true||!Array.isArray(data.attachments))throw Error("Shared media browsing is not available on this API version yet.");
+  for(const item of data.attachments){
+   const id=Number(item.id),messageId=Number(item.message_id);if(!Number.isSafeInteger(id)||id<1||!Number.isSafeInteger(messageId)||messageId<1||state.seen.has(id))continue;
+   state.seen.add(id);const card=document.createElement("article");card.className="cs-media-card";
+   const link=document.createElement("a");link.href=API+"/api/messages/attachments/"+id;link.target="_blank";link.rel="noopener noreferrer";
+   const name=String(item.original_filename||"Attachment");
+   if(/^image\/(jpeg|png|gif|webp)$/.test(String(item.content_type))){const image=document.createElement("img");image.src=link.href;image.alt=name;image.loading="lazy";image.decoding="async";image.referrerPolicy="no-referrer";image.onerror=()=>{image.hidden=true;};link.append(image);}else{const icon=document.createElement("span");icon.className="cs-media-file-icon";icon.textContent="▤";icon.setAttribute("aria-hidden","true");link.append(icon);}
+   const label=document.createElement("strong");label.textContent=name;link.append(label);
+   const metadata=document.createElement("small");metadata.textContent=(Math.max(0,Number(item.byte_size)||0)/1048576).toFixed(1)+" MB";link.append(metadata);
+   const jump=document.createElement("button");jump.type="button";jump.className="cs-media-jump";jump.textContent="View message ↗";jump.addEventListener("click",()=>{if(sharedMediaState!==state)return;sharedMediaDialog.close();void Promise.resolve(openConversation(state.id,{highlightMessageId:messageId,beforeMessageId:messageId})).catch(error=>status(error.message));});
+   card.append(link,jump);sharedMediaResults.append(card);
+  }
+  const next=Number(data.next_before);state.before=Number.isSafeInteger(next)&&next>0?next:null;sharedMediaMore.hidden=!state.before;sharedMediaMore.textContent="Load older media";
+  sharedMediaStatus.textContent=state.seen.size?state.seen.size+" "+(state.seen.size===1?"attachment":"attachments")+" loaded":"No shared attachments in this view.";
+ }catch(error){if(sharedMediaState===state){sharedMediaStatus.textContent=error.message;sharedMediaMore.hidden=false;sharedMediaMore.textContent="Retry";}}
+ finally{if(sharedMediaState===state){state.busy=false;sharedMediaMore.disabled=false;}}
+}
+$("#cs-media-open").addEventListener("click",()=>{const id=Number(currentId);if(!id||!activeConversation()){status("Choose a conversation first.");return;}sharedMediaState.id=id;$("#cs-media-conversation").textContent=conversationName(activeConversation());sharedMediaDialog.showModal();setSharedMediaFilter("all");});
+$("#cs-media-close").addEventListener("click",()=>sharedMediaDialog.close());
+sharedMediaDialog.addEventListener("close",()=>{sharedMediaState={id:null,kind:"all",before:null,busy:false,seen:new Set()};sharedMediaResults.replaceChildren();});
+sharedMediaDialog.addEventListener("click",event=>{const button=event.target.closest("[data-cs-media-kind]");if(button)setSharedMediaFilter(button.dataset.csMediaKind);});
+sharedMediaMore.addEventListener("click",()=>void loadSharedMedia());
 $("#history-search-close").addEventListener("click",()=>historyDialog.close());
 historyDialog.addEventListener("click",e=>{if(e.target===historyDialog)historyDialog.close()});
 historyDialog.addEventListener("close",()=>{clearTimeout(historyDelay);historyEpoch++;});

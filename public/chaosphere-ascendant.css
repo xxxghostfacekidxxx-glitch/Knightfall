@@ -111,3 +111,20 @@
 .messages-shell .reaction-chip{border-radius:999px!important}
 @media(max-width:700px){.messages-shell .kf-custom-emoji{min-width:44px!important;min-height:44px!important}.messages-shell .kf-custom-emoji img{width:32px!important;height:32px!important}.messages-shell .cs-delivery-strip{padding:4px 10px;font-size:.68rem}}
 @media(prefers-reduced-motion:reduce){.messages-shell .conversation{transition:none!important}}
+
+/* Private shared-media gallery. */
+.messages-shell .cs-media-dialog{width:min(760px,94vw);max-height:85dvh;overflow:auto;border:1px solid var(--cs-edge)}
+.messages-shell .cs-media-dialog #cs-media-conversation{margin:.3rem 0;color:var(--cs-muted);font-size:.82rem}
+.messages-shell .cs-media-filters{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.messages-shell .cs-media-filters button{min-height:38px;padding:7px 16px;border-radius:999px;background:var(--cs-back,#10121f);color:#eee;border:1px solid var(--cs-edge)}
+.messages-shell .cs-media-filters button[aria-pressed=true]{background:var(--cs-faint);border-color:var(--cs-glow,#ff8ed0);color:#fff}
+.messages-shell #cs-media-status{font-size:.8rem;color:var(--cs-muted);min-height:1.5em}
+.messages-shell .cs-media-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:12px}
+.messages-shell .cs-media-card{display:flex;flex-direction:column;min-width:0;border:1px solid var(--cs-edge);border-radius:14px;overflow:hidden;background:var(--cs-back,#10121f)}
+.messages-shell .cs-media-card>a{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:#f6eaf8;min-width:0}
+.messages-shell .cs-media-card img,.messages-shell .cs-media-file-icon{display:grid;place-items:center;width:100%;height:130px;object-fit:contain;background:#090710aa;font-size:40px;color:var(--cs-glow,#ff8ed0)}
+.messages-shell .cs-media-card strong{padding:0 9px;font-size:.83rem;overflow-wrap:anywhere}
+.messages-shell .cs-media-card small{padding:0 9px 9px;color:var(--cs-muted);font-size:.72rem}
+.messages-shell .cs-media-jump{margin-top:auto;min-height:38px;border:0;border-top:1px solid var(--cs-edge);background:var(--cs-faint);color:#fff;font-size:.74rem}
+.messages-shell #cs-media-more{margin-top:14px;min-height:40px;width:100%}
+@media(max-width:480px){.messages-shell .cs-media-results{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.messages-shell .cs-media-card img,.messages-shell .cs-media-file-icon{height:100px}}

@@ -2998,6 +2998,19 @@ For complex questions, organize the answer clearly and provide actionable detail
     const conversationId=Number(attachmentListMatch[1]);
     const member=await env.DB.prepare("SELECT joined_after_message_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id).first();
     if(!member)return json({error:"Conversation not found."},404,origin);
+    if(url.searchParams.get("gallery")==="1"){
+      const rawBefore=url.searchParams.get("before"),before=rawBefore===null?null:Number(rawBefore);
+      if(before!==null&&(!Number.isSafeInteger(before)||before<1))return json({error:"Invalid media cursor."},400,origin);
+      const kind=url.searchParams.get("kind")||"all";
+      if(!["all","images","files"].includes(kind))return json({error:"Invalid media filter."},400,origin);
+      const types="('image/jpeg','image/png','image/gif','image/webp')";
+      const filter=kind==="images"?" AND a.content_type IN "+types:kind==="files"?" AND a.content_type NOT IN "+types:"";
+      const query="SELECT a.id,a.message_id,a.original_filename,a.content_type,a.byte_size,a.created_at FROM message_attachments a JOIN messages m ON m.id=a.message_id AND m.conversation_id=a.conversation_id AND m.deleted_at IS NULL JOIN conversation_members cm ON cm.conversation_id=a.conversation_id AND cm.user_id=? WHERE a.conversation_id=? AND a.message_id>cm.joined_after_message_id"+filter+(before!==null?" AND a.id<?":"")+" ORDER BY a.id DESC LIMIT ?";
+      const params=before===null?[user.id,conversationId,25]:[user.id,conversationId,before,25];
+      const {results}=await env.DB.prepare(query).bind(...params).all();
+      const rows=results||[],page=rows.slice(0,24);
+      return json({gallery:true,attachments:page,next_before:rows.length>24?Number(page.at(-1).id):null},200,origin);
+    }
     const raw=url.searchParams.get("message_ids")||"";
     const ids=[...new Set(raw.split(",").map(x=>Number(x)).filter(x=>Number.isSafeInteger(x)&&x>0))].slice(0,100);
     if(!ids.length)return json({attachments:[]},200,origin);
