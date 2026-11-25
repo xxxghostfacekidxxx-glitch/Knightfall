@@ -8,7 +8,9 @@
       "tagline": "Through knowledge, we ascend.",
       "purpose": "State a freely chosen commitment to learning and service.",
       "practice": "Choose a small service project and a review date.",
-      "status": "Proposed voluntary ceremony; no automatic rank advancement"
+      "status": "Proposed voluntary ceremony; no automatic rank advancement",
+      "alternateTitle": "First Light",
+      "type": "Initiation"
     },
     {
       "id": "ceremony-2",
@@ -17,7 +19,9 @@
       "tagline": "Understanding before judgment.",
       "purpose": "Reflect on a difficult decision and acknowledge uncertainty.",
       "practice": "Record an alternative interpretation and a constructive next step.",
-      "status": "Proposed voluntary ceremony; no automatic rank advancement"
+      "status": "Proposed voluntary ceremony; no automatic rank advancement",
+      "alternateTitle": "Circle of Reflection",
+      "type": "Renewal"
     },
     {
       "id": "ceremony-3",
@@ -26,7 +30,9 @@
       "tagline": "Knowledge becomes discipline.",
       "purpose": "Present a lesson learned and acknowledge its limitations.",
       "practice": "Invite voluntary feedback from peers.",
-      "status": "Proposed voluntary ceremony; no automatic rank advancement"
+      "status": "Proposed voluntary ceremony; no automatic rank advancement",
+      "alternateTitle": "Passing of the Light",
+      "type": "Recognition"
     },
     {
       "id": "ceremony-4",
@@ -35,7 +41,9 @@
       "tagline": "From ruin, we endure.",
       "purpose": "Name a chosen ambition and the values that constrain its pursuit.",
       "practice": "Set a measurable milestone.",
-      "status": "Proposed voluntary ceremony; no automatic rank advancement"
+      "status": "Proposed voluntary ceremony; no automatic rank advancement",
+      "alternateTitle": "Ember of Becoming",
+      "type": "Initiation"
     },
     {
       "id": "ceremony-5",
@@ -44,7 +52,9 @@
       "tagline": "After the fire, only truth.",
       "purpose": "Examine a setback without disguising its consequences.",
       "practice": "Identify a revised strategy and a realistic review date.",
-      "status": "Proposed voluntary ceremony; no automatic rank advancement"
+      "status": "Proposed voluntary ceremony; no automatic rank advancement",
+      "alternateTitle": "Trial of the Unbroken Will",
+      "type": "Renewal"
     },
     {
       "id": "ceremony-6",
@@ -53,7 +63,9 @@
       "tagline": "Master yourself, and no throne is necessary.",
       "purpose": "Describe an achievement and the discipline that made it possible.",
       "practice": "Identify evidence of progress and acknowledge assistance received.",
-      "status": "Proposed voluntary ceremony; no automatic rank advancement"
+      "status": "Proposed voluntary ceremony; no automatic rank advancement",
+      "alternateTitle": "Ascension of the Flame",
+      "type": "Recognition"
     }
   ]
 }
