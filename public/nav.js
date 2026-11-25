@@ -236,7 +236,7 @@
   const mountMissChaos = () => {
     if (document.getElementById("miss-chaos-presence") || document.querySelector('script[data-miss-chaos-presence]')) return;
     const companion = document.createElement("script");
-    companion.src = "/miss-chaos-presence.js?v=20261124-overlay-coordination";
+    companion.src = "/miss-chaos-presence.js?v=20261125-overlay-recovery2";
     companion.dataset.missChaosPresence = "true";
     companion.onerror = () => console.warn("Miss Chaos floating tools could not be loaded.");
     document.body.append(companion);
@@ -522,7 +522,7 @@
         const startChatHeads=()=>{
           if (!document.querySelector('link[data-kf-chat-bubbles]')) {
             const sheet=document.createElement("link");
-            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261124-original-emojis2";
+            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261125-overlay-recovery3";
             sheet.dataset.kfChatBubbles="true";document.head.append(sheet);
           }
           if(!window.ChaosphereImp&&!document.querySelector('script[data-kf-chaosphere-imp]')){
