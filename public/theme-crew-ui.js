@@ -28,6 +28,11 @@ const paintGlobal=()=>{
   (globalCurrent.updated_at?" · "+new Date(globalCurrent.updated_at).toLocaleString():"");
 };
 const PREVIEW_ART=Object.freeze({
+ jedi_sanctuary:"/assets/knightfall/theme-collections/jedi-sanctuary/header-ornament.svg",
+ neon_dystopia:"/assets/knightfall/theme-collections/neon-dystopia/header-ornament.svg",
+ the_asylum:"/assets/knightfall/theme-collections/the-asylum/header-ornament.svg",
+ arcade_anarchy:"/assets/knightfall/theme-collections/arcade-anarchy/header-ornament.svg",
+ astral_dominion:"/assets/knightfall/theme-collections/astral-dominion/header-ornament.svg",
  egyptian_eclipse:"/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-temple-gateway.png",
  dark_lord_ascendant:"/assets/knightfall/theme-collections/dark-lord-ascendant/dark-lord-crimson-eclipse-hall.png",
  korriban_necropolis:"/assets/knightfall/theme-collections/korriban/korriban-red-necropolis.png",
@@ -38,7 +43,7 @@ const PREVIEW_ART=Object.freeze({
  iron_eclipse:"/assets/knightfall/vaulted-cathedral.svg",
  royal_abyss:"/assets/knightfall/black-sun-temple.svg"
 });
-const ART_THEMES=new Set(["egyptian_eclipse","dark_lord_ascendant","korriban_necropolis","mustafar_forge"]);
+const ART_THEMES=new Set(["egyptian_eclipse","dark_lord_ascendant","korriban_necropolis","mustafar_forge","jedi_sanctuary","neon_dystopia","the_asylum","arcade_anarchy","astral_dominion"]);
 let presetFilter="art";
 $("theme-crew-collection-filters")?.addEventListener("click",event=>{
  const button=event.target.closest("button[data-theme-filter]");
