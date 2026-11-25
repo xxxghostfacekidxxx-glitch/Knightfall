@@ -314,3 +314,9 @@
 #kf-chat-heads .kf-custom-emoji[hidden]{display:none!important}
 
 #kf-chat-heads .kf-emoji-tray{max-height:min(32dvh,220px);overflow:auto;overscroll-behavior:contain}
+
+#kf-chat-heads .kf-emoji-tools{order:-1}
+#kf-chat-heads .kf-emoji-star-mode{grid-column:1/-1;min-height:28px;border:1px solid #b58bc25c;border-radius:8px;background:#231b30;color:#eee1f5;font-size:12px}
+#kf-chat-heads .kf-emoji-star-mode[aria-pressed=true]{border-color:#f5c675;color:#f5c675}
+#kf-chat-heads .kf-custom-emoji[data-favorite=true]{position:relative;border-color:#e6bc68!important}
+#kf-chat-heads .kf-custom-emoji[data-favorite=true]::after{content:"★";position:absolute;right:1px;top:0;font-size:10px;color:#f6d07c;pointer-events:none}

@@ -38,6 +38,22 @@ export function searchKnightfallEmojis(query="",category="all"){
 }
 
 const byCode = new Map(KNIGHTFALL_EMOJIS.map(item=>[item.code,item]));
+// Preferences contain only catalog shortcodes, never message text.
+export function readEmojiPreferences(storage,account){
+  const empty={favorites:[],recent:[]};
+  if(!Number.isSafeInteger(Number(account))||Number(account)<1)return empty;
+  const clean=values=>Array.isArray(values)?[...new Set(values.filter(code=>byCode.has(code)))]:[];
+  try{const saved=JSON.parse(storage?.getItem("kf-emoji-prefs-"+Number(account))||"{}");return {favorites:clean(saved?.favorites).slice(0,29),recent:clean(saved?.recent).slice(0,12)};}catch{return empty;}
+}
+export function updateEmojiPreferences(storage,account,action,code){
+  const prefs=readEmojiPreferences(storage,account);
+  if(!Number.isSafeInteger(Number(account))||Number(account)<1||!byCode.has(code))return prefs;
+  if(action==="favorite")prefs.favorites=prefs.favorites.includes(code)?prefs.favorites.filter(x=>x!==code):[code,...prefs.favorites].slice(0,29);
+  else if(action==="recent")prefs.recent=[code,...prefs.recent.filter(x=>x!==code)].slice(0,12);
+  else return prefs;
+  try{storage?.setItem("kf-emoji-prefs-"+Number(account),JSON.stringify(prefs));}catch{}
+  return prefs;
+}
 const shortcodePattern = /(:kf-[a-z0-9-]+:)/g;
 const fallbackEscape = value=>String(value).replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
 
@@ -70,10 +86,33 @@ export function mountKnightfallEmojiPicker(root=typeof document!=="undefined"?do
       const tools=doc.createElement("div");tools.className="kf-emoji-tools";
       const search=doc.createElement("input");search.type="search";search.placeholder="Find a Knightfall emoji…";search.setAttribute("aria-label","Search Knightfall emojis");
       const category=doc.createElement("select");category.setAttribute("aria-label","Emoji collection");
-      for(const [value,label] of [["all","All originals"],["legacy","First editions"],["faces","Imp moods"],["symbols","Symbols"],["chaos","Chaos"],["crew","Crew"]]){const opt=doc.createElement("option");opt.value=value;opt.textContent=label;category.append(opt);}
+      for(const [value,label] of [["all","All originals"],["recent","Recently used"],["favorites","Favorites"],["legacy","First editions"],["faces","Imp moods"],["symbols","Symbols"],["chaos","Chaos"],["crew","Crew"]]){const opt=doc.createElement("option");opt.value=value;opt.textContent=label;category.append(opt);}
       const count=doc.createElement("small");count.className="kf-emoji-result-count";count.setAttribute("aria-live","polite");
-      const update=()=>{const shown=new Set(searchKnightfallEmojis(search.value,category.value).map(x=>x.code));for(const button of buttons)button.hidden=!shown.has(button.dataset.insertEmoji);count.textContent=shown.size+" originals";};
-      search.addEventListener("input",update);category.addEventListener("change",update);tools.append(search,category,count);tray.prepend(tools);update();
+      const star=doc.createElement("button");star.type="button";star.className="kf-emoji-star-mode";star.textContent="☆ Save favorites";star.setAttribute("aria-pressed","false");
+      let starring=false,lastUsed=null;
+      const account=()=>Number(tray.dataset.kfEmojiAccount)||0;
+      const storage=()=>{try{return doc.defaultView?.localStorage}catch{return null}};
+      const update=()=>{
+        const prefs=readEmojiPreferences(storage(),account()),mode=category.value;
+        const ids=mode==="recent"?prefs.recent:mode==="favorites"?prefs.favorites:null;
+        const shown=new Set(searchKnightfallEmojis(search.value,ids?"all":mode).filter(item=>!ids||ids.includes(item.code)).map(x=>x.code));
+        star.disabled=!account();star.textContent=starring?"★ Choose favorites":"☆ Save favorites";
+        for(const button of buttons){const code=button.dataset.insertEmoji;button.hidden=!shown.has(code);button.dataset.favorite=String(prefs.favorites.includes(code));button.style.order=ids?String(Math.max(0,ids.indexOf(code))+1):"0";}
+        count.textContent=shown.size+" originals"+(starring?" · Select an emoji to toggle favorite":"");
+      };
+      star.addEventListener("click",()=>{starring=!starring;star.setAttribute("aria-pressed",String(starring));update();});
+      tray.addEventListener("click",event=>{
+        const button=event.target.closest?.(".kf-custom-emoji[data-insert-emoji]");if(!button||!tray.contains(button))return;
+        const code=button.dataset.insertEmoji;
+        if(starring){event.preventDefault();event.stopImmediatePropagation();updateEmojiPreferences(storage(),account(),"favorite",code);update();return;}
+        const input=tray.closest("form")?.querySelector("textarea");lastUsed={code,value:input?.value};
+        // After existing composer handlers run, record only a successful insertion.
+        queueMicrotask(()=>{if(lastUsed?.code===code&&input&&input.value!==lastUsed.value){updateEmojiPreferences(storage(),account(),"recent",code);update();}lastUsed=null;});
+      },true);
+      tray.addEventListener("kf:emoji-account",update);
+      doc.defaultView?.addEventListener("storage",event=>{if(event.key==="kf-emoji-prefs-"+account())update();});
+      tools.append(star);
+      search.addEventListener("input",update);category.addEventListener("change",update);tools.prepend(search,category);tools.append(count);tray.prepend(tools);update();
       for(const button of buttons){button.querySelector("img").loading="lazy";}
     }
     tray.append(...buttons);tray.dataset.kfEmojiMounted="true";mounted+=buttons.length;

@@ -8,9 +8,9 @@
 <link rel="stylesheet" href="/chaosphere-neon.css?v=20261125-neon2">
 <link rel="stylesheet" href="/chaosphere-next.css?v=20261121-next1">
 <link rel="stylesheet" href="/chaosphere-themes.css?v=20261121-themes1">
-<link rel="stylesheet" href="/chaosphere-ascendant.css?v=20261125-imp-rebellion1">
+<link rel="stylesheet" href="/chaosphere-ascendant.css?v=20261125-imp-rebellion2">
 <script>window.KnightfallEmojiReady=new Promise(resolve=>{window.__resolveKnightfallEmoji=resolve})</script>
-<script type="module" src="/knightfall-emojis.mjs?v=20261125-imp-rebellion1"></script>
+<script type="module" src="/knightfall-emojis.mjs?v=20261125-imp-rebellion2"></script>
 <script src="/chaosphere-themes.js?v=20261125-ascendant1" defer></script>
 <script src="/ruinwire-app.js?v=20261117-chaosphere1"></script><script src="/chaosphere-imp.js?v=20261121-trouble-spice1" defer></script>
 </head>
@@ -828,7 +828,7 @@ async function archive(){
 }
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-admin-message]");if(!b)return;if(b.dataset.action!=="delete")return;try{await api("/api/admin/messages/"+b.dataset.adminMessage,{method:"PATCH",body:JSON.stringify({action:b.dataset.action})});await archive();status("Admin message action completed.",true)}catch(x){status(x.message)}});
 $("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archive;$("#archive-search").oninput=()=>{clearTimeout(archiveSearchHandle);archiveSearchHandle=setTimeout(archive,300)};
-(async()=>{try{await Promise.race([window.KnightfallEmojiReady,new Promise(resolve=>setTimeout(resolve,1200))]);const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=me.user.role==="god";loadConversationDrafts();loadInboxAttachmentDrafts();loadFavoriteConversations();void sendActivityPing();try{await loadConversations()}catch(error){status("Inbox unavailable: "+error.message);console.warn("Initial inbox load failed",error)}
+(async()=>{try{await Promise.race([window.KnightfallEmojiReady,new Promise(resolve=>setTimeout(resolve,1200))]);const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;$("#cs-emoji-tray").dataset.kfEmojiAccount=String(currentUser.id);$("#cs-emoji-tray").dispatchEvent(new Event("kf:emoji-account"));admin=me.user.role==="god";loadConversationDrafts();loadInboxAttachmentDrafts();loadFavoriteConversations();void sendActivityPing();try{await loadConversations()}catch(error){status("Inbox unavailable: "+error.message);console.warn("Initial inbox load failed",error)}
  if(new URLSearchParams(location.search).has("message"))try{await followNotificationConversation()}catch(error){status("Could not open linked message: "+error.message)}
  try{startMessageLive()}catch(error){console.warn("Realtime unavailable; polling continues",error)}if(new URLSearchParams(location.search).has("reply"))focusNotificationReply();void Promise.resolve().then(loadAdmin).catch(error=>console.warn("Optional admin tools unavailable",error));let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight||document.hidden)return;pollInFlight=true;try{await loadConversations({openSelected:false});await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(()=>{liveRefresh()},12000);
  typingPollHandle=setInterval(()=>{if(!window.KnightfallLive?.connected)refreshTyping()},5000);presenceHandle=setInterval(sendActivityPing,60000);document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;try{await sendActivityPing();await loadConversations({openSelected:false});if(currentId)await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Inbox resume refresh failed",e)}});updateNotificationButton()}catch(e){status(e.message)}})();

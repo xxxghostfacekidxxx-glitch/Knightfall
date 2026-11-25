@@ -80,12 +80,11 @@ test("authenticated hosted game loads Chaosphere using existing messages, then t
  assert.ok(h.styles.some(x=>x.href?.startsWith("/chat-bubbles.css?")));
  assert.ok(h.styles.some(x=>x.href?.startsWith("/arcade-chat.css?")));
  assert.equal(h.styles.filter(x=>x.dataset.kfArcadeChatCss).length,1);
- assert.equal(h.scripts.length,1);
- assert.equal(h.scripts[0].src,"/message-live.js?v=20261113-realtime1");
- h.load(0);
  assert.equal(h.scripts.length,2);
- assert.equal(h.scripts[1].dataset.userId,"42");
- assert.match(h.scripts[1].src,/chat-bubbles\.js/);
+ assert.equal(h.scripts[0].dataset.userId,"42");
+ assert.match(h.scripts[0].src,/chat-bubbles\.js/);
+ assert.equal(h.scripts[1].src,"/message-live.js?v=20261113-realtime1");
+ h.load(1);assert.equal(h.scripts.length,2,"realtime cannot duplicate the already mounted chat");
  const isOpen=h.connectChat();
  assert.equal(h.classNames.has("kf-chat-arcade"),true);
  assert.equal(h.links[0].attrs["aria-expanded"],"false");
