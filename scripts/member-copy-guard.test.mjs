@@ -43,8 +43,12 @@ test("homepage discovery links resolve to existing public pages", () => {
   const css = read("public/home-start.css");
   const section = home.match(/<div class="kf-chaos-categories"[^>]*>([\s\S]*?)<\/div>/);
   assert.ok(section, "homepage discovery section is missing");
-  const links = [...section[1].matchAll(/<a href="(\/[^"]+\.html)"/g)].map(m => m[1]);
+  const atlas = home.match(/<section class="kf-realm-atlas"[^>]*>([\s\S]*?)<\/section>/);
+  assert.ok(atlas, "illustrated realm atlas is missing");
+  const links = [...(section[1]+atlas[1]).matchAll(/<a href="(\/[^"]+\.html)"/g)].map(m => m[1]);
   assert.ok(links.length >= 10, "expected all current navigable discovery categories");
+  assert.equal(new Set(links).size,links.length,"duplicate discovery destinations");
+  for(const route of ["/chaos-cartridge.html","/community.html","/mascot-pets.html","/devil-tools.html","/chaosphere.html","/profile.html","/miss-chaos-guide.html","/celestial-sanctum.html","/music.html","/shadow-work.html","/social.html","/chatbots.html"]) assert.ok(links.includes(route),"missing discovery category: "+route);
   for (const route of links) {
     assert.doesNotThrow(() => read("public" + route), "missing destination: " + route);
   }
