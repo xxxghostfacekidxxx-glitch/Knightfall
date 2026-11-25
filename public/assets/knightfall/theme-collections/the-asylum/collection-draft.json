@@ -1,0 +1,26 @@
+{
+  "name": "The Asylum",
+  "collection": "the-asylum",
+  "status": "draft",
+  "accent": "#b72b42",
+  "artworkStatus": "rendered but upload unverified",
+  "publishable": false,
+  "slots": [
+    "hero",
+    "background",
+    "header",
+    "frame",
+    "corner",
+    "divider",
+    "badge",
+    "preview"
+  ],
+  "assignmentScopes": [
+    "site",
+    "madhouse",
+    "arcade",
+    "chaosphere",
+    "admin"
+  ],
+  "customCategoryAssignments": "planned"
+}
