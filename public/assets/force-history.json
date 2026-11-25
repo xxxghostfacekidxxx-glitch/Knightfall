@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "policy": "Separate continuities; chronological era labels are approximate, not exact dates.",
+  "entries": [
+    {
+      "id": "history-1",
+      "continuity": "canon",
+      "era": "Ancient era",
+      "title": "Early Jedi traditions",
+      "body": "The Jedi developed traditions of Force study and service.",
+      "source": "Star Wars: The Last Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-2",
+      "continuity": "canon",
+      "era": "High Republic",
+      "title": "Jedi at the height of the Republic",
+      "body": "The High Republic depicts Jedi exploration, public service and conflict with the Nihil.",
+      "source": "The High Republic: Light of the Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-3",
+      "continuity": "canon",
+      "era": "Late Republic",
+      "title": "Return of the Sith",
+      "body": "The discovery of Darth Maul exposes the survival of the Sith.",
+      "source": "The Phantom Menace",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-4",
+      "continuity": "canon",
+      "era": "Clone Wars",
+      "title": "Militarization of the Jedi",
+      "body": "The Jedi become generals during a conflict that undermines the Republic.",
+      "source": "Attack of the Clones; The Clone Wars",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-5",
+      "continuity": "canon",
+      "era": "Imperial era",
+      "title": "Fall of the Jedi",
+      "body": "Order 66 and the rise of the Empire devastate the Jedi Order.",
+      "source": "Revenge of the Sith",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-6",
+      "continuity": "canon",
+      "era": "Galactic Civil War",
+      "title": "Redemption of Vader",
+      "body": "Luke rejects the Emperor and Vader saves his son.",
+      "source": "Return of the Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-7",
+      "continuity": "canon",
+      "era": "New Republic era",
+      "title": "Luke's new school",
+      "body": "Luke attempts to rebuild Jedi teaching before his school collapses.",
+      "source": "The Last Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-8",
+      "continuity": "canon",
+      "era": "First Order era",
+      "title": "Exegol",
+      "body": "Rey confronts the surviving Sith threat on Exegol.",
+      "source": "The Rise of Skywalker",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-9",
+      "continuity": "legends",
+      "era": "Pre-Republic",
+      "title": "Je'daii of Tython",
+      "body": "Early Force traditions explore balance on Tython.",
+      "source": "Dawn of the Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-10",
+      "continuity": "legends",
+      "era": "Old Republic",
+      "title": "Great Hyperspace War",
+      "body": "Conflict between the Sith Empire and Republic expands the ancient history.",
+      "source": "Tales of the Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-11",
+      "continuity": "legends",
+      "era": "Old Republic",
+      "title": "Exar Kun",
+      "body": "A fallen Jedi becomes a central figure in the Great Sith War.",
+      "source": "Tales of the Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-12",
+      "continuity": "legends",
+      "era": "Old Republic",
+      "title": "Revan and Malak",
+      "body": "The Mandalorian Wars and Jedi Civil War frame Revan's contested identity.",
+      "source": "Knights of the Old Republic",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-13",
+      "continuity": "legends",
+      "era": "Old Republic",
+      "title": "Kreia and the Exile",
+      "body": "The Exile encounters competing teachings about agency and the Force.",
+      "source": "Knights of the Old Republic II",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-14",
+      "continuity": "legends",
+      "era": "Old Republic",
+      "title": "Resurgent Sith Empire",
+      "body": "The Republic faces a renewed Sith Empire.",
+      "source": "Star Wars: The Old Republic",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-15",
+      "continuity": "legends",
+      "era": "Late Old Republic",
+      "title": "Darth Bane",
+      "body": "Bane restructures the Sith around the Rule of Two.",
+      "source": "Darth Bane trilogy",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-16",
+      "continuity": "legends",
+      "era": "New Republic",
+      "title": "New Jedi Order",
+      "body": "Luke rebuilds Jedi institutions amid new conflicts.",
+      "source": "Jedi Academy trilogy; New Jedi Order",
+      "status": "Editorial draft; source review pending"
+    }
+  ]
+}
