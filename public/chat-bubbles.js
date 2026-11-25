@@ -360,6 +360,7 @@ async function api(path,opts={}){
     for(const m of messages){
       const mine=Number(m.sender_id)===userId;
       const item=el("div","kf-chat-message "+(mine?"mine":"theirs"));
+      item.dataset.messageId=String(m.id);
       const meta=el("div","kf-chat-message-meta");
       meta.append(el("small","kf-chat-sender",mine?"You":(m.display_name||m.username||"Member")));
       const date=new Date(m.created_at);if(m.created_at&&Number.isFinite(date.getTime())){const time=el("time","kf-chat-message-time",date.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}));time.dateTime=date.toISOString();time.title=date.toLocaleString();meta.append(time);}
@@ -368,7 +369,8 @@ async function api(path,opts={}){
       if(m.deleted_at)body.textContent="[Message deleted]";
       else if(customEmoji?.render)body.innerHTML=customEmoji.render(String(m.body||""),undefined,{lineBreaks:true});
       else body.textContent=String(m.body||"");
-      item.append(body);
+      if(m.deleted_at||m.body) item.append(body);
+      if(!m.deleted_at){const attachments=el("div","kf-chat-attachments");attachments.hidden=true;item.append(attachments);}
       fragment.append(item);
     }
     if(!messages.length)fragment.append(el("p","kf-chat-empty","No messages yet. Start the conversation."));
@@ -397,6 +399,29 @@ async function api(path,opts={}){
       window.dispatchEvent(new Event("kf:notifications-changed"));
     }
   }
+  async function refreshThreadAttachments(id,token){
+    const items=[...thread.querySelectorAll("[data-message-id]")];
+    const ids=items.map(item=>validId(item.dataset.messageId)).filter(Boolean);
+    if(!ids.length)return;
+    const data=await api("/api/messages/conversations/"+id+"/attachments?message_ids="+ids.join(","));
+    if(token!==state.threadToken||state.active!==id||!state.visible)return;
+    if(!Array.isArray(data.attachments))throw Error("Invalid attachment response");
+    const groups=new Map();
+    for(const a of data.attachments){const messageId=validId(a.message_id),attachmentId=validId(a.id);if(!messageId||!attachmentId)continue;const list=groups.get(messageId)||[];list.push(a);groups.set(messageId,list);}
+    for(const item of items){
+      const box=item.querySelector(".kf-chat-attachments");if(!box)continue;
+      const list=groups.get(Number(item.dataset.messageId))||[];
+      const key=JSON.stringify(list.map(a=>[a.id,a.original_filename,a.content_type,a.byte_size]));
+      if(box.dataset.attachmentKey===key)continue;
+      box.dataset.attachmentKey=key;box.replaceChildren();box.hidden=!list.length;
+      for(const a of list){
+        const link=el("a","kf-chat-attachment");link.href=API+"/api/messages/attachments/"+Number(a.id);link.target="_blank";link.rel="noopener noreferrer";
+        const name=String(a.original_filename||"Attachment");link.setAttribute("aria-label","Open "+name);
+        if(/^image\/(jpeg|png|gif|webp)$/.test(String(a.content_type||""))){const image=el("img","kf-chat-attachment-image");image.src=link.href;image.alt=name;image.loading="lazy";image.decoding="async";image.referrerPolicy="no-referrer";image.addEventListener("error",()=>{image.hidden=true;},{once:true});link.append(image);}
+        const label=el("span","kf-chat-attachment-label","📎 "+name);link.append(label);box.append(link);
+      }
+    }
+  }
   async function refreshThread(){
     const id=state.active,token=++state.threadToken;
     if(!id||!state.visible||document.hidden)return;
@@ -404,6 +429,7 @@ async function api(path,opts={}){
     if(token!==state.threadToken||state.active!==id)return;
     if(!Array.isArray(data.messages))throw Error("Invalid conversation history");
     renderMessages(data.messages,id);
+    try{await refreshThreadAttachments(id,token)}catch(error){console.warn("Floating chat attachment refresh failed",error)}
   }
   let lastListRefresh=0;
   async function refreshConversations({force=false}={}){
