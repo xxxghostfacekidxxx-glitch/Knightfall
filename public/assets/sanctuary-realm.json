@@ -952,6 +952,99 @@
           "status": "Editorial draft; primary source verification pending"
         }
       ]
+    },
+    {
+      "title": "Barbarian sacred history",
+      "entries": [
+        {
+          "title": "Bul-Kathos",
+          "body": "Legendary ancestor associated with barbarian identity and the guardianship of Arreat.",
+          "source": "Diablo II: Lord of Destruction; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "The Ancients",
+          "body": "Korlic, Madawc and Talic guard the approach to the Worldstone.",
+          "source": "Diablo II: Lord of Destruction; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Children of Bul-Kathos",
+          "body": "Barbarian peoples whose sacred duty centers on Mount Arreat.",
+          "source": "Diablo II: Lord of Destruction; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Sescheron",
+          "body": "Ancient barbarian capital devastated by Baal.",
+          "source": "Diablo II: Lord of Destruction; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Kanai",
+          "body": "Barbarian elder associated with the cube recovered in Sescheron.",
+          "source": "Diablo II: Lord of Destruction; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
+    },
+    {
+      "title": "Horadric imprisonment",
+      "entries": [
+        {
+          "title": "Tal Rasha",
+          "body": "Horadric mage who volunteered to contain Baal within himself.",
+          "source": "Diablo II; Book of Cain",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Tomb of Tal Rasha",
+          "body": "Hidden burial chamber in the desert of Aranoch.",
+          "source": "Diablo II; Book of Cain",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Lut Gholein",
+          "body": "Desert port connected to the search for Tal Rasha.",
+          "source": "Diablo II; Book of Cain",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Khalim",
+          "body": "Zakarum leader who resisted Mephisto's corruption.",
+          "source": "Diablo II; Book of Cain",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Travincal",
+          "body": "Religious center where the corrupted High Council resides.",
+          "source": "Diablo II; Book of Cain",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
+    },
+    {
+      "title": "Infernal domains",
+      "entries": [
+        {
+          "title": "Realm of Greed",
+          "body": "Otherworldly vault associated with the demon Greed.",
+          "source": "Diablo III; Diablo II",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Chaos Sanctuary",
+          "body": "Infernal stronghold where Diablo is confronted in Diablo II.",
+          "source": "Diablo III; Diablo II",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Hell's internal conflict",
+          "body": "The Lesser Evils rebelled against the Prime Evils, leading to the Dark Exile.",
+          "source": "Diablo III; Diablo II",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
     }
   ],
   "references": [
