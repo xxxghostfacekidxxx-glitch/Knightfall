@@ -90,6 +90,69 @@
       "reflection": "What does sustainable discipline require?",
       "classification": "Original Knightfall practice",
       "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-11",
+      "order": "jedi",
+      "title": "Listening",
+      "practice": "Listen to a consenting conversation partner without interrupting, then summarize their view.",
+      "reflection": "What did I misunderstand initially?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-12",
+      "order": "jedi",
+      "title": "Courage",
+      "practice": "Take one small reversible step toward a responsibility you have avoided.",
+      "reflection": "What changed after acting?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-13",
+      "order": "jedi",
+      "title": "Boundaries of service",
+      "practice": "Set a realistic limit on a commitment.",
+      "reflection": "How can I serve sustainably?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-14",
+      "order": "sith",
+      "title": "Ambition",
+      "practice": "Choose a goal and record a measurable milestone.",
+      "reflection": "What action advances my goal?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-15",
+      "order": "sith",
+      "title": "Anger",
+      "practice": "Notice a trigger and choose a response after a brief pause.",
+      "reflection": "What boundary or need is involved?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-16",
+      "order": "sith",
+      "title": "Reciprocal sovereignty",
+      "practice": "Review an agreement for mutual freedom to decline.",
+      "reflection": "Does my choice respect others' autonomy?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-17",
+      "order": "shared",
+      "title": "Weekly review",
+      "practice": "Review the week's actions and choose one adjustment.",
+      "reflection": "What should I continue, change or stop?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
     }
   ]
 }
