@@ -391,7 +391,8 @@
     if(!id||!state.visible||document.hidden)return;
     const data=await api("/api/messages/conversations/"+id+"?limit=35");
     if(token!==state.threadToken||state.active!==id)return;
-    renderMessages(data.messages||[],id);
+    if(!Array.isArray(data.messages))throw Error("Invalid conversation history");
+    renderMessages(data.messages,id);
   }
   let lastListRefresh=0;
   async function refreshConversations({force=false}={}){
@@ -403,7 +404,8 @@
       // A temporarily truncated inbox list must not kick the user out of an
       // already open conversation after sending its first message.
       const selected=getConversation(state.active);
-      const fetched=data.conversations||[];
+      if(!Array.isArray(data.conversations))throw Error("Invalid conversation list");
+      const fetched=data.conversations;
       // Initial fetch is just a baseline. Only a later increase is truly new.
       const newArrival=unreadBaselineReady&&!!window.ChaosphereImp?.newUnread(serverUnreadBaseline,fetched);
       // Keep this immutable server snapshot separate from optimistic local read
@@ -549,11 +551,15 @@
   document.addEventListener("visibilitychange",()=>{
     if(!document.hidden)tick().catch(()=>{});
   });
+  let tickRunning=false;
   async function tick(){
+    if(tickRunning||document.hidden)return;
+    tickRunning=true;
     try{
       await refreshConversations();
       if(state.active&&state.visible)await refreshThread();
     }catch(error){if(state.visible)announce("Chat could not refresh. "+error.message);}
+    finally{tickRunning=false;}
   }
   let bubbleLiveDelay=0;
   if(window.KnightfallLive)window.KnightfallLive.subscribe(event=>{
