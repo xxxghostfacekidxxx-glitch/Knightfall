@@ -153,6 +153,204 @@
       "classification": "Fictional lore; continuity-specific details pending review",
       "status": "Editorial draft",
       "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-18",
+      "category": "locations",
+      "title": "Ahch-To",
+      "body": "Island sanctuary associated with early Jedi history and Luke's exile.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "The Last Jedi"
+    },
+    {
+      "id": "force-19",
+      "category": "locations",
+      "title": "Korriban / Moraband",
+      "body": "Ancient Sith burial world; naming and historical details vary by continuity.",
+      "classification": "Canon and Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "The Clone Wars; Knights of the Old Republic"
+    },
+    {
+      "id": "force-20",
+      "category": "locations",
+      "title": "Exegol",
+      "body": "Hidden Sith stronghold.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "The Rise of Skywalker"
+    },
+    {
+      "id": "force-21",
+      "category": "locations",
+      "title": "Tython",
+      "body": "World associated with ancient Force traditions; its history differs between continuities.",
+      "classification": "Canon and Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "The Mandalorian; Dawn of the Jedi"
+    },
+    {
+      "id": "force-22",
+      "category": "locations",
+      "title": "Jedha",
+      "body": "Pilgrimage world associated with kyber and diverse religious traditions.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "Rogue One"
+    },
+    {
+      "id": "force-23",
+      "category": "locations",
+      "title": "Ilum",
+      "body": "Kyber-rich world associated with Jedi lightsaber construction.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "The Clone Wars"
+    },
+    {
+      "id": "force-24",
+      "category": "locations",
+      "title": "Mustafar",
+      "body": "Volcanic world associated with Vader's transformation and fortress.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "Revenge of the Sith; Rogue One"
+    },
+    {
+      "id": "force-25",
+      "category": "artifacts",
+      "title": "Jedi holocron",
+      "body": "Repository of teachings and knowledge, often accessed through the Force.",
+      "classification": "Canon and Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "The Clone Wars"
+    },
+    {
+      "id": "force-26",
+      "category": "artifacts",
+      "title": "Sith holocron",
+      "body": "Repository of Sith teachings, sometimes featuring a gatekeeper personality.",
+      "classification": "Canon and Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "Star Wars Rebels"
+    },
+    {
+      "id": "force-27",
+      "category": "artifacts",
+      "title": "Darksaber",
+      "body": "Distinctive black-bladed lightsaber tied to Mandalorian history.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "The Clone Wars; The Mandalorian"
+    },
+    {
+      "id": "force-28",
+      "category": "artifacts",
+      "title": "Sith wayfinder",
+      "body": "Navigation artifact associated with the route to Exegol.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "The Rise of Skywalker"
+    },
+    {
+      "id": "force-29",
+      "category": "artifacts",
+      "title": "Kyber crystal",
+      "body": "Force-associated crystal used in lightsabers and other fictional technology.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "The Clone Wars; Rogue One"
+    },
+    {
+      "id": "force-30",
+      "category": "artifacts",
+      "title": "Lightsaber construction",
+      "body": "Fictional assembly of a hilt, energy system and crystal; often portrayed as a rite of passage.",
+      "classification": "Canon and Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "The Clone Wars"
+    },
+    {
+      "id": "force-31",
+      "category": "species",
+      "title": "Miraluka",
+      "body": "Species portrayed as perceiving through the Force rather than conventional sight.",
+      "classification": "Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "Knights of the Old Republic II"
+    },
+    {
+      "id": "force-32",
+      "category": "species",
+      "title": "Rakata",
+      "body": "Ancient species associated with the Infinite Empire and Force-powered technology.",
+      "classification": "Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "Knights of the Old Republic"
+    },
+    {
+      "id": "force-33",
+      "category": "species",
+      "title": "Sith species",
+      "body": "Ancient people whose history is intertwined with the Sith Order in Legends.",
+      "classification": "Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "Tales of the Jedi"
+    },
+    {
+      "id": "force-34",
+      "category": "traditions",
+      "title": "Nightsisters",
+      "body": "Dathomiri practitioners of magick with traditions distinct from the Jedi.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "The Clone Wars"
+    },
+    {
+      "id": "force-35",
+      "category": "traditions",
+      "title": "Guardians of the Whills",
+      "body": "Religious guardians associated with Jedha and its sacred sites.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "Rogue One"
+    },
+    {
+      "id": "force-36",
+      "category": "traditions",
+      "title": "Bendu",
+      "body": "Mysterious Force-sensitive being who describes himself as between light and dark.",
+      "classification": "Canon",
+      "status": "Editorial draft; source review pending",
+      "source": "Star Wars Rebels"
+    },
+    {
+      "id": "force-37",
+      "category": "traditions",
+      "title": "Je'daii Order",
+      "body": "Ancient Tython-based tradition exploring balance before the Jedi Order.",
+      "classification": "Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "Dawn of the Jedi"
+    },
+    {
+      "id": "force-38",
+      "category": "traditions",
+      "title": "Baran Do Sages",
+      "body": "Kel Dor tradition associated with contemplation and foresight.",
+      "classification": "Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "Fate of the Jedi: Outcast"
+    },
+    {
+      "id": "force-39",
+      "category": "traditions",
+      "title": "Aing-Tii",
+      "body": "Reclusive tradition with distinctive interpretations of the Force.",
+      "classification": "Legends",
+      "status": "Editorial draft; source review pending",
+      "source": "Fate of the Jedi: Omen"
     }
   ]
 }
