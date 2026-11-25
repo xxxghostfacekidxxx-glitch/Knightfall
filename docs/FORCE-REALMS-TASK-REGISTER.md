@@ -40,3 +40,5 @@ Order charters: c00a6f8c0ecbc2f33ab9511c6f961b84162fd634; reader and navigation 
 Shared Covenant: e119e902820a07ec104d9e50c2685b4cd7e9b142; five principles, three voluntary ceremonies; reader updated. Governance workflows and live board sync pending.
 
 Order traditions: six voluntary ceremony guides and charter reader integration; source committed, browser and live board verification pending.
+
+Ceremony reconciliation: six existing stable IDs preserved; proposed names recorded as alternate titles, not duplicate ceremonies. Browser and live board verification pending.
