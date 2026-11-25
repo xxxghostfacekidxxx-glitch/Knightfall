@@ -88,3 +88,15 @@
  .messages-shell .message{max-width:90%}
 }
 @media(prefers-reduced-motion:reduce){.messages-shell .cs-hero-imp::before{animation:none}.messages-shell .conversation,.messages-shell .cs-hero-imp{transition:none}}
+
+/* Refined transcript and conversation list, scoped to Chaosphere. */
+.messages-shell .conversation{min-height:64px;min-width:0;overflow:hidden}
+.messages-shell .message{overflow-wrap:anywhere;min-width:0;max-width:min(88%,680px)}
+.messages-shell .message :is(img,video){max-width:100%;height:auto;object-fit:contain}
+.messages-shell .message-meta{font-size:.75rem;line-height:1.4;opacity:.9}
+.messages-shell .composer textarea{font-size:16px;line-height:1.5;min-width:0;caret-color:#ff9dce}
+.messages-shell .composer button:disabled{opacity:.55;cursor:not-allowed;box-shadow:none!important}
+.messages-shell .messages-list{overscroll-behavior:contain;scroll-padding-bottom:16px}
+.messages-shell .msg-status{overflow-wrap:anywhere;line-height:1.45}
+@media(max-width:700px){.messages-shell .message{max-width:92%;border-radius:16px 16px 16px 5px!important}.messages-shell .message.mine{border-radius:16px 16px 5px 16px!important}.messages-shell .conversation{min-height:60px}.messages-shell .composer textarea{font-size:16px!important}}
+@media(prefers-reduced-motion:reduce){.messages-shell .conversation{transform:none!important;transition:none!important}}
