@@ -189,6 +189,7 @@
     color: var(--ink-dim);
     font-variant-numeric: tabular-nums;
   }
+  #dashReadout { color: var(--cyan); margin-top: 6px; }
   .hud-note {
     justify-self: end;
     font: 600 10px/1.4 var(--font-hud);
@@ -465,7 +466,7 @@
     .pw { grid-template-columns: 5.4em 44px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .logo span, .record { animation: none !important; }
+    .logo span, .record, .icons.shake, .chain.bump .chain-mult { animation: none !important; }
     .banner.show { animation-duration: 2.3s; animation-name: banner-fade; }
     @keyframes banner-fade { 0%, 100% { opacity: 0; } 8%, 85% { opacity: 1; } }
   }
@@ -516,7 +517,7 @@
       <div class="meter"><i id="chainBar"></i></div>
       <div class="chain-count" id="chainCount">0 CHAIN</div>
     </div>
-    <div class="hud-note" id="autoNote">AUTO FIRE ON · F</div>
+    <div class="hud-note"><div id="autoNote">AUTO FIRE ON · F</div><div id="dashReadout" role="status">DASH READY</div></div>
   </div>
 </div>
 
@@ -2889,6 +2890,7 @@ function updateHUD(rdt) {
   const ready = (1 - P.dashCd / DASH_CD).toFixed(2);
   if (hud.cache.get('dashReady') !== ready) { hud.cache.set('dashReady', ready); hud.dashBtn.style.setProperty('--ready', ready); }
   put(hud.bombBtn, 'bombBtn', `BOMB ${P.bombs}`);
+  put($('dashReadout'), 'dashReadout', P.dashCd <= 0 ? 'DASH READY' : `DASH ${Math.ceil(P.dashCd)}s`);
 }
 let bannerT = 0;
 function banner(main, sub = '', kind = '') {
@@ -2981,6 +2983,7 @@ function pauseGame() {
   if (G.state !== 'playing') return;
   G.state = 'paused';
   input.mouse.down = false;
+  input.pressed.clear();
   for (const s of Object.values(sticks)) { s.id = null; s.x = s.y = 0; s.el.classList.remove('on'); }
   document.body.classList.remove('playing');
   showScreen('pauseScreen');
@@ -3297,7 +3300,7 @@ function updateCamera(rdt) {
   const k = 1 - Math.exp(-(G.state === 'playing' ? 5 : 2) * rdt);
   cam.pos.lerp(_camTo, k);
   cam.look.lerp(_lookTo, k);
-  const s = G.trauma * G.trauma * (REDUCED ? 0.25 : 1), t = performance.now() / 1000;
+  const s = G.trauma * G.trauma * (REDUCED ? 0 : 1), t = performance.now() / 1000;
   camera.position.set(
     cam.pos.x + (Math.sin(t * 41) + Math.sin(t * 23 + 1)) * 0.6 * s,
     cam.pos.y + Math.sin(t * 37 + 2) * 0.8 * s,
@@ -3307,7 +3310,7 @@ function updateCamera(rdt) {
   camera.rotateZ(Math.sin(t * 31) * s * 0.035);
   G.trauma = Math.max(0, G.trauma - rdt * 1.3);
   G.fovKick = damp(G.fovKick, 0, 5, rdt);
-  camera.fov = 50 + G.fovKick;
+  camera.fov = 50 + (REDUCED ? 0 : G.fovKick);
   camera.aspect = aspect;
   // On wide screens the title card sits on the left, so slide the arena into the free space on the right.
   cam.shift = damp(cam.shift, G.state === 'title' && aspect > 1.2 ? 0.2 : 0, 3, rdt);
@@ -3318,12 +3321,12 @@ function updateCamera(rdt) {
 }
 function updateFX(rdt) {
   const u = fxPass.uniforms;
-  u.uCA.value = G.ca;
+  u.uCA.value = REDUCED ? 0 : G.ca;
   G.ca = damp(G.ca, 0, 5, rdt);
-  u.uFlash.value.copy(G.flash).multiplyScalar(REDUCED ? 0.3 : 1);
+  u.uFlash.value.copy(G.flash).multiplyScalar(REDUCED ? 0 : 1);
   G.flash.multiplyScalar(Math.exp(-rdt * 6));
   u.uTime.value = (performance.now() / 1000) % 1000;
-  const danger = G.state === 'playing' && player.lives === 1 ? 0.16 + 0.2 * G.beat : 0;
+  const danger = G.state === 'playing' && player.lives === 1 ? 0.16 + (REDUCED ? 0 : 0.2 * G.beat) : 0;
   u.uDanger.value = damp(u.uDanger.value, danger, 6, rdt);
   U.danger.value = damp(U.danger.value, boss.active || danger > 0 ? 1 : 0, 2, rdt);
 }
