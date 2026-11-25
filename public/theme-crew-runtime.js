@@ -8,9 +8,9 @@ const LIVE_CACHE="kf:theme-live-cache-v3";
 const GLOBAL_PREVIEW="kf:global-design-preview";
 const PUBLISH_SIGNAL="kf:theme-published-v1";
 const channel=typeof BroadcastChannel==="function"?new BroadcastChannel("kf:theme-published"):null;
-const KNOWN=new Set(["cathedral","egyptian_eclipse","dark_lord_ascendant","korriban_necropolis","mustafar_forge","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"]);
+const KNOWN=new Set(["cathedral","egyptian_eclipse","dark_lord_ascendant","korriban_necropolis","mustafar_forge","blood_moon","verdant_crypt","iron_eclipse","royal_abyss","jedi_sanctuary","neon_dystopia","the_asylum","arcade_anarchy","astral_dominion"]);
 // Separate visual flag; trusted preset keys remain server-allowlisted.
-const ART_KITS=new Set(["dark_lord_ascendant","korriban_necropolis","mustafar_forge"]);
+const ART_KITS=new Set(["dark_lord_ascendant","korriban_necropolis","mustafar_forge","jedi_sanctuary","neon_dystopia","the_asylum","arcade_anarchy","astral_dominion"]);
 const REALMS=new Set(["site","madhouse","arcade","chaosphere","admin"]);
 const GLOBAL_OPTIONS=Object.freeze({
  density:["balanced","compact","relaxed"],
