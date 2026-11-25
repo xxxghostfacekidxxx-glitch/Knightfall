@@ -48,6 +48,47 @@
         "Nietzschean self-overcoming",
         "Ancient theories of soul"
       ]
+    },
+    {
+      "id": "lightsaber",
+      "title": "Seven classical lightsaber forms",
+      "classification": "mixed continuity",
+      "units": [
+        "Shii-Cho: foundations",
+        "Makashi: precision",
+        "Soresu: patience",
+        "Ataru: mobility",
+        "Shien and Djem So: counteroffensive philosophy",
+        "Niman: integration",
+        "Juyo and Vaapad: intensity and distinctions"
+      ]
+    },
+    {
+      "id": "sith-history",
+      "title": "Sith historical institutions",
+      "classification": "legends",
+      "units": [
+        "Marka Ragnos and succession",
+        "Naga Sadow and the Great Hyperspace War",
+        "Exar Kun and the Great Sith War",
+        "Revan and Malak",
+        "Darth Traya and the Sith Triumvirate",
+        "Vitiate and imperial institutions",
+        "Darth Bane and the Rule of Two"
+      ]
+    },
+    {
+      "id": "jedi-history",
+      "title": "Jedi historical institutions",
+      "classification": "mixed continuity",
+      "units": [
+        "Ancient origins and continuity differences",
+        "High Republic",
+        "Late Republic and the Clone Wars",
+        "Order 66 and survivors",
+        "Luke Skywalker and reconstruction",
+        "Institutional accountability and reform"
+      ]
     }
   ],
   "status": "Proposed reading sequences, not accredited courses or verified source summaries."
