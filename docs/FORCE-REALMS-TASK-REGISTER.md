@@ -48,3 +48,5 @@ Governance ceremony hall now reads the same Order-filtered dataset as the charte
 Academy integration: added Order-specific resource navigation without modifying server-side assessment or rank rules. Browser and live board verification pending.
 
 Force archive reference selection now filters unsafe URLs before ranking. Sanctuary sister realm initiated with three original traditions and eight fictional history drafts; source review, production and live board sync pending.
+
+Sanctuary scope revised by owner: consolidated fictional religious mythology and lore only; no separate academies, ranks or mentor fleet. Added 17 thematic lore drafts alongside eight historical entries. Source review and live board sync pending.
