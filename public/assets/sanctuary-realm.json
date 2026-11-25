@@ -187,6 +187,246 @@
           "source": "Diablo II; Diablo III"
         }
       ]
+    },
+    {
+      "title": "Celestial hierarchy",
+      "entries": [
+        {
+          "title": "Imperius",
+          "body": "Aspect of Valor; militant defender of Heaven.",
+          "source": "Diablo III",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Auriel",
+          "body": "Aspect of Hope; associated with sustaining celestial resolve.",
+          "source": "Diablo III",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Itherael",
+          "body": "Aspect of Fate; studies possible destinies.",
+          "source": "Diablo III",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Inarius",
+          "body": "Renegade angel who helped create Sanctuary with Lilith.",
+          "source": "Diablo IV; The Sin War",
+          "status": "Draft; primary work review pending"
+        }
+      ]
+    },
+    {
+      "title": "The seven Great Evils",
+      "entries": [
+        {
+          "title": "Diablo",
+          "body": "Lord of Terror; recurring central adversary.",
+          "source": "Diablo",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Mephisto",
+          "body": "Lord of Hatred; father of Lilith.",
+          "source": "Diablo II; IV",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Baal",
+          "body": "Lord of Destruction; corrupts the Worldstone.",
+          "source": "Lord of Destruction",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Andariel",
+          "body": "Maiden of Anguish.",
+          "source": "Diablo II",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Duriel",
+          "body": "Lord of Pain.",
+          "source": "Diablo II",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Belial",
+          "body": "Lord of Lies.",
+          "source": "Diablo III",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Azmodan",
+          "body": "Lord of Sin.",
+          "source": "Diablo III",
+          "status": "Draft; primary work review pending"
+        }
+      ]
+    },
+    {
+      "title": "Humanity and spiritual traditions",
+      "entries": [
+        {
+          "title": "Rathma",
+          "body": "Also known as Linarian, an early nephalem associated with the Balance.",
+          "source": "The Sin War",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Uldyssian",
+          "body": "Human whose awakened potential becomes central to the Sin War.",
+          "source": "The Sin War",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Trag'Oul",
+          "body": "Mysterious dragon associated with Sanctuary and the Balance.",
+          "source": "The Sin War",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Sisters of the Sightless Eye",
+          "body": "Rogue sisterhood with martial and mystical traditions.",
+          "source": "Diablo II",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Druids of Scosglen",
+          "body": "Practitioners of nature magic and shapeshifting.",
+          "source": "Diablo II; IV",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Spiritborn",
+          "body": "Warriors whose traditions involve the Spirit Realm and guardian spirits.",
+          "source": "Vessel of Hatred",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Khazra",
+          "body": "Goatlike beings whose origins and corruption are explored in Sanctuary lore.",
+          "source": "Diablo III",
+          "status": "Draft; primary work review pending"
+        }
+      ]
+    },
+    {
+      "title": "Geography and sacred places",
+      "entries": [
+        {
+          "title": "Tristram",
+          "body": "Site of the cathedral and the first game's central crisis.",
+          "source": "Diablo",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Mount Arreat",
+          "body": "Barbarian sacred mountain formerly housing the Worldstone.",
+          "source": "Lord of Destruction",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Kurast",
+          "body": "Seat of Zakarum power and setting of Mephisto's corruption.",
+          "source": "Diablo II",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Westmarch",
+          "body": "Kingdom devastated during Malthael's campaign.",
+          "source": "Reaper of Souls",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Caldeum",
+          "body": "City central to Belial's plot.",
+          "source": "Diablo III",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Nahantu",
+          "body": "Southern jungle region central to Vessel of Hatred.",
+          "source": "Vessel of Hatred",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Skovos",
+          "body": "Island homeland associated with the Amazons.",
+          "source": "Lord of Hatred",
+          "status": "Draft; primary work review pending"
+        }
+      ]
+    },
+    {
+      "title": "Campaign chronology",
+      "entries": [
+        {
+          "title": "Diablo",
+          "body": "A hero confronts Terror beneath Tristram and becomes its next vessel.",
+          "source": "Diablo",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Diablo II",
+          "body": "The Dark Wanderer's journey leads to confrontations with the Prime Evils.",
+          "source": "Diablo II",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Lord of Destruction",
+          "body": "Baal's corruption of the Worldstone ends with its destruction.",
+          "source": "Diablo II expansion",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Diablo Immortal",
+          "body": "Adventures follow the destruction of the Worldstone, before Diablo III.",
+          "source": "Diablo Immortal",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Diablo III",
+          "body": "The Black Soulstone becomes central to the return of the Prime Evil.",
+          "source": "Diablo III",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Reaper of Souls",
+          "body": "Malthael turns against humanity, threatening mortal souls.",
+          "source": "Reaper of Souls",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Diablo IV",
+          "body": "Lilith returns several decades after the preceding crisis.",
+          "source": "Blizzard: A New Saga",
+          "status": "Draft; primary work review pending"
+        },
+        {
+          "title": "Vessel of Hatred",
+          "body": "Neyrelle travels toward Nahantu carrying Mephisto's soulstone.",
+          "source": "Blizzard: A Sinister Tale Recounted",
+          "status": "Draft; primary work review pending"
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "title": "Blizzard: A New Saga",
+      "url": "https://news.blizzard.com/en-gb/article/23952501/diablo-iv-inside-the-game-a-new-saga",
+      "note": "Official creation and chronology overview; article reviewed."
+    },
+    {
+      "title": "Blizzard: A Sinister Tale Recounted",
+      "url": "https://news.blizzard.com/en-us/article/24135098/a-sinister-tale-recountedcatch-up-on-the-story-so-far",
+      "note": "Official expansion premise; article reviewed."
+    },
+    {
+      "title": "Blizzard: Diablo IV Unveiled",
+      "url": "https://news.blizzard.com/en-gb/article/23189675/diablo-iv-unveiled",
+      "note": "Official background on the aftermath of Diablo III; article reviewed."
     }
   ]
 }
