@@ -38,3 +38,5 @@ Order integration: cbb031bfa544c8fe9f6833f743efd375392a8c32 Jedi homepage; e21e2
 Order charters: c00a6f8c0ecbc2f33ab9511c6f961b84162fd634; reader and navigation added. Live board sync unverified.
 
 Shared Covenant: e119e902820a07ec104d9e50c2685b4cd7e9b142; five principles, three voluntary ceremonies; reader updated. Governance workflows and live board sync pending.
+
+Order traditions: six voluntary ceremony guides and charter reader integration; source committed, browser and live board verification pending.
