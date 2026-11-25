@@ -1,0 +1,1 @@
+const path=new URLSearchParams(location.search).get("path");if(path==="jedi"||path==="sith"){document.getElementById("charter").dataset.order=path;document.getElementById(path==="jedi"?"sith":"jedi").hidden=true;}
