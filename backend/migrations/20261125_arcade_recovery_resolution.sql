@@ -1,0 +1,1 @@
+UPDATE ai_handoff_tasks SET status='done',details=substr(details,1,2600)||' | Owner confirms original black-screen issue resolved: opaque touchscreen overlay. Fresh-launch changes are preventive maintenance.',next_step='',blocker='',updated_at=CURRENT_TIMESTAMP,version=version+1 WHERE title='Resolve arcade black screens' AND deleted_at IS NULL AND status<>'done';
