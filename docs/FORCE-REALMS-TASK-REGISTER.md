@@ -46,3 +46,5 @@ Ceremony reconciliation: six existing stable IDs preserved; proposed names recor
 Governance ceremony hall now reads the same Order-filtered dataset as the charter reader; removed duplicated hardcoded ceremony definitions. Browser verification pending.
 
 Academy integration: added Order-specific resource navigation without modifying server-side assessment or rank rules. Browser and live board verification pending.
+
+Force archive reference selection now filters unsafe URLs before ranking. Sanctuary sister realm initiated with three original traditions and eight fictional history drafts; source review, production and live board sync pending.
