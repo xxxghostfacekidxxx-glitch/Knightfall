@@ -5,7 +5,7 @@
   <meta name="description" content="Chaosphere brings private messages, group chats, and arcade invites to the Knightfall community.">
 <title>Chaosphere | Knightfall Messages</title>
 <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/messages.css?v=20261124-original-emojis2"><link rel="stylesheet" href="/chaosphere-polish.css?v=20261120-realm2">
-<link rel="stylesheet" href="/chaosphere-neon.css?v=20261121-neon1">
+<link rel="stylesheet" href="/chaosphere-neon.css?v=20261125-neon2">
 <link rel="stylesheet" href="/chaosphere-next.css?v=20261121-next1">
 <link rel="stylesheet" href="/chaosphere-themes.css?v=20261121-themes1">
 <script>window.KnightfallEmojiReady=new Promise(resolve=>{window.__resolveKnightfallEmoji=resolve})</script>
@@ -462,22 +462,19 @@ $("#attachment-input").addEventListener("change",async event=>{
  event.target.value="";
  if(!currentId||!files.length||attachmentUploads)return;
  if(pendingAttachments.length+files.length>10){status("Attach no more than 10 files to one message.");return;}
- const conversationId=Number(currentId),epoch=composerEpoch;
- const sameComposer=()=>Number(currentId)===conversationId&&epoch===composerEpoch;
+ const conversationId=Number(currentId);
+ const sameComposer=()=>Number(currentId)===conversationId;
  const failures=[];
  attachmentUploads++;
  $("#attach-file").disabled=true;
  status("Preparing "+files.length+" attachment(s)…");
  try {
   for(const file of files){
-   if(!sameComposer())break;
    try{
     const prepared=await KnightfallPhotoUpload.prepareAttachment(file);
-    if(!sameComposer())break;
-    const data=await uploadAttachment(prepared,conversationId);
-    if(!sameComposer()){await deletePendingAttachment(data.id);break;}
-    pendingAttachments.push(data);
-    drawPendingAttachments();
+     const data=await uploadAttachment(prepared,conversationId);
+    if(sameComposer()){pendingAttachments.push(data);drawPendingAttachments();}
+    else{const saved=attachmentDrafts.get(conversationId)||[];attachmentDrafts.set(conversationId,[...saved,data]);}
    }catch(error){failures.push(file.name+": "+error.message);}
   }
   if(sameComposer())status(failures.join(" · ")||"Attachments ready to send.",!failures.length);
