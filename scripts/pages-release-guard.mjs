@@ -64,6 +64,7 @@ const jobs=[
 // Keep Pages build logs compact: Cloudflare's history endpoint truncates large
 // logs, which previously hid the first real failure after thousands of passes.
 // Every job still runs and blocks publication on a nonzero exit.
+const failures=[];
 for(const [label,args] of jobs){
  const result=spawnSync(process.execPath,args,{
   encoding:"utf8",maxBuffer:32*1024*1024,timeout:120000
@@ -75,8 +76,10 @@ for(const [label,args] of jobs){
   console.error("PAGES RELEASE BLOCKED: "+label+
    (result.error?": "+String(result.error):" (exit "+result.status+")"));
   process.exitCode=1;
-  break;
+  failures.push(label);
+  continue;
  }
  console.log("PAGES RELEASE GUARD PASS: "+label);
 }
+if(failures.length)console.error("\nPAGES RELEASE FAILURE SUMMARY: "+failures.join("; "));
 if(!process.exitCode)console.log("\nPAGES RELEASE GATE PASSED: original Knightfall Textract requires no third-party build downloads.");
