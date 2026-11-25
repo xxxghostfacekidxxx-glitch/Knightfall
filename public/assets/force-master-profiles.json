@@ -11,7 +11,11 @@
         "jedi-history",
         "comparative"
       ],
-      "perspective": "Humility, patience, impermanence and institutional self-criticism."
+      "perspective": "Humility, patience, impermanence and institutional self-criticism.",
+      "biography": "Canon: trained generations of Jedi; exile after the fall of the Republic.",
+      "philosophy": "Patience, impermanence, humility.",
+      "exercise": "Observe a difficult emotion before acting; distinguish acceptance from passivity.",
+      "reviewStatus": "Editorial draft; primary-source review pending"
     },
     {
       "id": "f0ce2026112400000000000000000002",
@@ -22,7 +26,11 @@
         "jedi-history",
         "living-religion"
       ],
-      "perspective": "Duty, mentorship, restraint and accountability."
+      "perspective": "Duty, mentorship, restraint and accountability.",
+      "biography": "Canon: trained Anakin and later guided Luke; survived the Clone Wars into exile.",
+      "philosophy": "Duty, restraint, loyalty and fallibility.",
+      "exercise": "Compare loyalty to a person with loyalty to a principle.",
+      "reviewStatus": "Editorial draft; primary-source review pending"
     },
     {
       "id": "f0ce2026112400000000000000000003",
@@ -33,7 +41,11 @@
         "comparative",
         "living-religion"
       ],
-      "perspective": "Living Force, independent judgment and compassion."
+      "perspective": "Living Force, independent judgment and compassion.",
+      "biography": "Canon: discovered Anakin and challenged conventional Council judgment.",
+      "philosophy": "Living Force, intuition and independent judgment.",
+      "exercise": "Separate direct observation from assumptions about a situation.",
+      "reviewStatus": "Editorial draft; primary-source review pending"
     },
     {
       "id": "f0ce2026112400000000000000000004",
@@ -44,7 +56,11 @@
         "cosmology",
         "living-religion"
       ],
-      "perspective": "Redemption, reconstruction and learning from failure."
+      "perspective": "Redemption, reconstruction and learning from failure.",
+      "biography": "Canon: confronted Vader and later struggled with the legacy of the Jedi.",
+      "philosophy": "Hope, redemption, failure and responsibility.",
+      "exercise": "Identify a mistake and design a concrete repair.",
+      "reviewStatus": "Editorial draft; primary-source review pending"
     },
     {
       "id": "f0ce2026112400000000000000000005",
@@ -55,7 +71,11 @@
         "ancient",
         "lightsaber"
       ],
-      "perspective": "Institutional rivalry, discipline and the fictional Rule of Two."
+      "perspective": "Institutional rivalry, discipline and the fictional Rule of Two.",
+      "biography": "Legends: the Darth Bane trilogy develops his restructuring of the Sith; Canon recognizes Bane and the Rule of Two.",
+      "philosophy": "Strategic discipline, succession and institutional survival.",
+      "exercise": "Analyze the costs of concentrating authority without endorsing coercion.",
+      "reviewStatus": "Editorial draft; primary-source review pending"
     },
     {
       "id": "f0ce2026112400000000000000000006",
@@ -66,7 +86,11 @@
         "comparative",
         "cosmology"
       ],
-      "perspective": "Critical inquiry, dependence, agency and competing doctrines."
+      "perspective": "Critical inquiry, dependence, agency and competing doctrines.",
+      "biography": "Legends: Kreia teaches the Exile in Knights of the Old Republic II.",
+      "philosophy": "Dependence, agency and skepticism toward imposed destiny.",
+      "exercise": "Challenge an assumption about freedom and consider its counterargument.",
+      "reviewStatus": "Editorial draft; primary-source review pending"
     },
     {
       "id": "f0ce2026112400000000000000000007",
@@ -77,7 +101,11 @@
         "jedi-history",
         "lightsaber"
       ],
-      "perspective": "Identity, fear, consequences and the loss of autonomy."
+      "perspective": "Identity, fear, consequences and the loss of autonomy.",
+      "biography": "Canon: Anakin became Vader after the fall of the Republic and ultimately saved Luke.",
+      "philosophy": "Attachment, fear, consequences and the possibility of change.",
+      "exercise": "Distinguish strength from domination; identify a noncoercive response to fear.",
+      "reviewStatus": "Editorial draft; primary-source review pending"
     },
     {
       "id": "f0ce2026112400000000000000000008",
@@ -88,7 +116,11 @@
         "artifacts",
         "force-abilities"
       ],
-      "perspective": "Fictional political power, manipulation and institutional collapse as critical study."
+      "perspective": "Fictional political power, manipulation and institutional collapse as critical study.",
+      "biography": "Canon: Palpatine engineered the Republic's transformation into the Empire.",
+      "philosophy": "Ambition, manipulation and institutional corruption as subjects of critical study.",
+      "exercise": "Identify warning signs of concentrated power and design accountability safeguards.",
+      "reviewStatus": "Editorial draft; primary-source review pending"
     }
   ]
 }
