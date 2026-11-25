@@ -110,7 +110,7 @@ async function api(path,opts={}){
   function attachImp(){try{if(!imp&&window.ChaosphereImp)imp=window.ChaosphereImp.mount(dock,userId);}catch(error){console.warn("Optional chat mascot failed",error);}}
   attachImp();
   window.addEventListener("kf:chaosphere-imp-ready",attachImp,{once:true});
-  const impReact=kind=>imp?.react(kind);
+  const impReact=kind=>{try{imp?.react?.(kind)}catch(error){console.warn("Optional mascot reaction failed",error)}};
   let unreadBaselineReady=false;
   let serverUnreadBaseline=[];
 
@@ -246,7 +246,7 @@ async function api(path,opts={}){
     state.visible=!!value;
     if(!state.visible)pendingShare="";
     dock.classList.toggle("kf-chat-open",state.visible);
-    imp?.syncVisibility();
+    try{imp?.syncVisibility?.()}catch(error){console.warn("Optional mascot visibility failed",error)}
     const opening=!!value&&panel.hidden;
     panel.hidden=!state.visible;
     syncBubbleViewport();
@@ -256,8 +256,8 @@ async function api(path,opts={}){
     if(opening){window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"member-chat"}}));impReact("wake");}
     if(state.visible){
       renderPanel();
-      if(state.active)refreshThread().catch(error=>announce(error.message));
-      else if(!state.conversations.length)refreshConversations().catch(error=>announce(error.message));
+      if(state.active){const id=state.active;refreshThread().catch(error=>{if(state.active===id&&state.visible){if(!thread.querySelector(".kf-chat-message"))thread.replaceChildren(el("p","kf-chat-empty","Could not load messages. Reopen this conversation to retry."));announce(error.message);}});}
+      else refreshConversations({force:true}).catch(error=>announce(error.message));
     }
     window.dispatchEvent(new CustomEvent("kf:chat-visibility",{detail:{open:state.visible}}));
   }
@@ -360,7 +360,10 @@ async function api(path,opts={}){
     for(const m of messages){
       const mine=Number(m.sender_id)===userId;
       const item=el("div","kf-chat-message "+(mine?"mine":"theirs"));
-      item.append(el("small","kf-chat-sender",mine?"You":(m.display_name||m.username||"Member")));
+      const meta=el("div","kf-chat-message-meta");
+      meta.append(el("small","kf-chat-sender",mine?"You":(m.display_name||m.username||"Member")));
+      const date=new Date(m.created_at);if(m.created_at&&Number.isFinite(date.getTime())){const time=el("time","kf-chat-message-time",date.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}));time.dateTime=date.toISOString();time.title=date.toLocaleString();meta.append(time);}
+      item.append(meta);
       const body=el("p");
       if(m.deleted_at)body.textContent="[Message deleted]";
       else if(customEmoji?.render)body.innerHTML=customEmoji.render(String(m.body||""),undefined,{lineBreaks:true});
@@ -368,6 +371,7 @@ async function api(path,opts={}){
       item.append(body);
       fragment.append(item);
     }
+    if(!messages.length)fragment.append(el("p","kf-chat-empty","No messages yet. Start the conversation."));
     thread.replaceChildren(fragment);
     if(nearBottom||oldScroll===0)thread.scrollTop=thread.scrollHeight;
     markLocalRead(conversationId);
@@ -414,7 +418,8 @@ async function api(path,opts={}){
       if(!Array.isArray(data.conversations))throw Error("Invalid conversation list");
       const fetched=data.conversations;
       // Initial fetch is just a baseline. Only a later increase is truly new.
-      const newArrival=unreadBaselineReady&&!!window.ChaosphereImp?.newUnread(serverUnreadBaseline,fetched);
+      let newArrival=false;
+      try{newArrival=unreadBaselineReady&&!!window.ChaosphereImp?.newUnread?.(serverUnreadBaseline,fetched);}catch(error){console.warn("Optional mascot unread check failed",error)}
       // Keep this immutable server snapshot separate from optimistic local read
       // markers. An old unread badge returning from an eventual consistency
       // delay is not a fresh message from another member.
@@ -459,7 +464,7 @@ async function api(path,opts={}){
       state.sending=true;
       try{
         await api("/api/messages/conversations/"+id,{method:"POST",body:JSON.stringify({body})});
-        announce("Message sent.");
+        if(state.active===id)announce("Message sent.");
         impReact("sent");
         void (async()=>{
           try{
@@ -474,9 +479,9 @@ async function api(path,opts={}){
         if(state.active===id){
           input.value=input.value?original+"\n"+input.value:original;
           rememberDraft(id,input.value);
-          input.focus({preventScroll:true});
+          if(state.visible&&!document.hidden&&document.activeElement===input)input.focus({preventScroll:true});
         }else rememberDraft(id,old?original+"\n"+old:original);
-        announce("Message not sent: "+error.message+" Draft restored.");
+        announce(state.active===id?"Send not confirmed: "+error.message+" Draft restored.":"Send not confirmed in "+nameOf(getConversation(id))+". Draft saved.");
         impReact("failed");
       }finally{
         state.sending=false;
