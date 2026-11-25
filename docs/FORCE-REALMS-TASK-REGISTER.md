@@ -8,10 +8,10 @@ Maintain this register with every Force Realms implementation batch. Live board 
 | Curriculum: 60 draft readings | source_checked | Review primary sources |
 | Master profiles: eight | source_checked | Expand biographies and verify continuity |
 | Research catalogue: 36 leads | source_checked | Verify URLs and expand catalogue |
-| Original manuscripts: 20 chapters | in_progress | Index supplementary chapters and verify archive coverage |
+| Original manuscripts: 26 chapters | in_progress | Index supplementary chapters and verify archive coverage |
 | Canon and Legends timelines | in_progress | 28 draft entries, reader and AI retrieval implemented; verify sources and browser behavior |
 | Force encyclopedia | in_progress | 39 draft entries, six categories, searchable reader and backend retrieval; verify sources and browser behavior |
-| Daily spiritual practices | in_progress | 10 original practices and daily reader; verify browser and integrate Academy |
+| Daily spiritual practices | in_progress | 17 original practices and daily reader; verify browser and integrate Academy |
 | Academy assessments | todo | Map readings to assessments |
 | Governance and ceremonies | in_progress | Implement authorized workflows |
 | Five recovered themes | source_checked | Verify production artwork and theme previews |
@@ -28,3 +28,5 @@ Latest encyclopedia dataset: 77ea4ac384ee7824c2603b4cc9220781a9e06f98. Live boar
 Latest expansion: 1f0e546b29c2dca398161a05835ccde80a862e01 encyclopedia; dd025759f757dfc7e97a4a77b7acb4ff2bf999a6 reader; dc90a4d17950d724fa8918fab2b7b01d70894578 filters. Live board sync unverified.
 
 Practice dataset: bbac928e77a5cdd313a9d5ea54e052aabfa5aad5. Live board sync unverified.
+
+Advanced manuscript expansion: 13aa09936f3387b939a5ecd82b9a82709549faa9; six chapters and aligned practice expansion. Live board sync unverified.
