@@ -16,3 +16,5 @@ Research batch: 29 new entries, six official sources consulted, full literary wo
 Added 30 editorial lore drafts across bestiary, mage clans, mortal legends and relics. Primary source verification remains pending; no new sources claimed as reviewed.
 
 Added 13 lore drafts and searchable archive with category filters. Browser verification and source review pending.
+
+Added 22 editorial drafts in theology, sacred geography and expanded fiction; scoped search styling and hidden-state fix. Source and browser verification pending.
