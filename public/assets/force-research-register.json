@@ -56,6 +56,36 @@
       "title": "UK Charity Commission decision",
       "url": "https://assets.publishing.service.gov.uk/media/5a7f1b5c40f0b62305b851d9/Temple_of_the_Jedi_Order_FINAL_DECISION.pdf",
       "note": "2016 decision concerning a particular charity application; not a universal ruling on Jediism."
+    },
+    {
+      "classification": "continuity",
+      "title": "Lucasfilm 2014 continuity announcement",
+      "url": "https://www.starwars.com/news/the-legendary-star-wars-expanded-universe-turns-a-new-page/",
+      "note": "Primary editorial source for the Legends transition; do not infer continuity solely from publication date."
+    },
+    {
+      "classification": "canon",
+      "title": "Darth Bane",
+      "url": "https://www.starwars.com/databank/darth-bane",
+      "note": "Established the Rule of Two in fictional Sith history; examine institutional rivalry and succession."
+    },
+    {
+      "classification": "canon",
+      "title": "Moraband",
+      "url": "https://www.starwars.com/databank/Moraband",
+      "note": "Ancient Sith world and burial monuments; appears in The Clone Wars."
+    },
+    {
+      "classification": "canon",
+      "title": "Exegol",
+      "url": "https://www.starwars.com/databank/exegol/",
+      "note": "Ancient Sith world in the Unknown Regions, associated with the Sith Eternal."
+    },
+    {
+      "classification": "philosophy",
+      "title": "Stoicism",
+      "url": "https://plato.stanford.edu/entries/stoicism/",
+      "note": "Study virtue, judgment and the interconnected fields of ethics, logic and physics; compare without asserting equivalence to Jediism."
     }
   ],
   "researchQueue": [
