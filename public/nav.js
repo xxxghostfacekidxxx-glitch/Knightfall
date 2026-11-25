@@ -533,9 +533,10 @@
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
             const bubbles=document.createElement("script");
-            bubbles.src="/chat-bubbles.js?v=20261125-recovery1";
+            bubbles.src="/chat-bubbles.js?v=20261125-recovery2";
             bubbles.dataset.kfChatBubbles="true";
             bubbles.dataset.userId=String(user.id);
+            bubbles.onerror=()=>{bubbles.remove();setTimeout(startChatHeads,3000);};
             document.body.append(bubbles);
           }
         };
