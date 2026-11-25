@@ -20,3 +20,5 @@ Added 13 lore drafts and searchable archive with category filters. Browser verif
 Added 22 editorial drafts in theology, sacred geography and expanded fiction; scoped search styling and hidden-state fix. Source and browser verification pending.
 
 Integrated five-part religious overview, six symbolic/testimonial entries, and malformed bibliography URL handling. Source and browser verification pending.
+
+Added 13 chronological milestones and six thematic cross-reference groups, with interactive search links. Relative chronology draft; browser and source verification pending.
