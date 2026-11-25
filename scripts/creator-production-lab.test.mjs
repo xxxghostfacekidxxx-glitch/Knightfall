@@ -80,5 +80,8 @@ test('mobile editors disable browser touch panning and ignore secondary pointer 
  const script=read('public/creator-production-lab.js');
  assert.match(script,/sprite\.style\.touchAction='none'/);
  assert.match(script,/tileCanvas\.style\.touchAction='none'/);
- assert.equal((script.match(/isPrimary===false/g)||[]).length,2);
+ assert.match(script,/sprite\.addEventListener\('pointerdown',event=>\{if\(event\.button!==0\|\|event\.isPrimary===false\)return/);
+ assert.match(script,/sprite\.addEventListener\('pointermove',event=>\{if\(event\.isPrimary===false\|\|!drawing/);
+ assert.match(script,/tileCanvas\.addEventListener\('pointerdown',e=>\{if\(e\.button!==0\|\|e\.isPrimary===false\)return/);
+ assert.match(script,/tileCanvas\.addEventListener\('pointermove',e=>\{if\(e\.isPrimary!==false&&tileDown\)placeTile\(e\)/);
 });
