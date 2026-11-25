@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "status": "Editorial draft; source review pending",
+  "policy": "Independent fan studies. Fictional Diablo lore is distinct from original Knightfall philosophy. No affiliation with Blizzard.",
+  "traditions": [
+    {
+      "id": "heavens",
+      "title": "Covenant of the High Heavens",
+      "tagline": "Even light must answer to truth.",
+      "principles": [
+        "Justice with accountability",
+        "Hope without denial",
+        "Wisdom through inquiry",
+        "Courage without cruelty"
+      ]
+    },
+    {
+      "id": "hells",
+      "title": "Infernal Ascendancy",
+      "tagline": "Everything burns. Something remains.",
+      "principles": [
+        "Ambition with responsibility",
+        "Strength through discipline",
+        "Confrontation of fear",
+        "Autonomy without coercion"
+      ]
+    },
+    {
+      "id": "sanctuary",
+      "title": "The Freeborn Covenant",
+      "tagline": "Neither Heaven nor Hell owns our souls.",
+      "principles": [
+        "Freedom of conscience",
+        "Human dignity",
+        "Independent judgment",
+        "Solidarity across traditions"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "title": "The Eternal Conflict",
+      "body": "The High Heavens and Burning Hells wage a cosmic struggle.",
+      "source": "Diablo III; Book of Cain"
+    },
+    {
+      "title": "Creation of Sanctuary",
+      "body": "Inarius and Lilith are central to the creation of a refuge from the Eternal Conflict.",
+      "source": "Diablo III; Diablo IV"
+    },
+    {
+      "title": "The Nephalem",
+      "body": "The descendants of angels and demons possess extraordinary potential.",
+      "source": "Diablo III"
+    },
+    {
+      "title": "The Sin War",
+      "body": "Competing powers seek influence over humanity and its latent power.",
+      "source": "The Sin War novel trilogy"
+    },
+    {
+      "title": "The Dark Exile",
+      "body": "The Prime Evils are exiled to Sanctuary following conflict within the Burning Hells.",
+      "source": "Diablo II; Book of Cain"
+    },
+    {
+      "title": "The Horadrim",
+      "body": "A brotherhood forms to oppose the Prime Evils and contain their influence.",
+      "source": "Diablo II"
+    },
+    {
+      "title": "The Worldstone",
+      "body": "The Worldstone shapes Sanctuary's history and is destroyed by Tyrael after Baal's corruption.",
+      "source": "Diablo II: Lord of Destruction"
+    },
+    {
+      "title": "The Return of Lilith",
+      "body": "Lilith returns to Sanctuary amid religious conflict and competing visions for humanity.",
+      "source": "Diablo IV"
+    }
+  ]
+}
