@@ -30,10 +30,21 @@
   }
   const state={conversations:[],heads:[],active:null,visible:false,loading:false,sending:false,threadToken:0,unread:0,lastThreadKey:""};
   const messageSendQueues=new Map();
-  const attachmentDrafts=new Map(),uploadingConversations=new Set();
+  const attachmentDrafts=new Map(),uploadingConversations=new Set(),removingConversations=new Set();
+  const attachmentDraftKey="kf-chat-attachment-drafts-"+userId;
+  let pickerConversation=null;
   // Invite content stays a local draft until its recipient deliberately sends it.
   let pendingShare="";
   const validId=value=>Number.isSafeInteger(Number(value))&&Number(value)>0?Number(value):null;
+  function loadAttachmentDrafts(){
+    try{const entries=JSON.parse(sessionStorage.getItem(attachmentDraftKey)||"[]");if(!Array.isArray(entries))return;for(const entry of entries.slice(-20)){if(!Array.isArray(entry)||!validId(entry[0])||!Array.isArray(entry[1]))continue;const items=entry[1].filter(a=>a&&validId(a.id)).slice(0,10).map(a=>({id:Number(a.id),filename:String(a.filename||"Attachment").slice(0,180)}));if(items.length)attachmentDrafts.set(Number(entry[0]),items);}}catch{}
+  }
+  function saveAttachmentDraft(id,items){
+    if(!validId(id))return;
+    if(items.length)attachmentDrafts.set(id,items);else attachmentDrafts.delete(id);
+    try{sessionStorage.setItem(attachmentDraftKey,JSON.stringify([...attachmentDrafts.entries()].slice(-20)));}catch{}
+  }
+  loadAttachmentDrafts();
   const nameOf=c=>c?.kind==="group"?(c.group_name||"Group chat"):(c?.other_display_name||c?.other_username||"Conversation");
   const initialOf=c=>(nameOf(c).trim().charAt(0)||"✦").toUpperCase();
   function avatarUrl(c){
@@ -488,28 +499,30 @@ async function api(path,opts={}){
     return photoLoader.then(()=>window.KnightfallPhotoUpload.prepareAttachment(file));
   }
   function drawAttachmentDraft(){
-    const id=state.active,items=attachmentDrafts.get(id)||[],busy=uploadingConversations.has(id),blocked=!!Number(getConversation(id)?.messaging_blocked);
+    const id=state.active,items=attachmentDrafts.get(id)||[],busy=uploadingConversations.has(id)||removingConversations.has(id),blocked=!!Number(getConversation(id)?.messaging_blocked);
     attachButton.disabled=!id||busy||blocked;
     attachButton.textContent=busy?"Uploading…":"📎 Attach";
     pendingBox.replaceChildren();pendingBox.hidden=!items.length;
     for(const a of items){
       const chip=el("span","kf-chat-pending-chip");
       chip.append(el("span","kf-chat-pending-name",String(a.filename||"Attachment")));
-      const remove=el("button","kf-chat-pending-remove","×");remove.type="button";remove.setAttribute("aria-label","Remove "+String(a.filename||"attachment"));
+      const remove=el("button","kf-chat-pending-remove","×");remove.type="button";remove.disabled=busy||blocked;remove.setAttribute("aria-label","Remove "+String(a.filename||"attachment"));
       remove.addEventListener("click",async()=>{
-        remove.disabled=true;
-        try{await api("/api/messages/attachments/"+Number(a.id),{method:"DELETE"});attachmentDrafts.set(id,(attachmentDrafts.get(id)||[]).filter(x=>x.id!==a.id));if(state.active===id)drawAttachmentDraft();}
-        catch(error){remove.disabled=false;if(state.active===id)announce("Could not remove file: "+error.message);}
+        if(removingConversations.has(id)||uploadingConversations.has(id))return;
+        removingConversations.add(id);if(state.active===id)drawAttachmentDraft();
+        try{await api("/api/messages/attachments/"+Number(a.id),{method:"DELETE"});saveAttachmentDraft(id,(attachmentDrafts.get(id)||[]).filter(x=>Number(x.id)!==Number(a.id)));}
+        catch(error){if(state.active===id)announce("Could not remove file: "+error.message);}
+        finally{removingConversations.delete(id);if(state.active===id)drawAttachmentDraft();}
       });
       chip.append(remove);pendingBox.append(chip);
     }
   }
-  attachButton.addEventListener("click",()=>filePicker.click());
+  attachButton.addEventListener("click",()=>{pickerConversation=state.active;filePicker.click();});
   filePicker.addEventListener("change",async()=>{
-    const id=state.active,files=Array.from(filePicker.files||[]);filePicker.value="";
-    if(!id||!files.length||uploadingConversations.has(id)||Number(getConversation(id)?.messaging_blocked))return;
+    const id=pickerConversation,files=Array.from(filePicker.files||[]);pickerConversation=null;filePicker.value="";
+    if(!id||!files.length||uploadingConversations.has(id)||removingConversations.has(id)||!getConversation(id)||Number(getConversation(id)?.messaging_blocked))return;
     if((attachmentDrafts.get(id)||[]).length+files.length>10){announce("Attach at most 10 files per message.");return;}
-    uploadingConversations.add(id);drawAttachmentDraft();const errors=[];
+    uploadingConversations.add(id);if(state.active===id)drawAttachmentDraft();const errors=[];
     try{
       for(const file of files){
         try{
@@ -518,7 +531,7 @@ async function api(path,opts={}){
           const form=new FormData();form.append("file",prepared);
           const data=await api("/api/messages/conversations/"+id+"/attachments",{method:"POST",body:form});
           if(!validId(data.id))throw Error("Invalid upload response.");
-          attachmentDrafts.set(id,[...(attachmentDrafts.get(id)||[]),data]);
+          saveAttachmentDraft(id,[...(attachmentDrafts.get(id)||[]),data]);
           if(state.active===id)drawAttachmentDraft();
         }catch(error){errors.push(file.name+": "+error.message);}
       }
@@ -530,9 +543,9 @@ async function api(path,opts={}){
     const id=state.active,original=input.value,body=original.trim();
     const attachments=attachmentDrafts.get(id)||[],attachment_ids=attachments.map(a=>Number(a.id));
     if(!id||(!body&&!attachment_ids.length)||Number(getConversation(id)?.messaging_blocked))return;
-    if(uploadingConversations.has(id)){announce("Finish uploading before sending.");return;}
+    if(uploadingConversations.has(id)||removingConversations.has(id)){announce("Finish managing attachments before sending.");return;}
     if(body.length>4000||attachment_ids.length>10){announce("Split this draft into smaller messages before sending.");return;}
-    attachmentDrafts.delete(id);drawAttachmentDraft();
+    saveAttachmentDraft(id,[]);drawAttachmentDraft();
     // Accept consecutive sends immediately; the network can finish each in
     // order without locking the textarea or making the member reopen the chat.
     if(state.active===id&&input.value===original){
@@ -556,7 +569,7 @@ async function api(path,opts={}){
           }
         })();
       }catch(error){
-        attachmentDrafts.set(id,[...attachments,...(attachmentDrafts.get(id)||[])]);
+        saveAttachmentDraft(id,[...attachments,...(attachmentDrafts.get(id)||[])]);
         if(state.active===id)drawAttachmentDraft();
         const old=drafts.get(id)||"";
         if(state.active===id){

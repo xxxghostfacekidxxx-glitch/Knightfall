@@ -67,12 +67,12 @@ test("floating chats retain per-conversation drafts and do not overwrite newer e
   assert.match(bubbles,/if\(state\.active\)rememberDraft\(state\.active,input\.value\)/);
   assert.match(bubbles,/if\(state\.active===id&&input\.value===original\)/);
   assert.match(bubbles,/messageSendQueues\.set\(id,queued\)/);
-  assert.match(bubbles,/Message not sent:/);
+  assert.match(bubbles,/Send not confirmed:/);
   assert.match(bubbles,/if\(state\.active===id\)/);
   assert.match(bubbles,/textContent=text/);
 });
-test("chat heads avoid unnecessary minimized polling and redundant thread redraws",()=>{
-  assert.match(bubbles,/Date\.now\(\)-lastListRefresh<60000/);
+test("chat heads poll for incoming messages and avoid redundant thread redraws",()=>{
+  assert.match(bubbles,/await refreshConversations\(\{force:true\}\)/);
   assert.match(bubbles,/if\(state\.lastThreadKey===fingerprint\)/);
   assert.match(bubbles,/window\.addEventListener\("pagehide",event=>\{if\(!event\.persisted\)/);
 });
@@ -82,4 +82,20 @@ test("Miss Chaos, memo pad and member chats coordinate their floating panels",()
   assert.match(ai,/detail:\{panel:"miss-chaos"\}/);
   assert.match(ai,/detail:\{panel:"memo-pad"\}/);
   assert.match(ai,/close\(\{restoreFocus:false\}\)/);
+});
+
+test("floating attachment drafts survive reload and are account scoped",()=>{
+ const start=bubbles.indexOf("const attachmentDrafts=new Map()"),end=bubbles.indexOf("const nameOf=c=>",start);
+ const data=new Map();const storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
+ function context(id){const c=vm.createContext({userId:id,sessionStorage:storage});vm.runInContext(bubbles.slice(start,end),c);return c;}
+ const a=context(10);a.saveAttachmentDraft(42,[{id:12,filename:"photo.png"}]);
+ assert.equal(vm.runInContext("attachmentDrafts.get(42)[0].id",context(10)),12);
+ assert.equal(vm.runInContext("attachmentDrafts.size",context(11)),0);
+ a.saveAttachmentDraft(42,[]);assert.equal(vm.runInContext("attachmentDrafts.size",context(10)),0);
+});
+test("floating file picker and removal are bound to the original conversation",()=>{
+ assert.match(bubbles,/pickerConversation=state\.active;filePicker\.click/);
+ assert.match(bubbles,/const id=pickerConversation,files=/);
+ assert.match(bubbles,/uploadingConversations\.has\(id\)\|\|removingConversations\.has\(id\)/);
+ assert.match(bubbles,/saveAttachmentDraft\(id,\[\.\.\.attachments,/);
 });
