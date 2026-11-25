@@ -507,6 +507,7 @@
   </div>
   <div class="hud-bottom">
     <div class="powers">
+      <div class="pw" id="pw-overdrive" style="--c: var(--magenta)" hidden><span>OVERDRIVE</span><div class="meter"><i></i></div></div>
       <div class="pw" id="pw-spread" style="--c: var(--gold)" hidden><span>SPREAD</span><div class="meter"><i></i></div></div>
       <div class="pw" id="pw-rapid" style="--c: var(--lime)" hidden><span>RAPID</span><div class="meter"><i></i></div></div>
       <div class="pw" id="pw-homing" style="--c: var(--orchid)" hidden><span>HOMING</span><div class="meter"><i></i></div></div>
@@ -535,7 +536,7 @@
   <div class="title-card">
     <p class="kicker">GRID ARENA SHOOTER · 128 BPM</p>
     <h1 class="logo" aria-label="Neon Surge"><span>NEON</span><span>SURGE</span></h1>
-    <p class="tagline" id="tagline">Blast geometric swarms on a neon grid that pulses to the beat. Earn chain bonuses every 40 consecutive kills and flawless bonuses for clearing waves without losing a life. Fight the OVERSEER every five waves.</p>
+    <p class="tagline" id="tagline">Blast geometric swarms on a neon grid that pulses to the beat. Unlock eight seconds of Overdrive and chain bonuses every 40 consecutive kills and flawless bonuses for clearing waves without losing a life. Fight the OVERSEER every five waves.</p>
     <div class="cta">
       <button type="button" class="btn primary" id="startBtn" disabled>LOADING</button>
       <button type="button" class="btn ghost" id="titleSound">SOUND ON</button>
@@ -1680,7 +1681,7 @@ function spawnPB(x, z, a, homing) {
   if (pBullets.length >= PB_MAX) return;
   const b = pbPool.pop() || {};
   b.x = x; b.z = z; b.vx = Math.sin(a) * BULLET_SPEED; b.vz = Math.cos(a) * BULLET_SPEED;
-  b.life = 0.85; b.homing = homing; b.target = null; b.retarget = 0; b.dmg = 1;
+  b.life = 0.85; b.homing = homing; b.target = null; b.retarget = 0; b.dmg = player.overdrive > 0 ? 2 : 1;
   pBullets.push(b);
 }
 function spawnEB(x, z, a, speed, color = COL.eb, r = 0.36) {
@@ -2444,6 +2445,8 @@ function registerKill(x, z, base, hex) {
   addScore(pts);
   // Reward sustained precision once per chain milestone, without increasing the bomb cap.
   if (G.combo % 40 === 0) {
+    player.overdrive = 8;
+    popup(player.x, player.z, 'OVERDRIVE', '#ff2e88', 1.6);
     const bonus = 250 * G.mult;
     addScore(bonus);
     rings.add(player.x, player.z, COL.player, 1, 8, .55);
@@ -2460,6 +2463,7 @@ function fire() {
   const nx = P.x + fx * 1.2, nz = P.z + fz * 1.2, homing = P.homing > 0;
   spawnPB(nx + rx * 0.34, nz + rz * 0.34, a, homing);
   spawnPB(nx - rx * 0.34, nz - rz * 0.34, a, homing);
+  if (P.overdrive > 0 && P.spread <= 0) for (const o of [-0.22, 0.22]) spawnPB(nx, nz, a + o, homing);
   if (P.spread > 0) for (const o of [-0.42, -0.22, 0.22, 0.42]) spawnPB(nx, nz, a + o, homing);
   particles.emit(nx, ENTITY_Y, nz, fx * 6, 0, fz * 6, bright(COL.pb, 0.7), 1.1, 0.06, 0);
   audio.shoot();
@@ -2518,6 +2522,7 @@ function hitPlayer() {
   }
   P.lives--;
   director.lifeLost = true;
+  P.overdrive = 0;
   G.hitStop = 0.14; G.trauma = 1; G.ca = 0.035;
   G.flash.set(0.55, 0.02, 0.08);
   slowMo(0.25, 1.0);
@@ -2545,6 +2550,7 @@ function updatePlayer(dt) {
   P.invuln = Math.max(0, P.invuln - dt);
   P.dashCd = Math.max(0, P.dashCd - dt);
   P.bombCd = Math.max(0, P.bombCd - dt);
+  P.overdrive = Math.max(0, P.overdrive - dt);
   P.spread = Math.max(0, P.spread - dt);
   P.rapid = Math.max(0, P.rapid - dt);
   P.homing = Math.max(0, P.homing - dt);
@@ -2575,7 +2581,7 @@ function updatePlayer(dt) {
   P.fireCd -= dt;
   if (input.fire && P.fireCd <= 0) {
     fire();
-    P.fireCd += P.rapid > 0 ? 0.052 : 0.1;
+    P.fireCd += P.rapid > 0 || P.overdrive > 0 ? 0.052 : 0.1;
     if (P.fireCd < 0) P.fireCd = 0;
   }
   const spd = Math.hypot(P.vx, P.vz);
@@ -2601,7 +2607,7 @@ function updateBullets(dt) {
     }
     for (const w of wells) {
       const dx = w.x - b.x, dz = w.z - b.z, d2 = dx * dx + dz * dz;
-      if (d2 < 196) { const d = Math.sqrt(d2), f = 900 * w.well / Math.max(d2, 4); b.vx += dx / d * f * dt; b.vz += dz / d * f * dt; }
+      if (d2 < 196) { const d = Math.max(0.001, Math.sqrt(d2)), f = 900 * w.well / Math.max(d2, 4); b.vx += dx / d * f * dt; b.vz += dz / d * f * dt; }
     }
     b.x += b.vx * dt; b.z += b.vz * dt;
     const out = Math.abs(b.x) > HX || Math.abs(b.z) > HZ;
@@ -2897,6 +2903,9 @@ function updateHUD(rdt) {
     if (P[k] > 0) setBar(hud.pw[k].querySelector('i'), `pwb-${k}`, P[k] / 20);
   }
   setHidden(hud.pw.shield, 'pw-shield', !P.shield);
+  const od = $('pw-overdrive');
+  setHidden(od, 'pw-overdrive', !(P.overdrive > 0));
+  setBar(od.querySelector('i'), 'pwb-overdrive', (P.overdrive || 0) / 8);
   const ready = (1 - P.dashCd / DASH_CD).toFixed(2);
   if (hud.cache.get('dashReady') !== ready) { hud.cache.set('dashReady', ready); hud.dashBtn.style.setProperty('--ready', ready); }
   put(hud.bombBtn, 'bombBtn', `BOMB ${P.bombs}`);
@@ -2968,7 +2977,7 @@ function clearWorld() {
 function resetPlayer() {
   Object.assign(player, {
     x: 0, z: HZ * 0.25, vx: 0, vz: 0, yaw: Math.PI, bank: 0, aimX: 0, aimZ: -1, alive: true, lives: 3, bombs: 2, shield: 0,
-    invuln: 1.5, fireCd: 0, dashCd: 0, dashT: -1, dashId: 0, bombCd: 0, ghostT: 0, spread: 0, rapid: 0, homing: 0,
+    invuln: 1.5, fireCd: 0, dashCd: 0, dashT: -1, dashId: 0, bombCd: 0, ghostT: 0, spread: 0, rapid: 0, homing: 0, overdrive: 0,
   });
   trail.reset();
 }
