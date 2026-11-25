@@ -12,7 +12,7 @@ Maintain this register with every Force Realms implementation batch. Live board 
 | Canon and Legends timelines | in_progress | 28 draft entries, reader and AI retrieval implemented; verify sources and browser behavior |
 | Force encyclopedia | in_progress | 39 draft entries, six categories, searchable reader and backend retrieval; verify sources and browser behavior |
 | Daily spiritual practices | in_progress | 17 original practices, daily reader, four training plans and local completion tracking; verify browser and integrate Academy |
-| Academy assessments | todo | Map readings to assessments |
+| Academy assessments | in_progress | Supplementary training navigation integrated; map readings to assessment criteria and verify |
 | Governance and ceremonies | in_progress | Living charters and voluntary vows drafted; implement authorized workflows |
 | Five recovered themes | source_checked | Verify production artwork and theme previews |
 | Production and device QA | todo | Confirm CI, deployment and mobile behavior |
@@ -44,3 +44,5 @@ Order traditions: six voluntary ceremony guides and charter reader integration; 
 Ceremony reconciliation: six existing stable IDs preserved; proposed names recorded as alternate titles, not duplicate ceremonies. Browser and live board verification pending.
 
 Governance ceremony hall now reads the same Order-filtered dataset as the charter reader; removed duplicated hardcoded ceremony definitions. Browser verification pending.
+
+Academy integration: added Order-specific resource navigation without modifying server-side assessment or rank rules. Browser and live board verification pending.
