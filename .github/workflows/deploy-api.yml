@@ -57,7 +57,7 @@ jobs:
         run: npm install --prefix backend --no-audit --no-fund
 
       - name: Validate official starter-bot catalog and public chat routing
-        run: node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs
+        run: node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs scripts/force-study-retrieval.test.mjs
 
       - name: Verify Miss Chaos immutable developer docket and delegated human approval
         run: |
