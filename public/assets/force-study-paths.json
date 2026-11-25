@@ -35,6 +35,43 @@
         "Vergences",
         "World Between Worlds",
         "Force spirits"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Living and Cosmic Force",
+          "body": "The Clone Wars season six explores the relationship between living beings and a larger Force through Yoda's journey.",
+          "question": "How does a fictional cosmology differ from an empirical claim?",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "Mortis",
+          "body": "The Clone Wars Mortis arc depicts the Father, Son and Daughter as mysterious beings associated with balance and opposing aspects of the Force.",
+          "question": "Compare symbolic and literal interpretations of the arc.",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Vergences",
+          "body": "The Phantom Menace uses the concept of a vergence in connection with Anakin. Other stories associate unusual Force phenomena with places.",
+          "question": "What evidence would distinguish a narrative interpretation from speculation?",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "World Between Worlds",
+          "body": "Rebels depicts Ezra entering a mysterious realm connecting moments in time. Its limits should not be inferred from fan theories alone.",
+          "question": "Identify what the episode demonstrates versus what it leaves unresolved.",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Force spirits",
+          "body": "The original trilogy and The Clone Wars depict continued identity after death for certain characters.",
+          "question": "Compare the fictional motif with differing philosophical accounts of personal identity.",
+          "status": "draft; source review pending"
+        }
       ]
     },
     {
@@ -61,6 +98,57 @@
         "Shien and Djem So: counteroffensive philosophy",
         "Niman: integration",
         "Juyo and Vaapad: intensity and distinctions"
+      ],
+      "readings": [
+        {
+          "unit": 1,
+          "title": "Shii-Cho",
+          "body": "Form I is traditionally presented as foundational in expanded lore. Study how a shared vocabulary supports later specialization.",
+          "question": "Why does foundational training remain useful after specialization?",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 2,
+          "title": "Makashi",
+          "body": "Form II emphasizes dueling in fictional descriptions; Count Dooku is a prominent associated practitioner.",
+          "question": "Compare precision with adaptability as intellectual virtues.",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 3,
+          "title": "Soresu",
+          "body": "Form III emphasizes defense; Obi-Wan is commonly associated with it.",
+          "question": "When is restraint more effective than immediate response?",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 4,
+          "title": "Ataru",
+          "body": "Form IV is associated with acrobatic movement, notably Yoda in fictional depictions.",
+          "question": "How do environmental constraints affect a chosen strategy?",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 5,
+          "title": "Shien and Djem So",
+          "body": "Form V includes distinct variants associated with responding to opposition; avoid treating the variants as identical.",
+          "question": "Distinguish responding to criticism from escalating conflict.",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 6,
+          "title": "Niman",
+          "body": "Form VI is commonly described as integrating elements of other forms.",
+          "question": "What are the benefits and limitations of broad competence?",
+          "status": "draft; source review pending"
+        },
+        {
+          "unit": 7,
+          "title": "Juyo and Vaapad",
+          "body": "Form VII includes Juyo and the distinct Vaapad variant associated with Mace Windu in expanded lore.",
+          "question": "Distinguish emotional awareness from emotional control.",
+          "status": "draft; source review pending"
+        }
       ]
     },
     {
