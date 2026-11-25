@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "status": "Proposed living doctrine; not a membership contract or rank grant",
+  "orders": [
+    {
+      "id": "jedi",
+      "title": "The Living Jedi Testament",
+      "tagline": "Through knowledge, we ascend.",
+      "commitments": [
+        "Seek understanding before judgment.",
+        "Practice compassion with consent.",
+        "Accept correction without shame.",
+        "Serve without demanding obedience.",
+        "Protect the freedom of students to disagree."
+      ],
+      "oath": "I choose awareness over haste, understanding over certainty, and service without possession. I accept responsibility for my actions and remain willing to learn.",
+      "leadership": "Teachers demonstrate knowledge, patience, accountability and respect for independent judgment."
+    },
+    {
+      "id": "sith",
+      "title": "The Sith Flame",
+      "tagline": "Master yourself, and no throne is necessary.",
+      "commitments": [
+        "Choose ambition deliberately.",
+        "Transform passion into constructive action.",
+        "Develop strength without coercion.",
+        "Accept responsibility for consequences.",
+        "Defend personal sovereignty while respecting the sovereignty of others."
+      ],
+      "oath": "I choose to shape my life through deliberate will. I shall examine my passions, confront my limitations and accept the consequences of my choices. My strength shall not require another's captivity.",
+      "leadership": "Teachers demonstrate competence, discipline, transparency and respect for voluntary participation."
+    }
+  ]
+}
