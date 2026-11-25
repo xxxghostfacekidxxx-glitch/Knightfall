@@ -1,19 +1,20 @@
 "use strict";
 const $=id=>document.getElementById(id);
-let generation=0,cursor=null,criteria={q:"",category:""},busy=false;
+let generation=0,cursor=null,criteria={q:"",category:""},busy=false,controller=null,seen=new Set();
 async function load(reset){
  if(!reset&&busy)return;
- const g=++generation;busy=true;$("more").disabled=true;
- if(reset){criteria={q:$("query").value.trim(),category:$("category").value};cursor=null;$("results").replaceChildren();$("more").hidden=true}
+ const g=++generation;controller?.abort();controller=new AbortController();const signal=controller.signal;busy=true;$("more").disabled=true;
+ if(reset){criteria={q:$("query").value.trim(),category:$("category").value};cursor=null;seen.clear();$("results").replaceChildren();$("more").hidden=true}
  const params=new URLSearchParams(criteria);if(cursor)params.set("before",String(cursor));
  $("status").textContent="Searching…";
  try{
- const res=await fetch("https://api.ash-fall.com/api/force-library?"+params,{cache:"no-store"});if(!res.ok)throw Error("Search unavailable ("+res.status+")");
+ const res=await fetch("https://api.ash-fall.com/api/force-library?"+params,{cache:"no-store",signal});if(!res.ok)throw Error("Search unavailable ("+res.status+")");
  const data=await res.json();if(g!==generation)return;
  if(reset)$("results").replaceChildren();
- for(const item of data.items){const article=document.createElement("article"),h=document.createElement("h2"),a=document.createElement("a"),p=document.createElement("p"),tag=document.createElement("small");a.href="/thread.html?id="+encodeURIComponent(item.id);a.textContent=item.title;h.append(a);tag.textContent=item.category.replaceAll("-"," ");p.textContent=item.excerpt;article.append(h,tag,p);$("results").append(article)}
- cursor=data.next;$("more").hidden=!cursor;$("status").textContent=$("results").children.length+" studies displayed.";
+ if(!Array.isArray(data.items))throw Error("Invalid library response");
+ for(const item of data.items){if(item.id==null||seen.has(String(item.id)))continue;seen.add(String(item.id));const article=document.createElement("article"),h=document.createElement("h2"),a=document.createElement("a"),p=document.createElement("p"),tag=document.createElement("small");a.href="/thread.html?id="+encodeURIComponent(item.id);a.textContent=item.title;h.append(a);tag.textContent=String(item.category||"uncategorized").replaceAll("-"," ");p.textContent=item.excerpt;article.append(h,tag,p);$("results").append(article)}
+ const previous=cursor;cursor=data.next&&String(data.next)!==String(previous)?data.next:null;$("more").hidden=!cursor;$("status").textContent=$("results").children.length+" studies displayed.";
  }catch(e){if(g===generation){$("status").textContent=e.message;$("more").hidden=!cursor}}finally{if(g===generation){busy=false;$("more").disabled=false}}
 }
-const initial=new URLSearchParams(location.search).get("category");if(initial&&Array.from($("category").options).some(o=>o.value===initial))$("category").value=initial;
-$("search").onsubmit=e=>{e.preventDefault();load(true)};$("more").onclick=()=>load(false);load(true);
+const initialParams=new URLSearchParams(location.search);$("query").value=initialParams.get("q")||"";const initial=initialParams.get("category");if(initial&&Array.from($("category").options).some(o=>o.value===initial))$("category").value=initial;
+$("search").onsubmit=e=>{e.preventDefault();const url=new URL(location.href);for(const [key,value] of Object.entries({q:$("query").value.trim(),category:$("category").value})){if(value)url.searchParams.set(key,value);else url.searchParams.delete(key)}history.replaceState(null,"",url);load(true)};$("more").onclick=()=>load(false);load(true);
