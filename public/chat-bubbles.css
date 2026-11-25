@@ -307,3 +307,10 @@
 #kf-chat-heads #kf-chat-favorite[aria-pressed=true]{border-color:var(--cs-glow);background:var(--cs-own-b);color:#fff}
 #kf-chat-heads .kf-chat-recent-item:focus-visible{outline-color:var(--cs-glow)}
 @media(max-width:400px){#kf-chat-heads .kf-chat-panel-header{gap:5px}#kf-chat-heads #kf-chat-filters{gap:3px}#kf-chat-heads #kf-chat-filters button{padding-inline:6px}}
+
+#kf-chat-heads .kf-emoji-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px;flex:0 0 100%;width:100%;min-width:0;padding:3px 0 6px}
+#kf-chat-heads .kf-emoji-tools input,#kf-chat-heads .kf-emoji-tools select{min-width:0;max-width:100%;border:1px solid #a98bc05c;border-radius:8px;background:#141022;color:#f7edff;padding:6px;font-size:12px}
+#kf-chat-heads .kf-emoji-result-count{grid-column:1/-1;color:#c9bdd7;font-size:10px}
+#kf-chat-heads .kf-custom-emoji[hidden]{display:none!important}
+
+#kf-chat-heads .kf-emoji-tray{max-height:min(32dvh,220px);overflow:auto;overscroll-behavior:contain}

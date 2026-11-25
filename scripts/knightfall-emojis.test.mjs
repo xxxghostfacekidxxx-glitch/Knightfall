@@ -1,15 +1,15 @@
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import test from "node:test";
-import {KNIGHTFALL_EMOJIS,renderKnightfallEmojiText,mountKnightfallEmojiPicker} from "../public/knightfall-emojis.mjs";
+import {KNIGHTFALL_EMOJIS,searchKnightfallEmojis,renderKnightfallEmojiText,mountKnightfallEmojiPicker} from "../public/knightfall-emojis.mjs";
 import {MESSAGE_REACTION_EMOJIS} from "../backend/src/message-emojis.js";
 const messagesPage=readFileSync(new URL("../public/messages.html",import.meta.url),"utf8");
-const emojiMigrations=["0213_knightfall_emoji_reactions.sql","0214_knightfall_emoji_family_two.sql"]
+const emojiMigrations=["0213_knightfall_emoji_reactions.sql","0214_knightfall_emoji_family_two.sql","0217_knightfall_emoji_family_three.sql"]
   .map(name=>readFileSync(new URL("../backend/migrations/"+name,import.meta.url),"utf8")).join("\n");
 
 test("original Knightfall emoji catalog points to authored vector artwork",()=>{
-  assert.equal(KNIGHTFALL_EMOJIS.length,17);
-  assert.equal(new Set(KNIGHTFALL_EMOJIS.map(item=>item.code)).size,17);
+  assert.equal(KNIGHTFALL_EMOJIS.length,29);
+  assert.equal(new Set(KNIGHTFALL_EMOJIS.map(item=>item.code)).size,29);
   for(const item of KNIGHTFALL_EMOJIS){
     assert.match(item.code,/^:kf-[a-z0-9-]+:$/);
     assert.ok(item.name&&item.file.endsWith(".svg"));
@@ -36,16 +36,16 @@ test("the composer mounts every custom emoji exactly once with accessible labels
     tag,dataset:{},attrs:{},children:[],setAttribute(key,value){this.attrs[key]=value},
     append(...items){this.children.push(...items)}
   }}};
-  assert.equal(mountKnightfallEmojiPicker(doc),34);
+  assert.equal(mountKnightfallEmojiPicker(doc),58);
   assert.equal(mountKnightfallEmojiPicker(doc),0);
-  assert.equal(tray.children.length,17);
-  assert.equal(floatingTray.children.length,17);
+  assert.equal(tray.children.length,29);
+  assert.equal(floatingTray.children.length,29);
   assert.deepEqual(tray.children.map(button=>button.dataset.insertEmoji),KNIGHTFALL_EMOJIS.map(item=>item.code));
   assert.ok(tray.children.every(button=>button.attrs["aria-label"].startsWith("Insert ")&&button.children[0].tag==="img"));
 });
 
 test("picker, sent-message rendering, server allowlist and database check share the catalog",()=>{
-  assert.match(messagesPage,/knightfall-emojis\.mjs\?v=20261124-original-emojis2/);
+  assert.match(messagesPage,/knightfall-emojis\.mjs\?v=20261125-imp-rebellion1/);
   assert.match(messagesPage,/window\.KnightfallEmojiReady/);
   assert.match(messagesPage,/customReactionButtons\(m\.id\)/);
   assert.match(messagesPage,/renderMessageText\(m\.deleted_at\?"\[Message deleted\]":m\.body\)/);
@@ -58,3 +58,5 @@ test("picker, sent-message rendering, server allowlist and database check share 
     assert.ok(emojiMigrations.includes("'"+code+"'"),"database migration missing "+code);
   }
 });
+
+test("original emoji search filters names, codes and packs",()=>{assert.equal(searchKnightfallEmojis("cackle")[0].code,":kf-cackle:");assert.equal(searchKnightfallEmojis("","faces").length,6);assert.equal(searchKnightfallEmojis("nonexistent").length,0);assert.equal(searchKnightfallEmojis().length,29);});

@@ -15,7 +15,7 @@ test("reaction shortcode allowlist has no duplicates",()=>{
 });
 
 test("every original emoji has a local accessible SVG and a matching database constraint",()=>{
-  const migration=readFileSync(new URL("../migrations/0214_knightfall_emoji_family_two.sql",import.meta.url),"utf8");
+  const migration=readFileSync(new URL("../migrations/0217_knightfall_emoji_family_three.sql",import.meta.url),"utf8");
   for(const emoji of KNIGHTFALL_EMOJIS){
     assert.equal(isAllowedMessageReaction(emoji.code),true,emoji.code);
     const icon=new URL("../../public/icons/emojis/"+emoji.file,import.meta.url);
@@ -24,5 +24,5 @@ test("every original emoji has a local accessible SVG and a matching database co
     assert.ok(svg.includes('aria-label="'+emoji.name+'"')||svg.includes('<title id="t">'+emoji.name+'</title>'),emoji.file+" needs an accessible label");
     assert.ok(migration.includes("'"+emoji.code+"'"),emoji.code+" missing from D1 constraint");
   }
-  assert.equal(KNIGHTFALL_EMOJIS.length,17);
+  assert.equal(KNIGHTFALL_EMOJIS.length,29);
 });
