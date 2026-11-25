@@ -1045,6 +1045,153 @@
           "status": "Editorial draft; primary source verification pending"
         }
       ]
+    },
+    {
+      "title": "Theology of souls and corruption",
+      "entries": [
+        {
+          "title": "Angelic renewal",
+          "body": "Angels emerge from the Crystal Arch; the succession of an aspect is distinct from ordinary mortal resurrection.",
+          "source": "Diablo II; Diablo III; Reaper of Souls; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Demonic return",
+          "body": "Defeating a demon does not necessarily permanently destroy its essence, a recurring premise of the series.",
+          "source": "Diablo II; Diablo III; Reaper of Souls; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Possession",
+          "body": "The Prime Evils exploit mortal vessels, as illustrated by Albrecht, Aidan and Leah.",
+          "source": "Diablo II; Diablo III; Reaper of Souls; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Soulstone corruption",
+          "body": "Containment of demonic essence can expose guardians and surrounding communities to corruption.",
+          "source": "Diablo II; Diablo III; Reaper of Souls; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Mortal souls",
+          "body": "Malthael's campaign treats humanity's mixed ancestry as grounds for destruction.",
+          "source": "Diablo II; Diablo III; Reaper of Souls; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "The Balance",
+          "body": "Rathma's tradition seeks equilibrium rather than unquestioning allegiance to Heaven or Hell.",
+          "source": "Diablo II; Diablo III; Reaper of Souls; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "The Light",
+          "body": "Zakarum and paladin traditions associate the Light with faith and supernatural power; this is not identical to obedience to angels.",
+          "source": "Diablo II; Diablo III; Reaper of Souls; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Human potential",
+          "body": "Nephalem ancestry challenges the assumption that mortals must remain subordinate to cosmic powers.",
+          "source": "Diablo II; Diablo III; Reaper of Souls; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
+    },
+    {
+      "title": "Sacred geography",
+      "entries": [
+        {
+          "title": "Khanduras",
+          "body": "Western kingdom containing Tristram.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Aranoch",
+          "body": "Desert region containing ancient Horadric tombs.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Dreadlands",
+          "body": "Region transformed by the destruction of Mount Arreat.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Fractured Peaks",
+          "body": "Mountainous region containing Kyovashad and Cathedral of Light institutions.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Hawezar",
+          "body": "Swamp region associated with witches and local spiritual traditions.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Dry Steppes",
+          "body": "Arid region containing settlements and ancient ruins.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Scosglen",
+          "body": "Northern region associated with druidic traditions.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Kyovashad",
+          "body": "Fortified city and major Cathedral of Light center.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
+    },
+    {
+      "title": "Expanded fiction reading guide",
+      "entries": [
+        {
+          "title": "Birthright",
+          "body": "First novel in Richard A. Knaak's Sin War trilogy.",
+          "source": "Published Diablo fiction; bibliographic review pending",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Legacy of Blood",
+          "body": "Novel by Richard A. Knaak.",
+          "source": "Published Diablo fiction; bibliographic review pending",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "The Black Road",
+          "body": "Novel by Mel Odom.",
+          "source": "Published Diablo fiction; bibliographic review pending",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "The Kingdom of Shadow",
+          "body": "Novel by Richard A. Knaak.",
+          "source": "Published Diablo fiction; bibliographic review pending",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Moon of the Spider",
+          "body": "Novel by Richard A. Knaak.",
+          "source": "Published Diablo fiction; bibliographic review pending",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "The Black Soulstone cinematic",
+          "body": "Diablo III cinematic source for the conflict involving Azmodan and Leah.",
+          "source": "Published Diablo fiction; bibliographic review pending",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
     }
   ],
   "references": [
