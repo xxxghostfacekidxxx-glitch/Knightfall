@@ -35,6 +35,7 @@ function fixture(role, username = "staff-fixture", target = godTarget) {
           bind: () => query,
           async first() {
             if (sql.includes("member_bot_creator_privileges")) return { id: 1, role, username, status: "active" };
+            if (sql === "SELECT 1 FROM god_bot_accounts WHERE user_id=?") return null; // Human session fixture.
             if (sql.includes("FROM site_settings")) return null;
             if (sql.includes("FROM users WHERE id=?")) return target;
             throw Error("Unexpected SQL: " + sql);
