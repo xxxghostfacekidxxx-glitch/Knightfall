@@ -517,6 +517,46 @@
     .then(d => {
       const user = d?.user;
       if (!user) return;
+      // One shared WebSocket signal for inbox bubbles, with polling fallback.
+      if (!["/messages", "/messages.html"].includes(location.pathname)) {
+        const startChatHeads=()=>{
+          if (!document.querySelector('link[data-kf-chat-bubbles]')) {
+            const sheet=document.createElement("link");
+            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261124-original-emojis2";
+            sheet.dataset.kfChatBubbles="true";document.head.append(sheet);
+          }
+          if(!window.ChaosphereImp&&!document.querySelector('script[data-kf-chaosphere-imp]')){
+            const mascot=document.createElement("script");
+            mascot.src="/chaosphere-imp.js?v=20261124-original-emojis2";
+            mascot.dataset.kfChaosphereImp="true";
+            document.body.append(mascot);
+          }
+          if (!document.querySelector('script[data-kf-chat-bubbles]')) {
+            const bubbles=document.createElement("script");
+            bubbles.src="/chat-bubbles.js?v=20261125-recovery1";
+            bubbles.dataset.kfChatBubbles="true";
+            bubbles.dataset.userId=String(user.id);
+            document.body.append(bubbles);
+          }
+        };
+        startChatHeads(); // Mount independently of optional realtime transport.
+        if(window.KnightfallLive)startChatHeads();
+        else {
+          let liveScript=document.querySelector('script[data-kf-message-live]');
+          if(!liveScript){
+            liveScript=document.createElement("script");
+            liveScript.src="/message-live.js?v=20261113-realtime1";
+            liveScript.dataset.kfMessageLive="true";
+            liveScript.onload=startChatHeads;
+            liveScript.onerror=startChatHeads; // Polling still works if WebSockets are unavailable.
+            document.body.append(liveScript);
+          }else{
+            liveScript.addEventListener("load",startChatHeads,{once:true});
+            liveScript.addEventListener("error",startChatHeads,{once:true});
+          }
+        }
+      }
+
       profileGroup.hidden = false;
       nav.querySelector(".kf-messages-shortcut").hidden = false;
       const identityLink=nav.querySelector(".kf-sign-in-link");
@@ -575,44 +615,6 @@
       nav.querySelector(".kf-my-profile-link").href = "/profile.html?username=" + encodeURIComponent(user.username);
       refreshNotifications();
       setInterval(refreshNotifications, 45000);
-      // One shared WebSocket signal for inbox bubbles, with polling fallback.
-      if (!["/messages", "/messages.html"].includes(location.pathname)) {
-        const startChatHeads=()=>{
-          if (!document.querySelector('link[data-kf-chat-bubbles]')) {
-            const sheet=document.createElement("link");
-            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261124-original-emojis2";
-            sheet.dataset.kfChatBubbles="true";document.head.append(sheet);
-          }
-          if(!window.ChaosphereImp&&!document.querySelector('script[data-kf-chaosphere-imp]')){
-            const mascot=document.createElement("script");
-            mascot.src="/chaosphere-imp.js?v=20261124-original-emojis2";
-            mascot.dataset.kfChaosphereImp="true";
-            document.body.append(mascot);
-          }
-          if (!document.querySelector('script[data-kf-chat-bubbles]')) {
-            const bubbles=document.createElement("script");
-            bubbles.src="/chat-bubbles.js?v=20261124-original-emojis2";
-            bubbles.dataset.kfChatBubbles="true";
-            bubbles.dataset.userId=String(user.id);
-            document.body.append(bubbles);
-          }
-        };
-        if(window.KnightfallLive)startChatHeads();
-        else {
-          let liveScript=document.querySelector('script[data-kf-message-live]');
-          if(!liveScript){
-            liveScript=document.createElement("script");
-            liveScript.src="/message-live.js?v=20261113-realtime1";
-            liveScript.dataset.kfMessageLive="true";
-            liveScript.onload=startChatHeads;
-            liveScript.onerror=startChatHeads; // Polling still works if WebSockets are unavailable.
-            document.body.append(liveScript);
-          }else{
-            liveScript.addEventListener("load",startChatHeads,{once:true});
-            liveScript.addEventListener("error",startChatHeads,{once:true});
-          }
-        }
-      }
       const pingActivity = () => fetch("https://api.ash-fall.com/api/activity/ping", {method:"POST",credentials:"include"}).catch(() => {});
       pingActivity();
       setInterval(pingActivity, 120000);
