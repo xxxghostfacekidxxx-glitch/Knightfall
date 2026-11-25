@@ -266,3 +266,10 @@
 #kf-chat-heads #kf-chat-send:disabled{opacity:.5;cursor:not-allowed}
 #kf-chat-heads .kf-chat-compose textarea{font-size:16px;line-height:1.45;caret-color:#f4acd8}
 @media(prefers-reduced-motion:reduce){#kf-chat-heads .kf-chat-launcher{transition:none}}
+
+/* Private attachment cards inside compact conversation bubbles. */
+#kf-chat-heads .kf-chat-attachments{display:grid;gap:6px;margin-top:5px;min-width:0}
+#kf-chat-heads .kf-chat-attachment{display:grid;gap:5px;min-width:0;padding:7px;border:1px solid #c69bc04d;border-radius:10px;background:#0b091b66;color:#f8e4f1;text-decoration:none;overflow:hidden}
+#kf-chat-heads .kf-chat-attachment:hover{border-color:#f6b4dc}
+#kf-chat-heads .kf-chat-attachment-image{display:block;width:auto;max-width:100%;max-height:180px;object-fit:contain;border-radius:7px;margin:auto}
+#kf-chat-heads .kf-chat-attachment-label{font-size:12px;overflow-wrap:anywhere;line-height:1.4}
