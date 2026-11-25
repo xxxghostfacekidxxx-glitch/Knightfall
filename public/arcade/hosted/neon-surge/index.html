@@ -535,7 +535,7 @@
   <div class="title-card">
     <p class="kicker">GRID ARENA SHOOTER · 128 BPM</p>
     <h1 class="logo" aria-label="Neon Surge"><span>NEON</span><span>SURGE</span></h1>
-    <p class="tagline" id="tagline">Blast geometric swarms on a neon grid that pulses to the beat. Fight the OVERSEER boss every five waves.</p>
+    <p class="tagline" id="tagline">Blast geometric swarms on a neon grid that pulses to the beat. Earn chain bonuses every 40 consecutive kills and flawless bonuses for clearing waves without losing a life. Fight the OVERSEER every five waves.</p>
     <div class="cta">
       <button type="button" class="btn primary" id="startBtn" disabled>LOADING</button>
       <button type="button" class="btn ghost" id="titleSound">SOUND ON</button>
@@ -2397,6 +2397,7 @@ const director = {
   },
   startWave(n) {
     this.wave = n; G.wave = n;
+    this.startLives = player.lives; this.lifeLost = false;
     this.killed = 0; this.pending.length = 0;
     audio.danger = false;
     audio.intensity = n >= 6 ? 3 : n >= 3 ? 2 : 1;
@@ -2416,9 +2417,10 @@ const director = {
   finishWave(bossWave) {
     this.state = 'clear';
     this.t = bossWave ? 3.4 : 2.6;
-    const bonus = 500 * this.wave;
+    const flawless = player.lives === this.startLives && !this.lifeLost;
+    const bonus = 500 * this.wave + (flawless ? 250 * this.wave : 0);
     addScore(bonus);
-    banner(bossWave ? 'OVERSEER DOWN' : `WAVE ${pad2(this.wave)} CLEAR`, `BONUS +${fmt(bonus)}`);
+    banner(bossWave ? 'OVERSEER DOWN' : `WAVE ${pad2(this.wave)} CLEAR`, `${flawless ? 'FLAWLESS · ' : ''}BONUS +${fmt(bonus)}`);
     audio.waveClear();
     audio.danger = false;
   },
@@ -2440,6 +2442,13 @@ function registerKill(x, z, base, hex) {
   }
   const pts = base * G.mult;
   addScore(pts);
+  // Reward sustained precision once per chain milestone, without increasing the bomb cap.
+  if (G.combo % 40 === 0) {
+    const bonus = 250 * G.mult;
+    addScore(bonus);
+    rings.add(player.x, player.z, COL.player, 1, 8, .55);
+    popup(player.x, player.z, `CHAIN BONUS +${fmt(bonus)}`, '#ffd23f', 1.4);
+  }
   popup(x, z, fmt(pts), hex, base >= 600 ? 1.4 : 1);
 }
 function resetCombo() { G.combo = 0; G.mult = 1; G.comboT = 0; }
@@ -2508,6 +2517,7 @@ function hitPlayer() {
     return;
   }
   P.lives--;
+  director.lifeLost = true;
   G.hitStop = 0.14; G.trauma = 1; G.ca = 0.035;
   G.flash.set(0.55, 0.02, 0.08);
   slowMo(0.25, 1.0);
