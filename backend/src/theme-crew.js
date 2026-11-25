@@ -4,6 +4,11 @@ import {acceptedAdminPartner} from "./chaos-companion.mjs";
 // Theme Crew: fixed, allowlisted sitewide looks. No AI-generated or arbitrary CSS
 // reaches the browser. This state is stored in the existing site_settings D1 table.
 export const THEME_CREW_PRESETS=Object.freeze({
+ jedi_sanctuary:Object.freeze({"name":"Jedi Sanctuary","tag":"Bronze / sapphire","mood":"Ceremonial temple vector ornaments; vector edition, environmental artwork pending","accent":"#e6c78c"}),
+ neon_dystopia:Object.freeze({"name":"Neon Dystopia","tag":"Magenta / acid green","mood":"Cyberpunk circuit ornaments; vector edition, environmental artwork pending","accent":"#ff38ae"}),
+ the_asylum:Object.freeze({"name":"The Asylum","tag":"Iron / crimson","mood":"Gothic institutional ornaments; vector edition, environmental artwork pending","accent":"#bba18b"}),
+ arcade_anarchy:Object.freeze({"name":"Arcade Anarchy","tag":"Magenta / cyan","mood":"Retro arcade geometric ornaments; vector edition, environmental artwork pending","accent":"#f64cff"}),
+ astral_dominion:Object.freeze({"name":"Astral Dominion","tag":"Silver / violet","mood":"Celestial orbital ornaments; vector edition, environmental artwork pending","accent":"#c5c9ef"}),
  egyptian_eclipse:Object.freeze({name:"Egyptian Eclipse",tag:"Gold / turquoise / obsidian",mood:"Original eclipsed temple artwork, gilded Anubis halls, turquoise lunar fire, custom winged cartouches and eight matching SVG ornaments",accent:"#e7b65c"}),
  dark_lord_ascendant:Object.freeze({name:"Dark Lord Ascendant",tag:"Crimson / gunmetal / obsidian",mood:"Original dark-space-fantasy throne room, crimson eclipsed command citadel and eight brushed metal SVG ornaments",accent:"#d5b8c1"}),
  korriban_necropolis:Object.freeze({name:"Korriban · Red Necropolis",tag:"Crimson / sandstone / iron",mood:"Original red desert crypt and tomb-city painting with eight sandstone and iron SVG ornaments",accent:"#d9a078"}),
@@ -122,6 +127,11 @@ export function themePlan(mood){
  if(typeof mood!=="string"||mood.length>200)return null;
  const q=mood.toLowerCase().trim();
  const patterns=[
+  [/jedi|sanctuary|meditation temple/,"jedi_sanctuary"],
+  [/dystopia|cyberpunk|neon city/,"neon_dystopia"],
+  [/asylum|madhouse|gothic hospital/,"the_asylum"],
+  [/arcade|retro gaming|anarchy/,"arcade_anarchy"],
+  [/astral|celestial|astrology|dominion/,"astral_dominion"],
   [/dark lord|dark.?space|crimson citadel|ascendant|black armour|star fortress/,"dark_lord_ascendant"],
   [/korriban|necropolis|red desert|ancient tomb|tomb.?city/,"korriban_necropolis"],
   [/mustafar|obsidian forge|volcanic fortress|lava river|molten|black glass/,"mustafar_forge"],
