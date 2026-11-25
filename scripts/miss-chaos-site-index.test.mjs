@@ -1,14 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {PUBLIC_PAGES,searchPublicPages} from "../backend/chaos-public-tools.mjs";
-import {readFileSync} from "node:fs";
+import {readFileSync,existsSync} from "node:fs";
 const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 test("Miss Chaos site index parses and contains nonduplicate working destinations",()=>{
  assert.ok(PUBLIC_PAGES.length>=15);
  const paths=PUBLIC_PAGES.map(x=>x.url);
  assert.equal(new Set(paths).size,paths.length);
  for(const page of PUBLIC_PAGES){
-  assert.match(page.url,/^\/[a-z0-9-]+\.html$/);
+  assert.match(page.url,/^\/(?:[a-z0-9-]+\/)*[a-z0-9-]+\.html$/);
+  assert.ok(existsSync(new URL("../public"+page.url,import.meta.url)),page.url);
   assert.ok(page.title&&page.terms);
  }
  const find=term=>searchPublicPages({query:term}).map(x=>x.url);
