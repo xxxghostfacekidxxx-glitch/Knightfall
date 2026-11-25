@@ -28,6 +28,7 @@ import { inspectChaosChatImage } from "./chaos-chat-image.js";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { shouldDeliverStoredNotification } from "./notification-delivery-policy.js";
 import { hasBlockedGroupPair } from "../message-group-policy.mjs";
+import {keyedSendAvailable,validSendKey,payloadHash,findKeyedSend,createKeyedSend} from "./message-idempotency.js";
 import { checkTurnstile } from "./turnstile.js";
 import { handleBotSlotShop } from "./member-shop-checkout.js";
 import { handleStripeBilling } from "./stripe-billing.js";
@@ -3124,6 +3125,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     }
     return json({messages:results,has_more:hasMore,next_before:hasMore&&results.length?Number(results[0].id):null,admin_view:false},200,origin);
   }
+  if(url.pathname==="/api/messages/send-capabilities"&&request.method==="GET"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);return json({keyed_send:await keyedSendAvailable(env.DB)},200,origin);}
   if(conversationMatch&&request.method==="POST"){
     const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
     if(!(await rateLimit(env,request,"message",60,60,user.id)))return json({error:"Message rate limit reached. Slow down."},429,origin);
@@ -3131,12 +3133,22 @@ For complex questions, organize the answer clearly and provide actionable detail
     const membership=await env.DB.prepare("SELECT conversation_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id).first();
     if(!membership)return json({error:"Conversation not found."},404,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    if(!body||typeof body!=="object"||Array.isArray(body))return json({error:"Invalid message payload."},400,origin);
     const message=String(body.body||"").trim();
     const attachmentIds=Array.isArray(body.attachment_ids)?[...new Set(body.attachment_ids.map(Number).filter(x=>Number.isSafeInteger(x)&&x>0))]:[];
     if(attachmentIds.length>10)return json({error:"Attach no more than 10 files to one message."},400,origin);
     if(!message&&attachmentIds.length===0)return json({error:"Write a message or attach a file."},400,origin);
     if(message&&!validText(message,4000))return json({error:"Message must be 1-4000 characters."},400,origin);
-    if(attachmentIds.length){
+    const key=body.client_message_id;
+    let hash=null;
+    if(key!==undefined){
+      if(!validSendKey(key))return json({error:"Invalid send identifier."},400,origin);
+      if(!await keyedSendAvailable(env.DB))return json({error:"Protected sending is not available yet."},503,origin);
+      hash=await payloadHash(message,attachmentIds);
+      const existing=await findKeyedSend(env.DB,conversationId,user.id,key);
+      if(existing)return existing.client_payload_hash===hash?json({id:Number(existing.id),deduplicated:true},200,origin):json({error:"This send identifier was already used for another message."},409,origin);
+    }
+    if(attachmentIds.length&&!key){
       const pending=await env.DB.prepare("SELECT id FROM message_attachments WHERE conversation_id=? AND uploader_id=? AND message_id IS NULL AND id IN ("+attachmentIds.map(()=>"?").join(",")+")").bind(conversationId,user.id,...attachmentIds).all();
       if((pending.results||[]).length!==attachmentIds.length)return json({error:"One or more attachments are invalid or already sent."},400,origin);
     }
@@ -3148,12 +3160,14 @@ For complex questions, organize the answer clearly and provide actionable detail
     const now=new Date().toISOString();
     // Membership is checked again in the INSERT itself. If the sender was
     // removed after the early check, D1 inserts no row and no notification is sent.
-    const row=await env.DB.prepare(
+    let row;
+    if(key){const result=await createKeyedSend(env.DB,{conversationId,userId:user.id,message,now,key,hash,attachmentIds});if(result.status===200)return json({id:result.id,deduplicated:true},200,origin);if(result.status!==201)return json({error:result.error},result.status,origin);row={id:result.id};}
+    else row=await env.DB.prepare(
       "INSERT INTO messages (conversation_id,sender_id,body,created_at) "+
       "SELECT ?,?,?,? WHERE EXISTS (SELECT 1 FROM conversation_members WHERE conversation_id=? AND user_id=?) RETURNING id"
     ).bind(conversationId,user.id,message,now,conversationId,user.id).first();
     if(!row)return json({error:"Conversation not found."},404,origin);
-    if(attachmentIds.length)await env.DB.batch(attachmentIds.map(id=>env.DB.prepare("UPDATE message_attachments SET message_id=? WHERE id=? AND conversation_id=? AND uploader_id=? AND message_id IS NULL").bind(row.id,id,conversationId,user.id)));
+    if(attachmentIds.length&&!key)await env.DB.batch(attachmentIds.map(id=>env.DB.prepare("UPDATE message_attachments SET message_id=? WHERE id=? AND conversation_id=? AND uploader_id=? AND message_id IS NULL").bind(row.id,id,conversationId,user.id)));
     await env.DB.prepare("UPDATE conversations SET updated_at=? WHERE id=?").bind(now,conversationId).run();
     // Refresh recipients after the write so a member removed during the
     // request cannot receive a stale notification or realtime event.

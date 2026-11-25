@@ -6,6 +6,7 @@
   if(!Number.isSafeInteger(userId)||userId<1||document.getElementById("kf-chat-heads"))return;
   if(["/messages","/messages.html"].includes(location.pathname))return; // The full inbox already owns this route.
   const API="https://api.ash-fall.com";
+  if(!window.ChaosphereSend)import("/chaosphere-send.js?v=20261125-apotheosis4").catch(()=>{});
   const organization=()=>{try{return window.ChaosphereOrganization?.read(localStorage,userId)||{pinned:[],archived:[]}}catch{return {pinned:[],archived:[]}}};
   if(!window.ChaosphereOrganization)import("/chaosphere-organization.js?v=20261125-apotheosis3").then(()=>{if(state.visible)renderPanel();}).catch(()=>{});
   window.addEventListener("storage",event=>{if(event.key==="kf-cs-organization-"+userId&&state.visible)renderPanel();});
@@ -90,7 +91,7 @@ async function api(path,opts={}){
  try{
   const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{...(opts.body instanceof FormData?{}:{"content-type":"application/json"}),...(opts.headers||{})}});
   const data=await response.json().catch(()=>null);
-  if(!response.ok)throw Error(data?.error||("Messaging API returned HTTP "+response.status));
+  if(!response.ok){const error=Error(data?.error||("Messaging API returned HTTP "+response.status));error.status=response.status;throw error;}
   if(!data||typeof data!=="object"||Array.isArray(data))throw Error("Invalid messaging response. Please retry.");
   return data;
  }catch(error){if(controller.signal.aborted)throw Error("Messaging request interrupted or timed out. Check the conversation before retrying a send.");throw error;}
@@ -610,7 +611,7 @@ async function api(path,opts={}){
     const queued=previous.catch(()=>{}).then(async()=>{
       state.sending=true;
       try{
-        await api("/api/messages/conversations/"+id,{method:"POST",body:JSON.stringify({body,attachment_ids})});
+        if(window.ChaosphereSend)await window.ChaosphereSend.send(api,"/api/messages/conversations/"+id,{body,attachment_ids});else await api("/api/messages/conversations/"+id,{method:"POST",body:JSON.stringify({body,attachment_ids})});
         if(state.active===id)announce("Message sent.");
         impReact("sent");
         void (async()=>{

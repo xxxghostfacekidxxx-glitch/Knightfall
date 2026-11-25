@@ -12,6 +12,7 @@
 <script>window.KnightfallEmojiReady=new Promise(resolve=>{window.__resolveKnightfallEmoji=resolve})</script>
 <script type="module" src="/knightfall-emojis.mjs?v=20261125-noir1"></script>
 <script src="/chaosphere-format.js?v=20261125-apotheosis1"></script>
+<script src="/chaosphere-send.js?v=20261125-apotheosis4"></script>
 <script src="/chaosphere-organization.js?v=20261125-apotheosis3"></script>
 <script src="/chaosphere-themes.js?v=20261125-ascendant1" defer></script>
 <script src="/ruinwire-app.js?v=20261117-chaosphere1"></script><script src="/chaosphere-imp.js?v=20261121-trouble-spice1" defer></script>
@@ -177,7 +178,7 @@ async function api(path,opts={}){
  try{
   const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{...(opts.body instanceof FormData?{}:{"content-type":"application/json"}),...(opts.headers||{})}});
   const data=await response.json().catch(()=>null);
-  if(!response.ok)throw Error(data?.error||("Messaging API returned HTTP "+response.status));
+  if(!response.ok){const error=Error(data?.error||("Messaging API returned HTTP "+response.status));error.status=response.status;throw error;}
   if(!data||typeof data!=="object"||Array.isArray(data))throw Error("Invalid messaging response. Please retry.");
   return data;
  }catch(error){if(controller.signal.aborted)throw Error("Messaging request interrupted or timed out. Check the conversation before retrying a send.");throw error;}
@@ -469,7 +470,7 @@ $("#composer").onsubmit=async e=>{
  const queued=previous.catch(()=>{}).then(async()=>{
 
   try{
-   await api("/api/messages/conversations/"+conversationId,{
+   if(window.ChaosphereSend)await window.ChaosphereSend.send(api,"/api/messages/conversations/"+conversationId,{body,attachment_ids});else await api("/api/messages/conversations/"+conversationId,{
     method:"POST",body:JSON.stringify({body,attachment_ids})
    });
    if(Number(currentId)===conversationId)status("Message sent.",true);

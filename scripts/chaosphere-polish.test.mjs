@@ -75,7 +75,7 @@ test("Quote and emoji actions update the existing draft without sending or stori
  const status=elem("status",{textContent:"",className:""});
  const elements=new Map([["body",body],["composer",composer],["messages",transcript],["cs-emoji-toggle",toggle],["cs-emoji-tray",tray],["status",status]]);
  const doc={
-  querySelector(sel){return sel===".messages-shell"?{}:null},
+  querySelector(sel){return sel===".messages-shell"?elem("shell"):null},
   getElementById(id){return elements.get(id)||null},
   addEventListener(type,handler){listeners.set(type,handler)}
  };
@@ -89,7 +89,7 @@ test("Quote and emoji actions update the existing draft without sending or stori
  assert.equal(body.value,"🔥");assert.equal(inputCount,1);assert.equal(tray.hidden,true);
  const paragraph={textContent:"Private thoughts are mine to quote, not upload"};
  const sender={textContent:"Velvet Venom"};
- const article={classList:{contains:()=>false},querySelector(sel){return sel==="p"?paragraph:sender}};
+ const article={dataset:{},classList:{contains:()=>false},querySelector(sel){return sel==="p"?paragraph:sender}};
  const button={closest:()=>article};
  const target={closest:()=>button};
  transcript.listeners.click({target});

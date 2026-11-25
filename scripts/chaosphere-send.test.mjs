@@ -1,0 +1,6 @@
+import test from "node:test";import assert from "node:assert/strict";import vm from "node:vm";import {readFileSync} from "node:fs";
+const source=readFileSync(new URL("../public/chaosphere-send.js",import.meta.url),"utf8");
+function harness(){const ctx=vm.createContext({crypto:{randomUUID:()=>"12345678-1234-1234-1234-123456789abc"}});vm.runInContext(source,ctx);return ctx.ChaosphereSend;}
+test("protected send retries once using the identical token and payload",async()=>{const calls=[];let n=0;const api=async(path,opts)=>{if(!opts)return {keyed_send:true};calls.push(opts.body);if(++n===1)throw Error("connection lost");return {id:42};};assert.equal((await harness().send(api,"/send",{body:"hello",attachment_ids:[]})).id,42);assert.equal(calls.length,2);assert.equal(calls[0],calls[1]);});
+test("older API never automatically retries an unprotected send",async()=>{let n=0;const api=async(path,opts)=>{if(!opts)return {keyed_send:false};n++;throw Error("connection lost");};await assert.rejects(harness().send(api,"/send",{body:"hello"}));assert.equal(n,1);});
+test("client errors never retry",async()=>{let n=0;const api=async(path,opts)=>{if(!opts)return {keyed_send:true};n++;throw Object.assign(Error("blocked"),{status:403});};await assert.rejects(harness().send(api,"/send",{body:"hello"}));assert.equal(n,1);});
