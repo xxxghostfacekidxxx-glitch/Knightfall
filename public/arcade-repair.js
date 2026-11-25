@@ -7,6 +7,7 @@ const button=document.getElementById("arcade-repair");
 const status=document.getElementById("arcade-repair-status");
 if(!button||!status)return;
 let active=false;
+const gamePage=path=>/^\/arcade\/hosted\/[^/]+\/(?!source\.html$)[^/]+\.html$/i.test(path)||["/arcade/async-play.html","/arcade/cinder-sequence.html","/arcade/city-forge.html"].includes(path);
 const cachedAsset=pathname=>pathname.startsWith("/arcade/")||
   ["/arcade-cabinet-ui.js","/arcade-cabinet-ui.css","/arcade-fullscreen.js","/arcade-save.js","/arcade-polish.css"].includes(pathname);
 async function refresh(){
@@ -40,6 +41,8 @@ async function refresh(){
   button.textContent="✓ Fresh launches enabled";
  }catch{
   active=true;
+  try{sessionStorage.setItem("kf-arcade-fresh-launch","1");}catch{}
+  button.textContent="✓ Fresh launches enabled";
   status.textContent="Fresh launch enabled. Open a game below; browser storage could not be fully checked.";
  }finally{button.disabled=false;button.removeAttribute("aria-busy");}
 }
@@ -52,7 +55,7 @@ document.addEventListener("click",event=>{
  if(!anchor)return;
  let url;
  try{url=new URL(anchor.href,location.href)}catch{return;}
- if(url.origin!==location.origin||!url.pathname.startsWith("/arcade/hosted/"))return;
+ if(url.origin!==location.origin||!gamePage(url.pathname))return;
  url.searchParams.set("kf-fresh",String(Date.now()));
  anchor.href=url.pathname+url.search+url.hash;
 },true);
