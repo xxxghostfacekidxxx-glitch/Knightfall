@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "practice-1",
+      "order": "jedi",
+      "title": "Awareness",
+      "practice": "Notice thoughts and sensations for five minutes without judging them.",
+      "reflection": "What did I notice before reacting?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-2",
+      "order": "jedi",
+      "title": "Compassion",
+      "practice": "Choose one small helpful action without expecting recognition.",
+      "reflection": "Did my action respect the other person's wishes?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-3",
+      "order": "jedi",
+      "title": "Discernment",
+      "practice": "Write one observation, one interpretation and one alternative explanation.",
+      "reflection": "What evidence would change my mind?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-4",
+      "order": "jedi",
+      "title": "Service",
+      "practice": "Choose a manageable responsibility and complete it.",
+      "reflection": "Who benefited and what can I improve?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-5",
+      "order": "sith",
+      "title": "Passion",
+      "practice": "Name a desire and identify a constructive action aligned with it.",
+      "reflection": "Is this desire mine or borrowed from others?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-6",
+      "order": "sith",
+      "title": "Strength",
+      "practice": "Choose a realistic challenge and practice for ten minutes.",
+      "reflection": "What did persistence teach me?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-7",
+      "order": "sith",
+      "title": "Shadow",
+      "practice": "Privately examine an uncomfortable emotion without acting on it.",
+      "reflection": "What need or fear might this emotion reveal?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-8",
+      "order": "sith",
+      "title": "Sovereignty",
+      "practice": "Identify a boundary and rehearse expressing it respectfully.",
+      "reflection": "How can I protect autonomy without violating another's?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-9",
+      "order": "shared",
+      "title": "Accountability",
+      "practice": "Review one decision and identify a repair if needed.",
+      "reflection": "What will I do differently?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    },
+    {
+      "id": "practice-10",
+      "order": "shared",
+      "title": "Rest",
+      "practice": "Set aside five minutes for quiet rest without performance goals.",
+      "reflection": "What does sustainable discipline require?",
+      "classification": "Original Knightfall practice",
+      "status": "Draft; voluntary, nonclinical"
+    }
+  ]
+}
