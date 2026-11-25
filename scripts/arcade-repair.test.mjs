@@ -41,9 +41,12 @@ test("arcade repair leaves private conversations, theme, and saved data alone",a
  assert.match(h.status.textContent,/saves and messages are untouched/);
  assert.equal(h.button.disabled,false);
 });
-test("fresh launches modify only same-origin hosted game links",async()=>{
+test("fresh launches modify only same-origin playable game links",async()=>{
  const h=harness();h.button.click();await h.settle();
  assert.match(h.link("https://ash-fall.com/arcade/hosted/ash-sudoku/index.html"),/kf-fresh=\d+/);
+ assert.match(h.link("/arcade/async-play.html?game=connect-four"),/game=connect-four&kf-fresh=\d+/);
+ assert.match(h.link("/arcade/cinder-sequence.html"),/kf-fresh=\d+/);
+ assert.equal(h.link("/arcade/hosted/browserquest-solo/source.html"),"https://ash-fall.com/arcade/hosted/browserquest-solo/source.html");
  assert.equal(h.link("https://ash-fall.com/messages.html"),"https://ash-fall.com/messages.html");
  assert.equal(h.link("https://example.com/arcade/hosted/x/index.html"),"https://example.com/arcade/hosted/x/index.html");
 });
