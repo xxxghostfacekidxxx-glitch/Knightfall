@@ -1974,6 +1974,12 @@ bossGroup.add(bossCore, bossEye, bossRing, ...podMeshes);
 bossGroup.visible = false;
 scene.add(bossGroup);
 
+const BOSS_FORMS = [
+  {name:'OVERSEER',color:'#ff3b5c',patterns:['spiral','burst','fan','summon']},
+  {name:'EXECUTIONER',color:'#ffb020',patterns:['lance','fan','burst','lance']},
+  {name:'NULL ARCHITECT',color:'#b56aff',patterns:['cage','summon','spiral','cage']}
+];
+const bossForm = level => BOSS_FORMS[(Math.max(1,level)-1)%BOSS_FORMS.length];
 const boss = {
   active: false, defeated: false, dead: true, x: 0, z: -4, y: 2.4, hp: 1, maxHp: 1, level: 1, t: 0,
   state: 'rest', stateT: 0, fireT: 0, count: 0, spin: 0, phase: 1, patternIdx: 0, flash: 0, spd: 1,
@@ -1987,8 +1993,11 @@ const boss = {
       active: true, defeated: false, dead: false, level, x: lx, z: lz, y: 30, t: 0, phase: 1, patternIdx: 0,
       state: 'rest', stateT: 1.4, entering: true, enterT: 0, dying: false, bombT: -1, flash: 0, spd: 1 + (level - 1) * 0.12,
     });
+    this.form = bossForm(level);
     this.maxHp = this.hp = 520 + (level - 1) * 340;
-    bossCoreMat.uniforms.uColor.value.copy(COL.boss);
+    bossCoreMat.uniforms.uColor.value.set(this.form.color);
+    hud.bossBox.querySelector('.label').textContent = this.form.name;
+    bossRing.scale.setScalar(level % 3 === 2 ? 1.2 : 1);
     bossGroup.visible = true;
     hud.bossBox.hidden = false;
     this.updatePods(0);
@@ -2078,13 +2087,34 @@ const boss = {
         }
         break;
       }
+      case 'lance': {
+        this.fireT -= dt;
+        if (this.fireT <= 0) {
+          const a = Math.atan2(player.x-this.x, player.z-this.z);
+          for (let k=-2;k<=2;k++) spawnEB(this.x,this.z,a+k*.13, (p2?19:15)*this.spd,COL.ebPink,.45);
+          audio.enemyShot(); this.fireT=.7; this.count++;
+          if (this.count >= (p2?6:4)) this.rest();
+        }
+        break;
+      }
+      case 'cage': {
+        this.fireT -= dt;
+        if (this.fireT <= 0) {
+          const n=p2?24:18, a=Math.atan2(player.x-this.x,player.z-this.z);
+          for(let k=2;k<n-1;k++) spawnEB(this.x,this.z,a+k*TAU/n,8*this.spd,COL.ebViolet,.42);
+          rings.add(this.x,this.z,COL.pod,2,10,.6);
+          audio.enemyShot(); this.fireT=.85; this.count++;
+          if(this.count >= (p2?5:3)) this.rest();
+        }
+        break;
+      }
       case 'summon':
         if (this.stateT <= 0) this.rest();
         break;
     }
   },
   nextPattern() {
-    const order = ['spiral', 'burst', 'fan', 'summon'];
+    const order = this.form.patterns;
     this.state = order[this.patternIdx++ % order.length];
     this.count = 0;
     this.fireT = 0;
@@ -2136,7 +2166,7 @@ const boss = {
     shockwave(this.x, this.z, 2.2);
     rings.add(this.x, this.z, COL.bossHot, 1, 18, 0.7, 2);
     G.trauma = Math.max(G.trauma, 0.8);
-    banner('OVERDRIVE', 'The OVERSEER intensifies its attack', 'danger');
+    banner('OVERDRIVE', `${this.form.name} intensifies its attack`, 'danger');
     this.state = 'rest';
     this.stateT = 0.8;
   },
@@ -2407,7 +2437,7 @@ const director = {
     audio.intensity = n >= 6 ? 3 : n >= 3 ? 2 : 1;
     if (n % 5 === 0) {
       this.state = 'warning'; this.t = 3.0; this.groups = []; this.total = 1;
-      banner('WARNING', 'The OVERSEER is descending', 'danger');
+      banner('WARNING', `${bossForm(n / 5).name} is descending`, 'danger');
       audio.warning();
       audio.intensity = 3; audio.danger = true;
       return;
@@ -2424,7 +2454,7 @@ const director = {
     const flawless = player.lives === this.startLives && !this.lifeLost;
     const bonus = 500 * this.wave + (flawless ? 250 * this.wave : 0);
     addScore(bonus);
-    banner(bossWave ? 'OVERSEER DOWN' : `WAVE ${pad2(this.wave)} CLEAR`, `${flawless ? 'FLAWLESS · ' : ''}BONUS +${fmt(bonus)}`);
+    banner(bossWave ? `${boss.form.name} DOWN` : `WAVE ${pad2(this.wave)} CLEAR`, `${flawless ? 'FLAWLESS · ' : ''}BONUS +${fmt(bonus)}`);
     audio.waveClear();
     audio.danger = false;
   },
