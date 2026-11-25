@@ -752,6 +752,206 @@
           "status": "Official manual excerpt reviewed"
         }
       ]
+    },
+    {
+      "title": "Supernatural bestiary",
+      "entries": [
+        {
+          "title": "Fallen",
+          "body": "Small demons often encountered in groups; shamans can revive fallen allies.",
+          "source": "Diablo II; Diablo III; Book of Adria",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Succubi",
+          "body": "Winged demonic beings associated with infernal forces.",
+          "source": "Diablo II; Diablo III; Book of Adria",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Balrogs",
+          "body": "Large horned demons encountered in the Burning Hells.",
+          "source": "Diablo II; Diablo III; Book of Adria",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Unburied",
+          "body": "Massive undead creatures encountered in Diablo III.",
+          "source": "Diablo II; Diablo III; Book of Adria",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Reapers",
+          "body": "Servants of Malthael during his campaign against humanity.",
+          "source": "Diablo II; Diablo III; Book of Adria",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Blood clan",
+          "body": "A faction of goatmen encountered in Sanctuary.",
+          "source": "Diablo II; Diablo III; Book of Adria",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Skeleton kings and revenants",
+          "body": "Undead rulers and warriors illustrate the persistence of corruption after death.",
+          "source": "Diablo II; Diablo III; Book of Adria",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Treasure goblins",
+          "body": "Otherworldly creatures associated with greed and the realm of Greed.",
+          "source": "Diablo II; Diablo III; Book of Adria",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
+    },
+    {
+      "title": "Ancient magical civilizations",
+      "entries": [
+        {
+          "title": "Vizjerei",
+          "body": "Mage clan associated with the study and dangerous summoning of demons.",
+          "source": "Diablo II manual; The Sin War; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Ennead",
+          "body": "Ancient mage clan involved in the history of Sanctuary's magical traditions.",
+          "source": "Diablo II manual; The Sin War; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Ammuit",
+          "body": "Mage clan associated with the ancient conflicts between magical factions.",
+          "source": "Diablo II manual; The Sin War; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Mage Clan Wars",
+          "body": "Conflict among magical clans that exposed the dangers of demonic influence.",
+          "source": "Diablo II manual; The Sin War; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Kehjistan",
+          "body": "Eastern empire whose history includes major magical and religious institutions.",
+          "source": "Diablo II manual; The Sin War; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Xiansai",
+          "body": "Island civilization associated with distinctive magical traditions and Akarat's ancestry.",
+          "source": "Diablo II manual; The Sin War; Diablo III",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
+    },
+    {
+      "title": "Mortal legends",
+      "entries": [
+        {
+          "title": "Leoric",
+          "body": "King of Khanduras whose corruption and death precede his return as the Skeleton King.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Aidan",
+          "body": "Leoric's elder son, associated with the warrior who defeated Diablo and became the Dark Wanderer.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Albrecht",
+          "body": "Leoric's younger son, used as Diablo's vessel beneath Tristram.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Deckard Cain",
+          "body": "Horadric scholar who preserves knowledge of the Eternal Conflict.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Leah",
+          "body": "Daughter of Adria and Aidan, exploited as a vessel for Diablo.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Adria",
+          "body": "Witch whose allegiance to Diablo shapes the events of Diablo III.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Zoltun Kulle",
+          "body": "Horadric mage whose experiments culminate in the Black Soulstone.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Lorath Nahr",
+          "body": "Horadric scholar involved in the crises of Diablo III and IV.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Donan",
+          "body": "Horadric figure whose family and past are central to Diablo IV.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Neyrelle",
+          "body": "Young scholar who takes responsibility for Mephisto's soulstone.",
+          "source": "Diablo; Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
+    },
+    {
+      "title": "Relics and sacred objects",
+      "entries": [
+        {
+          "title": "Horadric Cube",
+          "body": "Ancient magical device used to transmute objects.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Khalim's Will",
+          "body": "Flail assembled from relics of Khalim to overcome the Compelling Orb.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Compelling Orb",
+          "body": "Instrument of Mephisto's influence over the Zakarum.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Hellforge",
+          "body": "Infernal forge used in the destruction of soulstones.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Staff of Kings",
+          "body": "Component of the Horadric Staff used to open Tal Rasha's burial chamber.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        },
+        {
+          "title": "Kanai's Cube",
+          "body": "Powerful artifact associated with the ancient barbarian Kanai.",
+          "source": "Diablo II; Diablo III; Diablo IV",
+          "status": "Editorial draft; primary source verification pending"
+        }
+      ]
     }
   ],
   "references": [
