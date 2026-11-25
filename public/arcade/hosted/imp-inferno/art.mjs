@@ -364,11 +364,40 @@ function drawTideEntrances(ctx, width, tide) {
   }
 }
 
+// Static lighting is cached per table width, independent of simulation state.
+function furnaceLighting(ctx, width) {
+  const edge = ctx.createRadialGradient(width / 2, HEIGHT * .46, Math.min(width, HEIGHT) * .18, width / 2, HEIGHT * .5, Math.hypot(width, HEIGHT) * .53);
+  edge.addColorStop(0, '#1b071000');
+  edge.addColorStop(.65, '#1b071019');
+  edge.addColorStop(1, '#10040ba8');
+  const floor = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+  floor.addColorStop(0, '#f78a3424');
+  floor.addColorStop(.45, '#f78a3400');
+  floor.addColorStop(1, '#f044242e');
+  return {edge, floor};
+}
+function drawRail(ctx, width, time, reducedMotion) {
+  ctx.save();
+  for (const x of [3, width - 3]) {
+    ctx.strokeStyle = '#a84a36';
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, HEIGHT); ctx.stroke();
+    for (let i = 0; i < 12; i++) {
+      const y = (i + .5) * HEIGHT / 12;
+      ctx.fillStyle = reducedMotion || Math.sin(time * 2 - i * .6) > 0 ? '#ffc16c' : '#77352c';
+      ctx.fillRect(x - 1.5, y - 7, 3, 14);
+    }
+  }
+  ctx.restore();
+}
 export function makeRenderer(ctx, backdrop) {
+  let lighting, lightingWidth;
   return (table, control, reducedMotion, tide) => {
     const width = table.width;
     const time = table.time;
     ctx.clearRect(0, 0, width, HEIGHT);
+    ctx.fillStyle = '#210c16';
+    ctx.fillRect(0, 0, width, HEIGHT);
     if (backdrop.complete && backdrop.naturalWidth) {
       const sourceWidth = backdrop.naturalWidth * Math.min(1, Math.max(.7, width / HEIGHT * backdrop.naturalHeight / backdrop.naturalWidth));
       ctx.drawImage(backdrop, (backdrop.naturalWidth - sourceWidth) / 2, 0, sourceWidth, backdrop.naturalHeight, 0, 0, width, HEIGHT);
@@ -386,6 +415,15 @@ export function makeRenderer(ctx, backdrop) {
         ellipse(ctx, x, y, 1 + i % 3 * .55, 1 + i % 3 * .55, i % 4 ? '#ff742960' : '#ffe37ca0');
       }
     }
+    if (!lighting || lightingWidth !== width) {
+      lighting = furnaceLighting(ctx, width);
+      lightingWidth = width;
+    }
+    ctx.fillStyle = lighting.floor;
+    ctx.fillRect(0, 0, width, HEIGHT);
+    ctx.fillStyle = lighting.edge;
+    ctx.fillRect(0, 0, width, HEIGHT);
+    drawRail(ctx, width, time, reducedMotion);
     if (tide) drawTideEntrances(ctx, width, tide);
     drawBossPortal(ctx, table, reducedMotion);
     drawStorms(ctx, table, reducedMotion);
