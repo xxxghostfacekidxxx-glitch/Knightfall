@@ -4,7 +4,7 @@ import vm from "node:vm";
 import {readFileSync} from "node:fs";
 const html=readFileSync(new URL("../public/messages.html",import.meta.url),"utf8");
 const css=readFileSync(new URL("../public/messages.css",import.meta.url),"utf8");
-const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean).pop();
+const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(source=>source.includes("async function refreshCurrent()")&&source.includes("async function followNotificationConversation"));
 new vm.Script(inline);
 
 function extract(a,b) {

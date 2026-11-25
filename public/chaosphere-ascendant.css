@@ -90,3 +90,24 @@
 .messages-shell .reaction-options .kf-emoji{width:28px!important;height:28px!important;animation:none!important}
 .messages-shell .message.mine{box-shadow:0 8px 25px #0006,inset 0 1px 0 #ffffff22!important}
 .messages-shell .message-attachment:hover{border-color:var(--cs-glow,#ff8ed0)}
+
+/* NOIR: sculpted expression art and a quieter, premium messaging surface. */
+.messages-shell .cs-delivery-strip{padding:7px 14px;background:var(--cs-faint);border-bottom:1px solid var(--cs-edge);color:#fff;font-size:.75rem;letter-spacing:.03em}
+.messages-shell .cs-delivery-strip[hidden]{display:none!important}
+.messages-shell .conversation-panel{box-shadow:inset -1px 0 0 var(--cs-edge)}
+.messages-shell .conversation{transition:background .18s ease,border-color .18s ease}
+.messages-shell .conversation:hover{background:var(--cs-faint)}
+.messages-shell .chat-head{box-shadow:0 4px 18px #0004;z-index:2}
+.messages-shell .message.mine{background-image:linear-gradient(128deg,#ffffff18,transparent 42%),linear-gradient(125deg,var(--cs-own-a,#a348a2),var(--cs-own-b,#51428d))!important}
+.messages-shell .message-meta{gap:8px;align-items:baseline}
+.messages-shell .kf-custom-emoji{background:radial-gradient(ellipse at 35% 20%,#413049,#15111f)!important;border-color:#755a835c!important;min-width:48px!important;min-height:48px!important}
+.messages-shell .kf-custom-emoji img{width:36px!important;height:36px!important;filter:drop-shadow(0 2px 2px #0007)}
+.messages-shell .kf-custom-emoji[data-sticker=true]{width:78px!important;height:78px!important}
+.messages-shell .kf-custom-emoji[data-sticker=true] img{width:70px!important;height:70px!important}
+.messages-shell .kf-custom-emoji:hover,.messages-shell .kf-custom-emoji:focus-visible{border-color:var(--cs-glow,#ff8ed0)!important;background:var(--cs-faint)!important}
+.messages-shell .kf-custom-emoji[data-favorite=true]{border-color:#e6bc68!important}
+.messages-shell .cs-emoji-tray{padding:10px!important;background:linear-gradient(140deg,var(--cs-side,#21192f),var(--cs-back,#10121f))!important;border:1px solid var(--cs-edge)!important;box-shadow:0 8px 22px #0006!important}
+.messages-shell .message p .kf-emoji{filter:drop-shadow(0 2px 2px #0005)}
+.messages-shell .reaction-chip{border-radius:999px!important}
+@media(max-width:700px){.messages-shell .kf-custom-emoji{min-width:44px!important;min-height:44px!important}.messages-shell .kf-custom-emoji img{width:32px!important;height:32px!important}.messages-shell .cs-delivery-strip{padding:4px 10px;font-size:.68rem}}
+@media(prefers-reduced-motion:reduce){.messages-shell .conversation{transition:none!important}}

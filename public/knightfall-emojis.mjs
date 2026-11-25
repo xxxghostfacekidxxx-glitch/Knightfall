@@ -74,7 +74,7 @@ export function renderKnightfallEmojiText(value,escapeHTML=fallbackEscape,{lineB
     const item=byCode.get(part);
     if(!item)return lineBreaks?escape(part).replace(/\n/g,"<br>"):escape(part);
     const size=item.sticker?112:jumbo?44:28,motion=expressiveMotion.get(item.code);
-    return '<img class="kf-emoji" src="/icons/emojis/'+item.file+'" alt="['+escape(item.name)+']" title="'+escape(item.name)+'" data-kf-code="'+item.code+'"'+(item.sticker?' data-kf-sticker="true"':jumbo?' data-kf-jumbo="true"':'')+(motion?' data-kf-motion="'+motion+'"':'')+' width="'+size+'" height="'+size+'" loading="lazy" decoding="async">';
+    return '<img class="kf-emoji" src="/icons/emojis/'+item.file+'?v=20261125-noir1" alt="['+escape(item.name)+']" title="'+escape(item.name)+'" data-kf-code="'+item.code+'"'+(item.sticker?' data-kf-sticker="true"':jumbo?' data-kf-jumbo="true"':'')+(motion?' data-kf-motion="'+motion+'"':'')+' width="'+size+'" height="'+size+'" loading="lazy" decoding="async">';
   }).join("");
 }
 
@@ -90,7 +90,7 @@ export function mountKnightfallEmojiPicker(root=typeof document!=="undefined"?do
     button.type="button";button.className="kf-custom-emoji";
     button.dataset.insertEmoji=item.code;button.setAttribute("aria-label","Insert "+item.name);
     button.title=item.name;if(item.sticker)button.dataset.sticker="true";
-    const image=doc.createElement("img");image.src="/icons/emojis/"+item.file;
+    const image=doc.createElement("img");image.src="/icons/emojis/"+item.file+"?v=20261125-noir1";
     image.alt="";image.width=28;image.height=28;image.setAttribute("aria-hidden","true");
     button.append(image);return button;
     });

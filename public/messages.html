@@ -8,9 +8,9 @@
 <link rel="stylesheet" href="/chaosphere-neon.css?v=20261125-neon2">
 <link rel="stylesheet" href="/chaosphere-next.css?v=20261121-next1">
 <link rel="stylesheet" href="/chaosphere-themes.css?v=20261121-themes1">
-<link rel="stylesheet" href="/chaosphere-ascendant.css?v=20261125-eclipse1">
+<link rel="stylesheet" href="/chaosphere-ascendant.css?v=20261125-noir1">
 <script>window.KnightfallEmojiReady=new Promise(resolve=>{window.__resolveKnightfallEmoji=resolve})</script>
-<script type="module" src="/knightfall-emojis.mjs?v=20261125-eclipse1"></script>
+<script type="module" src="/knightfall-emojis.mjs?v=20261125-noir1"></script>
 <script src="/chaosphere-themes.js?v=20261125-ascendant1" defer></script>
 <script src="/ruinwire-app.js?v=20261117-chaosphere1"></script><script src="/chaosphere-imp.js?v=20261121-trouble-spice1" defer></script>
 </head>
@@ -83,7 +83,7 @@
     </aside>
     <section class="chat-panel">
       <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Knightfall.</small></span></div><div class="chat-tools"><button id="cs-favorite" type="button" aria-pressed="false" aria-label="Favorite conversation" title="Favorite conversation" hidden>☆</button><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><details id="chat-more" class="chat-more"><summary aria-label="More conversation options">⋯ <span>Options</span></summary><div class="chat-more-panel"><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><a id="connect-four-chat-invite" class="chaos-card-chat-invite" href="/arcade/async-play.html" hidden title="Join this friend's Connect Four challenge">🎮 Join Connect Four</a><button id="history-search-open" type="button" title="Search message history">⌕ Search</button><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="message-live-state" class="message-live-state" role="status" aria-live="polite">Connecting…</span><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></details></div></div>
-      <div id="typing-indicator" class="typing-indicator" role="status" aria-live="polite" hidden></div><button id="jump-latest" class="jump-latest" type="button" hidden>↓ Jump to latest</button><button id="load-older" class="load-older" hidden>Load older messages</button><div id="messages" class="messages-list"><div class="cs-welcome"><img src="/icons/chaosphere.svg" alt="" width="96" height="96"><h2>Your signal is waiting.</h2><p>Select a conversation, or start something new.</p><button type="button" class="primary" data-cs-start>Start a conversation</button></div></div><button id="cs-scroll-latest" class="cs-scroll-latest" type="button" hidden>↓ Latest messages</button><div id="conversation-restricted" class="conversation-restricted" role="status" hidden>Messaging is paused because one of these accounts has blocked the other. Existing messages remain available to read.</div>
+      <div id="cs-delivery-strip" class="cs-delivery-strip" role="status" aria-live="polite" hidden></div><div id="typing-indicator" class="typing-indicator" role="status" aria-live="polite" hidden></div><button id="jump-latest" class="jump-latest" type="button" hidden>↓ Jump to latest</button><button id="load-older" class="load-older" hidden>Load older messages</button><div id="messages" class="messages-list"><div class="cs-welcome"><img src="/icons/chaosphere.svg" alt="" width="96" height="96"><h2>Your signal is waiting.</h2><p>Select a conversation, or start something new.</p><button type="button" class="primary" data-cs-start>Start a conversation</button></div></div><button id="cs-scroll-latest" class="cs-scroll-latest" type="button" hidden>↓ Latest messages</button><div id="conversation-restricted" class="conversation-restricted" role="status" hidden>Messaging is paused because one of these accounts has blocked the other. Existing messages remain available to read.</div>
       <form id="composer" class="composer" hidden>
         <div class="composer-main"><textarea id="body" maxlength="4000" rows="1" placeholder="Write a message..." aria-label="Message text"></textarea><div id="cs-emoji-tray" class="cs-emoji-tray" aria-label="Choose emoji" hidden><button type="button" data-insert-emoji="🔥" aria-label="Fire emoji">🔥</button><button type="button" data-insert-emoji="🖤" aria-label="Black heart emoji">🖤</button><button type="button" data-insert-emoji="😈" aria-label="Smiling demon emoji">😈</button><button type="button" data-insert-emoji="💀" aria-label="Skull emoji">💀</button><button type="button" data-insert-emoji="😂" aria-label="Laughing emoji">😂</button><button type="button" data-insert-emoji="🥺" aria-label="Pleading emoji">🥺</button><button type="button" data-insert-emoji="🎮" aria-label="Game emoji">🎮</button><button type="button" data-insert-emoji="✨" aria-label="Sparkles emoji">✨</button></div><div id="pending-attachments" class="pending-attachments" aria-live="polite" hidden></div></div><input id="attachment-input" type="file" hidden multiple accept="image/*,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><div class="cs-compose-tools"><button id="attach-file" type="button" class="attach-file" aria-label="Attach photo or file" title="Attach photo or file">＋</button><button id="cs-emoji-toggle" type="button" aria-label="Insert emoji" aria-controls="cs-emoji-tray" aria-expanded="false" title="Choose emoji">☺</button></div>
         <div><small id="composer-hint">Enter to send · Shift + Enter for a new line · Paste a picture to attach</small><span class="composer-actions"><small id="character-count">0 / 4,000</small><button class="primary"><span>Send</span> <span aria-hidden="true">↗</span></button></span></div>
@@ -141,7 +141,7 @@ function loadFavoriteConversations(){favoriteConversations.clear();if(!currentUs
 function saveFavoriteConversations(){if(!currentUser?.id)return;try{localStorage.setItem("kf-cs-favorites-"+currentUser.id,JSON.stringify([...favoriteConversations].slice(-200)));}catch{}}
 function hasConversationDraft(id){id=Number(id);return !!(conversationDrafts.get(id)?.trim()||(id===Number(currentId)?pendingAttachments:attachmentDrafts.get(id))?.length);}
 function inboxFilterMatches(c,filter){const id=Number(c.id);return filter==="unread"?Number(c.unread_count)>0:filter==="favorites"?favoriteConversations.has(id):filter==="groups"?c.kind==="group":filter==="drafts"?hasConversationDraft(id):true;}
-function updateFavoriteButton(){const b=$("#cs-favorite");if(!b)return;b.hidden=!currentId;b.disabled=!activeConversation();const on=favoriteConversations.has(Number(currentId));b.textContent=on?"★":"☆";b.setAttribute("aria-pressed",String(on));b.setAttribute("aria-label",on?"Remove conversation from favorites":"Favorite conversation");b.title=b.getAttribute("aria-label");}
+function updateFavoriteButton(){updateDeliveryStrip();const b=$("#cs-favorite");if(!b)return;b.hidden=!currentId;b.disabled=!activeConversation();const on=favoriteConversations.has(Number(currentId));b.textContent=on?"★":"☆";b.setAttribute("aria-pressed",String(on));b.setAttribute("aria-label",on?"Remove conversation from favorites":"Favorite conversation");b.title=b.getAttribute("aria-label");}
 function loadInboxAttachmentDrafts(){
  attachmentDrafts.clear();if(!currentUser?.id)return;
  try{const entries=JSON.parse(sessionStorage.getItem("kf-inbox-attachment-drafts-"+currentUser.id)||"[]");if(!Array.isArray(entries))return;for(const row of entries.slice(-30)){if(!Array.isArray(row)||!Number.isSafeInteger(Number(row[0]))||Number(row[0])<1||!Array.isArray(row[1]))continue;const items=row[1].filter(a=>a&&Number.isSafeInteger(Number(a.id))&&Number(a.id)>0).slice(0,10).map(a=>({id:Number(a.id),filename:String(a.filename||"Attachment").slice(0,180),byte_size:Math.max(0,Number(a.byte_size)||0)}));if(items.length)attachmentDrafts.set(Number(row[0]),items);}}catch{}
@@ -152,6 +152,10 @@ function persistInboxAttachmentDrafts(){
  try{sessionStorage.setItem("kf-inbox-attachment-drafts-"+currentUser.id,JSON.stringify([...drafts.entries()].filter(([,items])=>items.length).slice(-30)));}catch{}
 }
 const messageSendQueues=new Map();
+const deliveryQueue=new Map();let deliverySequence=0;
+function updateDeliveryStrip(){const strip=$("#cs-delivery-strip"),items=[...deliveryQueue.values()].filter(x=>x.conversationId===Number(currentId));strip.hidden=!items.length;strip.textContent=items.length?items.length+" "+(items.length===1?"message":"messages")+" awaiting delivery confirmation":"";}
+function beginDelivery(conversationId){const key=++deliverySequence;deliveryQueue.set(key,{conversationId});updateDeliveryStrip();return key;}
+function finishDelivery(key){deliveryQueue.delete(key);updateDeliveryStrip();}
 let historyPinnedConversationId=null;
  let latestRenderedFingerprint=null,latestRenderedConversation=null;
 let pendingAttachments=[],attachmentUploads=0,loadingOlder=false;let conversations=[],currentId=null,currentUser=null,admin=false,loading=false,conversationLoadToken=0,currentRefreshToken=0,inboxLoadToken=0,archiveLoadToken=0,memberSearchToken=0,oldestId=null,pollHandle=null,memberSearchHandle=null,archiveSearchHandle=null,inboxFilter="all",typingHandle=null,lastTypingSentAt=0,typingPollHandle=null,presenceHandle=null,knownUnreadByConversation=new Map(),unreadBaselineReady=false,lastActivityPing=0;
@@ -410,6 +414,8 @@ $("#mobile-inbox-back").addEventListener("click",()=>{$(".message-layout").class
 
 $("#cs-favorite").addEventListener("click",()=>{const id=Number(currentId);if(!activeConversation())return;if(favoriteConversations.has(id))favoriteConversations.delete(id);else favoriteConversations.add(id);saveFavoriteConversations();drawConversations();});
 $("#messages").addEventListener("scroll",updateScrollLatest,{passive:true});
+window.addEventListener("online",()=>{status("Connection restored. Refreshing messages…",true);void loadConversations({openSelected:false}).then(refreshCurrent).catch(error=>status(error.message));});
+window.addEventListener("offline",()=>status("Offline. Your current drafts remain on this device."));
 $("#cs-scroll-latest").addEventListener("click",()=>{$("#messages").scrollTop=$("#messages").scrollHeight;updateScrollLatest();});
 $("#messages").addEventListener("click",event=>{if(event.target.closest("[data-cs-start]"))$("#new-message").click();});
 $("#conversations").addEventListener("click",e=>{if(e.target.closest("[data-open-compose]")){$("#new-message").click();return;}const b=e.target.closest("[data-conversation]");if(b)openConversation(Number(b.dataset.conversation))});
@@ -441,7 +447,7 @@ $("#composer").onsubmit=async e=>{
  const queuedAttachments=pendingAttachments.filter(x=>attachment_ids.includes(Number(x.id)));
  pendingAttachments=pendingAttachments.filter(x=>!attachment_ids.includes(Number(x.id)));
  drawPendingAttachments();
- status("Sending message…",true);
+ const deliveryKey=beginDelivery(conversationId);status("Sending message…",true);
  clearTimeout(typingHandle);void sendTypingState(false,conversationId);
  const previous=messageSendQueues.get(conversationId)||Promise.resolve();
  const queued=previous.catch(()=>{}).then(async()=>{
@@ -475,7 +481,7 @@ $("#composer").onsubmit=async e=>{
     status("Message could not send to the previous chat. Draft and attachments saved: "+error.message);
    }
   }finally{
-
+   finishDelivery(deliveryKey);
    // Keep the conversation open and its input enabled for back-to-back sends.
    if(Number(currentId)===conversationId&&!Number(activeConversation()?.messaging_blocked)){
     $("#composer").hidden=false;field.disabled=false;

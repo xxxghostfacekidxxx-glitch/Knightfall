@@ -19,7 +19,7 @@ test("message read status can change without rerendering or resetting scroll",()
 });
 test("backgrounded inbox does not make fallback HTTP requests",()=>{
  assert.match(inline,/if\(pollInFlight\|\|document\.hidden\)return/);
- assert.match(inline,/if\(!window\.KnightfallLive\?\.connected\)liveRefresh/);
+ assert.match(inline,/pollHandle=setInterval\(\(\)=>\{liveRefresh\(\)\}/);
 });
 test("admin archive only refreshes on demand, not every fallback polling interval",()=>{
  const poll=inline.slice(inline.indexOf("const liveRefresh=async()=>"),inline.indexOf("pollHandle=setInterval"));

@@ -27,7 +27,7 @@ function inbox(){
   clearTimeout,console,
   rememberConversationDraft(id,text){if(text)drafts.set(id,text);else drafts.delete(id)},
   drawPendingAttachments(){},activeConversation:()=>({id:7,messaging_blocked:0}),
-  status(){},sendTypingState:async()=>{},loadConversations:async()=>{},
+  beginDelivery:()=>1,finishDelivery(){},status(){},sendTypingState:async()=>{},loadConversations:async()=>{},
   refreshCurrent:async()=>{},
   api(path,opts){const request=deferred();requests.push(request);sent.push({path,body:JSON.parse(opts.body)});return request.promise;}
  };
@@ -80,7 +80,7 @@ function bubble(){
  const state={active:7,visible:true,sending:false};
  const requests=[],sent=[],drafts=new Map();
  const ctx={
-  composer,input,state,drafts,messageSendQueues:new Map(),document:{hidden:false},
+  composer,input,state,drafts,messageSendQueues:new Map(),attachmentDrafts:new Map(),uploadingConversations:new Set(),removingConversations:new Set(),saveAttachmentDraft(){},drawAttachmentDraft(){},updatePendingDelivery(){},document:{hidden:false},
   Number,JSON,console,
   getConversation:id=>({id,messaging_blocked:0}),
   rememberDraft(id,value){if(value)drafts.set(id,value);else drafts.delete(id);},
@@ -89,7 +89,7 @@ function bubble(){
   api(path,opts){const req=deferred();requests.push(req);sent.push({path,body:JSON.parse(opts.body)});return req.promise;}
  };
  vm.createContext(ctx);
- const a=bubbles.indexOf('composer.addEventListener("submit"'),b=bubbles.indexOf('input.addEventListener("keydown"',a);
+ const a=bubbles.indexOf('composer.addEventListener("submit"'),b=bubbles.indexOf('const emojiToggle=',a);
  assert.ok(a>0&&b>a);
  vm.runInContext(bubbles.slice(a,b),ctx);
  return {ctx,composer,input,state,requests,sent,button};
@@ -138,5 +138,5 @@ test("message acknowledgement never waits for push notification delivery",async(
  assert.equal(notices[1].pushPreview,"Sent 2 attachments.");
  await ctx.queueMessageNotifications(null,{},[{user_id:8}],{id:2,username:"tester"},7,"🙂".repeat(181),0);
  assert.equal(notices[2].pushPreview,"🙂".repeat(179)+"…");
- assert.match(backend,/queueMessageNotifications\(ctx,env,recipients.results\|\|\[\],user,conversationId,message,attachmentIds\.length\)/);
+ assert.match(backend,/queueMessageNotifications\(ctx,env,currentRecipients.results\|\|\[\],user,conversationId,message,attachmentIds\.length\)/);
 });

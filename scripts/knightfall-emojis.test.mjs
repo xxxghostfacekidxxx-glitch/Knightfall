@@ -45,7 +45,7 @@ test("the composer mounts every custom emoji exactly once with accessible labels
 });
 
 test("picker, sent-message rendering, server allowlist and database check share the catalog",()=>{
-  assert.match(messagesPage,/knightfall-emojis\.mjs\?v=20261125-eclipse1/);
+  assert.match(messagesPage,/knightfall-emojis\.mjs\?v=20261125-noir1/);
   assert.match(messagesPage,/window\.KnightfallEmojiReady/);
   assert.match(messagesPage,/customReactionButtons\(m\.id\)/);
   assert.match(messagesPage,/renderMessageText\(m\.deleted_at\?"\[Message deleted\]":m\.body\)/);

@@ -7,7 +7,7 @@
   if(["/messages","/messages.html"].includes(location.pathname))return; // The full inbox already owns this route.
   const API="https://api.ash-fall.com";
   let customEmoji=window.KnightfallEmojis||null;
-  if(!customEmoji)import("/knightfall-emojis.mjs?v=20261125-eclipse1").then(module=>{
+  if(!customEmoji)import("/knightfall-emojis.mjs?v=20261125-noir1").then(module=>{
     customEmoji=window.KnightfallEmojis||{render:module.renderKnightfallEmojiText,mount:module.mountKnightfallEmojiPicker};
     state.lastThreadKey="";if(state.visible&&state.active)void refreshThread().catch(()=>{});
     module.mountKnightfallEmojiPicker?.(document);
@@ -31,6 +31,8 @@
   }
   const state={conversations:[],heads:[],active:null,visible:false,loading:false,sending:false,threadToken:0,unread:0,lastThreadKey:""};
   const messageSendQueues=new Map();
+  const pendingDelivery=new Map();
+  function updatePendingDelivery(id,delta){const count=Math.max(0,(pendingDelivery.get(id)||0)+delta);if(count)pendingDelivery.set(id,count);else pendingDelivery.delete(id);if(state.active===id){const node=$("#kf-chat-delivery");node.hidden=!count;node.textContent=count?count+" awaiting confirmation":"";}}
   const favoritesKey="kf-cs-favorites-"+userId;
   let recentFilter="all",favoriteIds=new Set();
   function loadFavorites(){try{const ids=JSON.parse(localStorage.getItem(favoritesKey)||"[]");favoriteIds=new Set(Array.isArray(ids)?ids.map(Number).filter(id=>Number.isSafeInteger(id)&&id>0).slice(-200):[]);}catch{}}
@@ -100,7 +102,7 @@ async function api(path,opts={}){
   function syncTheme(value){let selected=value;try{if(!selected)selected=localStorage.getItem(themeKey)}catch{}dock.dataset.csTheme=allowedThemes.has(selected)?selected:"obsidian";}
   syncTheme();window.addEventListener("storage",event=>{if(event.key===themeKey)syncTheme(event.newValue)});window.addEventListener("kf:chaosphere-theme",event=>syncTheme(event.detail?.theme));
   dock.setAttribute("aria-label","Chaosphere conversations");
-  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><button id="kf-chat-favorite" type="button" aria-label="Favorite conversation" aria-pressed="false" hidden>☆</button><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-filters" role="group" aria-label="Filter conversations"><button type="button" data-kf-filter="all" aria-pressed="true">All</button><button type="button" data-kf-filter="unread" aria-pressed="false">Unread</button><button type="button" data-kf-filter="favorites" aria-pressed="false">★ Favorites</button><button type="button" data-kf-filter="groups" aria-pressed="false">Groups</button><button type="button" data-kf-filter="drafts" aria-pressed="false">Drafts</button></div><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><div class="kf-chat-emoji-tools"><button id="kf-chat-emoji-toggle" type="button" aria-expanded="false" aria-controls="kf-chat-emoji-tray" aria-label="Show Knightfall emojis">☻ Emoji</button><button id="kf-chat-attach" type="button" aria-label="Attach files">📎 Attach</button><input id="kf-chat-file" type="file" accept="image/*,application/pdf,text/plain,.docx" multiple hidden><div id="kf-chat-pending" class="kf-chat-pending" hidden></div><div id="kf-chat-emoji-tray" class="kf-emoji-tray" aria-label="Knightfall custom emojis" hidden></div></div><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
+  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><button id="kf-chat-favorite" type="button" aria-label="Favorite conversation" aria-pressed="false" hidden>☆</button><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-filters" role="group" aria-label="Filter conversations"><button type="button" data-kf-filter="all" aria-pressed="true">All</button><button type="button" data-kf-filter="unread" aria-pressed="false">Unread</button><button type="button" data-kf-filter="favorites" aria-pressed="false">★ Favorites</button><button type="button" data-kf-filter="groups" aria-pressed="false">Groups</button><button type="button" data-kf-filter="drafts" aria-pressed="false">Drafts</button></div><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><div class="kf-chat-emoji-tools"><button id="kf-chat-emoji-toggle" type="button" aria-expanded="false" aria-controls="kf-chat-emoji-tray" aria-label="Show Knightfall emojis">☻ Emoji</button><button id="kf-chat-attach" type="button" aria-label="Attach files">📎 Attach</button><input id="kf-chat-file" type="file" accept="image/*,application/pdf,text/plain,.docx" multiple hidden><div id="kf-chat-pending" class="kf-chat-pending" hidden></div><div id="kf-chat-emoji-tray" class="kf-emoji-tray" aria-label="Knightfall custom emojis" hidden></div></div><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-delivery" class="kf-chat-delivery" role="status" hidden></div><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
   // Host outside the page body so transformed game/page wrappers cannot clip or resize chat.
   document.documentElement.append(dock);
   dock.querySelector("#kf-chat-emoji-tray").dataset.kfEmojiAccount=String(userId);
@@ -366,11 +368,11 @@ async function api(path,opts={}){
     $("#kf-chat-search-wrap").hidden=!!selected;$("#kf-chat-filters").hidden=!!selected;
     const star=$("#kf-chat-favorite"),isFavorite=!!selected&&favoriteIds.has(Number(selected.id));star.hidden=!selected;star.textContent=isFavorite?"★":"☆";star.setAttribute("aria-pressed",String(isFavorite));star.setAttribute("aria-label",isFavorite?"Remove conversation from favorites":"Favorite conversation");
     recent.hidden=!!selected;thread.hidden=!selected;composer.hidden=!selected;
-    if(!selected){renderRecent();return;}
+    if(!selected){$("#kf-chat-delivery").hidden=true;renderRecent();return;}
     const blocked=!!Number(selected.messaging_blocked);
     input.disabled=blocked;
     $("#kf-chat-send").disabled=blocked;
-    drawAttachmentDraft();
+    drawAttachmentDraft();updatePendingDelivery(Number(selected.id),0);
     if(blocked)announce("Messaging is unavailable in this conversation.");
   }
   function renderMessages(messages,conversationId){
@@ -594,7 +596,7 @@ async function api(path,opts={}){
     if(state.active===id&&input.value===original){
       input.value="";rememberDraft(id,"");
     }
-    announce("Sending message…");
+    updatePendingDelivery(id,1);announce("Sending message…");
     impReact("sending");
     const previous=messageSendQueues.get(id)||Promise.resolve();
     const queued=previous.catch(()=>{}).then(async()=>{
@@ -623,7 +625,7 @@ async function api(path,opts={}){
         announce(state.active===id?"Send not confirmed: "+error.message+" Draft restored.":"Send not confirmed in "+nameOf(getConversation(id))+". Draft saved.");
         impReact("failed");
       }finally{
-        state.sending=false;
+        state.sending=false;updatePendingDelivery(id,-1);
         if(state.active===id&&state.visible){
           // Network refreshes may update conversation metadata, never close a
           // live chat or leave its composer disabled.
