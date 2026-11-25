@@ -65,3 +65,28 @@
 .messages-shell .kf-emoji-star-mode[aria-pressed=true]{border-color:#f5c675;color:#f5c675}
 .messages-shell .kf-custom-emoji[data-favorite=true]{position:relative;border-color:#e6bc68!important}
 .messages-shell .kf-custom-emoji[data-favorite=true]::after{content:"★";position:absolute;right:1px;top:0;font-size:10px;color:#f6d07c;pointer-events:none}
+
+.messages-shell .kf-emoji[data-kf-jumbo=true]{width:44px!important;height:44px!important}
+.messages-shell .kf-emoji[data-kf-sticker=true]{display:inline-block;width:min(148px,100%)!important;height:auto!important;aspect-ratio:1;object-fit:contain;vertical-align:middle}
+.messages-shell .kf-custom-emoji[data-sticker=true]{width:68px!important;height:68px!important}
+.messages-shell .kf-custom-emoji[data-sticker=true] img{width:60px!important;height:60px!important}
+.messages-shell .kf-emoji[data-kf-motion=bounce]{animation:kf-eclipse-hop .48s ease 2}
+.messages-shell .kf-emoji[data-kf-motion=shake]{animation:kf-eclipse-shake .28s ease 3}
+.messages-shell .kf-emoji[data-kf-motion=sway]{animation:kf-eclipse-sway .85s ease-in-out 2}
+.messages-shell .kf-emoji[data-kf-motion=pulse]{animation:kf-eclipse-pulse .65s ease 2}
+@keyframes kf-eclipse-hop{0%,100%{transform:translateY(0)}45%{transform:translateY(-6px) rotate(-5deg)}}
+@keyframes kf-eclipse-shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+@keyframes kf-eclipse-sway{0%,100%{transform:translateX(0)}50%{transform:translateX(4px) rotate(3deg)}}
+@keyframes kf-eclipse-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
+@media(prefers-reduced-motion:reduce){.messages-shell .kf-emoji[data-kf-motion]{animation:none!important}}
+
+/* Eclipse edition: ornamental signal deck, theme-aware cards and reaction search. */
+.messages-shell .messages-hero{background-image:radial-gradient(ellipse at 20% 0%,var(--cs-faint),transparent 60%),var(--cs-panel-art,none)!important;background-size:cover!important;background-position:center!important}
+.messages-shell .message-layout{border-color:var(--cs-edge)!important;box-shadow:0 24px 85px #0009,0 0 24px var(--cs-faint)!important}
+.messages-shell .conversation-panel{border-right-color:var(--cs-edge)!important}
+.messages-shell .cs-reaction-search{flex:0 0 100%;width:100%;min-width:0;min-height:32px;background:var(--cs-back,#10121f);color:#fff;border:1px solid var(--cs-edge);border-radius:8px;padding:6px}
+.messages-shell .reaction-options [hidden]{display:none!important}
+.messages-shell .reaction-chip .kf-emoji{width:24px!important;height:24px!important;animation:none!important}
+.messages-shell .reaction-options .kf-emoji{width:28px!important;height:28px!important;animation:none!important}
+.messages-shell .message.mine{box-shadow:0 8px 25px #0006,inset 0 1px 0 #ffffff22!important}
+.messages-shell .message-attachment:hover{border-color:var(--cs-glow,#ff8ed0)}

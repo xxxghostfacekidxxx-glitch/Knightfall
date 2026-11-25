@@ -111,7 +111,7 @@ test("suspended bot creators cannot inherit stale slot or advanced-builder grant
  for(const status of ["suspended","deleted"]){
   const policy=botAccessPolicy({role:"member",public_title:"Digital Creator",status},0,grant);
   assert.equal(policy.unlimited,false,status);
-  assert.equal(policy.limit,5,status);
+  assert.equal(policy.limit,0,status); // Inactive accounts have zero creation slots.
   assert.equal(policy.advanced_builder,false,status);
  }
 });

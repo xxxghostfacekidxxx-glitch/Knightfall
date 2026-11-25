@@ -57,15 +57,15 @@ test("background tabs close their WebSocket; visible tabs reconnect",()=>{
  h.pageListeners.visibilitychange();
  assert.equal(h.sockets.length,2);
 });
-test("full inbox uses WebSocket on change with a slower HTTP-only fallback",()=>{
+test("full inbox uses WebSocket on change with a periodic HTTP fallback",()=>{
  assert.match(inbox,/message-live\.js\?v=/);
  assert.match(inbox,/window\.KnightfallLive/);
- assert.match(inbox,/if\(!window\.KnightfallLive\?\.connected\)liveRefresh/);
+ assert.match(inbox,/pollHandle=setInterval\(\(\)=>\{liveRefresh\(\)\}/);
  assert.match(inbox,/if\(!window\.KnightfallLive\?\.connected\)refreshTyping/);
  assert.match(inbox,/message-live-state/);
 });
-test("floating heads use the same signal and avoid frequent polling when live",()=>{
+test("floating heads use the same signal and retain polling as a fallback when live",()=>{
  assert.match(heads,/window\.KnightfallLive\.subscribe/);
- assert.match(heads,/if\(!document\.hidden&&!window\.KnightfallLive\?\.connected\)tick/);
+ assert.match(heads,/if\(!document\.hidden\)\{bindLive\(\);void tick\(\)/);
  assert.match(navigation,/message-live\.js\?v=/);
 });

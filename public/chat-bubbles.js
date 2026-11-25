@@ -7,7 +7,7 @@
   if(["/messages","/messages.html"].includes(location.pathname))return; // The full inbox already owns this route.
   const API="https://api.ash-fall.com";
   let customEmoji=window.KnightfallEmojis||null;
-  if(!customEmoji)import("/knightfall-emojis.mjs?v=20261125-imp-rebellion2").then(module=>{
+  if(!customEmoji)import("/knightfall-emojis.mjs?v=20261125-eclipse1").then(module=>{
     customEmoji=window.KnightfallEmojis||{render:module.renderKnightfallEmojiText,mount:module.mountKnightfallEmojiPicker};
     state.lastThreadKey="";if(state.visible&&state.active)void refreshThread().catch(()=>{});
     module.mountKnightfallEmojiPicker?.(document);
@@ -397,7 +397,7 @@ async function api(path,opts={}){
       else if(customEmoji?.render)body.innerHTML=customEmoji.render(String(m.body||""),undefined,{lineBreaks:true});
       else body.textContent=String(m.body||"");
       if(m.deleted_at||m.body) item.append(body);
-      if(!m.deleted_at){const attachments=el("div","kf-chat-attachments");attachments.hidden=true;item.append(attachments);}
+      if(!m.deleted_at){const attachments=el("div","kf-chat-attachments");attachments.hidden=true;item.append(attachments);const row=el("div","kf-chat-reactions");const add=el("button","kf-chat-react-add","＋ React");add.type="button";add.dataset.reactionPicker=String(m.id);add.setAttribute("aria-expanded","false");const summary=el("span","kf-chat-reaction-summary");row.append(add,summary);item.append(row);}
       fragment.append(item);
     }
     if(!messages.length)fragment.append(el("p","kf-chat-empty","No messages yet. Start the conversation."));
@@ -450,6 +450,30 @@ async function api(path,opts={}){
       }
     }
   }
+  const reactionPending=new Set();
+  function reactionButton(messageId,emoji,count=0,mine=false){
+    const button=el("button","kf-chat-reaction-chip");button.type="button";button.dataset.react=String(messageId);button.dataset.emoji=emoji;button.setAttribute("aria-pressed",String(mine));button.setAttribute("aria-label","React with "+emoji+(count?" ("+count+")":""));
+    if(customEmoji?.render)button.innerHTML=customEmoji.render(emoji);else button.textContent=emoji;
+    if(count)button.append(el("span","",String(count)));return button;
+  }
+  async function refreshThreadReactions(id,token){
+    const items=[...thread.querySelectorAll("[data-message-id]")],ids=items.map(x=>validId(x.dataset.messageId)).filter(Boolean);if(!ids.length)return;
+    const data=await api("/api/messages/conversations/"+id+"/reactions?ids="+ids.join(","));
+    if(token!==state.threadToken||state.active!==id||!state.visible||!Array.isArray(data.reactions))return;
+    for(const item of items){const summary=item.querySelector(".kf-chat-reaction-summary");if(!summary)continue;const rows=data.reactions.filter(r=>Number(r.message_id)===Number(item.dataset.messageId));const key=JSON.stringify(rows.map(r=>[r.emoji,r.count,r.reacted_by_me]));if(summary.dataset.reactionKey===key)continue;summary.dataset.reactionKey=key;summary.replaceChildren(...rows.filter(r=>typeof r.emoji==="string").map(r=>reactionButton(Number(item.dataset.messageId),r.emoji,Number(r.count)||0,!!Number(r.reacted_by_me))));}
+  }
+  thread.addEventListener("click",async event=>{
+    const toggle=event.target.closest("[data-reaction-picker]"),reaction=event.target.closest("[data-react]");
+    if(toggle){const row=toggle.closest(".kf-chat-reactions"),existing=row.querySelector(".kf-chat-reaction-picker");for(const other of thread.querySelectorAll(".kf-chat-reaction-picker"))other.remove();for(const other of thread.querySelectorAll("[data-reaction-picker]"))other.setAttribute("aria-expanded","false");if(existing)return;
+      const picker=el("div","kf-chat-reaction-picker"),id=Number(toggle.dataset.reactionPicker);const search=el("input","kf-chat-reaction-search");search.type="search";search.placeholder="Find reaction…";search.setAttribute("aria-label","Find reaction");
+      const choices=["👍","❤️","😂","😮","😢","😡","🔥","🎉",...(window.KnightfallEmojis?.items||[]).map(x=>x.code)];const buttons=choices.map(code=>reactionButton(id,code));
+      search.addEventListener("input",()=>{const q=search.value.trim().toLowerCase();for(const btn of buttons){const code=btn.dataset.emoji,name=window.KnightfallEmojis?.items.find(x=>x.code===code)?.name||"";btn.hidden=!!q&&!(name+" "+code).toLowerCase().includes(q);}});picker.append(search,...buttons);row.append(picker);toggle.setAttribute("aria-expanded","true");return;
+    }
+    if(!reaction)return;const id=state.active,messageId=validId(reaction.dataset.react),emoji=reaction.dataset.emoji,key=id+":"+messageId+":"+emoji;if(!id||!messageId||reactionPending.has(key))return;reactionPending.add(key);reaction.disabled=true;
+    try{await api("/api/messages/"+messageId+"/reactions",{method:"POST",body:JSON.stringify({emoji})});if(state.active===id)await refreshThreadReactions(id,state.threadToken);}
+    catch(error){if(state.active===id)announce("Reaction could not be saved: "+error.message);}
+    finally{reactionPending.delete(key);reaction.disabled=false;}
+  });
   async function refreshThread(){
     const id=state.active,token=++state.threadToken;
     if(!id||!state.visible||document.hidden)return;
@@ -457,7 +481,7 @@ async function api(path,opts={}){
     if(token!==state.threadToken||state.active!==id)return;
     if(!Array.isArray(data.messages))throw Error("Invalid conversation history");
     renderMessages(data.messages,id);
-    try{await refreshThreadAttachments(id,token)}catch(error){console.warn("Floating chat attachment refresh failed",error)}
+    await Promise.allSettled([refreshThreadAttachments(id,token),refreshThreadReactions(id,token)]);
   }
   let lastListRefresh=0;
   async function refreshConversations({force=false}={}){
