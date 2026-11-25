@@ -138,7 +138,20 @@ const messageSendQueues=new Map();
 let historyPinnedConversationId=null;
  let latestRenderedFingerprint=null,latestRenderedConversation=null;
 let pendingAttachments=[],attachmentUploads=0,loadingOlder=false;let conversations=[],currentId=null,currentUser=null,admin=false,loading=false,conversationLoadToken=0,currentRefreshToken=0,inboxLoadToken=0,archiveLoadToken=0,memberSearchToken=0,oldestId=null,pollHandle=null,memberSearchHandle=null,archiveSearchHandle=null,inboxFilter="all",typingHandle=null,lastTypingSentAt=0,typingPollHandle=null,presenceHandle=null,knownUnreadByConversation=new Map(),unreadBaselineReady=false,lastActivityPing=0;
-async function api(path,opts={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}});const d=await r.json().catch(()=>null);if(!r.ok)throw Error(d?.error||("Messaging API returned HTTP "+r.status));if(!d||typeof d!=="object")throw Error("Messaging API returned an invalid response. Please retry.");return d}
+async function api(path,opts={}){
+ const controller=new AbortController(),external=opts.signal;
+ const abort=()=>controller.abort();
+ if(external?.aborted)abort();else external?.addEventListener("abort",abort,{once:true});
+ const timer=setTimeout(abort,30000);
+ try{
+  const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{"content-type":"application/json",...(opts.headers||{})}});
+  const data=await response.json().catch(()=>null);
+  if(!response.ok)throw Error(data?.error||("Messaging API returned HTTP "+response.status));
+  if(!data||typeof data!=="object"||Array.isArray(data))throw Error("Invalid messaging response. Please retry.");
+  return data;
+ }catch(error){if(controller.signal.aborted)throw Error("Messaging request interrupted or timed out. Check the conversation before retrying a send.");throw error;}
+ finally{clearTimeout(timer);external?.removeEventListener("abort",abort);}
+}
 function status(t,good=false){$("#status").textContent=t;$("#status").className="msg-status "+(good?"good":"")}
 function conversationName(c){return c?.kind==="group"?(c?.group_name||"Group conversation"):(c?.other_display_name||c?.other_username||"Conversation")}
 function safeMessageAvatar(c){
@@ -782,8 +795,8 @@ async function archive(){
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-admin-message]");if(!b)return;if(b.dataset.action!=="delete")return;try{await api("/api/admin/messages/"+b.dataset.adminMessage,{method:"PATCH",body:JSON.stringify({action:b.dataset.action})});await archive();status("Admin message action completed.",true)}catch(x){status(x.message)}});
 $("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archive;$("#archive-search").oninput=()=>{clearTimeout(archiveSearchHandle);archiveSearchHandle=setTimeout(archive,300)};
 (async()=>{try{await Promise.race([window.KnightfallEmojiReady,new Promise(resolve=>setTimeout(resolve,1200))]);const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=me.user.role==="god";loadConversationDrafts();void sendActivityPing();try{await loadConversations()}catch(error){status("Inbox unavailable: "+error.message);console.warn("Initial inbox load failed",error)}
- if(new URLSearchParams(location.search).has("message"))await followNotificationConversation();
- startMessageLive();if(new URLSearchParams(location.search).has("reply"))focusNotificationReply();void loadAdmin();let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight||document.hidden)return;pollInFlight=true;try{await loadConversations({openSelected:false});await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(()=>{liveRefresh()},12000);
+ if(new URLSearchParams(location.search).has("message"))try{await followNotificationConversation()}catch(error){status("Could not open linked message: "+error.message)}
+ try{startMessageLive()}catch(error){console.warn("Realtime unavailable; polling continues",error)}if(new URLSearchParams(location.search).has("reply"))focusNotificationReply();void Promise.resolve().then(loadAdmin).catch(error=>console.warn("Optional admin tools unavailable",error));let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight||document.hidden)return;pollInFlight=true;try{await loadConversations({openSelected:false});await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(()=>{liveRefresh()},12000);
  typingPollHandle=setInterval(()=>{if(!window.KnightfallLive?.connected)refreshTyping()},5000);presenceHandle=setInterval(sendActivityPing,60000);document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;try{await sendActivityPing();await loadConversations({openSelected:false});if(currentId)await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Inbox resume refresh failed",e)}});updateNotificationButton()}catch(e){status(e.message)}})();
 function syncMessagesViewport(){
  const viewport=window.visualViewport,visibleHeight=viewport?.height||window.innerHeight;
