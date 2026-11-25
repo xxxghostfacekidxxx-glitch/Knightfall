@@ -145,6 +145,114 @@
       "body": "Luke rebuilds Jedi institutions amid new conflicts.",
       "source": "Jedi Academy trilogy; New Jedi Order",
       "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-17",
+      "continuity": "canon",
+      "era": "Ancient traditions",
+      "title": "Ahch-To",
+      "body": "Ancient Jedi sanctuary and site of Luke's exile.",
+      "source": "The Last Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-18",
+      "continuity": "canon",
+      "era": "Clone Wars",
+      "title": "Mortis",
+      "body": "An encounter with mysterious embodiments of the Force challenges Anakin, Obi-Wan and Ahsoka.",
+      "source": "The Clone Wars",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-19",
+      "continuity": "canon",
+      "era": "Clone Wars",
+      "title": "Dathomir",
+      "body": "Nightsister traditions illustrate Force practices outside Jedi and Sith institutions.",
+      "source": "The Clone Wars",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-20",
+      "continuity": "canon",
+      "era": "Imperial era",
+      "title": "Inquisitorius",
+      "body": "The Empire employs dark-side agents to hunt surviving Jedi.",
+      "source": "Star Wars Rebels",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-21",
+      "continuity": "canon",
+      "era": "Imperial era",
+      "title": "World Between Worlds",
+      "body": "Ezra encounters a mysterious realm connecting moments in time.",
+      "source": "Star Wars Rebels",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-22",
+      "continuity": "canon",
+      "era": "Imperial era",
+      "title": "Kyber crystals",
+      "body": "Kyber crystals connect lightsaber construction with Force traditions and Imperial exploitation.",
+      "source": "The Clone Wars; Rogue One",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-23",
+      "continuity": "legends",
+      "era": "Ancient era",
+      "title": "Rakatan Infinite Empire",
+      "body": "The Rakata represent an ancient civilization associated with Force-powered technology.",
+      "source": "Knights of the Old Republic",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-24",
+      "continuity": "legends",
+      "era": "Old Republic",
+      "title": "Naga Sadow",
+      "body": "Sadow is a major Sith figure in the Great Hyperspace War.",
+      "source": "Tales of the Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-25",
+      "continuity": "legends",
+      "era": "Old Republic",
+      "title": "Freedon Nadd",
+      "body": "Nadd's legacy shapes dark-side traditions on Onderon.",
+      "source": "Tales of the Jedi",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-26",
+      "continuity": "legends",
+      "era": "Old Republic",
+      "title": "Darth Nihilus",
+      "body": "Nihilus embodies destructive hunger and dependence on the Force.",
+      "source": "Knights of the Old Republic II",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-27",
+      "continuity": "legends",
+      "era": "Old Republic",
+      "title": "Darth Sion",
+      "body": "Sion's survival through pain illustrates the destructive costs of obsession.",
+      "source": "Knights of the Old Republic II",
+      "status": "Editorial draft; source review pending"
+    },
+    {
+      "id": "history-28",
+      "continuity": "legends",
+      "era": "Late Old Republic",
+      "title": "Ruusan",
+      "body": "The Brotherhood of Darkness and Army of Light clash before Bane's new Sith tradition.",
+      "source": "Darth Bane: Path of Destruction",
+      "status": "Editorial draft; source review pending"
     }
   ]
 }
