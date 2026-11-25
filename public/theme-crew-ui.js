@@ -288,6 +288,15 @@ $("theme-crew-plan-form").addEventListener("submit",async event=>{
   for(const element of document.querySelectorAll("[data-theme-filter]"))element.setAttribute("aria-pressed",String(element.dataset.themeFilter===presetFilter));
   drawPresets();choose(plan.preset);
   output.textContent="Morgue Mason recommends "+preset.name+". "+plan.reason+" Preview it before publishing.";
+  const panel=$("theme-crew-proposal-preview");panel.hidden=false;panel.replaceChildren();
+  const heading=textNode("h3",preset.name+" · "+realmName());
+  const image=document.createElement("img");image.src=PREVIEW_ART[plan.preset];image.alt=preset.name+" existing artwork reference";image.loading="lazy";image.style.cssText="width:100%;max-height:320px;object-fit:cover;border-radius:12px";
+  const palette=textNode("p","Palette: "+preset.tag);palette.style.borderLeft="6px solid "+preset.accent;palette.style.paddingLeft="12px";
+  const list=document.createElement("ul");
+  for(const item of ["Creative brief: "+mood,"Visual direction: "+preset.mood,"Shared chrome: preserve navigation, accessibility and readable typography.","Realm layout: adapt hero, cards and backgrounds without changing functionality.","Validation: inspect mobile and desktop, contrast, artwork and game isolation."])list.append(textNode("li",item));
+  const link=textNode("a","Open full realm preview","theme-crew-action");link.href=previewUrl(plan.preset);link.target="_blank";link.rel="noopener noreferrer";
+  panel.append(heading,image,palette,list,textNode("p","Concept board using existing approved artwork. New artwork and CSS require a separate reviewed implementation."),link);
+
  }
 
 });
