@@ -1,0 +1,26 @@
+{
+  "name": "Neon Dystopia",
+  "collection": "neon-dystopia",
+  "status": "draft",
+  "accent": "#a9ff37",
+  "artworkStatus": "rendered but upload unverified",
+  "publishable": false,
+  "slots": [
+    "hero",
+    "background",
+    "header",
+    "frame",
+    "corner",
+    "divider",
+    "badge",
+    "preview"
+  ],
+  "assignmentScopes": [
+    "site",
+    "madhouse",
+    "arcade",
+    "chaosphere",
+    "admin"
+  ],
+  "customCategoryAssignments": "planned"
+}
