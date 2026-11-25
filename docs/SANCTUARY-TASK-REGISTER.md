@@ -14,3 +14,5 @@ Independent Knightfall fictional mythology archive. No academies or living relig
 Research batch: 29 new entries, six official sources consulted, full literary works still pending. Existing source labels retained; older links require separate verification.
 
 Added 30 editorial lore drafts across bestiary, mage clans, mortal legends and relics. Primary source verification remains pending; no new sources claimed as reviewed.
+
+Added 13 lore drafts and searchable archive with category filters. Browser verification and source review pending.
