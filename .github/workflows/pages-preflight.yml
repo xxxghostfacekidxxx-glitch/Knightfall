@@ -1,0 +1,34 @@
+name: Knightfall Pages Preflight
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages-preflight-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  release-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run identical Pages release guard
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/pages-release-guard.mjs 2>&1 | tee pages-preflight.log
+      - name: Preserve diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-preflight-${{ github.sha }}
+          path: pages-preflight.log
+          retention-days: 7
+          if-no-files-found: warn
