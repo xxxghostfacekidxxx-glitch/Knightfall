@@ -1,0 +1,26 @@
+{
+  "name": "Astral Dominion",
+  "collection": "astral-dominion",
+  "status": "draft",
+  "accent": "#9a77ff",
+  "artworkStatus": "rendered but upload unverified",
+  "publishable": false,
+  "slots": [
+    "hero",
+    "background",
+    "header",
+    "frame",
+    "corner",
+    "divider",
+    "badge",
+    "preview"
+  ],
+  "assignmentScopes": [
+    "site",
+    "madhouse",
+    "arcade",
+    "chaosphere",
+    "admin"
+  ],
+  "customCategoryAssignments": "planned"
+}
