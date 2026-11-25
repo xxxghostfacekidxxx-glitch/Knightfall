@@ -58,13 +58,20 @@
     if(text!==undefined)node.textContent=text;
     return node;
   };
-  async function api(path,opts={}){
-    const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}});
-    const body=await response.json().catch(()=>null);
-    if(!response.ok)throw Error(body?.error||("Chat API returned HTTP "+response.status));
-    if(!body||typeof body!=="object")throw Error("Invalid chat API response");
-    return body;
-  }
+async function api(path,opts={}){
+ const controller=new AbortController(),external=opts.signal;
+ const abort=()=>controller.abort();
+ if(external?.aborted)abort();else external?.addEventListener("abort",abort,{once:true});
+ const timer=setTimeout(abort,30000);
+ try{
+  const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{"content-type":"application/json",...(opts.headers||{})}});
+  const data=await response.json().catch(()=>null);
+  if(!response.ok)throw Error(data?.error||("Messaging API returned HTTP "+response.status));
+  if(!data||typeof data!=="object"||Array.isArray(data))throw Error("Invalid messaging response. Please retry.");
+  return data;
+ }catch(error){if(controller.signal.aborted)throw Error("Messaging request interrupted or timed out. Check the conversation before retrying a send.");throw error;}
+ finally{clearTimeout(timer);external?.removeEventListener("abort",abort);}
+}
   try{
     const saved=JSON.parse(sessionStorage.getItem(storeKey)||"[]");
     if(Array.isArray(saved))state.heads=[...new Set(saved.map(validId).filter(Boolean))].slice(0,3);
@@ -556,7 +563,7 @@
     if(tickRunning||document.hidden)return;
     tickRunning=true;
     try{
-      await refreshConversations();
+      await refreshConversations({force:true});
       if(state.active&&state.visible)await refreshThread();
     }catch(error){if(state.visible)announce("Chat could not refresh. "+error.message);}
     finally{tickRunning=false;}
