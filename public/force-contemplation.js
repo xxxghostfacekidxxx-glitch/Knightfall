@@ -6,4 +6,5 @@ function tick(){const n=Math.max(0,Math.ceil((deadline-Date.now())/1000));render
 $("duration").onchange=()=>render(Number($("duration").value));
 $("start").onclick=()=>{if(interval!==null)return;deadline=Date.now()+Number($("duration").value)*1000;$("start").disabled=true;$("duration").disabled=true;$("session-status").textContent="Reflection started.";interval=setInterval(tick,250);tick()};
 $("stop").onclick=()=>{stop("Reflection stopped.");render(Number($("duration").value))};
-addEventListener("pagehide",()=>clearInterval(interval));
+addEventListener("pagehide",()=>{if(interval!==null)stop("Reflection paused when leaving the chamber.");});
+addEventListener("pageshow",()=>{if(interval===null)render(Number($("duration").value));});
