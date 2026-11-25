@@ -507,7 +507,7 @@
   </div>
   <div class="hud-bottom">
     <div class="powers">
-      <div class="pw" id="pw-overdrive" style="--c: var(--magenta)" hidden><span>OVERDRIVE</span><div class="meter"><i></i></div></div>
+      <div class="pw" id="pw-overdrive" style="--c: var(--orchid)" hidden><span>OVERDRIVE</span><div class="meter"><i></i></div></div>
       <div class="pw" id="pw-spread" style="--c: var(--gold)" hidden><span>SPREAD</span><div class="meter"><i></i></div></div>
       <div class="pw" id="pw-rapid" style="--c: var(--lime)" hidden><span>RAPID</span><div class="meter"><i></i></div></div>
       <div class="pw" id="pw-homing" style="--c: var(--orchid)" hidden><span>HOMING</span><div class="meter"><i></i></div></div>
@@ -662,7 +662,7 @@ const PLAYER_SPEED = 17;
 const BULLET_SPEED = 66;
 const SPAWN_T = 0.95;
 const DASH_CD = 0.9;
-const KEY_HI = 'neon-surge:hi', KEY_MUTE = 'neon-surge:muted', KEY_AUTO = 'neon-surge:autofire';
+const KEY_HI = 'neon-surge:hi:v2', KEY_MUTE = 'neon-surge:muted', KEY_AUTO = 'neon-surge:autofire';
 const UP = new THREE.Vector3(0, 1, 0);
 
 const HEX = {
@@ -1682,6 +1682,7 @@ function spawnPB(x, z, a, homing, kind = 'normal') {
   const b = pbPool.pop() || {};
   b.x = x; b.z = z; b.vx = Math.sin(a) * BULLET_SPEED; b.vz = Math.cos(a) * BULLET_SPEED;
   b.life = 0.85; b.homing = homing; b.target = null; b.retarget = 0; b.dmg = player.overdrive > 0 ? 2 : 1;
+  b.prevX = x; b.prevZ = z;
   b.kind = kind; b.pierce = kind === 'rail' ? 3 : 0; b.struck = kind === 'rail' ? new Set() : null;
   if (kind === 'gravity') { b.dmg = 2; }
   if (kind === 'rail') { b.dmg = 3; b.vx *= 1.25; b.vz *= 1.25; }
@@ -2197,13 +2198,13 @@ const boss = {
   },
   hitTest(b) {
     if (!this.vulnerable) return false;
-    if ((b.x - this.x) ** 2 + (b.z - this.z) ** 2 < 3.1 ** 2) {
+    if (projectileDistanceSq(b,this.x,this.z) < 3.1 ** 2) {
       this.damage(b.dmg);
       hitSparks(b.x, b.z, b.vx, b.vz, this.phase === 2 ? COL.bossHot : COL.boss);
       return true;
     }
     for (const p of this.pods) {
-      if ((b.x - p.x) ** 2 + (b.z - p.z) ** 2 < 1.3 ** 2) {
+      if (projectileDistanceSq(b,p.x,p.z) < 1.3 ** 2) {
         this.damage(b.dmg * 0.5);
         hitSparks(b.x, b.z, b.vx, b.vz, COL.pod);
         return true;
@@ -2453,7 +2454,7 @@ const director = {
   finishWave(bossWave) {
     this.state = 'clear';
     this.t = bossWave ? 3.4 : 2.6;
-    const flawless = player.lives === this.startLives && !this.lifeLost;
+    const flawless = !this.lifeLost;
     const bonus = 500 * this.wave + (flawless ? 250 * this.wave : 0);
     addScore(bonus);
     banner(bossWave ? `${boss.form.name} DOWN` : `WAVE ${pad2(this.wave)} CLEAR`, `${flawless ? 'FLAWLESS · ' : ''}BONUS +${fmt(bonus)}`);
@@ -2648,6 +2649,7 @@ function updateBullets(dt) {
       const dx = w.x - b.x, dz = w.z - b.z, d2 = dx * dx + dz * dz;
       if (d2 < 196) { const d = Math.max(0.001, Math.sqrt(d2)), f = 900 * w.well / Math.max(d2, 4); b.vx += dx / d * f * dt; b.vz += dz / d * f * dt; }
     }
+    b.prevX = b.x; b.prevZ = b.z;
     b.x += b.vx * dt; b.z += b.vz * dt;
     const out = Math.abs(b.x) > HX || Math.abs(b.z) > HZ;
     if (out) {
@@ -2705,6 +2707,12 @@ function chainArc(source, vx, vz) {
     from = next;
   }
 }
+function projectileDistanceSq(b, x, z) {
+  const ax = b.prevX ?? b.x, az = b.prevZ ?? b.z;
+  const dx = b.x-ax, dz = b.z-az, len = dx*dx+dz*dz;
+  const t = len > 0 ? clamp(((x-ax)*dx+(z-az)*dz)/len,0,1) : 0;
+  return (x-ax-dx*t)**2+(z-az-dz*t)**2;
+}
 function collide() {
   const P = player;
   for (let i = pBullets.length - 1; i >= 0; i--) {
@@ -2714,7 +2722,7 @@ function collide() {
       const e = enemies[j];
       if (e.dead || e.spawn > 0) continue;
       const dx = e.x - b.x, dz = e.z - b.z, rr = e.r + 0.3;
-      if (dx * dx + dz * dz < rr * rr && !b.struck?.has(e)) {
+      if (projectileDistanceSq(b,e.x,e.z) < rr * rr && !b.struck?.has(e)) {
         b.struck?.add(e);
         damageEnemy(e, b.dmg, b.vx, b.vz);
         if (b.kind === 'chain') chainArc(e, b.vx, b.vz);
