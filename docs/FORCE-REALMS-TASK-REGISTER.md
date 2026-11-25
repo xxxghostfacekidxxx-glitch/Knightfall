@@ -13,7 +13,7 @@ Maintain this register with every Force Realms implementation batch. Live board 
 | Force encyclopedia | in_progress | 39 draft entries, six categories, searchable reader and backend retrieval; verify sources and browser behavior |
 | Daily spiritual practices | in_progress | 17 original practices, daily reader, four training plans and local completion tracking; verify browser and integrate Academy |
 | Academy assessments | todo | Map readings to assessments |
-| Governance and ceremonies | in_progress | Implement authorized workflows |
+| Governance and ceremonies | in_progress | Living charters and voluntary vows drafted; implement authorized workflows |
 | Five recovered themes | source_checked | Verify production artwork and theme previews |
 | Production and device QA | todo | Confirm CI, deployment and mobile behavior |
 
@@ -32,3 +32,5 @@ Practice dataset: bbac928e77a5cdd313a9d5ea54e052aabfa5aad5. Live board sync unve
 Advanced manuscript expansion: 13aa09936f3387b939a5ecd82b9a82709549faa9; six chapters and aligned practice expansion. Live board sync unverified.
 
 Training plans: b86405f1ae8ecfacd0ab365ae950de8174137e84; 74 scheduled assignments, local progress only. Live board sync unverified.
+
+Order integration: cbb031bfa544c8fe9f6833f743efd375392a8c32 Jedi homepage; e21e270fee16a1b6dfc6b24a3a2f3db1509fb483 Sith homepage; 72c5a5b7a4c1125844aa749a7934ae091ee490f6 living charters; order-specific practice and training selection. Live board sync unverified.
