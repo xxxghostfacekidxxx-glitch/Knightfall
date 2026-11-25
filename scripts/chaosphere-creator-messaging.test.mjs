@@ -6,7 +6,7 @@ import {readFileSync} from "node:fs";
 const inbox=readFileSync(new URL("../public/messages.html",import.meta.url),"utf8");
 const backend=readFileSync(new URL("../backend/src/index.js",import.meta.url),"utf8");
 const css=readFileSync(new URL("../public/chaosphere-polish.css",import.meta.url),"utf8");
-const inline=[...inbox.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(Boolean).at(-1);
+const inline=[...inbox.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).find(s=>s.includes("function composeNotice(")&&s.includes("function startDirectMessage("));
 if(!inline)throw Error("Chaosphere inline controller missing");
 const from=inline.indexOf(" function composeNotice(");
 const friendBoundary=from<0?-1:inline.slice(from).search(/\n\s*let friendData=/);
