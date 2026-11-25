@@ -11,6 +11,8 @@ import {THEME_CREW_PRESETS,themePlan} from "../backend/src/theme-crew.js";
 const root=fileURLToPath(new URL("../",import.meta.url));
 const read=p=>readFileSync(resolve(root,p),"utf8");
 const recipes=JSON.parse(read("public/assets/knightfall/theme-collections/theme-recipes.json"));
+const development=JSON.parse(read("public/assets/knightfall/theme-collections/development-collections.json"));
+const recovered=JSON.parse(read("public/assets/knightfall/theme-collections/recovered-artwork-manifest.json"));
 const images=JSON.parse(read("public/assets/knightfall/theme-collections/manifest.json")).assets;
 const vectors=JSON.parse(read("public/assets/knightfall/theme-collections/ornaments.json")).assets;
 const original=["egyptian_eclipse","dark_lord_ascendant","korriban_necropolis","mustafar_forge"];
@@ -23,7 +25,7 @@ const ui=read("public/theme-crew-ui.js");
 
 test("all four first-party collections are fully registered and can be published or rolled back with existing authorization",()=>{
  assert.deepEqual(recipes.themes.slice(0,4).map(x=>x.preset),original);
- assert.equal(Object.keys(THEME_CREW_PRESETS).length,5+recipes.themes.length);
+ assert.equal(Object.keys(THEME_CREW_PRESETS).length,5+recipes.themes.length+development.collections.length);
  const known=runtime.match(/const KNOWN=new Set\((\[[^\n)]+\])\)/);
  assert.ok(known);
  assert.deepEqual(JSON.parse(known[1]).sort(),Object.keys(THEME_CREW_PRESETS).sort());
@@ -39,6 +41,20 @@ test("all four first-party collections are fully registered and can be published
  assert.equal(themePlan("dark lord crimson citadel").preset,"dark_lord_ascendant");
  assert.equal(themePlan("Korriban ancient tomb").preset,"korriban_necropolis");
  assert.equal(themePlan("Mustafar molten volcanic fortress").preset,"mustafar_forge");
+});
+
+test("five recovered artwork collections are swappable development presets and stay unpublished drafts",()=>{
+ assert.equal(development.status,"recovered-development-artwork");
+ assert.equal(development.collections.length,5);
+ for(const theme of development.collections){
+  const preset=theme.slug.replaceAll("-","_");
+  assert.equal(theme.publishable,false,theme.slug+" must remain a draft until its full ornament kit exists");
+  assert.equal(THEME_CREW_PRESETS[preset]?.name,theme.name,"Missing Theme Crew preset "+preset);
+  assert.ok(runtime.includes('"'+preset+'"'),"Missing runtime allowlist entry "+preset);
+  assert.ok(vars.includes('data-kf-theme="'+preset+'"'),"Missing generated style "+preset);
+  for(const file of Object.values(theme.artwork))
+   assert.ok(recovered.assets.some(asset=>asset.path.endsWith("/"+theme.slug+"/"+file)),"Artwork Vault missing "+theme.slug+"/"+file);
+ }
 });
 
 test("all four designs preserve their original paintings and eight unique SVG ornaments",()=>{

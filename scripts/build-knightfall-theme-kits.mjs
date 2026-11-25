@@ -6,7 +6,7 @@
 import {readFileSync,writeFileSync,existsSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import {resolve} from "node:path";
-function renderVariables(catalog){
+function renderVariables(catalog,development){
  const lines=[
   "/* GENERATED from theme-recipes.json by scripts/build-knightfall-theme-kits.mjs.",
   " * Color schemes and all eight original SVG ornaments are defined per theme.",
@@ -31,6 +31,28 @@ function renderVariables(catalog){
   for(const [key,value]of Object.entries(palette))lines.push(" "+key+":"+value+";");
   lines.push("}");
  }
+ for(const t of development.collections){
+  const base="/assets/knightfall/theme-collections/"+t.slug+"/";
+  const palette={
+   "--kf-kit-metal":t.kit.metal,"--kf-kit-glow":t.kit.glow,"--kf-kit-accent":t.kit.accent,
+   "--kf-kit-highlight":t.kit.highlight,"--kf-kit-ink":t.kit.ink,"--kf-kit-depth":t.kit.depth,
+   "--kf-kit-surface":t.kit.surface,
+   "--kf-kit-scene":`url(\"${base+t.artwork.environmentPreview}\")`,
+   "--kf-kit-backdrop":`url(\"${base+t.artwork.environmentPreview}\")`,
+   "--kf-kit-header":`url(\"${base+t.artwork.headerOrnament}\")`,
+   "--kf-kit-panel":`url(\"${base+t.artwork.panelBorder}\")`,
+   "--kf-kit-frame":`url(\"${base+t.artwork.panelFrame}\")`,
+   "--kf-kit-button":"var(--kf-kit-panel)",
+   "--kf-kit-divider":`url(\"${base+t.artwork.divider}\")`,
+   "--kf-kit-emblem":"none",
+   "--kf-kit-corner":`url(\"${base+t.artwork.corner}\")`,
+   "--kf-kit-side-rail":"none"
+  };
+  lines.push("",`/* ${t.name}: recovered artwork, integrated as a swappable development theme. */`,
+   `html body[data-kf-theme="${t.slug.replaceAll("-","_")}"]:not(.profile-custom-theme):not(.kf-gameplay-page){`);
+  for(const [key,value]of Object.entries(palette))lines.push(" "+key+":"+value+";");
+  lines.push("}");
+ }
  return lines.join("\n")+"\n";
 }
 const root=fileURLToPath(new URL("../",import.meta.url));
@@ -38,10 +60,28 @@ const path=p=>resolve(root,p);
 const catalog=JSON.parse(readFileSync(path("public/assets/knightfall/theme-collections/theme-recipes.json"),"utf8"));
 const paintings=JSON.parse(readFileSync(path("public/assets/knightfall/theme-collections/manifest.json"),"utf8"));
 const ornaments=JSON.parse(readFileSync(path("public/assets/knightfall/theme-collections/ornaments.json"),"utf8"));
+const development=JSON.parse(readFileSync(path("public/assets/knightfall/theme-collections/development-collections.json"),"utf8"));
+const recovered=JSON.parse(readFileSync(path("public/assets/knightfall/theme-collections/recovered-artwork-manifest.json"),"utf8"));
 const mode=process.argv.includes("--write")?"write":process.argv.includes("--check")?"check":null;
 if(!mode||process.argv.includes("--write")&&process.argv.includes("--check"))throw Error("Usage: node scripts/build-knightfall-theme-kits.mjs --check|--write");
 if(catalog.version!==1||!Array.isArray(catalog.themes)||catalog.themes.length<4)throw Error("Invalid original theme catalog");
 const seen=new Set();
+if(development.version!==1||development.status!=="recovered-development-artwork"||!Array.isArray(development.collections)||development.collections.length!==5)
+ throw Error("Recovered development theme catalog is incomplete");
+const developmentSlugs=new Set();
+for(const kit of development.collections){
+ if(!/^[a-z][a-z0-9-]{2,45}$/.test(kit.slug)||developmentSlugs.has(kit.slug)||kit.publishable!==false||
+  kit.originalArtworkStatus!=="Recovered archive verified; full eight-piece publishing kit remains incomplete"||
+  typeof kit.name!=="string"||!kit.kit||!kit.artwork)throw Error("Invalid recovered development theme");
+ developmentSlugs.add(kit.slug);
+ for(const key of ["metal","glow","accent","highlight","ink","depth","surface"])
+  if(typeof kit.kit[key]!=="string"||!/^#[0-9a-fA-F]{6}$/.test(kit.kit[key]))throw Error("Invalid development theme color: "+kit.slug);
+ for(const file of Object.values(kit.artwork)){
+  if(typeof file!=="string"||!/^[a-z0-9-]+\.(?:webp|svg)$/.test(file))throw Error("Unsafe development artwork path");
+  const assetPath="/assets/knightfall/theme-collections/"+kit.slug+"/"+file;
+  if(!existsSync(path("public"+assetPath))||!recovered.assets.some(item=>item.path===assetPath))throw Error("Unverified recovered development artwork: "+assetPath);
+ }
+}
 for(const kit of catalog.themes){
  if(!/^[a-z][a-z0-9_]{2,39}$/.test(kit.preset)||seen.has(kit.preset))throw Error("Invalid duplicate preset identifier");
  seen.add(kit.preset);
@@ -61,7 +101,7 @@ for(const kit of catalog.themes){
  }
 }
 const output=path("public/knightfall-art-theme-variables.css");
-const expected=renderVariables(catalog);
+const expected=renderVariables(catalog,development);
 if(mode==="write")writeFileSync(output,expected,"utf8");
 else if(!existsSync(output)||readFileSync(output,"utf8")!==expected)throw Error("Generated palette sheet drift; run --write and inspect changes");
 console.log("ART THEME TEMPLATE "+mode.toUpperCase()+" PASS:",catalog.themes.length,"reviewed recipes, each with eight preserved SVG components");

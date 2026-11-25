@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "development",
+  "status": "recovered-development-artwork",
   "collections": [
     {
       "slug": "jedi-sanctuary",
@@ -10,10 +10,12 @@
         "text": "#8edcff",
         "accent": "#d8b779"
       },
+      "kit": {"metal":"#e6c78c","glow":"#54baff","accent":"#e6c78c","highlight":"#ffffff","ink":"#090b13","depth":"#10121e","surface":"#142b40"},
+      "artwork": {"environmentPreview":"environment-preview.webp","headerOrnament":"header-ornament.svg","panelBorder":"modular-card-border.svg","panelFrame":"modular-panel-frame.svg","divider":"header.svg","corner":"modular-corner.svg"},
       "assets": {
         "header": "jedi-sanctuary/header.svg"
       },
-      "originalArtworkStatus": "pending binary upload",
+      "originalArtworkStatus": "Recovered archive verified; full eight-piece publishing kit remains incomplete",
       "publishable": false
     },
     {
@@ -24,10 +26,12 @@
         "text": "#d5ff42",
         "accent": "#ff38b8"
       },
+      "kit": {"metal":"#ff38ae","glow":"#a9ff37","accent":"#ff38ae","highlight":"#ffffff","ink":"#090b13","depth":"#10121e","surface":"#24212e"},
+      "artwork": {"environmentPreview":"environment-preview.webp","headerOrnament":"header-ornament.svg","panelBorder":"modular-card-border.svg","panelFrame":"modular-panel-frame.svg","divider":"header.svg","corner":"modular-corner.svg"},
       "assets": {
         "header": "neon-dystopia/header.svg"
       },
-      "originalArtworkStatus": "pending binary upload",
+      "originalArtworkStatus": "Recovered archive verified; full eight-piece publishing kit remains incomplete",
       "publishable": false
     },
     {
@@ -38,10 +42,12 @@
         "text": "#e5c5b0",
         "accent": "#a52e45"
       },
+      "kit": {"metal":"#bba18b","glow":"#b72b42","accent":"#bba18b","highlight":"#ffffff","ink":"#090b13","depth":"#10121e","surface":"#302027"},
+      "artwork": {"environmentPreview":"environment-preview.webp","headerOrnament":"header-ornament.svg","panelBorder":"modular-card-border.svg","panelFrame":"modular-panel-frame.svg","divider":"header.svg","corner":"modular-corner.svg"},
       "assets": {
         "header": "the-asylum/header.svg"
       },
-      "originalArtworkStatus": "pending binary upload",
+      "originalArtworkStatus": "Recovered archive verified; full eight-piece publishing kit remains incomplete",
       "publishable": false
     },
     {
@@ -52,10 +58,12 @@
         "text": "#40eaff",
         "accent": "#e83cff"
       },
+      "kit": {"metal":"#f64cff","glow":"#38eaff","accent":"#f64cff","highlight":"#ffffff","ink":"#090b13","depth":"#10121e","surface":"#251742"},
+      "artwork": {"environmentPreview":"environment-preview.webp","headerOrnament":"header-ornament.svg","panelBorder":"modular-card-border.svg","panelFrame":"modular-panel-frame.svg","divider":"header.svg","corner":"modular-corner.svg"},
       "assets": {
         "header": "arcade-anarchy/header.svg"
       },
-      "originalArtworkStatus": "pending binary upload",
+      "originalArtworkStatus": "Recovered archive verified; full eight-piece publishing kit remains incomplete",
       "publishable": false
     },
     {
@@ -66,10 +74,12 @@
         "text": "#d8dfff",
         "accent": "#9784ef"
       },
+      "kit": {"metal":"#c5c9ef","glow":"#9a77ff","accent":"#c5c9ef","highlight":"#ffffff","ink":"#090b13","depth":"#10121e","surface":"#202044"},
+      "artwork": {"environmentPreview":"environment-preview.webp","headerOrnament":"header-ornament.svg","panelBorder":"modular-card-border.svg","panelFrame":"modular-panel-frame.svg","divider":"header.svg","corner":"modular-corner.svg"},
       "assets": {
         "header": "astral-dominion/header.svg"
       },
-      "originalArtworkStatus": "pending binary upload",
+      "originalArtworkStatus": "Recovered archive verified; full eight-piece publishing kit remains incomplete",
       "publishable": false
     }
   ]

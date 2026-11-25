@@ -33,8 +33,8 @@ function fixture(user={id:1,role:"god"},delegated=false){
  }
  return {call,read:()=>saved.get("theme_crew_current")??null,readRealm:realm=>saved.get("theme_crew_realm_"+realm)??null,logs:logged};
 }
-test("Theme Crew has nine reviewed presets and four real worker roles",()=>{
- assert.equal(Object.keys(THEME_CREW_PRESETS).length,9);
+test("Theme Crew exposes fourteen presets and four real worker roles",()=>{
+ assert.equal(Object.keys(THEME_CREW_PRESETS).length,14);
  assert.equal(THEME_CREW_BOTS.length,4);
  assert.equal(themePlan("poison emerald forest").preset,"verdant_crypt");
  assert.equal(themePlan("old blood red vampire").preset,"blood_moon");

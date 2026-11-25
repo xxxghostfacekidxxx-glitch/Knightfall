@@ -8,6 +8,7 @@ const visual=text("public/knightfall-requiem.css");
 const deck=text("public/theme-crew.html");
 const ui=text("public/theme-crew-ui.js");
 const css=text("public/theme-crew.css");
+const artVariables=text("public/knightfall-art-theme-variables.css");
 const dashboard=text("public/theme-crew-dashboard.css");
 const runtime=text("public/theme-crew-runtime.js");
 const root=text("public/theme.css");
@@ -84,7 +85,7 @@ test("backend presets, runtime allowlist and local preview assets never drift ap
  assert.deepEqual(previews.map(x=>x[1]).sort(),allowed);
  for(const [,key,file] of previews)readFileSync(new URL("../public"+file,import.meta.url));
  for(const key of allowed){
-  assert.ok(css.includes('data-kf-theme="'+key+'"') || (key==="cathedral"&&visual.includes('data-kf-theme="cathedral"')),
+  assert.ok(css.includes('data-kf-theme="'+key+'"') || artVariables.includes('data-kf-theme="'+key+'"') || (key==="cathedral"&&visual.includes('data-kf-theme="cathedral"')),
    "Missing presentation recipe for "+key);
  }
 });
