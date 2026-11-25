@@ -1,0 +1,486 @@
+{
+  "version": 1,
+  "policy": "Voluntary original Knightfall programs; no automatic rank or credential.",
+  "plans": [
+    {
+      "id": "jedi-7",
+      "order": "jedi",
+      "length": 7,
+      "title": "Path of the Living Force — 7 days",
+      "tagline": "Through knowledge, we ascend.",
+      "days": [
+        {
+          "day": 1,
+          "practiceId": "practice-1",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 2,
+          "practiceId": "practice-2",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 3,
+          "practiceId": "practice-3",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 4,
+          "practiceId": "practice-4",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 5,
+          "practiceId": "practice-9",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 6,
+          "practiceId": "practice-10",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 7,
+          "practiceId": "practice-11",
+          "focus": "Foundation",
+          "reflection": "Review your week and choose one adjustment."
+        }
+      ]
+    },
+    {
+      "id": "jedi-30",
+      "order": "jedi",
+      "length": 30,
+      "title": "Path of the Living Force — 30 days",
+      "tagline": "Through knowledge, we ascend.",
+      "days": [
+        {
+          "day": 1,
+          "practiceId": "practice-1",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 2,
+          "practiceId": "practice-2",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 3,
+          "practiceId": "practice-3",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 4,
+          "practiceId": "practice-4",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 5,
+          "practiceId": "practice-9",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 6,
+          "practiceId": "practice-10",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 7,
+          "practiceId": "practice-11",
+          "focus": "Foundation",
+          "reflection": "Review your week and choose one adjustment."
+        },
+        {
+          "day": 8,
+          "practiceId": "practice-12",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 9,
+          "practiceId": "practice-13",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 10,
+          "practiceId": "practice-17",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 11,
+          "practiceId": "practice-1",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 12,
+          "practiceId": "practice-2",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 13,
+          "practiceId": "practice-3",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 14,
+          "practiceId": "practice-4",
+          "focus": "Consistency",
+          "reflection": "Review your week and choose one adjustment."
+        },
+        {
+          "day": 15,
+          "practiceId": "practice-9",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 16,
+          "practiceId": "practice-10",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 17,
+          "practiceId": "practice-11",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 18,
+          "practiceId": "practice-12",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 19,
+          "practiceId": "practice-13",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 20,
+          "practiceId": "practice-17",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 21,
+          "practiceId": "practice-1",
+          "focus": "Application",
+          "reflection": "Review your week and choose one adjustment."
+        },
+        {
+          "day": 22,
+          "practiceId": "practice-2",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 23,
+          "practiceId": "practice-3",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 24,
+          "practiceId": "practice-4",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 25,
+          "practiceId": "practice-9",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 26,
+          "practiceId": "practice-10",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 27,
+          "practiceId": "practice-11",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 28,
+          "practiceId": "practice-12",
+          "focus": "Integration",
+          "reflection": "Review your week and choose one adjustment."
+        },
+        {
+          "day": 29,
+          "practiceId": "practice-13",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 30,
+          "practiceId": "practice-17",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        }
+      ]
+    },
+    {
+      "id": "sith-7",
+      "order": "sith",
+      "length": 7,
+      "title": "Path of the Unbroken Will — 7 days",
+      "tagline": "From ruin, we endure.",
+      "days": [
+        {
+          "day": 1,
+          "practiceId": "practice-5",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 2,
+          "practiceId": "practice-6",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 3,
+          "practiceId": "practice-7",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 4,
+          "practiceId": "practice-8",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 5,
+          "practiceId": "practice-9",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 6,
+          "practiceId": "practice-10",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 7,
+          "practiceId": "practice-14",
+          "focus": "Foundation",
+          "reflection": "Review your week and choose one adjustment."
+        }
+      ]
+    },
+    {
+      "id": "sith-30",
+      "order": "sith",
+      "length": 30,
+      "title": "Path of the Unbroken Will — 30 days",
+      "tagline": "From ruin, we endure.",
+      "days": [
+        {
+          "day": 1,
+          "practiceId": "practice-5",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 2,
+          "practiceId": "practice-6",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 3,
+          "practiceId": "practice-7",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 4,
+          "practiceId": "practice-8",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 5,
+          "practiceId": "practice-9",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 6,
+          "practiceId": "practice-10",
+          "focus": "Foundation",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 7,
+          "practiceId": "practice-14",
+          "focus": "Foundation",
+          "reflection": "Review your week and choose one adjustment."
+        },
+        {
+          "day": 8,
+          "practiceId": "practice-15",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 9,
+          "practiceId": "practice-16",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 10,
+          "practiceId": "practice-17",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 11,
+          "practiceId": "practice-5",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 12,
+          "practiceId": "practice-6",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 13,
+          "practiceId": "practice-7",
+          "focus": "Consistency",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 14,
+          "practiceId": "practice-8",
+          "focus": "Consistency",
+          "reflection": "Review your week and choose one adjustment."
+        },
+        {
+          "day": 15,
+          "practiceId": "practice-9",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 16,
+          "practiceId": "practice-10",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 17,
+          "practiceId": "practice-14",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 18,
+          "practiceId": "practice-15",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 19,
+          "practiceId": "practice-16",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 20,
+          "practiceId": "practice-17",
+          "focus": "Application",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 21,
+          "practiceId": "practice-5",
+          "focus": "Application",
+          "reflection": "Review your week and choose one adjustment."
+        },
+        {
+          "day": 22,
+          "practiceId": "practice-6",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 23,
+          "practiceId": "practice-7",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 24,
+          "practiceId": "practice-8",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 25,
+          "practiceId": "practice-9",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 26,
+          "practiceId": "practice-10",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 27,
+          "practiceId": "practice-14",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 28,
+          "practiceId": "practice-15",
+          "focus": "Integration",
+          "reflection": "Review your week and choose one adjustment."
+        },
+        {
+          "day": 29,
+          "practiceId": "practice-16",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        },
+        {
+          "day": 30,
+          "practiceId": "practice-17",
+          "focus": "Integration",
+          "reflection": "Complete the practice and reflect privately."
+        }
+      ]
+    }
+  ]
+}
