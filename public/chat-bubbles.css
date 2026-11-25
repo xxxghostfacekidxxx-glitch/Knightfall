@@ -355,3 +355,7 @@
 #kf-chat-heads .kf-chat-format-tools[hidden],#kf-chat-heads .cs-spoiler [hidden]{display:none!important}
 #kf-chat-heads .kf-chat-format-tools button,#kf-chat-heads #kf-chat-format,#kf-chat-heads .cs-spoiler-toggle{min-height:28px;padding:4px 8px;border-radius:7px;border:1px solid #ffffff35;background:var(--cs-side);color:#fff;font-size:11px}
 #kf-chat-heads .kf-chat-message p code{background:#100c1e99;padding:2px 4px;border-radius:4px;color:#f5d99d}
+
+#kf-chat-heads .kf-chat-organization{display:flex;gap:5px;padding:5px 10px;border-bottom:1px solid #ffffff20;background:var(--cs-side)}
+#kf-chat-heads .kf-chat-organization[hidden]{display:none!important}
+#kf-chat-heads .kf-chat-organization button{border:1px solid #ffffff30;border-radius:7px;color:#f2e9f8;background:var(--cs-back);padding:4px 10px;min-height:28px;font-size:11px}

@@ -124,10 +124,10 @@ test("Mobile conversation keeps Miss Chaos available above the composer",()=>{
 
 test("Message photos open in a local accessible dialog with vetted attachment origins",()=>{
  assert.match(extras,/a\.message-attachment\.image-preview/);
- assert.match(extras,/new URL\(href,location\.origin\)/);
- assert.match(extras,/url\.origin===location\.origin\|\|url\.origin===apiOrigin/);
- assert.match(extras,/event\.preventDefault\(\);lightbox\.showModal\(\)/);
- assert.match(extras,/lightbox\.addEventListener\("close"/);
+ assert.match(extras,/new URL\(anchor.href,location\.origin\)/);
+ assert.match(extras,/url\.origin===location\.origin\|\|url\.origin==="https:\/\/api\.ash-fall\.com"/);
+ assert.match(extras,/event\.preventDefault\(\);show\(\);lightbox\.showModal\(\)/);
+ assert.match(extras,/lightbox\.onclose=/);
  assert.match(extras,/querySelector\("\.attachment-info strong"\)\?\.textContent/);
  assert.match(css,/\.cs-image-lightbox::backdrop/);
  assert.match(css,/max-height:calc\(100dvh - 178px\)/);

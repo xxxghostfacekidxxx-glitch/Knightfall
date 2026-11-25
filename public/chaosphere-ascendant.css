@@ -157,3 +157,6 @@
 #cs-image-lightbox .cs-image-viewport{overflow:auto;max-height:68dvh;text-align:center;overscroll-behavior:contain}
 #cs-image-lightbox .cs-image-viewport img{display:block;max-width:100%;max-height:65dvh;margin:auto;object-fit:contain}
 #cs-image-lightbox .cs-image-viewport img.cs-image-zoomed{width:200%;max-width:none;max-height:none}
+
+.messages-shell .cs-filter-tools{align-content:flex-start}
+.messages-shell .cs-filter-tools button[aria-pressed=true]{box-shadow:inset 0 0 0 1px var(--cs-glow,#ff8ed0)}
