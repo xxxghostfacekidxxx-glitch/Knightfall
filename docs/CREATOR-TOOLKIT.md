@@ -52,7 +52,7 @@ The original six PNG files are saved in `public/assets/knightfall/theme-collecti
 | Dark Lord Ascendant | 2 | Original dark space-opera figure and crimson command chamber |
 | Theme Forge selector concept | 1 | Design reference for future selectable site themes |
 
-In the **Creator Foundry**, staff and authorized Digital Creators can open **Original Theme Artwork Vault**, filter the six originals, preview high-resolution art, download local files, and copy first-party asset paths. This is separate from `Site Image Library`'s member R2 uploads, which are not automatically backed up by Git.
+In the **Creator Foundry**, staff and authorized Digital Creators can open **Original Theme Artwork Vault**, filter nine theme collections, preview high-resolution originals, download PNG/WebP/SVG files, and copy first-party asset paths. This is separate from `Site Image Library`'s member R2 uploads, which are not automatically backed up by Git.
 
 The actual original files were imported by `.github/workflows/knightfall-theme-art-import.yml` from durable transport copies, with exact-byte checksum and dimensions verification. `scripts/knightfall-theme-art-import.mjs --verify` runs offline and fails if anything changes. `scripts/knightfall-theme-art.test.mjs` tests the Foundry gallery, permissions, all six PNG hashes, and path safety. These files and the gallery code are in the Knightfall Creations Vault's required-preservation set, and are included in its recoverable archives.
 
@@ -70,6 +70,8 @@ The **original SVG ornament kit** contains 32 independent scalable files, with *
 | Dark Lord Ascendant | Brushed gunmetal, crimson energy and angular star-citadel geometry | header, frame, divider, corner, emblem, panel, button, side-rail |
 | Korriban: Red Necropolis | Sandstone, iron and crimson tomb sigils | header, frame, divider, corner, emblem, panel, button, side-rail |
 | Mustafar: Obsidian Forge | Black basalt, copper and volcanic fire sigils | header, frame, divider, corner, emblem, panel, button, side-rail |
+
+The recovered archive adds 15 checksum-pinned raster files across **Jedi Sanctuary**, **Neon Dystopia**, **The Asylum**, **Arcade Anarchy**, and **Astral Dominion**. Each collection includes its WebP asset sheet, WebP environment preview, and PNG original sheet. The five existing SVG components per collection are included alongside them in `recovered-artwork-manifest.json`. Theme Forge previews and shared art-theme background tokens use the matching environment preview.
 
 These SVGs are actual vector graphics, not raster images wrapped in SVG. Each contains a unique abstract original crest, geometric engravings, gradients and ornamental lines, with no remote image links or scripts. The master inventory is `public/assets/knightfall/theme-collections/ornaments.json`.
 
@@ -90,7 +92,7 @@ The transparent frames and corners must not capture clicks or cover message bubb
 
 ### Backups and guarantees
 
-Both `scripts/knightfall-theme-art-import.mjs --verify` (immutable first six) and `scripts/knightfall-theme-art-expansion-import.mjs --verify` (seven additional paintings) validate offline by SHA-256 and image dimensions. `scripts/knightfall-theme-art.test.mjs` verifies all 13 PNGs plus all 32 SVG entries. The preservation vault's required file list includes all 45 art assets and both manifests. Creations Vault's scheduled GitHub archive includes these sources and their gallery code, subject to workflow success and artifact retention.
+Both existing import verifiers remain unchanged. `scripts/knightfall-recovered-theme-art-import.mjs --verify` checks all 15 recovered raster assets, all 25 associated SVG components, and the combined recovered-art manifest by SHA-256. The preservation vault protects all of these files and the updated gallery code. Creations Vault's scheduled GitHub archive includes these sources and gallery code, subject to workflow success and artifact retention.
 
 **Scope:** Korriban and Mustafar are user-selected collection labels for original dark-fantasy environments; this archive is not a licensed Star Wars art package. The artwork gallery and selector concept images are **not** proof that these site presets have been made switchable in the production Theme Forge.
 

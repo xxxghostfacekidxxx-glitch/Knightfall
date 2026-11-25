@@ -1,0 +1,420 @@
+{
+  "id": "knightfall-recovered-theme-art-2026-11-25",
+  "version": "2026-11-25",
+  "collections": {
+    "arcade-anarchy": "Arcade Anarchy",
+    "astral-dominion": "Astral Dominion",
+    "jedi-sanctuary": "Jedi Sanctuary",
+    "neon-dystopia": "Neon Dystopia",
+    "the-asylum": "The Asylum"
+  },
+  "assets": [
+    {
+      "member": "arcade-anarchy/asset-sheet.webp",
+      "collection": "arcade-anarchy",
+      "file": "asset-sheet.webp",
+      "format": "webp",
+      "role": "concept",
+      "title": "Arcade Anarchy \u00b7 Art Asset Sheet",
+      "bytes": 495390,
+      "sha256": "cac234c7855c7e7f55d0fd4dfd87141e92ec8c07e07680fedc78d4602045788a",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "member": "arcade-anarchy/environment-preview.webp",
+      "collection": "arcade-anarchy",
+      "file": "environment-preview.webp",
+      "format": "webp",
+      "role": "background",
+      "title": "Arcade Anarchy \u00b7 Environment Preview",
+      "bytes": 13634,
+      "sha256": "444dcf3f3a982445a0df9442cb850ecf91914ea2574d20250e0af1104c1a15d2",
+      "width": 200,
+      "height": 153
+    },
+    {
+      "member": "arcade-anarchy/original-sheet.png",
+      "collection": "arcade-anarchy",
+      "file": "original-sheet.png",
+      "format": "png",
+      "role": "concept",
+      "title": "Arcade Anarchy \u00b7 Original Art Sheet",
+      "bytes": 2714017,
+      "sha256": "f980e0bbd26b36b6c96b191409e21c311ddced3e98b86793fb7d7fef77bfb295",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "member": "astral-dominion/asset-sheet.webp",
+      "collection": "astral-dominion",
+      "file": "asset-sheet.webp",
+      "format": "webp",
+      "role": "concept",
+      "title": "Astral Dominion \u00b7 Art Asset Sheet",
+      "bytes": 477720,
+      "sha256": "d71dc3d5de94e2d7126f154476da0ba75ae17841486bab84828508ddd475f1cd",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "member": "astral-dominion/environment-preview.webp",
+      "collection": "astral-dominion",
+      "file": "environment-preview.webp",
+      "format": "webp",
+      "role": "background",
+      "title": "Astral Dominion \u00b7 Environment Preview",
+      "bytes": 96830,
+      "sha256": "12d48dc9b94d6373fa9a9351de1019b25cc47ad5389644c50c99f4d4d04b8741",
+      "width": 384,
+      "height": 491
+    },
+    {
+      "member": "astral-dominion/original-sheet.png",
+      "collection": "astral-dominion",
+      "file": "original-sheet.png",
+      "format": "png",
+      "role": "concept",
+      "title": "Astral Dominion \u00b7 Original Art Sheet",
+      "bytes": 2827571,
+      "sha256": "63b7fe9c94b66dc7e16366efcf8af8b52f6f6dd8f6cb6758b55b322f7ce9c632",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "member": "jedi-sanctuary/asset-sheet.webp",
+      "collection": "jedi-sanctuary",
+      "file": "asset-sheet.webp",
+      "format": "webp",
+      "role": "concept",
+      "title": "Jedi Sanctuary \u00b7 Art Asset Sheet",
+      "bytes": 615528,
+      "sha256": "61a0dc160365cc78a78cd934cc2df858bba2e769fa58b07a4281c2ce64792524",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "member": "jedi-sanctuary/environment-preview.webp",
+      "collection": "jedi-sanctuary",
+      "file": "environment-preview.webp",
+      "format": "webp",
+      "role": "background",
+      "title": "Jedi Sanctuary \u00b7 Environment Preview",
+      "bytes": 103698,
+      "sha256": "7356897e6394994aef3eac6fa5c8cad64a74193b28d8311352abbf485f114b1d",
+      "width": 691,
+      "height": 277
+    },
+    {
+      "member": "jedi-sanctuary/original-sheet.png",
+      "collection": "jedi-sanctuary",
+      "file": "original-sheet.png",
+      "format": "png",
+      "role": "concept",
+      "title": "Jedi Sanctuary \u00b7 Original Art Sheet",
+      "bytes": 3208761,
+      "sha256": "1a4bf8fac6157a031de62b7026cca71ae2913657e69a78fe4a34d8242ea0e683",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "member": "neon-dystopia/asset-sheet.webp",
+      "collection": "neon-dystopia",
+      "file": "asset-sheet.webp",
+      "format": "webp",
+      "role": "concept",
+      "title": "Neon Dystopia \u00b7 Art Asset Sheet",
+      "bytes": 546822,
+      "sha256": "5cdd24565b00568aa7e17fdc69e69715153ab85369f08a7aa62190be97741684",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "member": "neon-dystopia/environment-preview.webp",
+      "collection": "neon-dystopia",
+      "file": "environment-preview.webp",
+      "format": "webp",
+      "role": "background",
+      "title": "Neon Dystopia \u00b7 Environment Preview",
+      "bytes": 49884,
+      "sha256": "029c990b89a5b7a50562aa9df65e53706399b44dd7fda21bb5678dc081aff8b6",
+      "width": 507,
+      "height": 184
+    },
+    {
+      "member": "neon-dystopia/original-sheet.png",
+      "collection": "neon-dystopia",
+      "file": "original-sheet.png",
+      "format": "png",
+      "role": "concept",
+      "title": "Neon Dystopia \u00b7 Original Art Sheet",
+      "bytes": 3046688,
+      "sha256": "46afba8e669df031a0541353a1e6aa78eadc32c2ac2dbd2a1f5efd104df9fcfd",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "member": "the-asylum/asset-sheet.webp",
+      "collection": "the-asylum",
+      "file": "asset-sheet.webp",
+      "format": "webp",
+      "role": "concept",
+      "title": "The Asylum \u00b7 Art Asset Sheet",
+      "bytes": 570610,
+      "sha256": "eebb6b4aea2008173fddc9e68c282ec3b6544908eae011604c0e312fc9cec833",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "member": "the-asylum/environment-preview.webp",
+      "collection": "the-asylum",
+      "file": "environment-preview.webp",
+      "format": "webp",
+      "role": "background",
+      "title": "The Asylum \u00b7 Environment Preview",
+      "bytes": 47632,
+      "sha256": "4a8bc4ff663885f574316973cbb49fe802cfe8a77fd66e34b1448be9171aa60e",
+      "width": 384,
+      "height": 256
+    },
+    {
+      "member": "the-asylum/original-sheet.png",
+      "collection": "the-asylum",
+      "file": "original-sheet.png",
+      "format": "png",
+      "role": "concept",
+      "title": "The Asylum \u00b7 Original Art Sheet",
+      "bytes": 3176666,
+      "sha256": "66a4c2197631b13ab1a9cc4392585044dd94875da0999aea19f0ff0c306809ea",
+      "width": 1536,
+      "height": 1024
+    }
+  ],
+  "existingVectorAssets": [
+    {
+      "collection": "arcade-anarchy",
+      "file": "header-ornament.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "Arcade Anarchy \u00b7 Decorative Header Ornament",
+      "bytes": 2333,
+      "sha256": "da8d353b2a8f0721e782bb08ad0d2df083dff3f4e3be9267afcd2f03b40ed2af"
+    },
+    {
+      "collection": "arcade-anarchy",
+      "file": "header.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "Arcade Anarchy \u00b7 Theme Header",
+      "bytes": 1249,
+      "sha256": "124b0f665a96f03e87c2434d0664570551f6afd263f74e409ecb08f75f77a8f2"
+    },
+    {
+      "collection": "arcade-anarchy",
+      "file": "modular-card-border.svg",
+      "format": "svg",
+      "role": "frame",
+      "title": "Arcade Anarchy \u00b7 Modular Card Border",
+      "bytes": 1190,
+      "sha256": "d2225b77a7f94d0003a9e1bddeee4e72a638bec46c6c93fceed031be4498a0ad"
+    },
+    {
+      "collection": "arcade-anarchy",
+      "file": "modular-corner.svg",
+      "format": "svg",
+      "role": "corner",
+      "title": "Arcade Anarchy \u00b7 Modular Corner",
+      "bytes": 556,
+      "sha256": "5dbbff469f7168a46b9e9f12e5468c1aa86e5ce98540a2319f54b3fc457a0954"
+    },
+    {
+      "collection": "arcade-anarchy",
+      "file": "modular-panel-frame.svg",
+      "format": "svg",
+      "role": "panel",
+      "title": "Arcade Anarchy \u00b7 Modular Panel Frame",
+      "bytes": 1167,
+      "sha256": "77caa97ab8cdaa2ccb0d1f12127d11513a42eb283ee8e32464adbde06005500f"
+    },
+    {
+      "collection": "astral-dominion",
+      "file": "header-ornament.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "Astral Dominion \u00b7 Decorative Header Ornament",
+      "bytes": 2333,
+      "sha256": "5aaf1fe7c8a11805559ec4a0e02aa384b27ae606835678ad9cf8761fd69f167f"
+    },
+    {
+      "collection": "astral-dominion",
+      "file": "header.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "Astral Dominion \u00b7 Theme Header",
+      "bytes": 1266,
+      "sha256": "260778bb031b1621455dc83b802f41f0a27a44cd3c7ac1fee1061a1dbb807535"
+    },
+    {
+      "collection": "astral-dominion",
+      "file": "modular-card-border.svg",
+      "format": "svg",
+      "role": "frame",
+      "title": "Astral Dominion \u00b7 Modular Card Border",
+      "bytes": 1570,
+      "sha256": "0a645b60c1e3d4ff87fd1fd378e36786d26551664f83a260f9ede3f40196c9f0"
+    },
+    {
+      "collection": "astral-dominion",
+      "file": "modular-corner.svg",
+      "format": "svg",
+      "role": "corner",
+      "title": "Astral Dominion \u00b7 Modular Corner",
+      "bytes": 603,
+      "sha256": "358df21e6311613eda763b149f013a3e8b19d2a5da2052cdba416f01dff17cca"
+    },
+    {
+      "collection": "astral-dominion",
+      "file": "modular-panel-frame.svg",
+      "format": "svg",
+      "role": "panel",
+      "title": "Astral Dominion \u00b7 Modular Panel Frame",
+      "bytes": 1160,
+      "sha256": "860160d21935b42a54412bdb22f79c07835a069072763828a20e5ef8d50a7df7"
+    },
+    {
+      "collection": "jedi-sanctuary",
+      "file": "header-ornament.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "Jedi Sanctuary \u00b7 Decorative Header Ornament",
+      "bytes": 2333,
+      "sha256": "acdf71624dda3530e20e27f4ad699e12daa380953f11fac82f9842045ee29695"
+    },
+    {
+      "collection": "jedi-sanctuary",
+      "file": "header.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "Jedi Sanctuary \u00b7 Theme Header",
+      "bytes": 1246,
+      "sha256": "3621aabc5d8370f45ec7f4b9e8fb7443d20cd5f43e9dae9e043d1de85946b1fe"
+    },
+    {
+      "collection": "jedi-sanctuary",
+      "file": "modular-card-border.svg",
+      "format": "svg",
+      "role": "frame",
+      "title": "Jedi Sanctuary \u00b7 Modular Card Border",
+      "bytes": 1175,
+      "sha256": "73b9e58b69a8142fdb3e9ac61d6e66c6492ffc2b8f02a81d858b627ef1342d23"
+    },
+    {
+      "collection": "jedi-sanctuary",
+      "file": "modular-corner.svg",
+      "format": "svg",
+      "role": "corner",
+      "title": "Jedi Sanctuary \u00b7 Modular Corner",
+      "bytes": 560,
+      "sha256": "bf84eeb144ec40afcb752b0b288fcfeebdd4f7857f147309d92b26882fd72cc4"
+    },
+    {
+      "collection": "jedi-sanctuary",
+      "file": "modular-panel-frame.svg",
+      "format": "svg",
+      "role": "panel",
+      "title": "Jedi Sanctuary \u00b7 Modular Panel Frame",
+      "bytes": 1147,
+      "sha256": "f5bfac6e43b4675389c187c82a8fc2cf06ad0bc058fce7c8deb86b5d9373b5c0"
+    },
+    {
+      "collection": "neon-dystopia",
+      "file": "header-ornament.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "Neon Dystopia \u00b7 Decorative Header Ornament",
+      "bytes": 2333,
+      "sha256": "7fc60d4c988bd5e58d2a1dc852a89fa082c95981645167d9a0acbf30988de78a"
+    },
+    {
+      "collection": "neon-dystopia",
+      "file": "header.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "Neon Dystopia \u00b7 Theme Header",
+      "bytes": 1249,
+      "sha256": "9ccaf36b626abf8f29265c01d92cc2d18414788904f5e0540331e33152da924e"
+    },
+    {
+      "collection": "neon-dystopia",
+      "file": "modular-card-border.svg",
+      "format": "svg",
+      "role": "frame",
+      "title": "Neon Dystopia \u00b7 Modular Card Border",
+      "bytes": 1160,
+      "sha256": "cae67d3bc3017d805728fe7c855fb9f67699e0846b7f7c118e0023ae061c01ea"
+    },
+    {
+      "collection": "neon-dystopia",
+      "file": "modular-corner.svg",
+      "format": "svg",
+      "role": "corner",
+      "title": "Neon Dystopia \u00b7 Modular Corner",
+      "bytes": 566,
+      "sha256": "f99ed20788527d18f0eda42073b4b4f5e357fb0a9c5df6bb5deca1f96fa1c8f7"
+    },
+    {
+      "collection": "neon-dystopia",
+      "file": "modular-panel-frame.svg",
+      "format": "svg",
+      "role": "panel",
+      "title": "Neon Dystopia \u00b7 Modular Panel Frame",
+      "bytes": 1156,
+      "sha256": "973cb9fece8c4bf5dc4ce0177b12be2cfc0708571f9658c171c33b1287febd17"
+    },
+    {
+      "collection": "the-asylum",
+      "file": "header-ornament.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "The Asylum \u00b7 Decorative Header Ornament",
+      "bytes": 2333,
+      "sha256": "dd63a8985a8de38b7a98abd4b1cd0ec3d3e0f1ce37a8873caa8cf36c3c7ff135"
+    },
+    {
+      "collection": "the-asylum",
+      "file": "header.svg",
+      "format": "svg",
+      "role": "header",
+      "title": "The Asylum \u00b7 Theme Header",
+      "bytes": 1256,
+      "sha256": "4a2102f8ed4d1db78ae63fb95a4c76d1dc7e6e6b4f07ed864a6e49bd0ecd09f3"
+    },
+    {
+      "collection": "the-asylum",
+      "file": "modular-card-border.svg",
+      "format": "svg",
+      "role": "frame",
+      "title": "The Asylum \u00b7 Modular Card Border",
+      "bytes": 1215,
+      "sha256": "9488974f97d6a438cda13676119643bbdb52c5a83a61885aa16d8260a0b084c8"
+    },
+    {
+      "collection": "the-asylum",
+      "file": "modular-corner.svg",
+      "format": "svg",
+      "role": "corner",
+      "title": "The Asylum \u00b7 Modular Corner",
+      "bytes": 566,
+      "sha256": "ffde97b1d60f1d005bc108c71708742c17ac84d26eb4f250950acf7d11f725a8"
+    },
+    {
+      "collection": "the-asylum",
+      "file": "modular-panel-frame.svg",
+      "format": "svg",
+      "role": "panel",
+      "title": "The Asylum \u00b7 Modular Panel Frame",
+      "bytes": 1150,
+      "sha256": "0b02c4323907f2d3614c43375299ce7b20bd00bacb52b9b0cd0f2447e9ae50fc"
+    }
+  ]
+}

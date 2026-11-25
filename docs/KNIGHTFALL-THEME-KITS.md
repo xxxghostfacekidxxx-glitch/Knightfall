@@ -7,7 +7,7 @@
 
 1. Open **[Eye of Chaos / Theme Forge](https://ash-fall.com/theme-crew.html)** as a verified Osiris/GOD or delegated Isis account.
 2. Select **Knightfall / Shared** to change the public site's main theme, or select a specific realm: Madhouse, Chaos Cartridge, Chaosphere, or Eye of Chaos.
-3. Choose **Original Art Realms**. Four cards appear: **Egyptian Eclipse**, **Dark Lord Ascendant**, **Korriban · Red Necropolis**, and **Mustafar · Obsidian Forge**. Selecting a card previews it for your browser session, without publication.
+3. Choose **Original Art Realms**. Nine art-backed presets are available: **Egyptian Eclipse**, **Dark Lord Ascendant**, **Korriban · Red Necropolis**, **Mustafar · Obsidian Forge**, **Jedi Sanctuary**, **Neon Dystopia**, **The Asylum**, **Arcade Anarchy**, and **Astral Dominion**. Selecting a card previews it for your browser session, without publication.
 4. Select **Open selected realm preview**, or **Publish selected realm** if you hold verified publisher permission. Publication requires confirmation and an expected-revision check. The previous preset remains available through **Rollback last change**.
 5. Switch to **Classic Styles** to access existing Blood Moon, Verdant Crypt, Iron Eclipse, Royal Abyss, and Black Sun Temple. **All Reviewed Themes** shows every preset.
 
@@ -25,6 +25,14 @@ Theme switching never uploads, replaces, or deletes original artwork. Switching 
 All eight vector roles are used by each design: **header**, **frame**, **divider**, **corner**, **emblem**, **panel**, **button**, and **side-rail**. The four art collections are first-party original dark-fantasy environments, not licensed franchise artwork.
 
 **Asset library:** `public/assets/knightfall/theme-collections/`. The high-resolution images are not bundled into every mobile PWA shell. The initial HTML and art collection selector can render quickly, while actual artwork loads as needed.
+
+## Five recovered theme packs
+
+The recovered artwork archive adds **Jedi Sanctuary**, **Neon Dystopia**, **The Asylum**, **Arcade Anarchy**, and **Astral Dominion**. Each pack preserves three exact archive files: a WebP asset sheet, a WebP environment preview, and a PNG original sheet. The existing five SVG components per pack (header ornament, alternate header, card border, corner, and panel frame) are also indexed in `recovered-artwork-manifest.json` and shown in the Creator Foundry vault.
+
+The five previews are wired into Theme Forge thumbnails and the shared art-theme background tokens. `Jedi Sanctuary` supplies a visual style for the Force Realms' Jedi Temple; it does not change the separate Jedi and Sith teaching areas or the shared Force Library. The Force Realms remain an independent spiritual and fan community, distinct from the theme artwork.
+
+`scripts/knightfall-recovered-theme-art-import.mjs --import --archive <zip>` checks the archive member list and each SHA-256 before preserving exact files. `--verify` checks the tracked images, SVGs, and combined vault manifest offline. The new images are loaded on demand and remain outside PWA install-time precache.
 
 ## Build a new theme without copying CSS
 

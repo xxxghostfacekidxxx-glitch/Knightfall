@@ -37,6 +37,7 @@ export const FOUNDRY_REQUIRED=Object.freeze([
  "public/creator-theme-art-gallery.js",
  "public/creator-theme-art-gallery.css",
  "public/assets/knightfall/theme-collections/manifest.json",
+ "public/assets/knightfall/theme-collections/recovered-artwork-manifest.json",
  "public/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-hero.png",
  "public/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-throne-hall.png",
  "public/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-theme-preview.png",
@@ -68,6 +69,12 @@ export const FOUNDRY_REQUIRED=Object.freeze([
  "scripts/knightfall-theme-art-expansion-sources.json",
  "scripts/knightfall-theme-art-expansion-import.mjs",
  ".github/workflows/knightfall-theme-art-expansion-import.yml",
+ "scripts/knightfall-recovered-theme-art-sources.json",
+ "scripts/knightfall-recovered-theme-art-import.mjs",
+ ...["arcade-anarchy","astral-dominion","jedi-sanctuary","neon-dystopia","the-asylum"].flatMap(collection=>[
+  "asset-sheet.webp","environment-preview.webp","original-sheet.png",
+  "header-ornament.svg","header.svg","modular-card-border.svg","modular-corner.svg","modular-panel-frame.svg"
+ ].map(file=>"public/assets/knightfall/theme-collections/"+collection+"/"+file)),
  ...["egyptian-eclipse","dark-lord-ascendant","korriban","mustafar"].flatMap(collection=>
   ["header","frame","divider","corner","emblem","panel","button","side-rail"].map(role=>
    "public/assets/knightfall/theme-collections/"+collection+"/svg/"+role+".svg"))

@@ -12,11 +12,17 @@ const names=Object.freeze({
  "dark-lord-ascendant":"Dark Lord Ascendant",
  "korriban":"Korriban · Red Necropolis",
  "mustafar":"Mustafar · Obsidian Forge",
- "theme-selector":"Theme Forge concepts"
+ "theme-selector":"Theme Forge concepts",
+ "jedi-sanctuary":"Jedi Sanctuary",
+ "neon-dystopia":"Neon Dystopia",
+ "the-asylum":"The Asylum",
+ "arcade-anarchy":"Arcade Anarchy",
+ "astral-dominion":"Astral Dominion"
 });
 const pngUrl="/assets/knightfall/theme-collections/manifest.json";
 const svgUrl="/assets/knightfall/theme-collections/ornaments.json";
-const formats=new Set(["png","svg"]);
+const recoveredUrl="/assets/knightfall/theme-collections/recovered-artwork-manifest.json";
+const formats=new Set(["png","webp","svg"]);
 const pngRoles=new Set(["hero","background","concept"]);
 const svgRoles=new Set(["header","frame","divider","corner","emblem","panel","button","side-rail"]);
 let items=[],collection="all",format="all",inFlight=null;
@@ -29,26 +35,29 @@ const tag=(name,cls,text)=>{
 const report=text=>{status.textContent=text};
 const approved=item=>{
  if(!item||typeof item!=="object"||!Object.hasOwn(names,item.collection)||typeof item.path!=="string")return false;
- const match=/^\/assets\/knightfall\/theme-collections\/([a-z0-9-]+)\/(?:svg\/)?([a-z0-9-]+)\.(png|svg)$/.exec(item.path);
+ const match=/^\/assets\/knightfall\/theme-collections\/([a-z0-9-]+)\/(?:svg\/)?([a-z0-9-]+)\.(png|webp|svg)$/.exec(item.path);
  if(!match||match[1]!==item.collection)return false;
  const kind=match[3];
- if(kind==="png"){
+ if(kind==="png"||kind==="webp"){
   return pngRoles.has(item.role)&&typeof item.sha256==="string"&&/^[a-f0-9]{64}$/.test(item.sha256)&&
    Number.isInteger(item.bytes)&&item.bytes>0&&Number.isInteger(item.width)&&Number.isInteger(item.height);
  }
  return item.path.includes("/svg/")&&svgRoles.has(item.role)&&item.format==="svg";
 };
 function previewKit(){
- const chosen=["egyptian-eclipse","dark-lord-ascendant","korriban","mustafar"].includes(collection)
+ const chosen=["egyptian-eclipse","dark-lord-ascendant","korriban","mustafar","jedi-sanctuary","neon-dystopia","the-asylum","arcade-anarchy","astral-dominion"].includes(collection)
   ?collection:"egyptian-eclipse";
  const kit=document.getElementById("kf-theme-kit-stage");
  if(!kit)return;
  kit.dataset.collection=chosen;
  const roles={"header":"kf-theme-kit-header","frame":"kf-theme-kit-frame","emblem":"kf-theme-kit-emblem","divider":"kf-theme-kit-divider"};
  for(const [role,id] of Object.entries(roles)){
-  const asset=items.find(item=>item.collection===chosen&&item.format==="svg"&&item.role===role);
+  const recovered=chosen!=="egyptian-eclipse"&&chosen!=="dark-lord-ascendant"&&chosen!=="korriban"&&chosen!=="mustafar";
+  const suffix=recovered?({header:"header-ornament.svg",frame:"modular-panel-frame.svg",emblem:"modular-corner.svg",divider:"header.svg"}[role]):null;
+  const asset=items.find(item=>item.collection===chosen&&item.format==="svg"&&
+   (suffix?item.path.endsWith("/"+suffix):item.role===role));
   const node=document.getElementById(id);
-  if(asset&&node)node.src=asset.path;
+  if(node){node.hidden=!asset;if(asset)node.src=asset.path}
  }
  const label=document.getElementById("kf-theme-kit-caption");
  if(label)label.textContent=names[chosen]+" · Original Vector Kit";
@@ -72,7 +81,7 @@ function render(){
   const info=tag("div","kf-theme-art-card-body");
   const details=item.format==="svg"
    ?"Original editable SVG · "+item.role.replace("-"," ")+" · Scales without pixelation."
-   :"Original "+item.width+" × "+item.height+" PNG · SHA-256 verified.";
+   :"Original "+item.width+" × "+item.height+" "+item.format.toUpperCase()+" · SHA-256 verified.";
   info.append(
    tag("span","kf-theme-art-eyebrow",names[item.collection]+" / "+item.format.toUpperCase()),
    tag("h3","",item.title),
@@ -124,19 +133,22 @@ async function load(){
  if(inFlight)return inFlight;
  inFlight=(async()=>{
   try{
-   const [pngResponse,svgResponse]=await Promise.all([
+   const [pngResponse,svgResponse,recoveredResponse]=await Promise.all([
     fetch(pngUrl,{credentials:"same-origin",cache:"no-store"}),
-    fetch(svgUrl,{credentials:"same-origin",cache:"no-store"})
+    fetch(svgUrl,{credentials:"same-origin",cache:"no-store"}),
+    fetch(recoveredUrl,{credentials:"same-origin",cache:"no-store"})
    ]);
-   if(!pngResponse.ok||!svgResponse.ok)throw Error("The artwork inventory is not fully published yet.");
-   const [p,s]=await Promise.all([pngResponse.json(),svgResponse.json()]);
+   if(!pngResponse.ok||!svgResponse.ok||!recoveredResponse.ok)throw Error("The artwork inventory is not fully published yet.");
+   const [p,s,r]=await Promise.all([pngResponse.json(),svgResponse.json(),recoveredResponse.json()]);
    if(p.id!=="knightfall-2026-11-20-premium-theme-art"||
       s.id!=="knightfall-original-theme-ornaments"||
-      !Array.isArray(p.assets)||p.assets.length<6||!Array.isArray(s.assets)||s.assets.length!==32)
+      !Array.isArray(p.assets)||p.assets.length<6||!Array.isArray(s.assets)||s.assets.length!==32||
+      r.id!=="knightfall-recovered-theme-art-2026-11-25"||!Array.isArray(r.assets)||r.assets.length!==40)
     throw Error("The original artwork inventory was not recognized.");
    const candidate=[
     ...p.assets.map(item=>({...item,format:"png"})),
-    ...s.assets.map(item=>({...item,format:"svg"}))
+    ...s.assets.map(item=>({...item,format:"svg"})),
+    ...r.assets
    ];
    if(!candidate.every(approved)||new Set(candidate.map(i=>i.path)).size!==candidate.length)
     throw Error("Artwork inventory contains an unreviewed asset path.");
