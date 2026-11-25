@@ -1677,11 +1677,13 @@ for (const m of [pbMesh, ebMesh]) {
   m.frustumCulled = false;
   scene.add(m);
 }
-function spawnPB(x, z, a, homing) {
+function spawnPB(x, z, a, homing, kind = 'normal') {
   if (pBullets.length >= PB_MAX) return;
   const b = pbPool.pop() || {};
   b.x = x; b.z = z; b.vx = Math.sin(a) * BULLET_SPEED; b.vz = Math.cos(a) * BULLET_SPEED;
   b.life = 0.85; b.homing = homing; b.target = null; b.retarget = 0; b.dmg = player.overdrive > 0 ? 2 : 1;
+  b.kind = kind; b.pierce = kind === 'rail' ? 3 : 0; b.struck = kind === 'rail' ? new Set() : null;
+  if (kind === 'rail') { b.dmg = 3; b.vx *= 1.25; b.vz *= 1.25; }
   pBullets.push(b);
 }
 function spawnEB(x, z, a, speed, color = COL.eb, r = 0.36) {
@@ -2446,6 +2448,7 @@ function registerKill(x, z, base, hex) {
   // Reward sustained precision once per chain milestone, without increasing the bomb cap.
   if (G.combo % 40 === 0) {
     player.overdrive = 8;
+    player.special = G.combo % 80 === 0 ? 'rail' : 'chain';
     popup(player.x, player.z, 'OVERDRIVE', '#ff2e88', 1.6);
     const bonus = 250 * G.mult;
     addScore(bonus);
@@ -2461,7 +2464,8 @@ function fire() {
   const P = player, a = Math.atan2(P.aimX, P.aimZ);
   const fx = Math.sin(a), fz = Math.cos(a), rx = -fz, rz = fx;
   const nx = P.x + fx * 1.2, nz = P.z + fz * 1.2, homing = P.homing > 0;
-  spawnPB(nx + rx * 0.34, nz + rz * 0.34, a, homing);
+  const special = P.overdrive > 0 ? P.special : 'normal';
+  spawnPB(nx + rx * 0.34, nz + rz * 0.34, a, homing && special !== 'rail', special);
   spawnPB(nx - rx * 0.34, nz - rz * 0.34, a, homing);
   if (P.overdrive > 0 && P.spread <= 0) for (const o of [-0.22, 0.22]) spawnPB(nx, nz, a + o, homing);
   if (P.spread > 0) for (const o of [-0.42, -0.22, 0.22, 0.42]) spawnPB(nx, nz, a + o, homing);
@@ -2623,6 +2627,27 @@ function updateBullets(dt) {
     if (b.life <= 0 || Math.abs(b.x) > HX + 1 || Math.abs(b.z) > HZ + 1) removeAt(eBullets, i, ebPool);
   }
 }
+function chainArc(source, vx, vz) {
+  let from = source;
+  const visited = new Set([source]);
+  for (let hop = 0; hop < 3; hop++) {
+    let next = null, best = 64;
+    for (const e of enemies) {
+      if (e.dead || e.spawn > 0 || visited.has(e)) continue;
+      const d = (e.x - from.x) ** 2 + (e.z - from.z) ** 2;
+      if (d < best) { best = d; next = e; }
+    }
+    if (!next) break;
+    visited.add(next);
+    const dx = next.x - from.x, dz = next.z - from.z;
+    for (let i = 1; i <= 6; i++) {
+      const t = i / 7;
+      particles.emit(from.x + dx * t, ENTITY_Y, from.z + dz * t, 0, 0, 0, bright(COL.pbHoming, 1), .6, .12, 0);
+    }
+    damageEnemy(next, 1, vx, vz);
+    from = next;
+  }
+}
 function collide() {
   const P = player;
   for (let i = pBullets.length - 1; i >= 0; i--) {
@@ -2632,7 +2657,13 @@ function collide() {
       const e = enemies[j];
       if (e.dead || e.spawn > 0) continue;
       const dx = e.x - b.x, dz = e.z - b.z, rr = e.r + 0.3;
-      if (dx * dx + dz * dz < rr * rr) { damageEnemy(e, b.dmg, b.vx, b.vz); hit = true; break; }
+      if (dx * dx + dz * dz < rr * rr && !b.struck?.has(e)) {
+        b.struck?.add(e);
+        damageEnemy(e, b.dmg, b.vx, b.vz);
+        if (b.kind === 'chain') chainArc(e, b.vx, b.vz);
+        if (b.pierce > 0) { b.pierce--; continue; }
+        hit = true; break;
+      }
     }
     if (!hit) hit = boss.hitTest(b);
     if (hit) removeAt(pBullets, i, pbPool);
@@ -2905,6 +2936,7 @@ function updateHUD(rdt) {
   setHidden(hud.pw.shield, 'pw-shield', !P.shield);
   const od = $('pw-overdrive');
   setHidden(od, 'pw-overdrive', !(P.overdrive > 0));
+  put(od.querySelector('span'), 'specialMode', P.special === 'rail' ? 'RAILGUN' : 'CHAIN ARC');
   setBar(od.querySelector('i'), 'pwb-overdrive', (P.overdrive || 0) / 8);
   const ready = (1 - P.dashCd / DASH_CD).toFixed(2);
   if (hud.cache.get('dashReady') !== ready) { hud.cache.set('dashReady', ready); hud.dashBtn.style.setProperty('--ready', ready); }
@@ -2977,7 +3009,7 @@ function clearWorld() {
 function resetPlayer() {
   Object.assign(player, {
     x: 0, z: HZ * 0.25, vx: 0, vz: 0, yaw: Math.PI, bank: 0, aimX: 0, aimZ: -1, alive: true, lives: 3, bombs: 2, shield: 0,
-    invuln: 1.5, fireCd: 0, dashCd: 0, dashT: -1, dashId: 0, bombCd: 0, ghostT: 0, spread: 0, rapid: 0, homing: 0, overdrive: 0,
+    invuln: 1.5, fireCd: 0, dashCd: 0, dashT: -1, dashId: 0, bombCd: 0, ghostT: 0, spread: 0, rapid: 0, homing: 0, overdrive: 0, special: 'normal',
   });
   trail.reset();
 }
@@ -3200,10 +3232,10 @@ function renderBullets() {
   for (let i = 0; i < nP; i++) {
     const b = pBullets[i];
     _q.setFromAxisAngle(UP, Math.atan2(b.vx, b.vz));
-    _p.set(b.x, ENTITY_Y, b.z); _s.set(1, 1, 1);
+    _p.set(b.x, ENTITY_Y, b.z); _s.set(1, 1, b.kind === 'rail' ? 2.4 : 1);
     _m.compose(_p, _q, _s);
     pbMesh.setMatrixAt(i, _m);
-    pbMesh.setColorAt(i, b.homing ? COL.pbHoming : COL.pb);
+    pbMesh.setColorAt(i, b.kind === 'rail' ? COL.white : b.kind === 'chain' || b.homing ? COL.pbHoming : COL.pb);
   }
   pbMesh.count = nP;
   pbMesh.instanceMatrix.needsUpdate = true;
