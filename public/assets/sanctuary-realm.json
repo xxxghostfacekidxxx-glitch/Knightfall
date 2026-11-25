@@ -410,6 +410,110 @@
           "status": "Draft; primary work review pending"
         }
       ]
+    },
+    {
+      "title": "Spirit Realm and afterlife",
+      "entries": [
+        {
+          "title": "Spirit Realm",
+          "body": "A sacred parallel plane formed during the changing of the Worldstone; human belief influences its shape.",
+          "source": "Spiritborn",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/24107497/awaken-the-ferocity-of-a-new-class-spiritborn",
+          "status": "Supported by official overview; detailed campaign review pending"
+        },
+        {
+          "title": "Akarat",
+          "body": "A prophet of Xiansai and Nahantu ancestry who explored the Spirit Realm and taught humanity's inner capacity to resist darkness.",
+          "source": "Spiritborn",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/24107497/awaken-the-ferocity-of-a-new-class-spiritborn",
+          "status": "Supported by official overview; detailed campaign review pending"
+        },
+        {
+          "title": "Ysevete",
+          "body": "Akarat's disciple whose teachings helped establish Spiritborn culture.",
+          "source": "Spiritborn",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/24107497/awaken-the-ferocity-of-a-new-class-spiritborn",
+          "status": "Supported by official overview; detailed campaign review pending"
+        },
+        {
+          "title": "Spirit Guardians",
+          "body": "Jaguar, Gorilla, Eagle and Centipede exemplify distinct relationships between humanity and nature.",
+          "source": "Spiritborn",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/24107497/awaken-the-ferocity-of-a-new-class-spiritborn",
+          "status": "Supported by official overview; detailed campaign review pending"
+        },
+        {
+          "title": "Spiritborn funerary belief",
+          "body": "Followers aspire to join the Spirit Realm after death and protect harmony between worlds.",
+          "source": "Spiritborn",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/24107497/awaken-the-ferocity-of-a-new-class-spiritborn",
+          "status": "Supported by official overview; detailed campaign review pending"
+        }
+      ]
+    },
+    {
+      "title": "Skovos and the Firstborn",
+      "entries": [
+        {
+          "title": "Askari",
+          "body": "The people of Skovos, governed by an Amazon Queen and an Oracle Queen.",
+          "source": "Skovos",
+          "sourceUrl": "https://news.blizzard.com/en-gb/article/24247511/stand-against-mephisto-pre-purchase-lord-of-hatred",
+          "status": "Supported by official overview; detailed campaign review pending"
+        },
+        {
+          "title": "Firstborn civilization",
+          "body": "Skovos is described as the original home of Sanctuary's creators and an early center of civilization.",
+          "source": "Skovos",
+          "sourceUrl": "https://news.blizzard.com/en-gb/article/24247511/stand-against-mephisto-pre-purchase-lord-of-hatred",
+          "status": "Supported by official overview; detailed campaign review pending"
+        },
+        {
+          "title": "Temis",
+          "body": "Capital of Skovos and setting for the arrival of a mysterious prophet.",
+          "source": "Skovos",
+          "sourceUrl": "https://news.blizzard.com/en-gb/article/24247511/stand-against-mephisto-pre-purchase-lord-of-hatred",
+          "status": "Supported by official overview; detailed campaign review pending"
+        }
+      ]
+    },
+    {
+      "title": "Age of Hatred",
+      "entries": [
+        {
+          "title": "Lord of Hatred",
+          "body": "The 2026 expansion moves the struggle against Mephisto to Skovos.",
+          "source": "Lord of Hatred",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/24267729/prepare-for-the-reckoning-lord-of-hatred-draws-near",
+          "status": "Supported by official overview; detailed campaign review pending"
+        },
+        {
+          "title": "Paladins",
+          "body": "Warriors whose understanding of the Light permits righteous mortals to draw upon it.",
+          "source": "Lord of Hatred",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/24267729/prepare-for-the-reckoning-lord-of-hatred-draws-near",
+          "status": "Supported by official overview; detailed campaign review pending"
+        },
+        {
+          "title": "Warlocks",
+          "body": "Practitioners who turn infernal powers against their demonic adversaries.",
+          "source": "Lord of Hatred",
+          "sourceUrl": "https://news.blizzard.com/en-us/article/24267729/prepare-for-the-reckoning-lord-of-hatred-draws-near",
+          "status": "Supported by official overview; detailed campaign review pending"
+        }
+      ]
+    },
+    {
+      "title": "Seasonal narratives",
+      "entries": [
+        {
+          "title": "Cult of the Dead",
+          "body": "A continuing seasonal storyline concerns returning dead and the cult's purposes; distinguish seasonal narrative from campaign chronology.",
+          "source": "Seasonal lore",
+          "sourceUrl": "https://news.blizzard.com/en-gb/article/24297205/diablo-iv-what-s-next-panel-recap",
+          "status": "Supported by official overview; detailed campaign review pending"
+        }
+      ]
     }
   ],
   "references": [
@@ -427,6 +531,26 @@
       "title": "Blizzard: Diablo IV Unveiled",
       "url": "https://news.blizzard.com/en-gb/article/23189675/diablo-iv-unveiled",
       "note": "Official background on the aftermath of Diablo III; article reviewed."
+    },
+    {
+      "title": "Spiritborn",
+      "url": "https://news.blizzard.com/en-us/article/24107497/awaken-the-ferocity-of-a-new-class-spiritborn",
+      "note": "Official Blizzard article consulted; supports linked entries."
+    },
+    {
+      "title": "Lord of Hatred",
+      "url": "https://news.blizzard.com/en-us/article/24267729/prepare-for-the-reckoning-lord-of-hatred-draws-near",
+      "note": "Official Blizzard article consulted; supports linked entries."
+    },
+    {
+      "title": "Skovos",
+      "url": "https://news.blizzard.com/en-gb/article/24247511/stand-against-mephisto-pre-purchase-lord-of-hatred",
+      "note": "Official Blizzard article consulted; supports linked entries."
+    },
+    {
+      "title": "Seasonal lore",
+      "url": "https://news.blizzard.com/en-gb/article/24297205/diablo-iv-what-s-next-panel-recap",
+      "note": "Official Blizzard article consulted; supports linked entries."
     }
   ]
 }
