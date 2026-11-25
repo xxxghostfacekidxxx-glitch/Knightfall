@@ -132,3 +132,9 @@
 #miss-chaos-presence .mc-head img{border-color:#ff2f92}
 #miss-chaos-presence #mc-mood{background:#1d1429;color:#d4c4df}
 #miss-chaos-presence.mc-overlay-suspended{visibility:hidden!important;pointer-events:none!important}
+
+/* Keep the assistant launcher independent of theme-wide image/button sizing. */
+#miss-chaos-presence #miss-chaos-launcher{box-sizing:border-box!important;display:grid!important;place-items:center!important;flex:0 0 52px!important;width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;max-width:52px!important;max-height:52px!important;aspect-ratio:1;border-radius:50%!important;padding:3px!important;overflow:visible!important}
+#miss-chaos-presence #miss-chaos-launcher>span:first-child{display:block!important;position:relative;width:44px!important;height:44px!important;flex:none}
+#miss-chaos-presence #miss-chaos-launcher img{display:block!important;box-sizing:border-box!important;width:44px!important;height:44px!important;max-width:none!important;max-height:none!important;object-fit:contain!important;aspect-ratio:1;transform:none!important;border-radius:50%!important}
+#miss-chaos-presence[data-minimized="true"] #mc-dock #miss-chaos-launcher{display:none!important}
