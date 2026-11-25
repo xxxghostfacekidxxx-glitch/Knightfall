@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "force-1",
+      "category": "forms",
+      "title": "Shii-Cho",
+      "body": "Foundational form emphasizing broad movements and basic blade control.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars lightsaber reference works; exact edition pending review"
+    },
+    {
+      "id": "force-2",
+      "category": "forms",
+      "title": "Makashi",
+      "body": "Dueling tradition emphasizing precision and economy.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars lightsaber reference works; exact edition pending review"
+    },
+    {
+      "id": "force-3",
+      "category": "forms",
+      "title": "Soresu",
+      "body": "Defensive tradition associated with patience and protection.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars lightsaber reference works; exact edition pending review"
+    },
+    {
+      "id": "force-4",
+      "category": "forms",
+      "title": "Ataru",
+      "body": "Mobile, acrobatic tradition associated with Force-assisted movement.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars lightsaber reference works; exact edition pending review"
+    },
+    {
+      "id": "force-5",
+      "category": "forms",
+      "title": "Shien / Djem So",
+      "body": "Related traditions emphasizing defense and counteroffense.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars lightsaber reference works; exact edition pending review"
+    },
+    {
+      "id": "force-6",
+      "category": "forms",
+      "title": "Niman",
+      "body": "Integrative tradition balancing multiple approaches.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars lightsaber reference works; exact edition pending review"
+    },
+    {
+      "id": "force-7",
+      "category": "forms",
+      "title": "Juyo / Vaapad",
+      "body": "Related advanced traditions associated with intensity; Vaapad is particularly associated with Mace Windu.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars lightsaber reference works; exact edition pending review"
+    },
+    {
+      "id": "force-8",
+      "category": "abilities",
+      "title": "Telekinesis",
+      "body": "Fictional manipulation of objects through the Force.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-9",
+      "category": "abilities",
+      "title": "Force sense",
+      "body": "Fictional perception of presences, emotions and disturbances.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-10",
+      "category": "abilities",
+      "title": "Precognition",
+      "body": "Fictional perception of possible future events, often ambiguous.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-11",
+      "category": "abilities",
+      "title": "Mind trick",
+      "body": "Fictional influence over another person's perception or judgment.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-12",
+      "category": "abilities",
+      "title": "Force lightning",
+      "body": "Fictional destructive energy associated primarily with dark-side practitioners.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-13",
+      "category": "abilities",
+      "title": "Force healing",
+      "body": "Fictional restoration of injuries or vitality, with portrayals varying by continuity.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-14",
+      "category": "abilities",
+      "title": "Force projection",
+      "body": "Fictional manifestation of an image across distance.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-15",
+      "category": "abilities",
+      "title": "Force bond",
+      "body": "Fictional connection between individuals through the Force.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-16",
+      "category": "abilities",
+      "title": "Psychometry",
+      "body": "Fictional perception of impressions associated with objects.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    },
+    {
+      "id": "force-17",
+      "category": "abilities",
+      "title": "Force ghost",
+      "body": "Fictional preservation of identity after death in certain Force traditions.",
+      "classification": "Fictional lore; continuity-specific details pending review",
+      "status": "Editorial draft",
+      "source": "Star Wars films and licensed stories; exact source pending review"
+    }
+  ]
+}
