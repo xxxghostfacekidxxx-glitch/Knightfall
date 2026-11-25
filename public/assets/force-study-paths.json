@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "paths": [
+    {
+      "id": "ancient",
+      "title": "Origins of the Force traditions",
+      "classification": "legends",
+      "units": [
+        "Je'daii and Tython",
+        "Early Jedi schisms",
+        "Ancient Sith civilization",
+        "Great Hyperspace War",
+        "Exar Kun and the Great Sith War"
+      ]
+    },
+    {
+      "id": "old-republic",
+      "title": "Old Republic institutions and conflicts",
+      "classification": "legends",
+      "units": [
+        "Mandalorian Wars",
+        "Revan and Malak",
+        "Jedi Civil War",
+        "Kreia and the Jedi Exile",
+        "Vitiate and the Sith Empire"
+      ]
+    },
+    {
+      "id": "cosmology",
+      "title": "Force cosmology",
+      "classification": "canon",
+      "units": [
+        "Living and Cosmic Force",
+        "Mortis",
+        "Vergences",
+        "World Between Worlds",
+        "Force spirits"
+      ]
+    },
+    {
+      "id": "comparative",
+      "title": "Comparative philosophy",
+      "classification": "philosophy",
+      "units": [
+        "Stoic agency",
+        "Buddhist impermanence",
+        "Daoist noncoercive action",
+        "Nietzschean self-overcoming",
+        "Ancient theories of soul"
+      ]
+    }
+  ],
+  "status": "Proposed reading sequences, not accredited courses or verified source summaries."
+}
