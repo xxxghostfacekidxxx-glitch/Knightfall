@@ -65,21 +65,26 @@ const jobs=[
 // logs, which previously hid the first real failure after thousands of passes.
 // Every job still runs and blocks publication on a nonzero exit.
 const failures=[];
+const releaseStarted=Date.now();
+console.log(`PAGES RELEASE START: ${jobs.length} checks; Node ${process.version}`);
 for(const [label,args] of jobs){
+ const started=Date.now();
+ console.log("PAGES RELEASE CHECK: "+label);
  const result=spawnSync(process.execPath,args,{
   encoding:"utf8",maxBuffer:32*1024*1024,timeout:120000
  });
  if(result.error||result.status!==0){
   const output=[result.stdout||"",result.stderr||""].filter(Boolean).join("\n");
   console.error("\nPAGES RELEASE GUARD FAILURE: "+label);
-  if(output)console.error(output.slice(-40000));
+  if(output)console.error(output.slice(-6000));
   console.error("PAGES RELEASE BLOCKED: "+label+
    (result.error?": "+String(result.error):" (exit "+result.status+")"));
   process.exitCode=1;
   failures.push(label);
   continue;
  }
- console.log("PAGES RELEASE GUARD PASS: "+label);
+ console.log("PAGES RELEASE GUARD PASS: "+label+" ("+(Date.now()-started)+"ms)");
 }
+console.log(`PAGES RELEASE TOTAL: ${jobs.length-failures.length}/${jobs.length} passed in ${Date.now()-releaseStarted}ms`);
 if(failures.length)console.error("\nPAGES RELEASE FAILURE SUMMARY: "+failures.join("; "));
 if(!process.exitCode)console.log("\nPAGES RELEASE GATE PASSED: original Knightfall Textract requires no third-party build downloads.");
