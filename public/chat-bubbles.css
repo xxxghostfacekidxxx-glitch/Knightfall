@@ -273,3 +273,12 @@
 #kf-chat-heads .kf-chat-attachment:hover{border-color:#f6b4dc}
 #kf-chat-heads .kf-chat-attachment-image{display:block;width:auto;max-width:100%;max-height:180px;object-fit:contain;border-radius:7px;margin:auto}
 #kf-chat-heads .kf-chat-attachment-label{font-size:12px;overflow-wrap:anywhere;line-height:1.4}
+
+/* Compact upload controls and conversation-local attachment drafts. */
+#kf-chat-heads .kf-chat-compose{flex-wrap:wrap}
+#kf-chat-heads #kf-chat-attach{padding:5px 9px;border:1px solid #6e5677;border-radius:9px;background:#28202f;color:#f2dfc7;font-size:12px}
+#kf-chat-heads #kf-chat-attach:disabled{opacity:.55;cursor:not-allowed}
+#kf-chat-heads .kf-chat-pending{display:flex;flex:0 0 100%;flex-wrap:wrap;gap:5px;max-height:92px;overflow:auto;min-width:0}
+#kf-chat-heads .kf-chat-pending-chip{display:flex;align-items:center;gap:6px;max-width:100%;border:1px solid #af86b15c;border-radius:8px;padding:3px 6px;background:#171322}
+#kf-chat-heads .kf-chat-pending-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+#kf-chat-heads .kf-chat-pending-remove{flex:none;border:0;border-radius:5px;background:#49314e;color:white;min-width:24px;min-height:24px}

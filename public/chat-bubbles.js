@@ -30,6 +30,7 @@
   }
   const state={conversations:[],heads:[],active:null,visible:false,loading:false,sending:false,threadToken:0,unread:0,lastThreadKey:""};
   const messageSendQueues=new Map();
+  const attachmentDrafts=new Map(),uploadingConversations=new Set();
   // Invite content stays a local draft until its recipient deliberately sends it.
   let pendingShare="";
   const validId=value=>Number.isSafeInteger(Number(value))&&Number(value)>0?Number(value):null;
@@ -64,7 +65,7 @@ async function api(path,opts={}){
  if(external?.aborted)abort();else external?.addEventListener("abort",abort,{once:true});
  const timer=setTimeout(abort,30000);
  try{
-  const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{"content-type":"application/json",...(opts.headers||{})}});
+  const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{...(opts.body instanceof FormData?{}:{"content-type":"application/json"}),...(opts.headers||{})}});
   const data=await response.json().catch(()=>null);
   if(!response.ok)throw Error(data?.error||("Messaging API returned HTTP "+response.status));
   if(!data||typeof data!=="object"||Array.isArray(data))throw Error("Invalid messaging response. Please retry.");
@@ -79,7 +80,7 @@ async function api(path,opts={}){
   const dock=el("aside","kf-chat-dock");
   dock.id="kf-chat-heads";
   dock.setAttribute("aria-label","Chaosphere conversations");
-  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><div class="kf-chat-emoji-tools"><button id="kf-chat-emoji-toggle" type="button" aria-expanded="false" aria-controls="kf-chat-emoji-tray" aria-label="Show Knightfall emojis">☻ Emoji</button><div id="kf-chat-emoji-tray" class="kf-emoji-tray" aria-label="Knightfall custom emojis" hidden></div></div><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
+  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><div class="kf-chat-emoji-tools"><button id="kf-chat-emoji-toggle" type="button" aria-expanded="false" aria-controls="kf-chat-emoji-tray" aria-label="Show Knightfall emojis">☻ Emoji</button><button id="kf-chat-attach" type="button" aria-label="Attach files">📎 Attach</button><input id="kf-chat-file" type="file" accept="image/*,application/pdf,text/plain,.docx" multiple hidden><div id="kf-chat-pending" class="kf-chat-pending" hidden></div><div id="kf-chat-emoji-tray" class="kf-emoji-tray" aria-label="Knightfall custom emojis" hidden></div></div><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
   // Host outside the page body so transformed game/page wrappers cannot clip or resize chat.
   document.documentElement.append(dock);
   function syncBubbleViewport(){
@@ -345,6 +346,7 @@ async function api(path,opts={}){
     const blocked=!!Number(selected.messaging_blocked);
     input.disabled=blocked;
     $("#kf-chat-send").disabled=blocked;
+    drawAttachmentDraft();
     if(blocked)announce("Messaging is unavailable in this conversation.");
   }
   function renderMessages(messages,conversationId){
@@ -474,10 +476,63 @@ async function api(path,opts={}){
   dock.addEventListener("click",event=>{
     if(event.target===dock&&dock.classList.contains("kf-chat-expanded"))setVisible(false);
   });
+  const attachButton=$("#kf-chat-attach"),filePicker=$("#kf-chat-file"),pendingBox=$("#kf-chat-pending");
+  let photoLoader;
+  function preparePhoto(file){
+    if(window.KnightfallPhotoUpload?.prepareAttachment)return window.KnightfallPhotoUpload.prepareAttachment(file);
+    if(!photoLoader)photoLoader=new Promise((resolve,reject)=>{
+      const script=document.createElement("script");script.src="/photo-upload.js?v=1";
+      script.onload=()=>resolve();script.onerror=()=>{photoLoader=null;script.remove();reject(Error("Photo preparation unavailable"));};
+      document.head.append(script);
+    });
+    return photoLoader.then(()=>window.KnightfallPhotoUpload.prepareAttachment(file));
+  }
+  function drawAttachmentDraft(){
+    const id=state.active,items=attachmentDrafts.get(id)||[],busy=uploadingConversations.has(id),blocked=!!Number(getConversation(id)?.messaging_blocked);
+    attachButton.disabled=!id||busy||blocked;
+    attachButton.textContent=busy?"Uploading…":"📎 Attach";
+    pendingBox.replaceChildren();pendingBox.hidden=!items.length;
+    for(const a of items){
+      const chip=el("span","kf-chat-pending-chip");
+      chip.append(el("span","kf-chat-pending-name",String(a.filename||"Attachment")));
+      const remove=el("button","kf-chat-pending-remove","×");remove.type="button";remove.setAttribute("aria-label","Remove "+String(a.filename||"attachment"));
+      remove.addEventListener("click",async()=>{
+        remove.disabled=true;
+        try{await api("/api/messages/attachments/"+Number(a.id),{method:"DELETE"});attachmentDrafts.set(id,(attachmentDrafts.get(id)||[]).filter(x=>x.id!==a.id));if(state.active===id)drawAttachmentDraft();}
+        catch(error){remove.disabled=false;if(state.active===id)announce("Could not remove file: "+error.message);}
+      });
+      chip.append(remove);pendingBox.append(chip);
+    }
+  }
+  attachButton.addEventListener("click",()=>filePicker.click());
+  filePicker.addEventListener("change",async()=>{
+    const id=state.active,files=Array.from(filePicker.files||[]);filePicker.value="";
+    if(!id||!files.length||uploadingConversations.has(id)||Number(getConversation(id)?.messaging_blocked))return;
+    if((attachmentDrafts.get(id)||[]).length+files.length>10){announce("Attach at most 10 files per message.");return;}
+    uploadingConversations.add(id);drawAttachmentDraft();const errors=[];
+    try{
+      for(const file of files){
+        try{
+          const prepared=await preparePhoto(file);
+          if(!prepared.size||prepared.size>10485760)throw Error("Choose a file up to 10 MB.");
+          const form=new FormData();form.append("file",prepared);
+          const data=await api("/api/messages/conversations/"+id+"/attachments",{method:"POST",body:form});
+          if(!validId(data.id))throw Error("Invalid upload response.");
+          attachmentDrafts.set(id,[...(attachmentDrafts.get(id)||[]),data]);
+          if(state.active===id)drawAttachmentDraft();
+        }catch(error){errors.push(file.name+": "+error.message);}
+      }
+      if(state.active===id)announce(errors.join(" · ")||"Attachments ready to send.");
+    }finally{uploadingConversations.delete(id);if(state.active===id)drawAttachmentDraft();}
+  });
   composer.addEventListener("submit",async event=>{
     event.preventDefault();
     const id=state.active,original=input.value,body=original.trim();
-    if(!id||!body||Number(getConversation(id)?.messaging_blocked))return;
+    const attachments=attachmentDrafts.get(id)||[],attachment_ids=attachments.map(a=>Number(a.id));
+    if(!id||(!body&&!attachment_ids.length)||Number(getConversation(id)?.messaging_blocked))return;
+    if(uploadingConversations.has(id)){announce("Finish uploading before sending.");return;}
+    if(body.length>4000||attachment_ids.length>10){announce("Split this draft into smaller messages before sending.");return;}
+    attachmentDrafts.delete(id);drawAttachmentDraft();
     // Accept consecutive sends immediately; the network can finish each in
     // order without locking the textarea or making the member reopen the chat.
     if(state.active===id&&input.value===original){
@@ -489,7 +544,7 @@ async function api(path,opts={}){
     const queued=previous.catch(()=>{}).then(async()=>{
       state.sending=true;
       try{
-        await api("/api/messages/conversations/"+id,{method:"POST",body:JSON.stringify({body})});
+        await api("/api/messages/conversations/"+id,{method:"POST",body:JSON.stringify({body,attachment_ids})});
         if(state.active===id)announce("Message sent.");
         impReact("sent");
         void (async()=>{
@@ -501,6 +556,8 @@ async function api(path,opts={}){
           }
         })();
       }catch(error){
+        attachmentDrafts.set(id,[...attachments,...(attachmentDrafts.get(id)||[])]);
+        if(state.active===id)drawAttachmentDraft();
         const old=drafts.get(id)||"";
         if(state.active===id){
           input.value=input.value?original+"\n"+input.value:original;
@@ -516,6 +573,7 @@ async function api(path,opts={}){
           // live chat or leave its composer disabled.
           renderPanel();
           composer.hidden=false;
+          drawAttachmentDraft();
           input.disabled=!!Number(getConversation(id)?.messaging_blocked);
           $("#kf-chat-send").disabled=!!Number(getConversation(id)?.messaging_blocked);
         }
