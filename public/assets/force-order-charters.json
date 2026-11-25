@@ -30,5 +30,45 @@
       "oath": "I choose to shape my life through deliberate will. I shall examine my passions, confront my limitations and accept the consequences of my choices. My strength shall not require another's captivity.",
       "leadership": "Teachers demonstrate competence, discipline, transparency and respect for voluntary participation."
     }
-  ]
+  ],
+  "shared": {
+    "title": "The Covenant of Two Orders",
+    "tagline": "Two Orders. Eight Masters. One Grand Holocron.",
+    "principles": [
+      "Membership and departure are voluntary.",
+      "No oath overrides personal autonomy or applicable law.",
+      "Disagreement between Orders is not grounds for harassment.",
+      "Teachers disclose uncertainty and distinguish fiction from original spiritual doctrine.",
+      "Leadership decisions should be explainable and subject to review."
+    ],
+    "ceremonies": [
+      {
+        "title": "Crossing the Threshold",
+        "purpose": "Welcome new participants without requiring an oath.",
+        "steps": [
+          "Explain the Order's principles and voluntary nature.",
+          "Invite the participant to identify a personal learning goal.",
+          "Offer a private reflection or optional public introduction."
+        ]
+      },
+      {
+        "title": "Recognition of Learning",
+        "purpose": "Celebrate demonstrated learning without automatic rank advancement.",
+        "steps": [
+          "Invite the learner to describe a completed study or practice.",
+          "Offer specific feedback and acknowledge limitations.",
+          "Record recognition only with consent."
+        ]
+      },
+      {
+        "title": "Returning to the Path",
+        "purpose": "Welcome participants after an absence without punishment.",
+        "steps": [
+          "Ask what support the participant wants.",
+          "Agree on a manageable next step.",
+          "Allow the participant to decline any ceremony."
+        ]
+      }
+    ]
+  }
 }
