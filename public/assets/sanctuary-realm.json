@@ -1,39 +1,37 @@
 {
   "version": 1,
   "status": "Editorial draft; source review pending",
-  "policy": "Independent fan studies. Fictional Diablo lore is distinct from original Knightfall philosophy. No affiliation with Blizzard.",
+  "policy": "Independent fictional mythology archive; religious overview describes in-universe beliefs, not real-world doctrine. No affiliation with Blizzard. Suggested sources require editorial verification.",
   "traditions": [
     {
       "id": "heavens",
-      "title": "Covenant of the High Heavens",
-      "tagline": "Even light must answer to truth.",
+      "title": "The High Heavens",
+      "tagline": "Celestial order and the Eternal Conflict",
       "principles": [
-        "Justice with accountability",
-        "Hope without denial",
-        "Wisdom through inquiry",
-        "Courage without cruelty"
+        "Angiris Council",
+        "Angelic aspects",
+        "The Crystal Arch"
       ]
     },
     {
       "id": "hells",
-      "title": "Infernal Ascendancy",
-      "tagline": "Everything burns. Something remains.",
+      "title": "The Burning Hells",
+      "tagline": "The Great Evils and infernal dominion",
       "principles": [
-        "Ambition with responsibility",
-        "Strength through discipline",
-        "Confrontation of fear",
-        "Autonomy without coercion"
+        "Prime Evils",
+        "Lesser Evils",
+        "Infernal rivalries"
       ]
     },
     {
       "id": "sanctuary",
-      "title": "The Freeborn Covenant",
-      "tagline": "Neither Heaven nor Hell owns our souls.",
+      "title": "Faiths of Sanctuary",
+      "tagline": "Humanity between Heaven and Hell",
       "principles": [
-        "Freedom of conscience",
-        "Human dignity",
-        "Independent judgment",
-        "Solidarity across traditions"
+        "Cathedral of Light",
+        "Triune",
+        "Zakarum",
+        "Rathma and the Balance"
       ]
     }
   ],
@@ -77,6 +75,118 @@
       "title": "The Return of Lilith",
       "body": "Lilith returns to Sanctuary amid religious conflict and competing visions for humanity.",
       "source": "Diablo IV"
+    }
+  ],
+  "sections": [
+    {
+      "title": "Cosmology",
+      "entries": [
+        {
+          "title": "Anu and Tathamet",
+          "body": "Creation myth describing primordial unity, division and the origins of the cosmic conflict.",
+          "source": "Book of Cain"
+        },
+        {
+          "title": "Crystal Arch",
+          "body": "Celestial structure associated with the birth of angels.",
+          "source": "Diablo III"
+        },
+        {
+          "title": "Pandemonium",
+          "body": "Contested cosmic region associated with the Eternal Conflict and the Worldstone.",
+          "source": "Diablo III: Reaper of Souls"
+        }
+      ]
+    },
+    {
+      "title": "Celestial powers",
+      "entries": [
+        {
+          "title": "Angiris Council",
+          "body": "Council of archangels associated with Valor, Justice, Hope, Fate and Wisdom.",
+          "source": "Diablo III"
+        },
+        {
+          "title": "Tyrael",
+          "body": "Archangel of Justice who later relinquishes his angelic nature.",
+          "source": "Diablo III"
+        },
+        {
+          "title": "Malthael",
+          "body": "Former Archangel of Wisdom who becomes the Angel of Death.",
+          "source": "Reaper of Souls"
+        }
+      ]
+    },
+    {
+      "title": "Infernal powers",
+      "entries": [
+        {
+          "title": "Prime Evils",
+          "body": "Diablo, Mephisto and Baal embody Terror, Hatred and Destruction.",
+          "source": "Diablo II"
+        },
+        {
+          "title": "Lesser Evils",
+          "body": "Andariel, Duriel, Belial and Azmodan embody Anguish, Pain, Lies and Sin.",
+          "source": "Diablo II; Diablo III"
+        },
+        {
+          "title": "Lilith",
+          "body": "Daughter of Mephisto and co-creator of Sanctuary.",
+          "source": "Diablo IV"
+        }
+      ]
+    },
+    {
+      "title": "Religions and factions",
+      "entries": [
+        {
+          "title": "Cathedral of Light",
+          "body": "Faith centered on Inarius in the Sin War and later manifestations.",
+          "source": "The Sin War; Diablo IV"
+        },
+        {
+          "title": "Triune",
+          "body": "Religious organization associated with the influence of the Prime Evils.",
+          "source": "The Sin War"
+        },
+        {
+          "title": "Zakarum",
+          "body": "Faith of the Light whose institutions are infiltrated by Mephisto.",
+          "source": "Diablo II"
+        },
+        {
+          "title": "Priests of Rathma",
+          "body": "Necromantic tradition concerned with maintaining the Balance.",
+          "source": "Diablo II; Diablo IV"
+        },
+        {
+          "title": "Horadrim",
+          "body": "Order of scholars and mages founded to combat the Prime Evils.",
+          "source": "Diablo II; Diablo III"
+        }
+      ]
+    },
+    {
+      "title": "Sacred relics",
+      "entries": [
+        {
+          "title": "Soulstones",
+          "body": "Artifacts used to contain powerful demonic essences, with dangerous consequences.",
+          "source": "Diablo; Diablo II"
+        },
+        {
+          "title": "Black Soulstone",
+          "body": "Artifact created by Zoltun Kulle that can contain angelic and demonic souls.",
+          "source": "Diablo III"
+        },
+        {
+          "title": "Worldstone",
+          "body": "Artifact central to Sanctuary's creation and the suppression of nephalem power.",
+          "source": "Diablo II; Diablo III"
+        }
+      ]
     }
   ]
 }
