@@ -8,14 +8,6 @@
  ["Appeals","A member should receive reasons for a decision and an opportunity to request independent review. No spiritual rank overrides site safety rules."],
  ["Limits of authority","Council roles would govern voluntary community activities only. No authority over personal finances, relationships, medical decisions or freedom to leave."]
  ]);
- section("Voluntary ceremonial practices",s?[
- ["Dedication of the flame","Name a freely chosen goal, identify its costs and limits, and choose one responsible action."],
- ["Trial of reflection","Review a setback, identify your contribution and decide what you will change."],
- ["Recognition of achievement","Describe demonstrated progress and acknowledge assistance received."]
- ]:[
- ["Dedication of service","Choose a freely undertaken act of service and consider the needs and consent of those affected."],
- ["Reflection of balance","Notice competing responsibilities and identify a compassionate boundary."],
- ["Recognition of learning","Describe a lesson learned, acknowledge uncertainty and choose a next step."]
- ]);
+ const ceremonyHost=document.createElement("section");ceremonyHost.className="realm-card";hall.append(ceremonyHost);const heading=document.createElement("h2");heading.textContent="Voluntary ceremonial practices";ceremonyHost.append(heading);fetch("/assets/force-ceremonies.json").then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{for(const e of data.ceremonies.filter(e=>e.order===(s?"sith":"jedi"))){const d=document.createElement("details"),summary=document.createElement("summary");summary.textContent=e.title+(e.alternateTitle?" · "+e.alternateTitle:"");d.append(summary);for(const value of [e.tagline,e.purpose,e.practice,e.status]){const p=document.createElement("p");p.textContent=value;d.append(p)}ceremonyHost.append(d)}}).catch(()=>{const p=document.createElement("p");p.textContent="Ceremonies unavailable. Reload to retry.";ceremonyHost.append(p)});const link=document.createElement("a");link.href="/force-order-charters.html";link.textContent="Read the full Order charters";ceremonyHost.append(link);
  const note=document.createElement("p");note.className="realm-note";note.textContent="Draft practices for community review. No ceremony records, appointments, votes or binding decisions are created by this page.";hall.append(note);
 })();
