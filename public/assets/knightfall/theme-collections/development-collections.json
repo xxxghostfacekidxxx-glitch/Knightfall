@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "status": "development",
+  "collections": [
+    {
+      "slug": "jedi-sanctuary",
+      "name": "Jedi Sanctuary",
+      "palette": {
+        "background": "#142b46",
+        "text": "#8edcff",
+        "accent": "#d8b779"
+      },
+      "assets": {
+        "header": "jedi-sanctuary/header.svg"
+      },
+      "originalArtworkStatus": "pending binary upload",
+      "publishable": false
+    },
+    {
+      "slug": "neon-dystopia",
+      "name": "Neon Dystopia",
+      "palette": {
+        "background": "#17101e",
+        "text": "#d5ff42",
+        "accent": "#ff38b8"
+      },
+      "assets": {
+        "header": "neon-dystopia/header.svg"
+      },
+      "originalArtworkStatus": "pending binary upload",
+      "publishable": false
+    },
+    {
+      "slug": "the-asylum",
+      "name": "The Asylum",
+      "palette": {
+        "background": "#21151a",
+        "text": "#e5c5b0",
+        "accent": "#a52e45"
+      },
+      "assets": {
+        "header": "the-asylum/header.svg"
+      },
+      "originalArtworkStatus": "pending binary upload",
+      "publishable": false
+    },
+    {
+      "slug": "arcade-anarchy",
+      "name": "Arcade Anarchy",
+      "palette": {
+        "background": "#17102f",
+        "text": "#40eaff",
+        "accent": "#e83cff"
+      },
+      "assets": {
+        "header": "arcade-anarchy/header.svg"
+      },
+      "originalArtworkStatus": "pending binary upload",
+      "publishable": false
+    },
+    {
+      "slug": "astral-dominion",
+      "name": "Astral Dominion",
+      "palette": {
+        "background": "#171735",
+        "text": "#d8dfff",
+        "accent": "#9784ef"
+      },
+      "assets": {
+        "header": "astral-dominion/header.svg"
+      },
+      "originalArtworkStatus": "pending binary upload",
+      "publishable": false
+    }
+  ]
+}
