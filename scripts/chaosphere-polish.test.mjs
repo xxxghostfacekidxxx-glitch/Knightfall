@@ -151,6 +151,13 @@ test("Message bubbles show safe sender avatars or readable initials",()=>{
 test("Broken sender pictures hide correctly despite explicit image display styling",()=>{
  assert.match(css,/\.cs-message-avatar \.message-avatar-img\[hidden\]/);
  assert.match(css,/\.cs-message-avatar \.cs-message-initial\[hidden\]\{display:none!important\}/);
- assert.match(html,/let composerEpoch=0,sendingConversation=null,sendingAttachmentIds=new Set\(\),lastOwnMessageId=null;/);
+ assert.match(html,/const attachmentDrafts=new Map\(\)/);
  assert.match(html,/onerror="this.hidden=true;this.nextElementSibling.hidden=false"/);
+});
+
+test("Attachment drafts stay isolated across conversation switches and failed sends",()=>{
+ assert.match(html,/attachmentDrafts\.set\(previousId,pendingAttachments\)/);
+ assert.match(html,/pendingAttachments=attachmentDrafts\.get\(Number\(id\)\)\|\|\[\]/);
+ assert.match(html,/attachmentDrafts\.set\(conversationId,\[\.\.\.queuedAttachments,/);
+ assert.doesNotMatch(html,/sendingAttachmentIds|discardPendingAttachments/);
 });
