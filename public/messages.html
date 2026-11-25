@@ -134,6 +134,16 @@ function rememberConversationDraft(id,body){
  persistConversationDrafts();
 }
 let composerEpoch=0,lastOwnMessageId=null;const attachmentDrafts=new Map();
+let attachmentPickerConversation=null;
+function loadInboxAttachmentDrafts(){
+ attachmentDrafts.clear();if(!currentUser?.id)return;
+ try{const entries=JSON.parse(sessionStorage.getItem("kf-inbox-attachment-drafts-"+currentUser.id)||"[]");if(!Array.isArray(entries))return;for(const row of entries.slice(-30)){if(!Array.isArray(row)||!Number.isSafeInteger(Number(row[0]))||Number(row[0])<1||!Array.isArray(row[1]))continue;const items=row[1].filter(a=>a&&Number.isSafeInteger(Number(a.id))&&Number(a.id)>0).slice(0,10).map(a=>({id:Number(a.id),filename:String(a.filename||"Attachment").slice(0,180),byte_size:Math.max(0,Number(a.byte_size)||0)}));if(items.length)attachmentDrafts.set(Number(row[0]),items);}}catch{}
+}
+function persistInboxAttachmentDrafts(){
+ if(!currentUser?.id)return;
+ const drafts=new Map(attachmentDrafts);if(currentId){if(pendingAttachments.length)drafts.set(Number(currentId),pendingAttachments);else drafts.delete(Number(currentId));}
+ try{sessionStorage.setItem("kf-inbox-attachment-drafts-"+currentUser.id,JSON.stringify([...drafts.entries()].filter(([,items])=>items.length).slice(-30)));}catch{}
+}
 const messageSendQueues=new Map();
 let historyPinnedConversationId=null;
  let latestRenderedFingerprint=null,latestRenderedConversation=null;
@@ -144,7 +154,7 @@ async function api(path,opts={}){
  if(external?.aborted)abort();else external?.addEventListener("abort",abort,{once:true});
  const timer=setTimeout(abort,30000);
  try{
-  const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{"content-type":"application/json",...(opts.headers||{})}});
+  const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{...(opts.body instanceof FormData?{}:{"content-type":"application/json"}),...(opts.headers||{})}});
   const data=await response.json().catch(()=>null);
   if(!response.ok)throw Error(data?.error||("Messaging API returned HTTP "+response.status));
   if(!data||typeof data!=="object"||Array.isArray(data))throw Error("Invalid messaging response. Please retry.");
@@ -300,7 +310,7 @@ async function openConversation(id,{scroll=true,beforeMessageId=null,highlightMe
   if(previousId)rememberConversationDraft(previousId,$("#body").value);
   composerEpoch++;clearTimeout(typingHandle);
   if(previousId){sendTypingState(false,previousId);attachmentDrafts.set(previousId,pendingAttachments);}
-  pendingAttachments=attachmentDrafts.get(Number(id))||[];attachmentDrafts.delete(Number(id));drawPendingAttachments();
+  pendingAttachments=attachmentDrafts.get(Number(id))||[];attachmentDrafts.delete(Number(id));currentId=Number(id);drawPendingAttachments();
   $("#body").value=conversationDrafts.get(Number(id))||"";
   $("#body").style.height="auto";
   $("#character-count").textContent=$("#body").value.length.toLocaleString()+" / 4,000";
@@ -437,7 +447,7 @@ $("#composer").onsubmit=async e=>{
    }else{
     const existing=conversationDrafts.get(conversationId)||"";
     rememberConversationDraft(conversationId,existing?draft+"\n"+existing:draft);
-    attachmentDrafts.set(conversationId,[...queuedAttachments,...(attachmentDrafts.get(conversationId)||[])]);
+    attachmentDrafts.set(conversationId,[...queuedAttachments,...(attachmentDrafts.get(conversationId)||[])]);persistInboxAttachmentDrafts();
     status("Message could not send to the previous chat. Draft and attachments saved: "+error.message);
    }
   }finally{
@@ -454,17 +464,18 @@ $("#composer").onsubmit=async e=>{
  return queued;
 };
 
-function drawPendingAttachments(){const box=$("#pending-attachments");if(!pendingAttachments.length){box.hidden=true;box.innerHTML="";return}box.hidden=false;box.innerHTML=pendingAttachments.map(a=>'<span class="pending-attachment"><span>📎 '+esc(a.filename)+' · '+(Number(a.byte_size)/1048576).toFixed(1)+' MB</span><button type="button" data-pending-remove="'+Number(a.id)+'" aria-label="Remove '+esc(a.filename)+'">×</button></span>').join("")}
-async function uploadAttachment(file,conversationId){const form=new FormData();form.append("file",file);const response=await fetch(API+"/api/messages/conversations/"+conversationId+"/attachments",{method:"POST",credentials:"include",cache:"no-store",body:form});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"Upload failed.");return data}
+function drawPendingAttachments(){persistInboxAttachmentDrafts();const box=$("#pending-attachments");if(!pendingAttachments.length){box.hidden=true;box.innerHTML="";return}box.hidden=false;box.innerHTML=pendingAttachments.map(a=>'<span class="pending-attachment"><span>📎 '+esc(a.filename)+' · '+(Number(a.byte_size)/1048576).toFixed(1)+' MB</span><button type="button" data-pending-remove="'+Number(a.id)+'" aria-label="Remove '+esc(a.filename)+'">×</button></span>').join("")}
+async function uploadAttachment(file,conversationId){const form=new FormData();form.append("file",file);const data=await api("/api/messages/conversations/"+conversationId+"/attachments",{method:"POST",body:form});if(!Number.isSafeInteger(Number(data.id))||Number(data.id)<1)throw Error("Invalid upload response.");return data}
 async function deletePendingAttachment(id){try{await api("/api/messages/attachments/"+id,{method:"DELETE"})}catch(e){console.warn("Could not remove pending attachment",e.message)}}
 
-$("#attach-file").onclick=()=>{if(!currentId){status("Choose a conversation before attaching a file.");return}$("#attachment-input").click()};
+$("#attach-file").onclick=()=>{if(!currentId){status("Choose a conversation before attaching a file.");return}attachmentPickerConversation=Number(currentId);$("#attachment-input").click()};
 $("#attachment-input").addEventListener("change",async event=>{
  const files=Array.from(event.target.files||[]);
  event.target.value="";
- if(!currentId||!files.length||attachmentUploads)return;
- if(pendingAttachments.length+files.length>10){status("Attach no more than 10 files to one message.");return;}
- const conversationId=Number(currentId);
+ const conversationId=attachmentPickerConversation;attachmentPickerConversation=null;
+ if(!conversationId||!files.length||attachmentUploads)return;
+ const existing=Number(currentId)===conversationId?pendingAttachments:(attachmentDrafts.get(conversationId)||[]);
+ if(existing.length+files.length>10){status("Attach no more than 10 files to one message.");return;}
  const sameComposer=()=>Number(currentId)===conversationId;
  const failures=[];
  attachmentUploads++;
@@ -476,7 +487,7 @@ $("#attachment-input").addEventListener("change",async event=>{
     const prepared=await KnightfallPhotoUpload.prepareAttachment(file);
      const data=await uploadAttachment(prepared,conversationId);
     if(sameComposer()){pendingAttachments.push(data);drawPendingAttachments();}
-    else{const saved=attachmentDrafts.get(conversationId)||[];attachmentDrafts.set(conversationId,[...saved,data]);}
+    else{const saved=attachmentDrafts.get(conversationId)||[];attachmentDrafts.set(conversationId,[...saved,data]);persistInboxAttachmentDrafts();}
    }catch(error){failures.push(file.name+": "+error.message);}
   }
   if(sameComposer())status(failures.join(" · ")||"Attachments ready to send.",!failures.length);
@@ -793,7 +804,7 @@ async function archive(){
 }
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-admin-message]");if(!b)return;if(b.dataset.action!=="delete")return;try{await api("/api/admin/messages/"+b.dataset.adminMessage,{method:"PATCH",body:JSON.stringify({action:b.dataset.action})});await archive();status("Admin message action completed.",true)}catch(x){status(x.message)}});
 $("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archive;$("#archive-search").oninput=()=>{clearTimeout(archiveSearchHandle);archiveSearchHandle=setTimeout(archive,300)};
-(async()=>{try{await Promise.race([window.KnightfallEmojiReady,new Promise(resolve=>setTimeout(resolve,1200))]);const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=me.user.role==="god";loadConversationDrafts();void sendActivityPing();try{await loadConversations()}catch(error){status("Inbox unavailable: "+error.message);console.warn("Initial inbox load failed",error)}
+(async()=>{try{await Promise.race([window.KnightfallEmojiReady,new Promise(resolve=>setTimeout(resolve,1200))]);const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=me.user.role==="god";loadConversationDrafts();loadInboxAttachmentDrafts();void sendActivityPing();try{await loadConversations()}catch(error){status("Inbox unavailable: "+error.message);console.warn("Initial inbox load failed",error)}
  if(new URLSearchParams(location.search).has("message"))try{await followNotificationConversation()}catch(error){status("Could not open linked message: "+error.message)}
  try{startMessageLive()}catch(error){console.warn("Realtime unavailable; polling continues",error)}if(new URLSearchParams(location.search).has("reply"))focusNotificationReply();void Promise.resolve().then(loadAdmin).catch(error=>console.warn("Optional admin tools unavailable",error));let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight||document.hidden)return;pollInFlight=true;try{await loadConversations({openSelected:false});await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(()=>{liveRefresh()},12000);
  typingPollHandle=setInterval(()=>{if(!window.KnightfallLive?.connected)refreshTyping()},5000);presenceHandle=setInterval(sendActivityPing,60000);document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;try{await sendActivityPing();await loadConversations({openSelected:false});if(currentId)await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Inbox resume refresh failed",e)}});updateNotificationButton()}catch(e){status(e.message)}})();
