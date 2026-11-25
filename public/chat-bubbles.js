@@ -60,8 +60,9 @@
   };
   async function api(path,opts={}){
     const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}});
-    const body=await response.json().catch(()=>({}));
-    if(!response.ok)throw Error(body.error||"Request failed");
+    const body=await response.json().catch(()=>null);
+    if(!response.ok)throw Error(body?.error||("Chat API returned HTTP "+response.status));
+    if(!body||typeof body!=="object")throw Error("Invalid chat API response");
     return body;
   }
   try{
@@ -568,6 +569,6 @@
     },120);
   });
   tick();
-  const timer=setInterval(()=>{if(!document.hidden&&!window.KnightfallLive?.connected)tick();},15000);
+  const timer=setInterval(()=>{if(!document.hidden)tick();},15000);
   window.addEventListener("pagehide",event=>{if(!event.persisted)clearInterval(timer);});
 })();
