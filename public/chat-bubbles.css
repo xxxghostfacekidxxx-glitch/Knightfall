@@ -250,3 +250,7 @@
 @keyframes kf-imp-droop{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(14deg) scale(.85)}}
 @media(max-width:600px){#kf-chat-heads .kf-imp-quiet-button{width:28px;height:28px}}
 @media(prefers-reduced-motion:reduce){#kf-chat-heads .kf-chaosphere-demon{animation:none!important}}
+
+/* Keep the launcher visible and round regardless of active theme. */
+#kf-chat-heads #kf-chat-launcher{box-sizing:border-box!important;flex:0 0 62px!important;width:62px!important;height:62px!important;min-width:62px!important;min-height:62px!important;max-width:62px!important;max-height:62px!important;padding:5px!important;border-radius:50%!important}
+#kf-chat-heads #kf-chat-launcher img{display:block!important;width:46px!important;height:46px!important;max-width:none!important;max-height:none!important;object-fit:contain!important;aspect-ratio:1;transform:none!important}
