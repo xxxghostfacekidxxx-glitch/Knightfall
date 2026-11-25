@@ -56,3 +56,5 @@ Sanctuary expansion: 33 additional entries and three reviewed Blizzard article l
 Sanctuary: 12 additional entries supported by four consulted official Blizzard articles, including Lord of Hatred (2026), Spirit Realm and Skovos; detailed campaign outcomes and older primary sources pending. Live sync and production pending.
 
 Owner-approved Sanctuary tagline: Heaven promises salvation. Hell promises power. Sanctuary bears the consequences. Preserve in future realm revisions. Production verification pending.
+
+Owner correction: Sanctuary is independent of Force Realms; reciprocal links removed, standalone homepage and navigation entries added, scoped CSS introduced. Track separately in Sanctuary register.
