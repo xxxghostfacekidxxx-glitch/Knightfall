@@ -90,6 +90,9 @@ async function api(path,opts={}){
   }catch{}
   const dock=el("aside","kf-chat-dock");
   dock.id="kf-chat-heads";
+  const themeKey="knightfall-chaosphere-theme",allowedThemes=new Set(["obsidian","hellfire","egypt","mustafar","korriban","vader"]);
+  function syncTheme(value){let selected=value;try{if(!selected)selected=localStorage.getItem(themeKey)}catch{}dock.dataset.csTheme=allowedThemes.has(selected)?selected:"obsidian";}
+  syncTheme();window.addEventListener("storage",event=>{if(event.key===themeKey)syncTheme(event.newValue)});window.addEventListener("kf:chaosphere-theme",event=>syncTheme(event.detail?.theme));
   dock.setAttribute("aria-label","Chaosphere conversations");
   dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><div class="kf-chat-emoji-tools"><button id="kf-chat-emoji-toggle" type="button" aria-expanded="false" aria-controls="kf-chat-emoji-tray" aria-label="Show Knightfall emojis">☻ Emoji</button><button id="kf-chat-attach" type="button" aria-label="Attach files">📎 Attach</button><input id="kf-chat-file" type="file" accept="image/*,application/pdf,text/plain,.docx" multiple hidden><div id="kf-chat-pending" class="kf-chat-pending" hidden></div><div id="kf-chat-emoji-tray" class="kf-emoji-tray" aria-label="Knightfall custom emojis" hidden></div></div><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
   // Host outside the page body so transformed game/page wrappers cannot clip or resize chat.
@@ -369,8 +372,9 @@ async function api(path,opts={}){
     state.lastThreadKey=fingerprint;
     const nearBottom=thread.scrollHeight-thread.scrollTop-thread.clientHeight<64;
     const oldScroll=thread.scrollTop;
-    const fragment=document.createDocumentFragment();
+    const fragment=document.createDocumentFragment();let previousDay="";
     for(const m of messages){
+      const dateValue=new Date(m.created_at);if(m.created_at&&Number.isFinite(dateValue.getTime())&&dateValue.toDateString()!==previousDay){previousDay=dateValue.toDateString();fragment.append(el("div","kf-chat-day-marker",previousDay===new Date().toDateString()?"Today":dateValue.toLocaleDateString([],{month:"short",day:"numeric",year:"numeric"})));}
       const mine=Number(m.sender_id)===userId;
       const item=el("div","kf-chat-message "+(mine?"mine":"theirs"));
       item.dataset.messageId=String(m.id);
@@ -389,6 +393,7 @@ async function api(path,opts={}){
     if(!messages.length)fragment.append(el("p","kf-chat-empty","No messages yet. Start the conversation."));
     thread.replaceChildren(fragment);
     if(nearBottom||oldScroll===0)thread.scrollTop=thread.scrollHeight;
+    else thread.scrollTop=oldScroll;
     markLocalRead(conversationId);
   }
   function updateUnreadBadge(){

@@ -10,7 +10,7 @@ function init(){
  for(const [id,name] of Object.entries(themes)){const option=document.createElement("option");option.value=id;option.textContent=name;select.append(option)}
  let saved="obsidian";try{saved=localStorage.getItem(key)||saved}catch{}
  if(!themes[saved])saved="obsidian";shell.dataset.csTheme=saved;select.value=saved;
- select.addEventListener("change",()=>{shell.dataset.csTheme=select.value;try{localStorage.setItem(key,select.value)}catch{}});
+ select.addEventListener("change",()=>{shell.dataset.csTheme=select.value;try{localStorage.setItem(key,select.value)}catch{}window.dispatchEvent(new CustomEvent("kf:chaosphere-theme",{detail:{theme:select.value}}));});
  controls.append(select);(document.getElementById("cs-theme-settings")||shell.querySelector(".messages-hero-actions")||shell).append(controls);
  const impToggle=document.getElementById("cs-imp-enabled"), voiceToggle=document.getElementById("cs-imp-voice-enabled");
  const getPref=(name)=>{try{return localStorage.getItem("knightfall-"+name)!=="off"}catch{return true}};
@@ -25,8 +25,8 @@ function init(){
  button.addEventListener("click",speak);
  if(impToggle){impToggle.checked=getPref("chaosphere-imp-roam");imp.hidden=!impToggle.checked;impToggle.addEventListener("change",()=>{imp.hidden=!impToggle.checked;setPref("chaosphere-imp-roam",impToggle.checked)})}
  if(voiceToggle){voiceToggle.checked=getPref("chaosphere-imp-voice");voiceToggle.addEventListener("change",()=>{setPref("chaosphere-imp-voice",voiceToggle.checked);if(!voiceToggle.checked)voice.hidden=true})}
- const old=document.getElementById("cs-hero-imp");if(old)old.hidden=true;
- const move=(time)=>{if(document.hidden||reduced){frame=0;return;}frame=0;const max=Math.max(0,innerWidth-imp.offsetWidth-8);if(last){x+=Math.min((time-last)/1000,.1)*dir*29;if(x>=max){x=max;dir=-1;imp.dataset.mood="turning"}else if(x<=8){x=8;dir=1;imp.dataset.mood="turning"}imp.style.setProperty("--imp-x",x+"px");imp.style.setProperty("--imp-face",dir)}last=time;frame=requestAnimationFrame(move)};
+ const old=document.getElementById("cs-hero-imp");if(old){old.hidden=false;old.addEventListener("click",speak);}
+ const move=(time)=>{if(document.hidden||reduced){frame=0;return;}if(imp.hidden){last=0;frame=requestAnimationFrame(move);return;}frame=0;const max=Math.max(0,innerWidth-imp.offsetWidth-8);if(last){x+=Math.min((time-last)/1000,.1)*dir*29;if(x>=max){x=max;dir=-1;imp.dataset.mood="turning"}else if(x<=8){x=8;dir=1;imp.dataset.mood="turning"}imp.style.setProperty("--imp-x",x+"px");imp.style.setProperty("--imp-face",dir)}last=time;frame=requestAnimationFrame(move)};
  if(!reduced)frame=requestAnimationFrame(move);else imp.style.setProperty("--imp-x","12px");
  document.addEventListener("visibilitychange",()=>{last=0;if(!document.hidden&&!reduced&&!frame)frame=requestAnimationFrame(move)});
  window.addEventListener("pagehide",()=>{clearTimeout(hideTimer);if(frame)cancelAnimationFrame(frame)}, {once:true});

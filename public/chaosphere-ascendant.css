@@ -1,0 +1,53 @@
+/* Chaosphere Ascendant: theme-aware interface refinement, no global overrides. */
+.messages-shell{--cs-edge:color-mix(in srgb,var(--cs-glow,#ff8ed0) 35%,transparent);--cs-faint:color-mix(in srgb,var(--cs-glow,#ff8ed0) 10%,transparent);--cs-muted:#c4bfd2}
+.messages-shell .messages-hero{position:relative;isolation:isolate;overflow:hidden;border:1px solid var(--cs-edge)!important;background:radial-gradient(ellipse at 8% 10%,var(--cs-faint),transparent 60%),linear-gradient(125deg,var(--cs-side,#19172c),var(--cs-back,#10121f))!important}
+.messages-shell .messages-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:repeating-linear-gradient(135deg,transparent 0 28px,#ffffff04 28px 29px);pointer-events:none}
+.messages-shell .cs-hero-brand{display:flex;align-items:center;gap:clamp(12px,3vw,30px)}
+.messages-shell .cs-hero-brand h1{color:#fff;line-height:1.05;text-shadow:0 0 24px var(--cs-edge)}
+.messages-shell .cs-hero-brand h1 span{color:var(--cs-glow,#ff8ed0)}
+.messages-shell .cs-signal-strip{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:15px}
+.messages-shell .cs-signal-strip>span{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid var(--cs-edge);border-radius:999px;background:#080a1355;color:var(--cs-muted);font-size:.74rem;line-height:1.5}
+.messages-shell .cs-signal-strip strong{color:#fff;font-variant-numeric:tabular-nums}
+.messages-shell .cs-signal-strip i{height:7px;width:7px;border-radius:50%;background:var(--cs-glow,#ff8ed0);box-shadow:0 0 10px var(--cs-glow,#ff8ed0)}
+.messages-shell .cs-filter-tools{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 8px}
+.messages-shell .cs-filter-tools button{font-size:.75rem;min-height:34px;padding:5px 10px}
+.messages-shell .cs-list-count{color:var(--cs-muted);font-size:.7rem;letter-spacing:.065em;text-transform:uppercase;padding:6px 4px}
+.messages-shell .conversation{position:relative;min-width:0;border:1px solid transparent!important}
+.messages-shell .conversation.active{border-color:var(--cs-edge)!important;background:linear-gradient(110deg,var(--cs-faint),transparent)!important}
+.messages-shell .conversation:has(.unread){background:linear-gradient(110deg,var(--cs-faint),transparent)}
+.messages-shell .conversation-copy strong{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.messages-shell .conversation-tail{font-variant-numeric:tabular-nums}
+.messages-shell #cs-favorite{display:grid;place-items:center;min-width:38px;min-height:38px;border-radius:12px;border:1px solid var(--cs-edge);color:var(--cs-glow,#ff8ed0);background:var(--cs-faint);font-size:22px;line-height:1}
+.messages-shell #cs-favorite[hidden],.messages-shell #cs-scroll-latest[hidden]{display:none!important}
+.messages-shell #cs-favorite[aria-pressed=true]{background:var(--cs-edge);color:#fff}
+.messages-shell .cs-welcome{display:grid;justify-items:center;align-content:center;min-height:240px;height:100%;text-align:center;padding:24px;color:#fff}
+.messages-shell .cs-welcome img{object-fit:contain;border-radius:30%;filter:drop-shadow(0 0 26px var(--cs-edge));max-width:96px}
+.messages-shell .cs-welcome h2{font-size:clamp(1.25rem,3vw,1.85rem);margin:16px 0 5px;letter-spacing:-.035em}
+.messages-shell .cs-welcome p{color:var(--cs-muted);margin:0 0 20px;max-width:32ch}
+.messages-shell .cs-day-marker{display:flex;align-items:center;gap:12px;color:var(--cs-muted);font-size:.72rem;font-weight:700;letter-spacing:.04em;margin:20px 0 14px;white-space:nowrap}
+.messages-shell .cs-day-marker::before,.messages-shell .cs-day-marker::after{content:"";height:1px;background:var(--cs-edge);flex:1}
+.messages-shell .message p{overflow-wrap:anywhere;white-space:pre-wrap}
+.messages-shell .message-meta{font-variant-numeric:tabular-nums}
+.messages-shell .message-attachment{max-width:100%;min-width:0;border-radius:12px}
+.messages-shell .message-image-thumb{max-height:320px;object-fit:contain;background:#07091066}
+.messages-shell .message-actions{opacity:.8;transition:opacity .16s ease}
+.messages-shell .message:hover .message-actions,.messages-shell .message:focus-within .message-actions{opacity:1}
+.messages-shell #cs-scroll-latest{align-self:center;z-index:2;margin:4px;padding:8px 16px;border-radius:999px;border:1px solid var(--cs-edge);background:var(--cs-side,#19172c);color:#fff;font-size:.77rem;box-shadow:0 4px 16px #0008}
+.messages-shell .composer:focus-within{box-shadow:inset 0 1px 0 var(--cs-edge)}
+.messages-shell .pending-attachment{max-width:100%;min-width:0;border-radius:10px}
+.messages-shell .pending-attachment>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.messages-shell .msg-status:empty{display:none}
+.messages-shell :is(.inbox-filter,#cs-favorite,#cs-scroll-latest):focus-visible{outline:2px solid var(--cs-glow,#ff8ed0);outline-offset:2px}
+@media(max-width:700px){
+ .messages-shell .cs-hero-brand{gap:10px}
+ .messages-shell .cs-signal-strip{gap:5px;margin-top:9px}
+ .messages-shell .cs-signal-strip>span{font-size:.68rem;padding:3px 8px}
+ .messages-shell .cs-filter-tools button{min-height:36px}
+ .messages-shell .message-actions{opacity:1}
+ .messages-shell .message-image-thumb{max-height:210px}
+ .messages-shell #cs-favorite{min-width:34px;min-height:34px;font-size:18px}
+ .messages-shell .chat-tools{flex-wrap:nowrap}
+ .messages-shell .message-layout.show-chat #cs-scroll-latest{font-size:.7rem;padding:4px 10px;margin:2px}
+ .messages-shell .cs-day-marker{margin:10px 0;font-size:.68rem}
+}
+@media(prefers-reduced-motion:reduce){.messages-shell .message-actions{transition:none}.messages-shell .cs-hero-imp::before{animation:none!important}}

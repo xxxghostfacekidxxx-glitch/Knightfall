@@ -99,3 +99,13 @@ test("floating file picker and removal are bound to the original conversation",(
  assert.match(bubbles,/uploadingConversations\.has\(id\)\|\|removingConversations\.has\(id\)/);
  assert.match(bubbles,/saveAttachmentDraft\(id,\[\.\.\.attachments,/);
 });
+
+test("Ascendant includes favorites, groups and draft filters with local account isolation",()=>{
+ assert.match(inbox,/data-inbox-filter="favorites"/);assert.match(inbox,/data-inbox-filter="groups"/);assert.match(inbox,/data-inbox-filter="drafts"/);
+ const start=inline.indexOf("const favoriteConversations=new Set()"),end=inline.indexOf("function updateFavoriteButton",start);
+ const data=new Map(),storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
+ const ctx=vm.createContext({currentUser:{id:10},localStorage:storage,conversationDrafts:new Map(),currentId:42,pendingAttachments:[],attachmentDrafts:new Map()});
+ vm.runInContext(inline.slice(start,end),ctx);vm.runInContext("favoriteConversations.add(42);saveFavoriteConversations()",ctx);assert.equal(ctx.inboxFilterMatches({id:42},"favorites"),true);ctx.currentUser={id:11};ctx.loadFavoriteConversations();assert.equal(ctx.inboxFilterMatches({id:42},"favorites"),false);
+ assert.equal(ctx.inboxFilterMatches({id:42,kind:"group"},"groups"),true);assert.equal(ctx.inboxFilterMatches({id:42,kind:"direct"},"groups"),false);
+});
+test("Ascendant preserves theme choices and date grouping across messenger surfaces",()=>{assert.match(inbox,/chaosphere-ascendant\.css/);assert.match(inline,/function updateTranscriptDates/);assert.match(bubbles,/allowedThemes=new Set/);assert.match(bubbles,/kf-chat-day-marker/);assert.match(styles,/#kf-chat-heads\[data-cs-theme="egypt"\]/);});
