@@ -100,7 +100,7 @@
   const panel=$("#kf-chat-panel"),recent=$("#kf-chat-list"),thread=$("#kf-chat-thread"),composer=$("#kf-chat-compose"),input=$("#kf-chat-input"),status=$("#kf-chat-status");
   // Progressive enhancement: a failed mascot load must never disable messaging.
   let imp=null;
-  function attachImp(){if(!imp&&window.ChaosphereImp)imp=window.ChaosphereImp.mount(dock,userId);}
+  function attachImp(){try{if(!imp&&window.ChaosphereImp)imp=window.ChaosphereImp.mount(dock,userId);}catch(error){console.warn("Optional chat mascot failed",error);}}
   attachImp();
   window.addEventListener("kf:chaosphere-imp-ready",attachImp,{once:true});
   const impReact=kind=>imp?.react(kind);
@@ -109,7 +109,7 @@
 
 
   // Movable and resizable messenger, with per-account placement persistence.
-  const layoutKey="kf-chat-layout-"+userId;
+  const layoutKey="kf-chat-layout-recovery2-"+userId;
   const clamp=(n,a,b)=>Math.max(a,Math.min(n,b));
   let customPosition=null,preferredPosition=null,desiredSize=null;
   function bounds(){
