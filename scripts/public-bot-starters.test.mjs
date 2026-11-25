@@ -35,10 +35,10 @@ test("public chat can open 32-character official IDs, display starters, and pres
  assert.match(chatHtml,/id="bot-starters"/);
  assert.match(chatHtml,/id="bot-starter-prompts"/);
  assert.match(chatHtml,/id="bot-specialty"/);
- assert.match(chatHtml,/bot-public\.js\?v=20261103-bot-starters1/);
+ assert.match(chatHtml,/bot-public\.js\?v=[\w-]+/);
  assert.match(chatHtml,/bot-starter-chat\.css\?v=20261114-mobile-wrap/);
  assert.match(chatScript,/\/\^\[a-f0-9\]\{32\}\$\//);
- assert.match(chatScript,/showStarters\(d\.bot\)/);
+ assert.match(chatScript,/showStarters\([^;]+d\.bot\)/);
  assert.match(chatScript,/input\.value=suggestion/);
  assert.match(chatScript,/KNIGHTFALL ORIGINAL/);
  assert.match(chatScript,/\/api\/adult\/status/);
@@ -48,7 +48,7 @@ test("public chat can open 32-character official IDs, display starters, and pres
 });
 test("starter bots use existing real AI endpoint, not static canned replies",()=>{
  assert.match(chatScript,/api\("\/api\/public-bots\/"\+id\+"\/chat"/);
- assert.match(chatScript,/history\.push\(\{role:"assistant",content:d\.reply\}\)/);
- assert.match(chatScript,/history:history\.slice\(0,-1\)/);
+ assert.match(chatScript,/history\.push\(\{role:"assistant",content:d\.reply(?:,sources:[^}]+)?\}\)/);
+ assert.match(chatScript,/history:history\.slice\(-9,-1\)\.map/);
  assert.doesNotMatch(chatScript,/fetch\(.+openai\.com/);
 });
