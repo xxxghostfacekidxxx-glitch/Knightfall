@@ -254,3 +254,15 @@
 /* Keep the launcher visible and round regardless of active theme. */
 #kf-chat-heads #kf-chat-launcher{box-sizing:border-box!important;flex:0 0 62px!important;width:62px!important;height:62px!important;min-width:62px!important;min-height:62px!important;max-width:62px!important;max-height:62px!important;padding:5px!important;border-radius:50%!important}
 #kf-chat-heads #kf-chat-launcher img{display:block!important;width:46px!important;height:46px!important;max-width:none!important;max-height:none!important;object-fit:contain!important;aspect-ratio:1;transform:none!important}
+
+/* Shared Chaosphere finish: compact, readable, and stable during refresh. */
+#kf-chat-heads .kf-chat-panel{border-color:#b18abf80;box-shadow:0 16px 55px #000b,inset 0 1px #ffffff14}
+#kf-chat-heads .kf-chat-message{min-width:0;overflow-wrap:anywhere;box-shadow:0 4px 12px #0004}
+#kf-chat-heads .kf-chat-message-meta{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;margin-bottom:4px}
+#kf-chat-heads .kf-chat-message-meta .kf-chat-sender{margin:0;color:#f3c7df}
+#kf-chat-heads .kf-chat-message-time{color:#d6c3d8;font-size:10px;line-height:1.4;font-variant-numeric:tabular-nums}
+#kf-chat-heads .kf-chat-thread{scrollbar-color:#8e638c #171322;scroll-padding-bottom:12px}
+#kf-chat-heads .kf-chat-recent-item:focus-visible{outline-offset:-2px}
+#kf-chat-heads #kf-chat-send:disabled{opacity:.5;cursor:not-allowed}
+#kf-chat-heads .kf-chat-compose textarea{font-size:16px;line-height:1.45;caret-color:#f4acd8}
+@media(prefers-reduced-motion:reduce){#kf-chat-heads .kf-chat-launcher{transition:none}}
