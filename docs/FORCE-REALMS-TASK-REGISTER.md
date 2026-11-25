@@ -11,7 +11,7 @@ Maintain this register with every Force Realms implementation batch. Live board 
 | Original manuscripts: 26 chapters | in_progress | Index supplementary chapters and verify archive coverage |
 | Canon and Legends timelines | in_progress | 28 draft entries, reader and AI retrieval implemented; verify sources and browser behavior |
 | Force encyclopedia | in_progress | 39 draft entries, six categories, searchable reader and backend retrieval; verify sources and browser behavior |
-| Daily spiritual practices | in_progress | 17 original practices and daily reader; verify browser and integrate Academy |
+| Daily spiritual practices | in_progress | 17 original practices, daily reader, four training plans and local completion tracking; verify browser and integrate Academy |
 | Academy assessments | todo | Map readings to assessments |
 | Governance and ceremonies | in_progress | Implement authorized workflows |
 | Five recovered themes | source_checked | Verify production artwork and theme previews |
@@ -30,3 +30,5 @@ Latest expansion: 1f0e546b29c2dca398161a05835ccde80a862e01 encyclopedia; dd02575
 Practice dataset: bbac928e77a5cdd313a9d5ea54e052aabfa5aad5. Live board sync unverified.
 
 Advanced manuscript expansion: 13aa09936f3387b939a5ecd82b9a82709549faa9; six chapters and aligned practice expansion. Live board sync unverified.
+
+Training plans: b86405f1ae8ecfacd0ab365ae950de8174137e84; 74 scheduled assignments, local progress only. Live board sync unverified.
