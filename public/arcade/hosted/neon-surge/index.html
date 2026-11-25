@@ -2431,6 +2431,8 @@ const director = {
   },
   startWave(n) {
     this.wave = n; G.wave = n;
+    arenaHazard.mode = n < 8 || n % 5 === 0 ? 'none' : ['pulse','cross','gravity'][Math.floor((n-8)/3)%3];
+    arenaHazard.t = 0;
     this.startLives = player.lives; this.lifeLost = false;
     this.killed = 0; this.pending.length = 0;
     audio.danger = false;
@@ -2446,7 +2448,7 @@ const director = {
     this.total = this.groups.reduce((s, g) => s + g.count, 0);
     this.state = 'active';
     this.t = 0.9;
-    banner(`WAVE ${pad2(n)}`, WAVE_INTRO[n] ?? pick(WAVE_FLAVOR));
+    banner(`WAVE ${pad2(n)}`, arenaHazard.mode === 'none' ? (WAVE_INTRO[n] ?? pick(WAVE_FLAVOR)) : `ARENA MUTATION · ${arenaHazard.mode.toUpperCase()}`);
   },
   finishWave(bossWave) {
     this.state = 'clear';
@@ -3054,6 +3056,7 @@ const TIPS = [
   'Pickups attract when you get close. Flashing means they expire soon.',
 ];
 function clearWorld() {
+  arenaHazard.mode = 'none'; arenaHazard.t = 0; hazardMesh.visible = false;
   for (const e of enemies) e.dead = true;
   compactEnemies();
   wells = [];
@@ -3452,6 +3455,33 @@ function updateFX(rdt) {
 }
 
 // ─── main loop ────────────────────────────────────────────
+const arenaHazard = {mode:'none',t:0,x:0,z:0};
+const hazardMesh = new THREE.Mesh(new THREE.RingGeometry(4.6,5,48),new THREE.MeshBasicMaterial({color:0xff4060,transparent:true,opacity:.6,side:THREE.DoubleSide,depthWrite:false}));
+hazardMesh.rotation.x = -Math.PI/2; hazardMesh.visible = false; scene.add(hazardMesh);
+function updateArenaHazard(dt) {
+  const h=arenaHazard, P=player;
+  if(h.mode==='none'||director.state!=='active'||!P.alive){hazardMesh.visible=false;return;}
+  if(dt<=0)return;
+  const before=h.t; h.t+=dt;
+  if(before<3 && h.t>=3){h.x=clamp(P.x,-HX+6,HX-6);h.z=clamp(P.z,-HZ+6,HZ-6);}
+  hazardMesh.visible=h.t>=3 && h.t<4.5;
+  hazardMesh.position.set(h.x,.2,h.z);
+  hazardMesh.material.color.set(h.mode==='gravity'?0xb56aff:0xff4060);
+  hazardMesh.material.opacity=.35+.45*Math.min(1,Math.max(0,(h.t-3)/1.5));
+  if(before<4.5 && h.t>=4.5){
+    if(h.mode==='cross'){
+      for(let i=0;i<4;i++)spawnEB(h.x,h.z,i*TAU/4,12,COL.ebPink,.5);
+    }else if(h.mode==='gravity'){
+      gravityImpact(h.x,h.z);
+      const dx=h.x-P.x,dz=h.z-P.z,d=Math.hypot(dx,dz);
+      if(d>.2&&d<9){P.vx+=dx/d*18;P.vz+=dz/d*18;}
+    }else{
+      rings.add(h.x,h.z,COL.boss,1,5,.5);
+      if((P.x-h.x)**2+(P.z-h.z)**2<25)hitPlayer();
+    }
+  }
+  if(h.t>=6)h.t=0;
+}
 function update(rdt) {
   if (G.slowT > 0) G.slowT -= rdt;
   G.timeScale = damp(G.timeScale, G.slowT > 0 ? G.slowScale : 1, G.slowT > 0 ? 20 : 3.5, rdt);
@@ -3468,6 +3498,7 @@ function update(rdt) {
     case 'playing':
       director.update(dt);
       updatePlayer(dt);
+      updateArenaHazard(dt);
       updateEnemies(dt);
       boss.update(dt);
       updateBullets(dt);
