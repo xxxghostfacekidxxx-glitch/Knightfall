@@ -10,9 +10,9 @@ function harness({user={id:17,role:"member"},member=true,kind="direct",blocked=f
   return{bind(...params){
    record.params=params;
    return{async first(){
-    if(sql.includes("SELECT muted_until FROM conversation_members"))
-      return member?{muted_until:null}:null;
-    if(sql.includes("FROM conversations WHERE id="))
+    if(sql.includes("SELECT muted_until,joined_at,joined_after_message_id FROM conversation_members"))
+      return member?{muted_until:null,joined_at:"2026-10-10",joined_after_message_id:12}:null;
+    if(sql.includes("FROM conversations c WHERE c.id="))
       return{id:712,kind,name:kind==="group"?"The Misfits":null,created_at:"2026-10-10",updated_at:"2026-11-13"};
     if(sql.includes("COUNT(*) AS n"))return{n:4};
     if(sql.includes("FROM user_blocks"))return blocked?{blocked:1}:null;
@@ -51,6 +51,7 @@ test("direct message lookup includes other member identity without message bodie
  assert.equal(Object.hasOwn(r.data.conversation,"body"),false);
  const checked=h.calls.find(c=>c.sql.includes("FROM user_blocks"));
  assert.deepEqual(checked.params,[17,22,22,17]);
+ assert.deepEqual(h.calls.find(c=>c.sql.includes("FROM conversations c WHERE c.id=")).params,[12,"2026-10-10",712]);
 });
 test("blocked direct conversation stays viewable but marked restricted",async()=>{
  const h=harness({blocked:true});

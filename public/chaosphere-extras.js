@@ -29,6 +29,13 @@
   body.focus({preventScroll:true});
   return true;
  }
+ const preview=document.getElementById("cs-compose-preview"),previewToggle=document.getElementById("cs-preview-toggle");
+ const updatePreview=()=>{if(!preview||preview.hidden)return;const text=body.value;preview.innerHTML=text?window.ChaosphereFormat.render(text,value=>window.KnightfallEmojis?.render(value,undefined,{lineBreaks:true})??value.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])).replace(/\n/g,"<br>")):"<em>Nothing to preview yet.</em>";};
+ previewToggle?.addEventListener("click",()=>{if(!preview||!window.ChaosphereFormat)return;preview.hidden=!preview.hidden;previewToggle.setAttribute("aria-expanded",String(!preview.hidden));updatePreview();});
+ body.addEventListener("input",updatePreview);
+ composer.addEventListener("submit",()=>{if(preview)preview.hidden=true;previewToggle?.setAttribute("aria-expanded","false");});
+ composer.addEventListener("click",event=>{const button=event.target.closest("[data-cs-format]");if(!button||body.disabled||!window.ChaosphereFormat)return;const spec={bold:["**","bold text"],italic:["*","italic text"],code:["`","code"],spoiler:["||","spoiler"]}[button.dataset.csFormat];if(!spec)return;const next=window.ChaosphereFormat.wrap(body.value,body.selectionStart,body.selectionEnd,...spec);if(!next){announce("Formatting would exceed the message limit.");return;}body.value=next.value;body.focus({preventScroll:true});body.setSelectionRange(next.start,next.end);body.dispatchEvent(new Event("input",{bubbles:true}));});
+ shell.addEventListener("click",event=>{const button=event.target.closest(".cs-spoiler-toggle");if(!button)return;const content=button.nextElementSibling;if(!content)return;content.hidden=!content.hidden;button.setAttribute("aria-expanded",String(!content.hidden));button.textContent=content.hidden?"Reveal spoiler":"Hide spoiler";});
  toggle.addEventListener("click",()=>{
   if(composer.hidden||body.disabled)return;
   tray.hidden=!tray.hidden;
@@ -73,7 +80,7 @@
   const article=button.closest("article.message[data-message]");
   if(!article||article.classList.contains("deleted"))return;
   const sender=(article.querySelector(".message-meta strong")?.textContent||"Member").replace(/\s+/g," ").trim().slice(0,64);
-  const original=(article.querySelector("p")?.textContent||"").replace(/\s+/g," ").trim();
+  const original=(article.dataset.rawBody??article.querySelector("p")?.textContent??"").replace(/\s+/g," ").trim();
   if(!original)return;
   const snippet=Array.from(original).slice(0,165).join("")+(Array.from(original).length>165?"…":"");
   // A visible plain-text quote; the existing send queue, draft saving,
@@ -118,7 +125,7 @@
   if(!tray.hidden&&!tray.contains(event.target)&&!toggle.contains(event.target))closeTray();
  });
  const watcher=new MutationObserver(()=>{
-  if(composer.hidden&&!tray.hidden)closeTray();
+  if(composer.hidden&&!tray.hidden)closeTray();if(composer.hidden&&preview){preview.hidden=true;previewToggle?.setAttribute("aria-expanded","false");}
  });
  watcher.observe(composer,{attributes:true,attributeFilter:["hidden"]});
 })();

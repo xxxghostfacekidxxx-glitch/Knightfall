@@ -128,3 +128,24 @@
 .messages-shell .cs-media-jump{margin-top:auto;min-height:38px;border:0;border-top:1px solid var(--cs-edge);background:var(--cs-faint);color:#fff;font-size:.74rem}
 .messages-shell #cs-media-more{margin-top:14px;min-height:40px;width:100%}
 @media(max-width:480px){.messages-shell .cs-media-results{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.messages-shell .cs-media-card img,.messages-shell .cs-media-file-icon{height:100px}}
+
+/* APOTHEOSIS: expressive composer, saved messages and readable conversation rhythm. */
+.messages-shell .cs-compose-deck{display:flex;flex-direction:column;gap:5px;min-width:0;flex:0 0 100%;width:100%}
+.messages-shell .cs-compose-format{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.messages-shell .cs-compose-format button{min-height:30px;padding:3px 9px;border:1px solid var(--cs-edge);border-radius:8px;background:var(--cs-back);color:#f3edf7;font-size:.75rem;font-weight:700}
+.messages-shell .cs-compose-format button[aria-expanded=true]{background:var(--cs-faint);border-color:var(--cs-glow,#ff8ed0)}
+.messages-shell .cs-compose-preview{max-height:120px;overflow:auto;overflow-wrap:anywhere;padding:9px 12px;border:1px solid var(--cs-edge);border-radius:12px;background:var(--cs-back);color:#f5edf9;font-size:.87rem}
+.messages-shell .cs-compose-preview[hidden],.messages-shell .cs-spoiler [hidden]{display:none!important}
+.messages-shell .cs-spoiler-toggle{display:inline-flex;min-height:26px;padding:2px 7px;border-radius:7px;border:1px solid #ffffff45;background:#100b1e;color:#f9edf9;font-size:.72rem}
+.messages-shell .cs-spoiler>span{padding:2px 4px}
+.messages-shell .message p code,.messages-shell .cs-compose-preview code{border-radius:4px;background:#120d20a8;color:#f5d99d;padding:2px 4px;font-size:.86em}
+.messages-shell .message.cs-grouped{margin-top:3px!important}
+.messages-shell .message.cs-grouped .cs-message-avatar{visibility:hidden}
+.messages-shell .cs-unread-break{display:flex;gap:8px;align-items:center;color:var(--cs-glow,#ff8ed0);font-size:.74rem;font-weight:700;margin:14px 0;scroll-margin:14px}
+.messages-shell .cs-unread-break::before,.messages-shell .cs-unread-break::after{content:"";height:1px;background:var(--cs-glow,#ff8ed0);flex:1;opacity:.55}
+.messages-shell .cs-bookmarks-dialog{width:min(580px,94vw);max-height:85dvh;overflow:auto;border-color:var(--cs-edge)}
+.messages-shell .cs-bookmarks-note{color:var(--cs-muted);font-size:.8rem;line-height:1.5}
+.messages-shell .cs-bookmark-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;margin:8px 0;padding:8px;border:1px solid var(--cs-edge);border-radius:12px;background:var(--cs-back)}
+.messages-shell .cs-bookmark-row button{color:#f3e9fb;background:var(--cs-faint);border:1px solid var(--cs-edge);border-radius:8px;padding:8px;text-align:left;overflow-wrap:anywhere}
+.messages-shell [data-cs-bookmark][aria-pressed=true]{color:#f7d281}
+@media(max-height:500px){.messages-shell .cs-compose-format button{min-height:25px;padding:2px 6px}.messages-shell .cs-compose-preview{max-height:60px}}
