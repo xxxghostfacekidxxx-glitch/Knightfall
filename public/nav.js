@@ -297,6 +297,7 @@
         <div class="kf-nav-menu">
           <a href="/celestial-sanctum.html">☾ Celestial Sanctum</a>
           <a href="/force-realms.html">✦ Force Realms</a>
+          <a href="/sanctuary-realm.html">♜ Sanctuary</a>
           <a href="/music.html">♫ Music · Serrated Signal</a>
           <a href="/chatbots.html">✳ Chatbots · Chaos Collective</a>
         </div>
