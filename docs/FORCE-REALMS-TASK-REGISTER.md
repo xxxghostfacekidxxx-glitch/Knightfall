@@ -42,3 +42,5 @@ Shared Covenant: e119e902820a07ec104d9e50c2685b4cd7e9b142; five principles, thre
 Order traditions: six voluntary ceremony guides and charter reader integration; source committed, browser and live board verification pending.
 
 Ceremony reconciliation: six existing stable IDs preserved; proposed names recorded as alternate titles, not duplicate ceremonies. Browser and live board verification pending.
+
+Governance ceremony hall now reads the same Order-filtered dataset as the charter reader; removed duplicated hardcoded ceremony definitions. Browser verification pending.
