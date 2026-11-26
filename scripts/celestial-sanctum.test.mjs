@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets,deck,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern} from "../public/celestial-core.mjs";
+import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets,deck,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,deities,findDeities,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif} from "../public/celestial-core.mjs";
 test("valid dates, master numbers and reproducible digit-sum convention",()=>{
  assert.equal(parseDay("2000-02-29").toISOString(),"2000-02-29T12:00:00.000Z");
  for(const v of ["2026-02-29","2024-04-31","2024-13-01","2024-2-01","1899-01-01",""])assert.throws(()=>parseDay(v));
@@ -63,4 +63,22 @@ test("calendar filters, year boundaries and iteration guards",()=>{
  const dates=[new Date("2026-01-03T00:00:00Z"),new Date("2027-01-01T00:00:00Z")],mock={SearchMoonQuarter:()=>({quarter:2,time:{date:dates[0]}}),NextMoonQuarter:()=>({quarter:3,time:{date:dates[1]}})};
  assert.deepEqual(celestialEvents(mock,2026,"moon"),[{kind:"Moon",name:"Full moon",date:dates[0].toISOString()}]);
  assert.throws(()=>celestialEvents({...mock,NextMoonQuarter:mock.SearchMoonQuarter},2026,"moon"));assert.throws(()=>celestialEvents(mock,2026,"bad"));assert.throws(()=>celestialEvents(mock,2101,"moon"));
+});
+
+test("pantheon relationships resolve and filters preserve inventory",()=>{
+ assert.equal(deities.length,16);assert.equal(new Set(deities.map(d=>d[0])).size,16);
+ for(const d of deities)for(const related of d[6])assert.ok(deities.some(x=>x[0]===related),related);
+ assert.ok(findDeities("Osiris").some(d=>d[0]==="osiris"));assert.ok(findDeities("","Creation").every(d=>d[2]==="Creation"));assert.equal(findDeities("no such deity").length,0);
+});
+test("classical zodiac, houses and alchemy reference inventory",()=>{
+ assert.equal(zodiacCorrespondences.length,12);assert.equal(zodiacFor("Scorpio")[3],"Mars");
+ for(const e of ["Fire","Earth","Air","Water"])assert.equal(zodiacCorrespondences.filter(x=>x[1]===e).length,3);
+ for(const m of ["Cardinal","Fixed","Mutable"])assert.equal(zodiacCorrespondences.filter(x=>x[2]===m).length,4);
+ assert.equal(houseTopics.length,12);assert.equal(planetaryMetals.length,7);assert.equal(alchemyStages.length,4);
+});
+test("all 78 cards resolve to valid original artwork and cached assets",()=>{
+ const sw=readFileSync("public/sw.js","utf8");
+ for(const card of deck){const m=tarotMotif(card),file=m.kind==="major"?"major-"+m.index+".svg":"suit-"+m.suit+".svg";const path="public/assets/knightfall/celestial/"+file;assert.ok(readFileSync(path,"utf8").includes("<svg"));assert.ok(sw.includes('"/'+path.slice(7)+'"'));}
+ for(const d of deities){const path="public/assets/knightfall/celestial/deity-"+d[0]+".svg";assert.ok(readFileSync(path,"utf8").includes("<svg"));assert.ok(sw.includes('"/'+path.slice(7)+'"'));}
+ assert.throws(()=>tarotMotif(["","invalid"]));
 });

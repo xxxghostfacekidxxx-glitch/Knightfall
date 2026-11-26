@@ -1,5 +1,5 @@
 import {loadAstronomy} from "./moon-widget.mjs";
-import {parseDay,lifePath,numberThemes,arcana,drawCards,skySnapshot,skyAspects,studies,deck,signs,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern} from "./celestial-core.mjs";
+import {parseDay,lifePath,numberThemes,arcana,drawCards,skySnapshot,skyAspects,studies,deck,signs,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,deities,findDeities,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif} from "./celestial-core.mjs";
 const $=id=>document.getElementById(id);
 function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
 const date=$("cs-sky-date"),sky=$("cs-sky-status"),skyBody=$("cs-sky-body"),aspects=$("cs-aspects");
@@ -29,13 +29,13 @@ $("cs-numbers").addEventListener("submit",e=>{
  catch(error){out.textContent=error.message;}
 });
 $("cs-numbers").addEventListener("reset",()=>$("cs-number-result").textContent="No calculation yet.");
-function card(c,label){const node=el("article",undefined,"cs-reading-card");node.dataset.suit=c[4]||"Major";node.append(el("span",label,"cs-card-label"),el("span",c[0],"cs-roman"),el("h3",c[1]),el("strong",c[2]),el("p",c[3]));return node;}
+function card(c,label){const node=el("article",undefined,"cs-reading-card");node.dataset.suit=c[4]||"Major";node.append(el("span",label,"cs-card-label"),tarotArt(c),el("span",c[0],"cs-roman"),el("h3",c[1]),el("strong",c[2]),el("p",c[3]));return node;}
 function reading(n){const labels=n===1?["Reflection"]:n===3?["Current situation","What to examine","Possible next step"]:["Present","Challenge","Resource","Perspective","Next step"];$("cs-reading").replaceChildren(...drawCards(n,Math.random,$("cs-deck").value).map((c,i)=>card(c,labels[i])));$("cs-reading-status").textContent=n+" "+(n===1?"card":"distinct cards")+" drawn for reflection.";}
 $("cs-one").addEventListener("click",()=>reading(1));
 $("cs-three").addEventListener("click",()=>reading(3));
 $("cs-five").addEventListener("click",()=>reading(5));
 $("cs-clear").addEventListener("click",()=>{$("cs-reading").replaceChildren();$("cs-reading-status").textContent="Reading cleared.";});
-function filterCards(){const q=$("cs-card-search").value.trim().toLowerCase(),matches=deck.filter(c=>c.join(" ").toLowerCase().includes(q));$("cs-arcana").replaceChildren(...matches.map(c=>{const item=el("details");item.append(el("summary",c[0]+" · "+c[1]),el("p",c[2]+" — "+c[3]));return item;}));$("cs-card-count").textContent=matches.length+" cards";}
+function filterCards(){const q=$("cs-card-search").value.trim().toLowerCase(),matches=deck.filter(c=>c.join(" ").toLowerCase().includes(q));$("cs-arcana").replaceChildren(...matches.map(c=>{const item=el("details");item.append(el("summary",c[0]+" · "+c[1]));item.addEventListener("toggle",()=>{if(item.open&&item.childNodes.length===1)item.append(tarotArt(c),el("p",c[2]+" — "+c[3]));});return item;}));$("cs-card-count").textContent=matches.length+" cards";}
 $("cs-card-search").addEventListener("input",filterCards);filterCards();
 const query=$("cs-study-search"),category=$("cs-study-category"),library=$("cs-study-list");
 function filterStudies(){
@@ -104,3 +104,21 @@ const descriptions={circle:"Every point is the same distance from the center.",v
 function renderGeometry(){const name=$("cs-geometry-select").value,angle=Number($("cs-geometry-rotation").value),g=geometryPattern(name),svg=$("cs-geometry-svg"),group=shape("g",{transform:"rotate("+angle+" 200 200)"});
 for(const c of g.circles)group.append(shape("circle",{cx:c.x,cy:c.y,r:c.r,class:"cs-geometry-line"}));for(const p of g.paths)group.append(shape("polyline",{points:p.map(v=>v.join(",")).join(" "),class:"cs-geometry-line"}));group.append(shape("circle",{cx:200,cy:200,r:3,class:"cs-geometry-center"}));svg.replaceChildren(group);$("cs-geometry-angle").textContent=angle+"°";$("cs-geometry-description").textContent=descriptions[name];}
 $("cs-geometry-select").addEventListener("change",renderGeometry);$("cs-geometry-rotation").addEventListener("input",renderGeometry);renderGeometry();
+
+function emblemImage(file){const img=el("img");img.src="/assets/knightfall/celestial/"+file;img.alt="";img.width=160;img.height=160;img.loading="lazy";img.className="cs-emblem";return img;}
+function tarotArt(c){const m=tarotMotif(c),art=el("div",undefined,"cs-tarot-art");art.append(emblemImage(m.kind==="major"?"major-"+m.index+".svg":"suit-"+m.suit+".svg"));if(m.kind==="minor")art.append(el("span",["A","II","III","IV","V","VI","VII","VIII","IX","X","P","Kn","Q","K"][m.rank],"cs-rank"));return art;}
+function renderGods(){
+ const found=findDeities($("cs-god-search").value,$("cs-god-category").value),grid=$("cs-god-grid");grid.replaceChildren();
+ for(const [id,name,group,symbol,summary,description,links] of found){
+  const card=el("article",undefined,"cs-study cs-deity");card.append(emblemImage("deity-"+id+".svg"),el("span",group,"cs-card-label"),el("h3",name),el("strong",summary),el("p",description));
+  const related=el("div",undefined,"cs-related");related.append(el("span","Related figures:"));
+  for(const target of links){const d=deities.find(x=>x[0]===target);if(!d)continue;const b=el("button",d[1]);b.type="button";b.addEventListener("click",()=>{$("cs-god-category").value="";$("cs-god-search").value=d[1];renderGods();$("cs-god-search").focus();});related.append(b);}
+  card.append(related);grid.append(card);
+ }$("cs-god-count").textContent=found.length+" figures";
+}
+$("cs-god-search").addEventListener("input",renderGods);$("cs-god-category").addEventListener("change",renderGods);renderGods();
+function renderZodiac(){const element=$("cs-element").value,mode=$("cs-modality").value,grid=$("cs-zodiac-grid");grid.replaceChildren();for(const [name,e,m,r,t] of zodiacCorrespondences.filter(x=>(!element||x[1]===element)&&(!mode||x[2]===mode))){const card=el("article",undefined,"cs-study");card.append(el("span",String.fromCodePoint(0x2648+signs.indexOf(name)),"cs-rune-glyph"),el("h3",name),el("p",e+" · "+m),el("p","Classical ruler: "+r),el("p","Reflection theme: "+t));grid.append(card);}}
+$("cs-element").addEventListener("change",renderZodiac);$("cs-modality").addEventListener("change",renderZodiac);renderZodiac();
+for(const [i,topic] of houseTopics.entries()){const card=el("article",undefined,"cs-study");card.append(el("span","HOUSE "+(i+1),"cs-card-label"),el("h3",topic));$("cs-house-grid").append(card);}
+for(const [planet,metal,symbol] of planetaryMetals){const card=el("article",undefined,"cs-study");card.append(el("span",symbol,"cs-rune-glyph"),el("h3",metal),el("p","Traditional association: "+planet));$("cs-metal-grid").append(card);}
+for(const [i,[name,translation,description,prompt]] of alchemyStages.entries()){const card=el("article",undefined,"cs-study cs-stage");card.dataset.stage=String(i);card.append(el("span",translation,"cs-card-label"),el("h3",name),el("p",description),el("p",prompt,"cs-prompt"));$("cs-stage-grid").append(card);}
