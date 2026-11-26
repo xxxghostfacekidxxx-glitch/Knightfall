@@ -1237,7 +1237,11 @@ export default { async queue(batch, env) {
     if(!Number.isSafeInteger(target)||target<=0||target===viewer.id)return json({error:"Choose another member to block."},400,origin);
     const targetUser=await env.DB.prepare("SELECT id FROM users WHERE id=? AND status='active'").bind(target).first();
     if(!targetUser)return json({error:"Member not found."},404,origin);
-    await env.DB.prepare("INSERT INTO user_blocks (blocker_id,blocked_id,created_at) VALUES (?,?,?) ON CONFLICT(blocker_id,blocked_id) DO NOTHING").bind(viewer.id,target,new Date().toISOString()).run();
+    await env.DB.batch([
+      env.DB.prepare("INSERT INTO user_blocks (blocker_id,blocked_id,created_at) VALUES (?,?,?) ON CONFLICT(blocker_id,blocked_id) DO NOTHING").bind(viewer.id,target,new Date().toISOString()),
+      env.DB.prepare("DELETE FROM follows WHERE (follower_id=? AND following_id=?) OR (follower_id=? AND following_id=?)").bind(viewer.id,target,target,viewer.id),
+      env.DB.prepare("DELETE FROM friend_requests WHERE (requester_id=? AND addressee_id=?) OR (requester_id=? AND addressee_id=?)").bind(viewer.id,target,target,viewer.id)
+    ]);
     await audit(env,viewer,"social.member.block","social_user_block",target,{});
     return json({ok:true,blocked_user_id:target},200,origin);
   }
