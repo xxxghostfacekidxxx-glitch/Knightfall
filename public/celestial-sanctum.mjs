@@ -1,5 +1,5 @@
 import {loadAstronomy} from "./moon-widget.mjs";
-import {parseDay,lifePath,numberThemes,arcana,drawCards,skySnapshot,skyAspects,studies,deck,signs,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,deities,findDeities,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif} from "./celestial-core.mjs";
+import {parseDay,lifePath,numberThemes,arcana,drawCards,skySnapshot,skyAspects,studies,deck,signs,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,deities,findDeities,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif,tarotAsset,chamberMap,synastryAspects} from "./celestial-core.mjs";
 const $=id=>document.getElementById(id);
 function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
 const date=$("cs-sky-date"),sky=$("cs-sky-status"),skyBody=$("cs-sky-body"),aspects=$("cs-aspects");
@@ -106,7 +106,7 @@ for(const c of g.circles)group.append(shape("circle",{cx:c.x,cy:c.y,r:c.r,class:
 $("cs-geometry-select").addEventListener("change",renderGeometry);$("cs-geometry-rotation").addEventListener("input",renderGeometry);renderGeometry();
 
 function emblemImage(file){const img=el("img");img.src="/assets/knightfall/celestial/"+file;img.alt="";img.width=160;img.height=160;img.loading="lazy";img.className="cs-emblem";return img;}
-function tarotArt(c){const m=tarotMotif(c),art=el("div",undefined,"cs-tarot-art");art.append(emblemImage(m.kind==="major"?"major-"+m.index+".svg":"suit-"+m.suit+".svg"));if(m.kind==="minor")art.append(el("span",["A","II","III","IV","V","VI","VII","VIII","IX","X","P","Kn","Q","K"][m.rank],"cs-rank"));return art;}
+function tarotArt(c){const m=tarotMotif(c),art=el("div",undefined,"cs-tarot-art");art.append(emblemImage(tarotAsset(c)));return art;}
 function renderGods(){
  const found=findDeities($("cs-god-search").value,$("cs-god-category").value),grid=$("cs-god-grid");grid.replaceChildren();
  for(const [id,name,group,symbol,summary,description,links] of found){
@@ -122,3 +122,11 @@ $("cs-element").addEventListener("change",renderZodiac);$("cs-modality").addEven
 for(const [i,topic] of houseTopics.entries()){const card=el("article",undefined,"cs-study");card.append(el("span","HOUSE "+(i+1),"cs-card-label"),el("h3",topic));$("cs-house-grid").append(card);}
 for(const [planet,metal,symbol] of planetaryMetals){const card=el("article",undefined,"cs-study");card.append(el("span",symbol,"cs-rune-glyph"),el("h3",metal),el("p","Traditional association: "+planet));$("cs-metal-grid").append(card);}
 for(const [i,[name,translation,description,prompt]] of alchemyStages.entries()){const card=el("article",undefined,"cs-study cs-stage");card.dataset.stage=String(i);card.append(el("span",translation,"cs-card-label"),el("h3",name),el("p",description),el("p",prompt,"cs-prompt"));$("cs-stage-grid").append(card);}
+
+function renderChamberMap(){const map=$("cs-constellation-map"),p=chamberMap;for(const [i,j] of [...Array.from({length:8},(_,i)=>[i,(i+1)%8]),[0,8],[1,9],[2,10],[3,10],[4,11],[5,11],[6,8],[7,8],[8,9],[9,10],[10,11],[11,8]]){const a=p[i],b=p[j];map.append(shape("line",{x1:a[3],y1:a[4],x2:b[3],y2:b[4],class:"cs-map-line"}));}for(const [id,label,glyph,x,y] of p){const link=shape("a",{href:"#"+id,"aria-label":label,tabindex:0,class:"cs-map-star"});link.append(shape("title",{},label),shape("circle",{cx:x,cy:y,r:18}),shape("text",{x,y,class:"cs-map-glyph"},glyph),shape("text",{x,y:y+32,class:"cs-map-label"},label));map.append(link);}}
+renderChamberMap();
+let synRun=0,synMatches=[];
+function renderSynastry(){const filter=$("cs-synastry-filter").value,rows=synMatches.filter(a=>!filter||a.type===filter),body=$("cs-synastry-results");body.replaceChildren(...rows.map(a=>{const row=el("tr");row.append(el("td",a.first),el("td",a.type),el("td",a.second),el("td",a.orb.toFixed(2)+"°"));return row;}));}
+$("cs-synastry-filter").addEventListener("change",renderSynastry);
+$("cs-synastry-form").addEventListener("submit",async e=>{e.preventDefault();const seq=++synRun,status=$("cs-synastry-status");synMatches=[];renderSynastry();status.textContent="Comparing charts…";try{const a=parseUtcMinute($("cs-synastry-a").value),b=parseUtcMinute($("cs-synastry-b").value),orb=Number($("cs-synastry-orb").value),engine=await loadAstronomy();if(seq!==synRun)return;synMatches=synastryAspects(skySnapshot(engine,a),skySnapshot(engine,b),orb);renderSynastry();status.textContent=synMatches.length+" cross-chart aspects within "+orb+"°.";}catch(error){if(seq===synRun)status.textContent=error.message;}});
+$("cs-synastry-form").addEventListener("reset",()=>{synRun++;synMatches=[];renderSynastry();$("cs-synastry-status").textContent="Comparison cleared.";});

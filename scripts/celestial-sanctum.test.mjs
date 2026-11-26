@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets,deck,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,deities,findDeities,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif} from "../public/celestial-core.mjs";
+import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets,deck,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,deities,findDeities,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif,tarotAsset,chamberMap,synastryAspects} from "../public/celestial-core.mjs";
 test("valid dates, master numbers and reproducible digit-sum convention",()=>{
  assert.equal(parseDay("2000-02-29").toISOString(),"2000-02-29T12:00:00.000Z");
  for(const v of ["2026-02-29","2024-04-31","2024-13-01","2024-2-01","1899-01-01",""])assert.throws(()=>parseDay(v));
@@ -78,7 +78,23 @@ test("classical zodiac, houses and alchemy reference inventory",()=>{
 });
 test("all 78 cards resolve to valid original artwork and cached assets",()=>{
  const sw=readFileSync("public/sw.js","utf8");
- for(const card of deck){const m=tarotMotif(card),file=m.kind==="major"?"major-"+m.index+".svg":"suit-"+m.suit+".svg";const path="public/assets/knightfall/celestial/"+file;assert.ok(readFileSync(path,"utf8").includes("<svg"));assert.ok(sw.includes('"/'+path.slice(7)+'"'));}
+ for(const card of deck){const file=tarotAsset(card);const path="public/assets/knightfall/celestial/"+file;assert.ok(readFileSync(path,"utf8").includes("<svg"));assert.ok(sw.includes('"/'+path.slice(7)+'"'));}
  for(const d of deities){const path="public/assets/knightfall/celestial/deity-"+d[0]+".svg";assert.ok(readFileSync(path,"utf8").includes("<svg"));assert.ok(sw.includes('"/'+path.slice(7)+'"'));}
  assert.throws(()=>tarotMotif(["","invalid"]));
+});
+
+test("individual tarot vectors and registered Foundry inventory",()=>{
+ assert.equal(new Set(deck.map(tarotAsset)).size,78);
+ const manifest=JSON.parse(readFileSync("public/assets/knightfall/celestial/manifest.json","utf8"));assert.equal(manifest.assets.length,98);assert.equal(new Set(manifest.assets.map(a=>a.path)).size,98);
+ for(const item of manifest.assets)assert.ok(readFileSync("public"+item.path,"utf8").includes("<svg"));
+ assert.ok(readFileSync("public/devil-tools.html","utf8").includes('data-collection="celestial-sanctum"'));
+ assert.ok(readFileSync("public/creator-theme-art-gallery.js","utf8").includes("knightfall-celestial-original-art"));
+});
+test("constellation navigation uses distinct existing chambers",()=>{
+ const html=readFileSync("public/celestial-sanctum.html","utf8");assert.equal(chamberMap.length,12);assert.equal(new Set(chamberMap.map(x=>x[0])).size,12);
+ for(const [id] of chamberMap){assert.ok(html.includes('id="'+id+'"'));assert.ok(html.includes('href="#'+id+'"'));}
+});
+test("synastry respects cross-chart orbs",()=>{
+ const a=[{name:"Sun",longitude:359}],b=[{name:"Moon",longitude:3}];assert.equal(synastryAspects(a,b,2).length,0);
+ assert.deepEqual(synastryAspects(a,b,4),[{first:"Sun",second:"Moon",type:"Conjunction",orb:4}]);assert.throws(()=>synastryAspects(a,b,10));assert.throws(()=>synastryAspects([{name:"Sun",longitude:NaN}],b));
 });

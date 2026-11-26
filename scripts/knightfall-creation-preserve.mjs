@@ -95,6 +95,9 @@ const ART_CHROME=new Set([
  "public/realm-theme-engine.css",
  "public/realm-hubs.css",
  "public/celestial-sanctum.html",
+ "public/celestial-sanctum.css",
+ "public/celestial-sanctum.mjs",
+ "public/celestial-core.mjs",
  "public/music.html",
  "public/music-rhythm-lab.js",
  "public/chatbots.html"

@@ -69,3 +69,15 @@
 .kf-celestial-page .cs-stage[data-stage="1"]{border-top-color:#e3e0e5}
 .kf-celestial-page .cs-stage[data-stage="2"]{border-top-color:#e6c768}
 .kf-celestial-page .cs-stage[data-stage="3"]{border-top-color:#c96069}
+
+.kf-celestial-page .cs-map-frame{margin:1.5rem 0;background:radial-gradient(ellipse at 50% 45%,#322345,#10111d 65%);border:1px solid #bca2ce77;border-radius:20px;padding:clamp(.5rem,2vw,1.5rem);box-shadow:inset 0 0 0 5px #14131e}
+.kf-celestial-page #cs-constellation-map{display:block;width:100%;max-width:650px;margin:auto;overflow:visible}
+.kf-celestial-page .cs-map-line{stroke:#c9b0e477;stroke-width:1;stroke-dasharray:3 4}
+.kf-celestial-page .cs-map-star circle{fill:#241e37;stroke:#d9b87d;stroke-width:1.5}
+.kf-celestial-page .cs-map-star text{fill:#f1e3cb;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.kf-celestial-page .cs-map-glyph{font-size:19px}
+.kf-celestial-page .cs-map-label{font:600 10px system-ui}
+.kf-celestial-page .cs-map-star:hover circle,.kf-celestial-page .cs-map-star:focus-visible circle{fill:#705586;stroke:#fff;stroke-width:3}
+.kf-celestial-page .cs-tarot-art .cs-emblem{aspect-ratio:auto;object-fit:contain}
+.kf-celestial-page .cs-room{box-shadow:inset 0 0 0 4px #0d0e1866,0 12px 35px #0003}
+@media(forced-colors:active){.kf-celestial-page .cs-map-line,.kf-celestial-page .cs-map-star circle{stroke:CanvasText}.kf-celestial-page .cs-map-star text{fill:CanvasText}}

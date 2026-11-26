@@ -17,11 +17,13 @@ const names=Object.freeze({
  "neon-dystopia":"Neon Dystopia",
  "the-asylum":"The Asylum",
  "arcade-anarchy":"Arcade Anarchy",
- "astral-dominion":"Astral Dominion"
+ "astral-dominion":"Astral Dominion",
+ "celestial-sanctum":"Celestial Sanctum"
 });
 const pngUrl="/assets/knightfall/theme-collections/manifest.json";
 const svgUrl="/assets/knightfall/theme-collections/ornaments.json";
 const recoveredUrl="/assets/knightfall/theme-collections/recovered-artwork-manifest.json";
+const celestialUrl="/assets/knightfall/celestial/manifest.json";
 const formats=new Set(["png","webp","svg"]);
 const pngRoles=new Set(["hero","background","concept"]);
 const svgRoles=new Set(["header","frame","divider","corner","emblem","panel","button","side-rail"]);
@@ -35,6 +37,7 @@ const tag=(name,cls,text)=>{
 const report=text=>{status.textContent=text};
 const approved=item=>{
  if(!item||typeof item!=="object"||!Object.hasOwn(names,item.collection)||typeof item.path!=="string")return false;
+ if(item.collection==="celestial-sanctum")return /^\/assets\/knightfall\/celestial\/(?:major-(?:[0-9]|1[0-9]|2[01])|minor-[0-3]-(?:[0-9]|1[0-3])|suit-[0-3]|deity-(?:osiris|isis|horus|anubis|ra|set|nephthys|maat|thoth|hathor|sekhmet|bastet|ptah|atum|amun|khonsu))\.svg$/.test(item.path)&&item.format==="svg"&&item.role==="emblem";
  const match=/^\/assets\/knightfall\/theme-collections\/([a-z0-9-]+)\/(?:svg\/)?([a-z0-9-]+)\.(png|webp|svg)$/.exec(item.path);
  if(!match||match[1]!==item.collection)return false;
  const kind=match[3];
@@ -133,10 +136,11 @@ async function load(){
  if(inFlight)return inFlight;
  inFlight=(async()=>{
   try{
-   const [pngResponse,svgResponse,recoveredResponse]=await Promise.all([
+   const [pngResponse,svgResponse,recoveredResponse,celestialResponse]=await Promise.all([
     fetch(pngUrl,{credentials:"same-origin",cache:"no-store"}),
     fetch(svgUrl,{credentials:"same-origin",cache:"no-store"}),
-    fetch(recoveredUrl,{credentials:"same-origin",cache:"no-store"})
+    fetch(recoveredUrl,{credentials:"same-origin",cache:"no-store"}),
+    fetch(celestialUrl,{credentials:"same-origin",cache:"no-store"}).catch(()=>null)
    ]);
    if(!pngResponse.ok||!svgResponse.ok||!recoveredResponse.ok)throw Error("The artwork inventory is not fully published yet.");
    const [p,s,r]=await Promise.all([pngResponse.json(),svgResponse.json(),recoveredResponse.json()]);
@@ -150,6 +154,7 @@ async function load(){
     ...s.assets.map(item=>({...item,format:"svg"})),
     ...r.assets
    ];
+   if(celestialResponse?.ok){const c=await celestialResponse.json();if(c.id!=="knightfall-celestial-original-art"||!Array.isArray(c.assets)||c.assets.length!==98||!c.assets.every(x=>x.collection==="celestial-sanctum"))throw Error("Celestial artwork inventory was not recognized.");candidate.push(...c.assets);}
    if(!candidate.every(approved)||new Set(candidate.map(i=>i.path)).size!==candidate.length)
     throw Error("Artwork inventory contains an unreviewed asset path.");
    items=candidate;render();
