@@ -35,7 +35,7 @@ a{color:#dfbc8c}button:focus-visible,a:focus-visible{outline:2px solid #dfbc8c;o
  const base="https://api.ash-fall.com/api/stripe/billing/";
  const state=document.getElementById("membership-state"),status=document.getElementById("billing-status");
  const join=document.getElementById("join"),manage=document.getElementById("manage");
- const safeUrl=(url,type)=>{try{const u=new URL(url);return u.protocol==="https:"&&u.hostname===(type==="portal"?"billing.stripe.com":"checkout.stripe.com")?u.href:null}catch{return null}};
+ const safeUrl=(url,type)=>{try{const u=new URL(url);return u.protocol==="https:"&&!u.port&&!u.username&&!u.password&&u.hostname===(type==="portal"?"billing.stripe.com":"checkout.stripe.com")?u.href:null}catch{return null}};
  async function refresh(){
   try{
    const r=await fetch(base+"status",{credentials:"include",cache:"no-store"});
@@ -44,8 +44,8 @@ a{color:#dfbc8c}button:focus-visible,a:focus-visible{outline:2px solid #dfbc8c;o
    if(!r.ok)throw Error(data.error||"Billing status unavailable.");
    state.textContent=data.premium?"Premium active":"Standard member";
    join.disabled=!data.configured||data.premium;
-   manage.disabled=!data.configured;
-   status.textContent=data.configured?"Select an option above to continue securely with Stripe.":"Stripe subscription checkout is not active yet. No charges can be started.";
+   manage.disabled=!(data.portal_configured??data.configured);
+   status.textContent=data.configured?"Select an option above to continue securely with Stripe.":data.portal_configured?"New subscriptions are paused. Existing customers can still manage billing and cancel.":"Stripe subscription checkout is not active yet. No charges can be started.";
   }catch{state.textContent="Unavailable";status.textContent="Could not load billing status."}
  }
  async function act(which){
