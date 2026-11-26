@@ -97,3 +97,44 @@ test("verified webhook path routes exclusively through signed member-shop gatewa
  assert.match(shop,/handleVerifiedBillingEvent\(event,env\)/);
  assert.match(app,/handleStripeBilling\(request,env,url,user\)/);
 });
+
+test("independent portal flag allows cancellation without enabling new purchases",async()=>{
+ const {env,state}=mock();
+ env.STRIPE_BILLING_PORTAL_ENABLED="true";env.STRIPE_SECRET_KEY="sk_test_safe";
+ state.customers.set(user.id,"cus_abc123");
+ const status=await body(await handleStripeBilling(req("status"),env,path("status"),user));
+ assert.equal(status.configured,false);assert.equal(status.portal_configured,true);
+ const previous=globalThis.fetch;let calls=0;
+ globalThis.fetch=async(target,options)=>{
+  calls++;assert.match(target,/billing_portal\/sessions$/);
+  assert.equal(new URLSearchParams(options.body).get("customer"),"cus_abc123");
+  return {ok:true,json:async()=>({url:"https://billing.stripe.com/p/session/test"})};
+ };
+ try{
+  assert.equal((await body(await handleStripeBilling(req("checkout","POST"),env,path("checkout"),user))).status,503);
+  assert.equal(calls,0);
+  assert.equal((await body(await handleStripeBilling(req("portal","POST"),env,path("portal"),user))).status,200);
+  assert.equal(calls,1);
+  delete env.STRIPE_BILLING_PORTAL_ENABLED;
+  assert.equal((await body(await handleStripeBilling(req("portal","POST"),env,path("portal"),user))).status,503);
+  assert.equal(calls,1);
+ }finally{globalThis.fetch=previous}
+});
+test("billing rejects cross-product and deceptive redirect URLs",async()=>{
+ const {env,state}=mock();
+ env.STRIPE_BILLING_ENABLED="true";env.STRIPE_SECRET_KEY="sk_test_safe";
+ env.STRIPE_WEBHOOK_SECRET="whsec_safe";env.STRIPE_PREMIUM_PRICE_ID="price_abc123";
+ state.customers.set(user.id,"cus_abc123");
+ const previous=globalThis.fetch;let targetUrl="";
+ globalThis.fetch=async()=>({ok:true,json:async()=>({url:targetUrl})});
+ try{
+  for(const bad of ["https://checkout.stripe.com/billing.stripe.com","https://billing.stripe.com.evil.example/","https://billing.stripe.com:444/","https://evil.example/?next=https://billing.stripe.com/"]){
+   targetUrl=bad;
+   assert.equal((await body(await handleStripeBilling(req("portal","POST"),env,path("portal"),user))).status,502);
+  }
+  targetUrl="https://billing.stripe.com/checkout.stripe.com";
+  assert.equal((await body(await handleStripeBilling(req("checkout","POST"),env,path("checkout"),user))).status,502);
+  targetUrl="https://checkout.stripe.com/c/session";
+  assert.equal((await body(await handleStripeBilling(req("checkout","POST"),env,path("checkout"),user))).status,200);
+ }finally{globalThis.fetch=previous}
+});
