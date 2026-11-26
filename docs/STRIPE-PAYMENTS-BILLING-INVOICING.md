@@ -96,3 +96,15 @@ The website's billing success redirect is never proof of payment or membership o
 - Cloudflare production Worker secret inventory did not contain either Stripe secret binding. Provision matching live credentials directly via the dashboard only after sandbox testing. Never install sandbox credentials on the production Worker; use isolated staging resources for test orders and webhooks.
 - Main commits a0e6b78af2004449fe9c97b815b5bce3f452d89a and 22a05c903f64647b915e603cbf5a69bf6a9bd6e1 add delayed-payment fulfillment, multiple-signature verification, and regression coverage. CI/deployment and live purchase verification remain outstanding.
 - Live checkout remains launch-gated. Catalog creation is pending confirmation of the merchant's tax collection status; no new charges have been initiated.
+
+## Iowa sole-proprietor launch checklist (2026-11-26)
+Owner confirmed Iowa operations and sole proprietorship trading as Knightfall. Legal registration status, operating county, physical business address, tax identification number and first taxable sale date are not yet verified. Do not infer them from profile, device or payment data.
+- County trade-name filing: https://sos.iowa.gov/businesses/business-faqs
+- Federal EIN, if needed and not already assigned: https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number
+- Iowa sales/use permit: https://revenue.iowa.gov/taxes/business-permit-registration and https://govconnect.iowa.gov/
+- Digital products and software tax guidance: https://revenue.iowa.gov/taxes/tax-guidance/sales-use-excise-tax/taxation-specified-digital-products-software-and-related-services
+- Stripe Tax is pending a verified headquarters address; no registrations were listed. Never create a Stripe registration before the owner confirms actual state registration.
+- Stripe eligibility review: disclose the site's actual content, virtual currency, casino-style games and marketplace features to Stripe before launch; do not assume free or segregated restricted content resolves eligibility. https://stripe.com/legal/restricted-businesses
+- Before turning on automatic tax, implement and test signed checkout verification of subtotal, tax, total and currency; persist tax separately and reconcile full/partial refunds including tax. Existing order checks assume the pre-tax amount equals the paid total. Do not enable automatic tax until these are repaired and verified.
+- `STRIPE_BILLING_PORTAL_ENABLED=true` is an optional independent gate for existing customers' account-owned cancellation/payment-method management, even while new sales remain disabled. Requires a valid Stripe secret key and a configured portal. No production flag was changed.
+- Billing code/UI/tests committed in 022c35dd528997059aab7a5f698ab91765d7dbeb, a3005796ba81b142f5e86f8a5aee5376e76be83a and c254588e4221ebb8119d04b21faf01cbe66a526d. Deployment and runtime verification outstanding.
