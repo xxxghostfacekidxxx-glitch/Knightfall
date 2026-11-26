@@ -1228,15 +1228,16 @@ export default { async queue(batch, env) {
     const viewer=await requireUser(request,env);
     if(!viewer)return json({error:"Sign in to manage blocked members."},401,origin);
     if(request.method==="GET"){
-      const rows=await env.DB.prepare("SELECT b.blocked_id AS user_id,u.username,b.created_at FROM social_user_blocks b JOIN users u ON u.id=b.blocked_id WHERE b.blocker_id=? ORDER BY b.created_at DESC LIMIT 500").bind(viewer.id).all();
+      const rows=await env.DB.prepare("SELECT b.blocked_id AS user_id,u.username,b.created_at FROM user_blocks b JOIN users u ON u.id=b.blocked_id WHERE b.blocker_id=? ORDER BY b.created_at DESC LIMIT 500").bind(viewer.id).all();
       return json({blocks:rows.results||[]},200,origin);
     }
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    if(!body||typeof body!=="object"||Array.isArray(body))return json({error:"Invalid block details."},400,origin);
     const target=Number(body.user_id);
     if(!Number.isSafeInteger(target)||target<=0||target===viewer.id)return json({error:"Choose another member to block."},400,origin);
     const targetUser=await env.DB.prepare("SELECT id FROM users WHERE id=? AND status='active'").bind(target).first();
     if(!targetUser)return json({error:"Member not found."},404,origin);
-    await env.DB.prepare("INSERT INTO social_user_blocks (blocker_id,blocked_id,created_at) VALUES (?,?,?) ON CONFLICT(blocker_id,blocked_id) DO NOTHING").bind(viewer.id,target,new Date().toISOString()).run();
+    await env.DB.prepare("INSERT INTO user_blocks (blocker_id,blocked_id,created_at) VALUES (?,?,?) ON CONFLICT(blocker_id,blocked_id) DO NOTHING").bind(viewer.id,target,new Date().toISOString()).run();
     await audit(env,viewer,"social.member.block","social_user_block",target,{});
     return json({ok:true,blocked_user_id:target},200,origin);
   }
@@ -1245,7 +1246,8 @@ export default { async queue(batch, env) {
     const viewer=await requireUser(request,env);
     if(!viewer)return json({error:"Sign in to manage blocked members."},401,origin);
     const target=Number(unblockMatch);
-    await env.DB.prepare("DELETE FROM social_user_blocks WHERE blocker_id=? AND blocked_id=?").bind(viewer.id,target).run();
+    if(!Number.isSafeInteger(target)||target<=0)return json({error:"Invalid member."},400,origin);
+    await env.DB.batch([env.DB.prepare("DELETE FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(viewer.id,target),env.DB.prepare("DELETE FROM social_user_blocks WHERE blocker_id=? AND blocked_id=?").bind(viewer.id,target)]);
     await audit(env,viewer,"social.member.unblock","social_user_block",target,{});
     return json({ok:true},200,origin);
   }
@@ -1253,6 +1255,7 @@ export default { async queue(batch, env) {
     const viewer=await requireUser(request,env);
     if(!viewer)return json({error:"Sign in to report content or a member."},401,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    if(!body||typeof body!=="object"||Array.isArray(body))return json({error:"Invalid report details."},400,origin);
     const objectType=String(body.object_type||"");
     const objectId=body.object_id==null?"":String(body.object_id).trim().slice(0,160);
     const reason=typeof body.reason==="string"?body.reason.trim().slice(0,120):"";
@@ -2796,7 +2799,7 @@ For complex questions, organize the answer clearly and provide actionable detail
   if(followMatch&&request.method==="DELETE"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const target=await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(followMatch[1].toLowerCase()).first();if(target)await env.DB.prepare("DELETE FROM follows WHERE follower_id=? AND following_id=?").bind(user.id,target.id).run();return json({following:false},200,origin);}
   if(followMatch&&request.method==="GET"){const user=await requireUser(request,env);const target=await env.DB.prepare("SELECT id,username FROM users WHERE username=?").bind(followMatch[1].toLowerCase()).first();if(!target)return json({error:"User not found."},404,origin);const me=user?await env.DB.prepare("SELECT 1 FROM follows WHERE follower_id=? AND following_id=?").bind(user.id,target.id).first():null,followers=await env.DB.prepare("SELECT COUNT(*) AS count FROM follows WHERE following_id=?").bind(target.id).first(),following=await env.DB.prepare("SELECT COUNT(*) AS count FROM follows WHERE follower_id=?").bind(target.id).first();return json({following:!!me,followers:Number(followers?.count||0),following_count:Number(following?.count||0)},200,origin);}
   const blockMatch=url.pathname.match(/^\/api\/users\/([^/]+)\/block$/);if(blockMatch&&request.method==="POST"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const target=await env.DB.prepare("SELECT id,username,status FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();if(!target||target.status!=="active")return json({error:"User not found."},404,origin);if(target.id===user.id)return json({error:"You cannot block yourself."},400,origin);const now=new Date().toISOString();await env.DB.batch([env.DB.prepare("INSERT OR IGNORE INTO user_blocks (blocker_id,blocked_id,created_at) VALUES (?,?,?)").bind(user.id,target.id,now),env.DB.prepare("DELETE FROM follows WHERE (follower_id=? AND following_id=?) OR (follower_id=? AND following_id=?)").bind(user.id,target.id,target.id,user.id),env.DB.prepare("DELETE FROM friend_requests WHERE (requester_id=? AND addressee_id=?) OR (requester_id=? AND addressee_id=?)").bind(user.id,target.id,target.id,user.id)]);return json({blocked:true},200,origin);}
-  if(blockMatch&&request.method==="DELETE"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const target=await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();if(target)await env.DB.prepare("DELETE FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(user.id,target.id).run();return json({blocked:false},200,origin);}
+  if(blockMatch&&request.method==="DELETE"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const target=await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();if(target)await env.DB.batch([env.DB.prepare("DELETE FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(user.id,target.id),env.DB.prepare("DELETE FROM social_user_blocks WHERE blocker_id=? AND blocked_id=?").bind(user.id,target.id)]);return json({blocked:false},200,origin);}
   if(blockMatch&&request.method==="GET"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const target=await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();if(!target)return json({error:"User not found."},404,origin);const row=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(user.id,target.id).first();return json({blocked:!!row},200,origin);}
   // Friend requests: accepted friendships are mutual; only the recipient may accept/decline.
   if(url.pathname==="/api/friends"&&request.method==="GET"){
