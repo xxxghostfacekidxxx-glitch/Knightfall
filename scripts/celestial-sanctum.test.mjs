@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets} from "../public/celestial-core.mjs";
+import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets,deck,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint} from "../public/celestial-core.mjs";
 test("valid dates, master numbers and reproducible digit-sum convention",()=>{
  assert.equal(parseDay("2000-02-29").toISOString(),"2000-02-29T12:00:00.000Z");
  for(const v of ["2026-02-29","2024-04-31","2024-13-01","2024-2-01","1899-01-01",""])assert.throws(()=>parseDay(v));
@@ -11,7 +11,7 @@ test("valid dates, master numbers and reproducible digit-sum convention",()=>{
 test("complete major arcana and nonrepeating draws",()=>{
  assert.equal(arcana.length,22);assert.equal(new Set(arcana.map(c=>c[1])).size,22);
  assert.deepEqual(drawCards(3,()=>0).map(c=>c[1]),["The Fool","The Magician","The High Priestess"]);
- assert.throws(()=>drawCards(2));assert.throws(()=>drawCards(1,()=>1));
+ assert.throws(()=>drawCards(2));assert.equal(drawCards(5,()=>0,'full').length,5);assert.throws(()=>drawCards(1,()=>1));
 });
 test("sky positions normalize angles, estimate retrograde across zero and detect aspects",()=>{
  const date=parseDay("2026-11-26"),engine={Body:Object.fromEntries(planets.map(n=>[n,n])),GeoVector:(body,time)=>({body,time}),Ecliptic:({body,time})=>({elon:body==="Mercury"?(-(+time-date)/86400000):planets.indexOf(body)*30})};
@@ -27,4 +27,29 @@ test("page has working local anchors, tool assets and offline entries",()=>{
  for(const [,id] of html.matchAll(/href="#([^"]+)"/g))assert.ok(html.includes('id="'+id+'"'),id);
  for(const p of ["celestial-sanctum.css","celestial-sanctum.mjs","celestial-core.mjs"])assert.ok(sw.includes('"/'+p+'"'));
  assert.equal(studies.length,9);assert.doesNotMatch(js,/localStorage|sessionStorage|fetch\(/);assert.doesNotMatch(js,/\.innerHTML/);
+});
+
+test("78 distinct tarot cards and four complete minor suits",()=>{
+ assert.equal(deck.length,78);assert.equal(new Set(deck.map(c=>c[1])).size,78);
+ for(const suit of ["Wands","Cups","Swords","Pentacles"])assert.equal(deck.filter(c=>c[4]===suit).length,14);
+ assert.equal(new Set(drawCards(5,()=>0.99,"minor")).size,5);
+ assert.throws(()=>drawCards(1,Math.random,"unknown"));
+});
+test("UTC inputs reject rollover and compare cross-chart angles",()=>{
+ assert.equal(parseUtcMinute("2000-02-29T23:59").toISOString(),"2000-02-29T23:59:00.000Z");
+ for(const value of ["2026-02-29T12:00","2024-02-29T24:00","2024-02-29T12:60","2024-02-29T12:00Z"])assert.throws(()=>parseUtcMinute(value));
+ assert.deepEqual(transitAspects([{name:"Moon",longitude:359}],[{name:"Sun",longitude:1}]),[{transit:"Sun",natal:"Moon",type:"Conjunction",orb:2}]);
+ assert.equal(transitAspects([{name:"A",longitude:0}],[{name:"B",longitude:3}]).length,0);
+});
+test("year cycles and Latin-letter numerology are deterministic",()=>{
+ assert.equal(personalYear("2000-01-08",2026),1);
+ assert.deepEqual(nameNumbers("Éva"),{expression:1,soul:6,personality:4});
+ assert.deepEqual(nameNumbers("Y"),{expression:7,soul:null,personality:7});
+ assert.throws(()=>nameNumbers("123"));assert.throws(()=>personalYear("2000-01-08",2101));
+});
+test("season events and zodiac wheel coordinates",()=>{
+ const engine={Seasons:()=>Object.fromEntries(["mar_equinox","jun_solstice","sep_equinox","dec_solstice"].map((k,i)=>[k,{date:new Date(Date.UTC(2026,2+i*3,20))}]))};
+ assert.equal(seasonEvents(engine,2026).length,4);assert.throws(()=>seasonEvents(engine,2026.1));
+ assert.ok(Math.abs(wheelPoint(0,100).x-100)<1e-6);
+ assert.ok(Math.abs(wheelPoint(90,100).y-100)<1e-6);
 });

@@ -23,3 +23,24 @@
 .kf-celestial-page .cs-arcana summary{cursor:pointer;padding:.45rem;color:#f1e5ee}
 @media(max-width:600px){.kf-celestial-page .cs-table{font-size:.8rem}.kf-celestial-page .cs-table td,.kf-celestial-page .cs-table th{padding:.45rem}.kf-celestial-page .cs-form button{flex:1 1 130px}}
 @media(forced-colors:active){.kf-celestial-page .cs-room,.kf-celestial-page .cs-study,.kf-celestial-page .cs-reading-card{border:1px solid CanvasText}.kf-celestial-page .cs-room button{background:ButtonFace;color:ButtonText}}
+
+.kf-celestial-page .cs-wheel-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:center;gap:1.5rem;margin:1.5rem 0}
+.kf-celestial-page #cs-wheel{width:100%;max-width:440px;display:block;margin:auto;aspect-ratio:1;background:radial-gradient(circle,#241b38,#10111b 68%);border:1px solid #ab91c366;border-radius:50%}
+.kf-celestial-page .cs-wheel-ring,.kf-celestial-page .cs-wheel-line{fill:none;stroke:#bca2ce77;stroke-width:.8}
+.kf-celestial-page .cs-wheel-sign,.kf-celestial-page .cs-wheel-center{fill:#e8d5f3;text-anchor:middle;dominant-baseline:central;font-size:15px}
+.kf-celestial-page .cs-wheel-center{font:8px system-ui;letter-spacing:1px}
+.kf-celestial-page .cs-wheel-marker line{stroke:#a9a3c966;stroke-width:.7}
+.kf-celestial-page .cs-wheel-marker circle{fill:#221b34;stroke:#dbb87e;stroke-width:1}
+.kf-celestial-page .cs-wheel-marker text{font:8px system-ui;fill:#f6e9de;text-anchor:middle;dominant-baseline:central}
+.kf-celestial-page .cs-wheel-marker.is-selected line{stroke:#f4dca2;stroke-width:2}
+.kf-celestial-page .cs-wheel-marker.is-selected circle{fill:#f4dca2;stroke:#fff;stroke-width:2}
+.kf-celestial-page .cs-wheel-marker.is-selected text{fill:#17101d;font-weight:900}
+.kf-celestial-page .cs-reading-card{position:relative;overflow:hidden;border-color:var(--card-accent,#bb9bdf);background:radial-gradient(ellipse at 50% 0,color-mix(in srgb,var(--card-accent,#bb9bdf),transparent 80%),transparent 60%),linear-gradient(155deg,#222033,#101017)}
+.kf-celestial-page .cs-reading-card[data-suit="Wands"]{--card-accent:#e5a16f}
+.kf-celestial-page .cs-reading-card[data-suit="Cups"]{--card-accent:#86c7e6}
+.kf-celestial-page .cs-reading-card[data-suit="Swords"]{--card-accent:#d4d9ee}
+.kf-celestial-page .cs-reading-card[data-suit="Pentacles"]{--card-accent:#a4ca9a}
+.kf-celestial-page .cs-reading-card .cs-roman{border-color:var(--card-accent,#bb9bdf);color:var(--card-accent,#bb9bdf);box-shadow:0 0 0 5px #15121e,0 0 0 6px var(--card-accent,#bb9bdf)}
+.kf-celestial-page .cs-study time{color:#e8d5f3;font-variant-numeric:tabular-nums}
+@media(max-width:650px){.kf-celestial-page .cs-wheel-layout{grid-template-columns:1fr;gap:.8rem}}
+@media(forced-colors:active){.kf-celestial-page .cs-wheel-ring,.kf-celestial-page .cs-wheel-line,.kf-celestial-page .cs-wheel-marker line,.kf-celestial-page .cs-wheel-marker circle{stroke:CanvasText}.kf-celestial-page .cs-wheel-sign,.kf-celestial-page .cs-wheel-center,.kf-celestial-page .cs-wheel-marker text{fill:CanvasText}}
