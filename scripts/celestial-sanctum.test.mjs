@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets,deck,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint} from "../public/celestial-core.mjs";
+import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets,deck,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern} from "../public/celestial-core.mjs";
 test("valid dates, master numbers and reproducible digit-sum convention",()=>{
  assert.equal(parseDay("2000-02-29").toISOString(),"2000-02-29T12:00:00.000Z");
  for(const v of ["2026-02-29","2024-04-31","2024-13-01","2024-2-01","1899-01-01",""])assert.throws(()=>parseDay(v));
@@ -26,7 +26,7 @@ test("page has working local anchors, tool assets and offline entries",()=>{
  for(const [,id] of js.matchAll(/\$\("([^"]+)"\)/g))assert.ok(html.includes('id="'+id+'"'),id);
  for(const [,id] of html.matchAll(/href="#([^"]+)"/g))assert.ok(html.includes('id="'+id+'"'),id);
  for(const p of ["celestial-sanctum.css","celestial-sanctum.mjs","celestial-core.mjs"])assert.ok(sw.includes('"/'+p+'"'));
- assert.equal(studies.length,9);assert.doesNotMatch(js,/localStorage|sessionStorage|fetch\(/);assert.doesNotMatch(js,/\.innerHTML/);
+ assert.equal(studies.length,33);assert.doesNotMatch(js,/localStorage|sessionStorage|fetch\(/);assert.doesNotMatch(js,/\.innerHTML/);
 });
 
 test("78 distinct tarot cards and four complete minor suits",()=>{
@@ -52,4 +52,15 @@ test("season events and zodiac wheel coordinates",()=>{
  assert.equal(seasonEvents(engine,2026).length,4);assert.throws(()=>seasonEvents(engine,2026.1));
  assert.ok(Math.abs(wheelPoint(0,100).x-100)<1e-6);
  assert.ok(Math.abs(wheelPoint(90,100).y-100)<1e-6);
+});
+
+test("archive and rune inventories and geometry",()=>{
+ assert.equal(new Set(studies.map(s=>s[1])).size,33);assert.equal(runeLetters.length,24);assert.equal(new Set(runeLetters.map(r=>r[0])).size,24);
+ assert.equal(drawRune(()=>0)[1],"Fehu");assert.equal(drawRune(()=>0.999)[1],"Othala");assert.throws(()=>drawRune(()=>1));
+ assert.equal(geometryPattern("rosette").circles.length,7);const p=geometryPattern("hexagram").paths[0];assert.deepEqual(p[0],p.at(-1));assert.equal(new Set(p.slice(0,-1).map(v=>v.join(","))).size,6);assert.throws(()=>geometryPattern("bad"));
+});
+test("calendar filters, year boundaries and iteration guards",()=>{
+ const dates=[new Date("2026-01-03T00:00:00Z"),new Date("2027-01-01T00:00:00Z")],mock={SearchMoonQuarter:()=>({quarter:2,time:{date:dates[0]}}),NextMoonQuarter:()=>({quarter:3,time:{date:dates[1]}})};
+ assert.deepEqual(celestialEvents(mock,2026,"moon"),[{kind:"Moon",name:"Full moon",date:dates[0].toISOString()}]);
+ assert.throws(()=>celestialEvents({...mock,NextMoonQuarter:mock.SearchMoonQuarter},2026,"moon"));assert.throws(()=>celestialEvents(mock,2026,"bad"));assert.throws(()=>celestialEvents(mock,2101,"moon"));
 });

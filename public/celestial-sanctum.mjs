@@ -1,5 +1,5 @@
 import {loadAstronomy} from "./moon-widget.mjs";
-import {parseDay,lifePath,numberThemes,arcana,drawCards,skySnapshot,skyAspects,studies,deck,signs,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint} from "./celestial-core.mjs";
+import {parseDay,lifePath,numberThemes,arcana,drawCards,skySnapshot,skyAspects,studies,deck,signs,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern} from "./celestial-core.mjs";
 const $=id=>document.getElementById(id);
 function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
 const date=$("cs-sky-date"),sky=$("cs-sky-status"),skyBody=$("cs-sky-body"),aspects=$("cs-aspects");
@@ -41,7 +41,7 @@ const query=$("cs-study-search"),category=$("cs-study-category"),library=$("cs-s
 function filterStudies(){
  const q=query.value.trim().toLowerCase(),group=category.value;
  const matches=studies.filter(item=>(!group||group===item[0])&&item.join(" ").toLowerCase().includes(q));
- library.replaceChildren(...matches.map(([group,title,body,prompt])=>{const article=el("article",undefined,"cs-study");article.append(el("span",group,"cs-card-label"),el("h3",title),el("p",body),el("p",prompt,"cs-prompt"));return article;}));
+ library.replaceChildren(...matches.map(([group,title,body,prompt,source])=>{const article=el("article",undefined,"cs-study");article.append(el("span",group,"cs-card-label"),el("h3",title),el("p",body),el("p",prompt,"cs-prompt"));if(source){const link=el("a","Read source");link.href=source;article.append(link);}return article;}));
  $("cs-study-count").textContent=matches.length+" "+(matches.length===1?"entry":"entries");
 }
 query.addEventListener("input",filterStudies);category.addEventListener("change",filterStudies);filterStudies();
@@ -91,8 +91,16 @@ numberResult("cs-name-form","cs-name-result",()=>{const n=nameNumbers($("cs-name
 $("cs-calendar-year").defaultValue=String(new Date().getUTCFullYear());
 let calendarRun=0;
 async function renderCalendar(){
- const seq=++calendarRun,status=$("cs-calendar-status"),container=$("cs-calendar-events");container.replaceChildren();status.textContent="Calculating seasonal events…";
- try{const year=Number($("cs-calendar-year").value),engine=await loadAstronomy();if(seq!==calendarRun)return;const events=seasonEvents(engine,year);for(const event of events){const article=el("article",undefined,"cs-study"),time=el("time",event.date.replace("T"," ").slice(0,16)+" UTC");time.dateTime=event.date;article.append(el("h3",event.name),time);container.append(article);}status.textContent="Four events calculated for "+year+" (UTC).";}catch(error){if(seq===calendarRun)status.textContent=error.message;}
+ const seq=++calendarRun,status=$("cs-calendar-status"),container=$("cs-calendar-events");container.replaceChildren();status.textContent="Calculating celestial events…";
+ try{const year=Number($("cs-calendar-year").value),engine=await loadAstronomy();if(seq!==calendarRun)return;const events=celestialEvents(engine,year,$("cs-event-type").value);for(const event of events){const article=el("article",undefined,"cs-study"),time=el("time",event.date.replace("T"," ").slice(0,16)+" UTC");time.dateTime=event.date;article.append(el("span",event.kind,"cs-card-label"),el("h3",event.name),time);container.append(article);}status.textContent=events.length+" events calculated for "+year+" (UTC).";}catch(error){if(seq===calendarRun)status.textContent=error.message;}
 }
 $("cs-calendar-form").addEventListener("submit",e=>{e.preventDefault();renderCalendar();});
 renderSky(true);renderCalendar();
+
+for(const [glyph,name,sound,theme] of runeLetters){const card=el("article",undefined,"cs-rune");card.append(el("span",glyph,"cs-rune-glyph"),el("h3",name),el("p","Transliteration: "+sound),el("p","Reflection: "+theme));$("cs-rune-grid").append(card);}
+$("cs-rune-draw").addEventListener("click",()=>{const [glyph,name,,theme]=drawRune();$("cs-rune-result").textContent=glyph+" · "+name+" · Modern reflection: "+theme+". What does this theme invite you to consider?";});
+$("cs-rune-clear").addEventListener("click",()=>{$("cs-rune-result").textContent="No rune selected.";});
+const descriptions={circle:"Every point is the same distance from the center.",vesica:"Equal circles intersect; their centers lie on each other's circumference.",rosette:"Six evenly spaced outer circles share the central radius.",hexagram:"Six vertices connected in a single continuous closed path."};
+function renderGeometry(){const name=$("cs-geometry-select").value,angle=Number($("cs-geometry-rotation").value),g=geometryPattern(name),svg=$("cs-geometry-svg"),group=shape("g",{transform:"rotate("+angle+" 200 200)"});
+for(const c of g.circles)group.append(shape("circle",{cx:c.x,cy:c.y,r:c.r,class:"cs-geometry-line"}));for(const p of g.paths)group.append(shape("polyline",{points:p.map(v=>v.join(",")).join(" "),class:"cs-geometry-line"}));group.append(shape("circle",{cx:200,cy:200,r:3,class:"cs-geometry-center"}));svg.replaceChildren(group);$("cs-geometry-angle").textContent=angle+"°";$("cs-geometry-description").textContent=descriptions[name];}
+$("cs-geometry-select").addEventListener("change",renderGeometry);$("cs-geometry-rotation").addEventListener("input",renderGeometry);renderGeometry();

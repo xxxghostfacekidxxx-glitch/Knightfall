@@ -44,3 +44,15 @@
 .kf-celestial-page .cs-study time{color:#e8d5f3;font-variant-numeric:tabular-nums}
 @media(max-width:650px){.kf-celestial-page .cs-wheel-layout{grid-template-columns:1fr;gap:.8rem}}
 @media(forced-colors:active){.kf-celestial-page .cs-wheel-ring,.kf-celestial-page .cs-wheel-line,.kf-celestial-page .cs-wheel-marker line,.kf-celestial-page .cs-wheel-marker circle{stroke:CanvasText}.kf-celestial-page .cs-wheel-sign,.kf-celestial-page .cs-wheel-center,.kf-celestial-page .cs-wheel-marker text{fill:CanvasText}}
+
+.kf-celestial-page .cs-rune-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));gap:.7rem}
+.kf-celestial-page .cs-rune{padding:1rem .7rem;text-align:center;border:1px solid #bca2ce66;background:linear-gradient(145deg,#201b30,#101018);border-radius:13px}
+.kf-celestial-page .cs-rune-glyph{font-size:2.4rem;color:var(--hub-second);display:block;line-height:1.4}
+.kf-celestial-page .cs-rune h3{font-size:1rem;margin:.5rem 0}
+.kf-celestial-page .cs-rune p{font-size:.8rem;margin:.25rem 0}
+.kf-celestial-page #cs-geometry-svg{display:block;max-width:430px;width:100%;margin:auto;background:radial-gradient(circle,#302443,#11121b 70%);border-radius:50%;border:1px solid #bca2ce66}
+.kf-celestial-page .cs-geometry-line{fill:none;stroke:#d9bb87;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.kf-celestial-page .cs-geometry-center{fill:#e9d2f4}
+.kf-celestial-page .cs-study a{display:inline-block;color:#e4c88f;margin-top:.5rem}
+.kf-celestial-page #cs-calendar-events{max-height:38rem;overflow:auto;overscroll-behavior:contain;padding:.25rem}
+@media(forced-colors:active){.kf-celestial-page .cs-geometry-line{stroke:CanvasText}.kf-celestial-page .cs-geometry-center{fill:CanvasText}}

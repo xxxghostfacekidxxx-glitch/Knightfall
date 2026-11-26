@@ -83,6 +83,31 @@ export const studies=[
  ["Esoteric history","Alchemy","Alchemy encompasses diverse historical practices involving materials, medicine and natural philosophy; modern psychological readings are later interpretations.","How does material transformation differ from metaphorical transformation?"],
  ["Symbolic arts","Tarot history","Tarot began as a European card game in the fifteenth century. Occult and divinatory interpretations developed later.","How does a change of use alter the meaning of an object?"],
  ["Symbolic arts","Astrology and astronomy","Historical astrology and astronomy were often intertwined. Modern astronomy uses observation and testable models; astrology is not established as a predictive science.","What separates a measurable observation from an interpretation?"]
+,
+["Egyptian traditions","Ra","Solar divinity and creation. Interpretations and forms vary across periods.","How do recurring cycles become metaphors for continuity?","https://giza.fas.harvard.edu/faq/"],
+["Egyptian traditions","Horus","Falcon imagery and royal legitimacy. Interpretations and forms vary across periods.","How do symbols communicate legitimacy?","https://giza.fas.harvard.edu/faq/"],
+["Egyptian traditions","Anubis","Embalming and care for the dead. Interpretations and forms vary across periods.","What does respectful remembrance involve?","https://giza.fas.harvard.edu/faq/"],
+["Egyptian traditions","Hathor","Music, affection and renewal. Interpretations and forms vary across periods.","What deserves celebration?","https://giza.fas.harvard.edu/faq/"],
+["Egyptian traditions","Sekhmet","Lioness imagery and the restraint of destructive force. Interpretations and forms vary across periods.","What distinguishes protection from uncontrolled anger?","https://www.ucl.ac.uk/museums-static/digitalegypt/religion/deitiescreation.html"],
+["Egyptian traditions","Set","Conflict, disorder and a complex role in myth. Interpretations and forms vary across periods.","What is lost when a figure is reduced to a villain?","https://www.metmuseum.org/de/exhibitions/divine-egypt/inside-the-exhibition"],
+["Egyptian traditions","Nephthys","Mourning and restoration in the Osiris cycle. Interpretations and forms vary across periods.","What does communal mourning make possible?","https://www.metmuseum.org/de/exhibitions/divine-egypt/inside-the-exhibition"],
+["Egyptian traditions","Ptah","Memphis and creator traditions. Interpretations and forms vary across periods.","Compare creation through craftsmanship and speech.","https://www.ucl.ac.uk/museums-static/digitalegypt/religion/deitiesplaces.html"],
+["Egyptian traditions","Atum","Heliopolis and the emergence of the world. Interpretations and forms vary across periods.","How do origin stories describe unity and multiplicity?","https://www.ucl.ac.uk/museums-static/digitalegypt/religion/deitiesplaces.html"],
+["Egyptian traditions","Amun-Re","Combined divine identities and state religion. Interpretations and forms vary across periods.","Why might traditions combine rather than replace sacred identities?","https://www.metmuseum.org/de/exhibitions/divine-egypt/inside-the-exhibition"],
+["Egyptian traditions","Creation traditions","Different local accounts of cosmic origins. Interpretations and forms vary across periods.","Compare regional variation rather than imposing a single story.","https://www.ucl.ac.uk/museums-static/digitalegypt/religion/deitiescreation.html"],
+["Egyptian traditions","Duat","The otherworld as represented in funerary literature. Interpretations and forms vary across periods.","How do maps of unseen worlds express cultural values?","https://www.khanacademy.org/humanities/ancient-art-civilizations/egypt-art/beginners-guide-egypt/a/introduction-to-ancient-egyptian-mortuary-texts"],
+["Egyptian traditions","Weighing of the heart","Judgment imagery in funerary texts. Interpretations and forms vary across periods.","How does this image convey accountability?","https://www.khanacademy.org/humanities/ancient-art-civilizations/egypt-art/beginners-guide-egypt/a/introduction-to-ancient-egyptian-mortuary-texts"],
+["Egyptian traditions","Mortuary texts","Pyramid Texts, Coffin Texts and Book of the Dead spells. Interpretations and forms vary across periods.","What changes when a religious text reaches a different audience?","https://www.khanacademy.org/humanities/ancient-art-civilizations/egypt-art/beginners-guide-egypt/a/introduction-to-ancient-egyptian-mortuary-texts"],
+["Esoteric history","Hermetic reception","Renaissance thinkers incorporated Hermetic writings into diverse philosophical projects.","Separate the original context from later reception.","https://plato.stanford.edu/entries/natphil-ren/"],
+["Esoteric history","Microcosm and macrocosm","Historical correspondences between human beings and the cosmos are conceptual analogies rather than established physical mechanisms.","When is an analogy useful?","https://plato.stanford.edu/entries/natphil-ren/"],
+["Esoteric history","Natural philosophy","Renaissance investigations of nature drew on multiple traditions of cosmology and medicine.","What distinguishes a claim from evidence?","https://plato.stanford.edu/entries/natphil-ren/"],
+["Runic studies","Runic writing","Runes are historical Germanic writing systems with regional and chronological variation.","What can an inscription reveal about its writer?","https://en.natmus.dk/historical-knowledge/historical-themes/runes/"],
+["Runic studies","Elder Futhark","The older runic alphabet has 24 characters; later inventories differ.","Compare an alphabet with a symbolic interpretation system.","https://nors.ku.dk/english/research/runes/"],
+["Runic studies","Modern reflection","Modern rune prompts are distinct from evidence about historical inscriptions.","How can a contemporary practice acknowledge historical limits?","https://en.natmus.dk/historical-knowledge/historical-themes/runes/"],
+["Sacred geometry","Circle and radius","Points on a circle are equidistant from its center.","Distinguish a property from a metaphor.",""],
+["Sacred geometry","Vesica piscis","Two equal circles separated by one radius make a lens-shaped overlap.","Explore overlap and separation.",""],
+["Sacred geometry","Seven-circle rosette","Six outer circles are arranged at sixty-degree intervals around a central circle.","Which patterns emerge from repetition?",""],
+["Sacred geometry","Unicursal hexagram","A six-point figure can be traced in one closed path; symbolic interpretations vary.","Compare alternate paths through the same vertices.",""]
 ];
 
 export const suits=[
@@ -131,4 +156,38 @@ export function seasonEvents(engine,year){
 export function wheelPoint(longitude,radius){
  const a=(180-norm(longitude))*Math.PI/180;
  return {x:200+radius*Math.cos(a),y:200-radius*Math.sin(a)};
+}
+
+export const runeLetters=[
+["ᚠ","Fehu","f","Resources"],["ᚢ","Uruz","u","Strength"],["ᚦ","Thurisaz","þ","Boundaries"],["ᚨ","Ansuz","a","Communication"],["ᚱ","Raidho","r","Direction"],["ᚲ","Kenaz","k","Learning"],["ᚷ","Gebo","g","Exchange"],["ᚹ","Wunjo","w","Joy"],["ᚺ","Hagalaz","h","Disruption"],["ᚾ","Nauthiz","n","Need"],["ᛁ","Isa","i","Stillness"],["ᛃ","Jera","j","Cycles"],["ᛇ","Eihwaz","ï","Endurance"],["ᛈ","Perthro","p","Uncertainty"],["ᛉ","Algiz","z","Protection"],["ᛊ","Sowilo","s","Clarity"],["ᛏ","Tiwaz","t","Commitment"],["ᛒ","Berkano","b","Growth"],["ᛖ","Ehwaz","e","Cooperation"],["ᛗ","Mannaz","m","Community"],["ᛚ","Laguz","l","Adaptability"],["ᛜ","Ingwaz","ŋ","Potential"],["ᛞ","Dagaz","d","Change"],["ᛟ","Othala","o","Belonging"]];
+export function drawRune(random=Math.random){const r=random();if(!Number.isFinite(r)||r<0||r>=1)throw Error("Invalid random value.");return runeLetters[Math.floor(r*24)];}
+export function geometryPattern(name){
+ const circles=[],paths=[],add=(x,y,r)=>circles.push({x,y,r});
+ switch(name){
+ case "circle":add(200,200,130);paths.push([[200,200],[330,200]]);break;
+ case "vesica":add(140,200,120);add(260,200,120);break;
+ case "rosette":add(200,200,82);for(let i=0;i<6;i++){const a=i*Math.PI/3;add(200+82*Math.cos(a),200+82*Math.sin(a),82);}break;
+ case "hexagram":{const p=i=>[200+150*Math.sin(i*Math.PI/3),200-150*Math.cos(i*Math.PI/3)];paths.push([0,2,5,3,1,4,0].map(p));break;}
+ default:throw Error("Choose a geometry pattern.");
+ }return {circles,paths};
+}
+export function celestialEvents(engine,year,kind="all"){
+ if(!Number.isInteger(year)||year<1900||year>2100)throw Error("Choose a year from 1900 to 2100.");
+ if(!["all","seasons","moon","eclipses"].includes(kind))throw Error("Choose an event category.");
+ const start=new Date(Date.UTC(year,0,1)),end=new Date(Date.UTC(year+1,0,1)),events=[];
+ if(kind==="all"||kind==="seasons")events.push(...seasonEvents(engine,year).map(e=>({...e,kind:"Season"})));
+ function collect(first,next,dateOf,describe,max){
+  let event=first(start),previous=-Infinity;
+  for(let i=0;i<max;i++){
+   const d=dateOf(event),t=+d;
+   if(!Number.isFinite(t)||t<=previous||t<+start)throw Error("Astronomical search returned invalid event order.");
+   if(t>=+end)return;
+   events.push({...describe(event),date:d.toISOString()});previous=t;event=next(event);
+  }throw Error("Astronomical search exceeded its event limit.");
+ }
+ if(kind==="all"||kind==="moon")collect(d=>engine.SearchMoonQuarter(d),e=>engine.NextMoonQuarter(e),e=>e.time.date,e=>({kind:"Moon",name:["New moon","First quarter","Full moon","Last quarter"][e.quarter]}),60);
+ if(kind==="all"||kind==="eclipses"){
+  collect(d=>engine.SearchGlobalSolarEclipse(d),e=>engine.NextGlobalSolarEclipse(e.peak),e=>e.peak.date,e=>({kind:"Solar eclipse",name:e.kind+" solar eclipse (global peak)"}),10);
+  collect(d=>engine.SearchLunarEclipse(d),e=>engine.NextLunarEclipse(e.peak),e=>e.peak.date,e=>({kind:"Lunar eclipse",name:e.kind+" lunar eclipse (peak)"}),10);
+ }return events.sort((a,b)=>a.date.localeCompare(b.date));
 }
