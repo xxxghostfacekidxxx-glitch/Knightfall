@@ -315,7 +315,7 @@ async function loadConversations({openSelected=true}={}){const token=++inboxLoad
  maybeNotifyUnread();drawConversations();updatePresenceLabel();if(openSelected&&currentId&&conversations.some(x=>Number(x.id)===Number(currentId)))await openConversation(currentId,{scroll:false});else if(!currentId){const requested=new URLSearchParams(location.search).get("conversation");if(requested&&conversations.some(x=>Number(x.id)===Number(requested))&&!new URLSearchParams(location.search).has("message"))await openConversation(Number(requested));}}
 async function refreshGameInvitesForConversation(c,token){
  const cardLink=$("#chaos-card-chat-invite"),turnLink=$("#connect-four-chat-invite");
- if(!c||c.kind==="group"||!Number.isSafeInteger(Number(c.other_user_id))||Number(c.other_user_id)<1)return;
+ if(!c||c.kind==="group"||Number(c.messaging_blocked)||!Number.isSafeInteger(Number(c.other_user_id))||Number(c.other_user_id)<1)return;
  const [cards,turns]=await Promise.allSettled([
   api("/api/arcade/chaos-cards"),api("/api/arcade/turn-matches")
  ]);
@@ -328,8 +328,10 @@ async function refreshGameInvitesForConversation(c,token){
   }
  }
  if(turns.status==="fulfilled"&&turnLink){
-  const pending=(turns.value.matches||[]).find(match=>match.status==="pending"&&Number(match.created_by)===Number(c.other_user_id)&&Number(match.player_two?.id)===Number(currentUser.id));
-  if(pending){turnLink.hidden=false;turnLink.href="/arcade/async-play.html?match="+encodeURIComponent(pending.id);}
+  const relevant=(turns.value.matches||[]).filter(match=>["pending","active"].includes(match.status)&&[Number(match.player_one?.id),Number(match.player_two?.id)].includes(Number(c.other_user_id)));
+  const pending=relevant.find(match=>match.status==="pending"&&Number(match.created_by)===Number(c.other_user_id)&&Number(match.player_two?.id)===Number(currentUser.id));
+  const match=pending||relevant.find(item=>item.needs_action)||relevant[0];
+  if(match){turnLink.hidden=false;turnLink.href="/arcade/async-play.html?match="+encodeURIComponent(match.id);turnLink.textContent=pending?"🎮 Accept Connect Four":match.needs_action?"🎮 Your Connect Four turn":"🎮 Open saved Connect Four";turnLink.title="Open your saved match";}
  }
 }
 function closeConversationPushNotices(id){
@@ -354,9 +356,12 @@ async function openConversation(id,{scroll=true,beforeMessageId=null,highlightMe
   $("#character-count").textContent=$("#body").value.length.toLocaleString()+" / 4,000";
  }loading=true;currentId=Number(id);$("#typing-indicator").hidden=true;$("#typing-indicator").textContent="";lastTypingSentAt=0;$(".message-layout").classList.add("show-chat");syncMessagesViewport();drawConversations();const c=activeConversation();
  const cardLink=$("#chaos-card-chat-invite");
- $("#connect-four-chat-invite").hidden=true;
+ const turnLink=$("#connect-four-chat-invite");
+ const directTurn=c&&c.kind!=="group"&&!Number(c.messaging_blocked)&&c.other_username;
+ turnLink.hidden=!directTurn;
+ if(directTurn){turnLink.href="/arcade/async-play.html?challenge="+encodeURIComponent(c.other_username);turnLink.textContent="🎮 Challenge to Connect Four";turnLink.title="Open the friends-only challenge form";}
  if(cardLink){
-   const direct=c&&c.kind!=="group"&&c.other_username;
+   const direct=c&&c.kind!=="group"&&!Number(c.messaging_blocked)&&c.other_username;
    cardLink.hidden=!direct;
    if(direct){cardLink.href="/arcade/hosted/cards-against-chaos/index.html?challenge="+encodeURIComponent(c.other_username);cardLink.textContent="🃏 Challenge to Cards";cardLink.title="Create a Cards Against Chaos match and invite this friend";}
  }
