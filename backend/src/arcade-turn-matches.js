@@ -211,12 +211,12 @@ export async function handleArcadeTurnMatches(request, env, url, { getUser, json
     let body;
     try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
     if (!body || typeof body !== "object" || Array.isArray(body)) return json({ error: "Invalid move details." }, 400, origin);
-    const column = Number(body.column), expectedTurn = Number(body.turn_number);
+    const column = body.column, expectedTurn = body.turn_number;
     if (!Number.isSafeInteger(column) || column < 0 || column >= BOARD_COLUMNS) return json({ error: "Choose a column on the board." }, 400, origin);
     if (!Number.isSafeInteger(expectedTurn) || expectedTurn !== Number(row.turn_number)) return json({ error: "The board changed. Refresh and take your turn on the latest position.", conflict: true }, 409, origin);
     let state;
     try { state = JSON.parse(row.state_json); } catch { state = null; }
-    if (!validBoard(state.board)) return json({ error: "This match board needs an admin review." }, 409, origin);
+    if (!state || !validBoard(state.board)) return json({ error: "This match board needs an admin review." }, 409, origin);
     let targetRow = -1;
     for (let r = BOARD_ROWS - 1; r >= 0; r--) if (state.board[r][column] === 0) { targetRow = r; break; }
     if (targetRow < 0) return json({ error: "That column is full. Choose another one." }, 400, origin);
@@ -234,6 +234,7 @@ export async function handleArcadeTurnMatches(request, env, url, { getUser, json
     const update = env.DB.prepare(`
       UPDATE arcade_turn_matches SET state_json=?,current_player_id=?,turn_number=?,status=?,winner_id=?,updated_at=?,last_move_at=?
       WHERE id=? AND status='active' AND current_player_id=? AND turn_number=?
+        AND NOT EXISTS (SELECT 1 FROM user_blocks b WHERE (b.blocker_id=arcade_turn_matches.player_one_id AND b.blocked_id=arcade_turn_matches.player_two_id) OR (b.blocker_id=arcade_turn_matches.player_two_id AND b.blocked_id=arcade_turn_matches.player_one_id))
     `).bind(JSON.stringify(state), nextPlayer, nextTurn, status, winner, now, now, id, user.id, expectedTurn);
     const log = env.DB.prepare(`
       INSERT OR IGNORE INTO arcade_turn_moves(match_id,turn_number,player_id,move_json,created_at)
