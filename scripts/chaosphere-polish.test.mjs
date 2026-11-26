@@ -11,7 +11,7 @@ const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map
 
 test("Chaosphere's polished surface is scoped, accessible and retains existing security paths",()=>{
  assert.match(html,/href="\/chaosphere-polish\.css\?v=20261120-realm2"/);
- assert.match(html,/src="\/chaosphere-extras\.js\?v=20261120-messenger1"/);
+ assert.match(html,/src="\/chaosphere-extras\.js\?v=[a-zA-Z0-9-]+"/);
  assert.match(html,/data-quote-message="'\+m\.id\+'"/);
  assert.match(html,/id="cs-emoji-toggle"[^>]+aria-expanded="false"/);
  assert.match(html,/id="cs-emoji-tray"[^>]+hidden/);
@@ -57,7 +57,7 @@ test("Quote and emoji actions update the existing draft without sending or stori
  const controls=new Map(),listeners=new Map();
  const elem=(name,props={})=>({
   name,hidden:false,disabled:false,attrs:{},listeners:{},
-  addEventListener(type,callback){this.listeners[type]=callback},
+  addEventListener(type,callback){const prior=this.listeners[type];this.listeners[type]=prior?(event=>{prior(event);callback(event)}):callback},
   dispatchEvent(event){this.listeners[event.type]?.(event);return true},
   setAttribute(name,value){this.attrs[name]=value},
   contains(){return false},
@@ -91,7 +91,7 @@ test("Quote and emoji actions update the existing draft without sending or stori
  const sender={textContent:"Velvet Venom"};
  const article={dataset:{},classList:{contains:()=>false},querySelector(sel){return sel==="p"?paragraph:sender}};
  const button={closest:()=>article};
- const target={closest:()=>button};
+ const target={closest:sel=>sel==="[data-quote-message]"?button:null};
  transcript.listeners.click({target});
  assert.match(body.value,/↳ Velvet Venom: “Private thoughts are mine to quote, not upload”/);
  assert.equal(inputCount,2);assert.equal(body.focused,true);

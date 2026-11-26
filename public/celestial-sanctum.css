@@ -81,3 +81,7 @@
 .kf-celestial-page .cs-tarot-art .cs-emblem{aspect-ratio:auto;object-fit:contain}
 .kf-celestial-page .cs-room{box-shadow:inset 0 0 0 4px #0d0e1866,0 12px 35px #0003}
 @media(forced-colors:active){.kf-celestial-page .cs-map-line,.kf-celestial-page .cs-map-star circle{stroke:CanvasText}.kf-celestial-page .cs-map-star text{fill:CanvasText}}
+
+.kf-celestial-page .cs-room:target{border-color:var(--hub-second);box-shadow:inset 0 0 0 3px #c7a76b44,0 0 30px #b49ae522}
+.kf-celestial-page .cs-room .kf-hub-heading:before{content:"✦ · ◇ · ✦";display:block;color:var(--hub-second);letter-spacing:.35em;margin-bottom:.55rem;font-size:.75rem}
+.kf-celestial-page .cs-study a:focus-visible,.kf-celestial-page .cs-room input:focus-visible{outline:3px solid var(--hub-second);outline-offset:3px}

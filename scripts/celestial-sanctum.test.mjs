@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets,deck,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,deities,findDeities,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif,tarotAsset,chamberMap,synastryAspects} from "../public/celestial-core.mjs";
+import {parseDay,reduceNumber,lifePath,arcana,drawCards,skySnapshot,skyAspects,studies,planets,deck,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,deities,findDeities,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif,tarotAsset,chamberMap,synastryAspects,studyLessons,studyCircles,planetaryHours} from "../public/celestial-core.mjs";
 test("valid dates, master numbers and reproducible digit-sum convention",()=>{
  assert.equal(parseDay("2000-02-29").toISOString(),"2000-02-29T12:00:00.000Z");
  for(const v of ["2026-02-29","2024-04-31","2024-13-01","2024-2-01","1899-01-01",""])assert.throws(()=>parseDay(v));
@@ -98,3 +98,5 @@ test("synastry respects cross-chart orbs",()=>{
  const a=[{name:"Sun",longitude:359}],b=[{name:"Moon",longitude:3}];assert.equal(synastryAspects(a,b,2).length,0);
  assert.deepEqual(synastryAspects(a,b,4),[{first:"Sun",second:"Moon",type:"Conjunction",orb:4}]);assert.throws(()=>synastryAspects(a,b,10));assert.throws(()=>synastryAspects([{name:"Sun",longitude:NaN}],b));
 });
+
+test("study paths, forum slugs and planetary hour segmentation",()=>{assert.equal(studyLessons.length,10);assert.equal(studyCircles.length,4);const h=readFileSync("public/celestial-sanctum.html","utf8");for(const [slug] of studyCircles)assert.ok(h.includes("category_slug="+slug));const dates=["2026-11-26T06:00:00Z","2026-11-26T18:00:00Z","2026-11-27T06:00:00Z"].map(x=>({date:new Date(x)}));let i=0;const e={Observer:class{},Body:{Sun:"Sun"},SearchRiseSet:()=>dates[i++]};const hours=planetaryHours(e,"2026-11-26",0,0);assert.equal(hours.length,24);assert.equal(hours[0].planet,"Jupiter");assert.equal(hours[12].period,"Night");assert.equal(hours[23].end,dates[2].date.toISOString());assert.throws(()=>planetaryHours(e,"2026-11-26",91,0));});

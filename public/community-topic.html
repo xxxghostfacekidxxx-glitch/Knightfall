@@ -48,7 +48,9 @@
     const API="https://api.ash-fall.com";
     const params=new URLSearchParams(location.search);
     const requestedId=params.get("category_id");
-    const topicNames=new Set(["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime","star wars"]);
+    const requestedSlug=params.get("category_slug");
+    const celestialSlugs=new Set(["celestial-astrology","celestial-tarot","celestial-mythology","celestial-hermetic"]);
+    const topicNames=new Set(["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime","star wars","celestial astrology","celestial tarot and runes","celestial mythology","celestial hermetic studies"]);
     const titleEl=document.getElementById("topic-title"),descriptionEl=document.getElementById("topic-description"),threadsEl=document.getElementById("topic-threads"),messageEl=document.getElementById("topic-message"),createLink=document.getElementById("create-link"),accountNote=document.getElementById("account-note");
     let category=null;
     function esc(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
@@ -65,10 +67,10 @@
     }
     async function initialize(){
       try{
-        if(!requestedId||!/^\d+$/.test(requestedId))throw Error("This topic link is missing a valid category.");
+        if((!requestedId||!/^\d+$/.test(requestedId))&&!celestialSlugs.has(requestedSlug))throw Error("This topic link is missing a valid category.");
         const [categoryData,me]=await Promise.all([get("/api/categories"),get("/api/auth/me").catch(()=>({user:null}))]);
         const cats=categoryData.categories||[];
-        category=cats.find(c=>String(c.id)===String(requestedId));
+        category=cats.find(c=>requestedId&&/^\d+$/.test(requestedId)?String(c.id)===String(requestedId):celestialSlugs.has(requestedSlug)&&c.slug===requestedSlug);
         if(!category||!(topicNames.has(normalize(category.name))||["jedi-temple","order-of-the-sith","lightsaber-forms","force-studies","galactic-history","holocron-archives","star-wars-news"].includes(category.slug)))throw Error("That community topic could not be found.");
         const displayName=normalize(category.name).startsWith("general discussion")?"General Discussions":category.name;
         titleEl.textContent=displayName;descriptionEl.textContent=category.description||"Open discussion for the Ash-Fall community.";

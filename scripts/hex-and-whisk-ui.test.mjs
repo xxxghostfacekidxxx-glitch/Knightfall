@@ -56,7 +56,7 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(script,/function renderCookbook/);
  assert.match(script,/claimQuest\(game,kind/);
  assert.match(page,/href="\.\/sprites\/icons\.svg#garden-6"/);
- assert.match(page,/issues\/new\?title=/);
+ assert.match(page,/\/report-issue\.html\?game=/);
  assert.match(stylesheet,/\.order-card:disabled\{opacity:1/);
  assert.match(script,/pointerdown/);assert.match(script,/pointermove/);assert.match(script,/pointerup/);
  assert.match(script,/setPointerCapture/);
