@@ -13,7 +13,13 @@ async function stripe(env,path,params){
  if(!response.ok)throw Error("Stripe "+path+" failed ("+response.status+")");
  return data;
 }
-const validRedirect=x=>typeof x==="string"&&/^https:\/\/billing\.stripe\.com\/|^https:\/\/checkout\.stripe\.com\//.test(x);
+function validRedirect(value,hostname){
+ if(typeof value!=="string")return false;
+ try{const u=new URL(value);return u.protocol==="https:"&&u.hostname===hostname&&!u.port&&!u.username&&!u.password;}catch{return false;}
+}
+// Existing customers must be able to cancel even if new sales are paused.
+// The independent portal flag is opt-in; existing billing launch behavior is preserved.
+function portalReady(env){return !!env.STRIPE_SECRET_KEY&&(env.STRIPE_BILLING_PORTAL_ENABLED==="true"||apiReady(env));}
 async function customerFor(env,user,{create=false}={}){
  const row=await env.DB.prepare("SELECT customer_id FROM stripe_member_customers WHERE user_id=?").bind(user.id).first();
  if(row?.customer_id)return row.customer_id;
@@ -32,10 +38,10 @@ export async function handleStripeBilling(request,env,url,user){
  if(!user)return reply({error:"Sign in to manage your billing."},401);
  if(url.pathname===BILLING_ROOT+"status"&&request.method==="GET"){
   const membership=await env.DB.prepare("SELECT status,expires_at FROM member_premium_memberships WHERE user_id=?").bind(user.id).first();
-  return reply({configured:apiReady(env),premium:membership?.status==="active"&&(!membership.expires_at||Date.parse(membership.expires_at)>Date.now()),membership_status:membership?.status||"inactive"});
+  return reply({configured:apiReady(env),portal_configured:portalReady(env),premium:membership?.status==="active"&&(!membership.expires_at||Date.parse(membership.expires_at)>Date.now()),membership_status:membership?.status||"inactive"});
  }
  if(![BILLING_ROOT+"checkout",BILLING_ROOT+"portal"].includes(url.pathname)||request.method!=="POST")return reply({error:"Not found"},404);
- if(!apiReady(env))return reply({error:"Membership checkout has not launched yet."},503);
+ if(url.pathname===BILLING_ROOT+"portal"? !portalReady(env): !apiReady(env))return reply({error:"This billing feature is not available yet."},503);
  const origin=request.headers.get("Origin");
  if(origin&&origin!=="https://ash-fall.com"&&origin!=="https://www.ash-fall.com")return reply({error:"Invalid origin"},403);
  try{
@@ -43,7 +49,7 @@ export async function handleStripeBilling(request,env,url,user){
   if(!customer)return reply({error:"No Stripe billing profile yet; start with membership checkout."},409);
   if(url.pathname===BILLING_ROOT+"portal"){
    const result=await stripe(env,"billing_portal/sessions",{customer,return_url:"https://ash-fall.com/billing.html"});
-   if(!validRedirect(result.url)||!result.url.includes("billing.stripe.com"))throw Error("Invalid portal URL");
+   if(!validRedirect(result.url,"billing.stripe.com"))throw Error("Invalid portal URL");
    return reply({url:result.url});
   }
   const member=await env.DB.prepare("SELECT status,expires_at FROM member_premium_memberships WHERE user_id=?").bind(user.id).first();
@@ -56,7 +62,7 @@ export async function handleStripeBilling(request,env,url,user){
    success_url:"https://ash-fall.com/billing.html?checkout=success",
    cancel_url:"https://ash-fall.com/billing.html?checkout=cancelled"
   });
-  if(!validRedirect(result.url)||!result.url.includes("checkout.stripe.com"))throw Error("Invalid checkout URL");
+  if(!validRedirect(result.url,"checkout.stripe.com"))throw Error("Invalid checkout URL");
   return reply({url:result.url});
  }catch(error){console.error("stripe_billing",String(error?.message||error));return reply({error:"Billing is temporarily unavailable."},502)}
 }
