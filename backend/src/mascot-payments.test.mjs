@@ -153,3 +153,26 @@ test('Signed full refund revokes collector finish, without affecting unrelated i
  assert.equal(res.status,200);
  assert.equal(batched.length,1,'refund replay must be idempotent');
 });
+
+test('Delayed payment fulfills only after signed paid event, including rotated signatures',async()=>{
+ const {env,orders,batched}=setup(),id='delayed-payment';
+ orders.set(id,{id,user_id:owner.id,sku:'glitch_horns',amount_cents:299,currency:'USD',status:'pending'});
+ const signed=(type,payment_status,valid=true)=>{
+  const payload=JSON.stringify({type,data:{object:{id:'cs_delayed',client_reference_id:id,
+   metadata:{order_id:id},payment_status,mode:'payment',amount_total:299,currency:'usd',payment_intent:'pi_delayed'}}});
+  const stamp=Math.floor(Date.now()/1000);
+  const digest=createHmac('sha256',env.STRIPE_WEBHOOK_SECRET).update(stamp+'.'+payload).digest('hex');
+  return new Request(url('/api/member-shop/stripe-webhook'),{method:'POST',headers:{
+   'stripe-signature':'t='+stamp+',v1='+(valid?digest:'1'.repeat(64))+',v1='+'0'.repeat(64)},body:payload});
+ };
+ const handle=r=>handleBotSlotShop(r,env,url('/api/member-shop/stripe-webhook'),null);
+ assert.equal((await handle(signed('checkout.session.completed','unpaid'))).status,200);
+ assert.equal((await handle(signed('checkout.session.async_payment_failed','unpaid'))).status,200);
+ assert.equal((await handle(signed('checkout.session.async_payment_succeeded','paid',false))).status,400);
+ assert.equal(batched.length,0);
+ assert.equal((await handle(signed('checkout.session.async_payment_succeeded','paid'))).status,200);
+ assert.equal(orders.get(id).status,'fulfilled');
+ assert.equal(batched.length,1);
+ assert.equal((await handle(signed('checkout.session.async_payment_succeeded','paid'))).status,200);
+ assert.equal(batched.length,1);
+});
