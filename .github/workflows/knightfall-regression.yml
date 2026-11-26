@@ -95,6 +95,7 @@ jobs:
           node --test backend/src/cinderwild-online-world.test.mjs
           node --test scripts/cinderwild-online-ui.test.mjs
           node --test scripts/password-reset-security.test.mjs backend/src/staff-access.test.mjs
+          node --test scripts/between-flames-20261126.test.mjs
           node --test scripts/message-native-limit.test.mjs
           node --test scripts/digital-creator-access.test.mjs
           node --test scripts/arcade-repair.test.mjs scripts/arcade-asset-doctor.test.mjs
