@@ -104,7 +104,7 @@
     }catch{
       // Embedded Android webviews may prohibit the Fullscreen API.
       // Theater mode retains actual scores, game controls, and canvas content.
-      root.classList.add("af-game-theater");
+      if(!document.hidden&&root.isConnected)root.classList.add("af-game-theater");
     }
     sync();notifyResize();
     }finally{
