@@ -89,3 +89,10 @@ GitHub Actions `.github/workflows/stripe-integration-tests.yml` runs these on `m
 - Use Stripe Dashboard Invoicing for manually reviewing and sending invoices, not an unauthenticated public API.
 
 The website's billing success redirect is never proof of payment or membership ownership.
+
+## November 26, 2026 — activation progress
+- Knightfall live Stripe account reports charges and payouts enabled; identity document live capture remains outstanding and the payout destination is unverified.
+- Both sandbox and live default Customer Portal configurations exist, with invoice history, payment method updates, and cancellation at period end. Plan changes remain disabled until multiple supported recurring Price IDs are implemented.
+- Cloudflare production Worker secret inventory did not contain either Stripe secret binding. Provision matching live credentials directly via the dashboard only after sandbox testing. Never install sandbox credentials on the production Worker; use isolated staging resources for test orders and webhooks.
+- Main commits a0e6b78af2004449fe9c97b815b5bce3f452d89a and 22a05c903f64647b915e603cbf5a69bf6a9bd6e1 add delayed-payment fulfillment, multiple-signature verification, and regression coverage. CI/deployment and live purchase verification remain outstanding.
+- Live checkout remains launch-gated. Catalog creation is pending confirmation of the merchant's tax collection status; no new charges have been initiated.
