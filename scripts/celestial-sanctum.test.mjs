@@ -91,7 +91,7 @@ test("individual tarot vectors and registered Foundry inventory",()=>{
  assert.ok(readFileSync("public/creator-theme-art-gallery.js","utf8").includes("knightfall-celestial-original-art"));
 });
 test("constellation navigation uses distinct existing chambers",()=>{
- const html=readFileSync("public/celestial-sanctum.html","utf8");assert.equal(chamberMap.length,12);assert.equal(new Set(chamberMap.map(x=>x[0])).size,12);
+ const html=readFileSync("public/celestial-sanctum.html","utf8");assert.equal(chamberMap.length,15);assert.equal(new Set(chamberMap.map(x=>x[0])).size,15);
  for(const [id] of chamberMap){assert.ok(html.includes('id="'+id+'"'));assert.ok(html.includes('href="#'+id+'"'));}
 });
 test("synastry respects cross-chart orbs",()=>{
