@@ -6,14 +6,20 @@ import {handleVerifiedBillingEvent} from "./stripe-billing.js";
 const respond=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json","cache-control":"no-store"}});
 const hex=bytes=>Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,"0")).join("");
 async function verifyStripeSignature(raw,header,secret){
- const pairs=Object.fromEntries(String(header||"").split(",").map(p=>p.split("=")));
- const stamp=Number(pairs.t);
- if(!Number.isFinite(stamp)||Math.abs(Date.now()/1000-stamp)>300||!pairs.v1)return false;
+ const pairs=String(header||"").split(",").map(p=>p.trim().split("="));
+ const timestamps=pairs.filter(([k])=>k==="t").map(([,v])=>v);
+ const signatures=pairs.filter(([k,v])=>k==="v1"&&/^[a-f0-9]{64}$/.test(v||"")).map(([,v])=>v);
+ if(timestamps.length!==1||!/^\d+$/.test(timestamps[0])||!signatures.length)return false;
+ const stamp=Number(timestamps[0]);
+ if(!Number.isSafeInteger(stamp)||Math.abs(Date.now()/1000-stamp)>300)return false;
  const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
- const digest=hex(await crypto.subtle.sign("HMAC",key,new TextEncoder().encode(stamp+"."+raw)));
- const a=new TextEncoder().encode(digest),b=new TextEncoder().encode(pairs.v1);
- if(a.length!==b.length)return false;
- let diff=0;for(let i=0;i<a.length;i++)diff|=a[i]^b[i];return diff===0;
+ const digest=hex(await crypto.subtle.sign("HMAC",key,new TextEncoder().encode(timestamps[0]+"."+raw)));
+ let matched=0;
+ for(const signature of signatures){
+  let diff=0;for(let i=0;i<digest.length;i++)diff|=digest.charCodeAt(i)^signature.charCodeAt(i);
+  matched|=Number(diff===0);
+ }
+ return matched===1;
 }
 async function stripeRequest(env,path,params,idempotency){
  const response=await fetch("https://api.stripe.com/v1/"+path,{method:"POST",headers:{"authorization":"Bearer "+env.STRIPE_SECRET_KEY,"content-type":"application/x-www-form-urlencoded",...(idempotency?{"idempotency-key":idempotency}:{})},body:new URLSearchParams(params)});
@@ -76,7 +82,7 @@ export async function handleBotSlotShop(request,env,url,user){
    ]);
    return respond({received:true});
   }
-  if(event.type!=="checkout.session.completed")return respond({received:true});
+  if(event.type!=="checkout.session.completed"&&event.type!=="checkout.session.async_payment_succeeded")return respond({received:true});
   const session=event.data?.object;
   if(session?.payment_status!=="paid"||session?.mode!=="payment")return respond({received:true});
   const id=session.client_reference_id;
