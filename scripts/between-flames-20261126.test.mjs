@@ -127,3 +127,20 @@ test("optional onboarding is account-scoped, resettable, and routes to existing 
  for(const source of inline)assert.doesNotThrow(()=>new Function(source));
  assert.doesNotThrow(()=>new Function(client));
 });
+
+test("conversation mute rejects null payloads and nonmembers and scopes updates to the current member",async()=>{
+ const start=backend.indexOf('  if(url.pathname==="/api/messages/conversations/mute"');
+ assert.ok(start>=0);
+ const line=backend.slice(start,backend.indexOf("\n",start));
+ const handleMute=new Function("request","env","url","requireUser","json","origin","return (async()=>{"+line+"})()");
+ let member=true;const queries=[],writes=[];
+ const env={DB:{prepare(sql){return {args:[],bind(...args){this.args=args;queries.push({sql,args});return this},first:async()=>member?{conversation_id:5}:null,async run(){writes.push({sql,args:this.args});return {meta:{changes:1}}}}}}};
+ const run=body=>handleMute(request("POST",body),env,{pathname:"/api/messages/conversations/mute"},async()=>actor,json,"");
+ assert.equal((await run(null)).status,400);
+ assert.equal((await run({conversation_id:5,minutes:-1})).status,400);
+ member=false;assert.equal((await run({conversation_id:5,minutes:60})).status,404);
+ assert.equal(writes.length,0);
+ member=true;assert.equal((await run({conversation_id:5,minutes:0})).status,200);
+ assert.deepEqual(writes[0].args,[null,5,1]);
+ assert.match(writes[0].sql,/WHERE conversation_id=\? AND user_id=\?/);
+});
