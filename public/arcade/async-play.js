@@ -15,6 +15,8 @@
   function inviteSelect(){
     const select=$('friend-select');select.replaceChildren(new Option(friends.length?'Choose a friend':'Add a friend first',''));
     for(const friend of friends)select.add(new Option(nameOf(friend)+' (@'+friend.username+')',String(friend.user_id)));
+    const requested=(query.get('challenge')||'').toLowerCase();
+    if(requested){const friend=friends.find(item=>String(item.username||'').toLowerCase()===requested);if(friend){select.value=String(friend.user_id);$('challenge-status').textContent='Friend selected. Send the challenge when you are ready.';}else $('challenge-status').textContent='This member is not in your accepted friends list. Choose a friend below.';}
     select.disabled=friends.length===0;
     $('challenge-button').disabled=friends.length===0;
   }
@@ -84,14 +86,14 @@
     }
   }
   async function openMatch(id){
-    const request=++matchDetailRequest;selectedId=id;history.replaceState(null,'',location.pathname+'?match='+encodeURIComponent(id));$('match-panel').hidden=false;$('match-status').textContent='Loading saved board…';
+    const request=++matchDetailRequest;if(selectedId!==id||selectedMatch?.id!==id){selectedMatch=null;selectedMoves=[];$('async-board').replaceChildren();$('match-actions').replaceChildren();$('player-strip').replaceChildren();$('move-history').replaceChildren();}selectedId=id;history.replaceState(null,'',location.pathname+'?match='+encodeURIComponent(id));$('match-panel').hidden=false;$('match-status').textContent='Loading saved board…';
     try{
       const data=await call('/api/arcade/turn-matches/'+encodeURIComponent(id));
       if(request!==matchDetailRequest||selectedId!==id)return;
       selectedMatch=data.match;selectedMoves=data.moves||[];
       $('match-title').textContent='Chaos Connect Four';renderPlayers(selectedMatch);renderBoard(selectedMatch);renderActions(selectedMatch);renderHistory(selectedMoves);renderMatches();
       if(focusInvite){focusInvite=false;requestAnimationFrame(()=>$('match-panel').scrollIntoView({behavior:'instant',block:'start'}));}
-    }catch(error){if(request===matchDetailRequest&&selectedId===id)showError(error,$('match-status'));}
+    }catch(error){if(request===matchDetailRequest&&selectedId===id){selectedMatch=null;selectedMoves=[];$('async-board').replaceChildren();$('match-actions').replaceChildren();$('player-strip').replaceChildren();$('move-history').replaceChildren();showError(error,$('match-status'));}}
   }
   async function refreshMatches(openSelected=false){
     const request=++matchListRequest;
@@ -107,13 +109,14 @@
     catch(error){showError(error,$('match-status'));await refreshMatches(true);}
   }
   async function playColumn(column){
-    if(!selectedMatch||moving)return;moving=true;renderBoard(selectedMatch);
+    if(!selectedMatch||moving)return;const id=selectedId;const turn=selectedMatch.turn_number;moving=true;renderBoard(selectedMatch);
     try{
-      await call('/api/arcade/turn-matches/'+encodeURIComponent(selectedId)+'/moves',{method:'POST',body:JSON.stringify({column,turn_number:selectedMatch.turn_number})});
-      await refreshMatches(false);await openMatch(selectedId);
+      await call('/api/arcade/turn-matches/'+encodeURIComponent(id)+'/moves',{method:'POST',body:JSON.stringify({column,turn_number:turn})});
+      await refreshMatches(false);if(selectedId===id)await openMatch(id);
     }catch(error){
-      const stale=error?.status===409;showError(error,$('match-status'));await refreshMatches(false);await openMatch(selectedId);
-      if(stale)$('match-status').textContent='The saved board changed, so I loaded the latest position. '+inviteStatus(selectedMatch);
+      if(selectedId!==id)return;
+      const stale=error?.status===409;showError(error,$('match-status'));await refreshMatches(false);if(selectedId===id)await openMatch(id);
+      if(stale&&selectedId===id&&selectedMatch)$('match-status').textContent='The saved board changed, so I loaded the latest position. '+inviteStatus(selectedMatch);
     }finally{moving=false;if(selectedMatch)renderBoard(selectedMatch);}
   }
   async function challenge(event){
