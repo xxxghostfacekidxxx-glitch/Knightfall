@@ -77,15 +77,15 @@
         <section class="directory-group" aria-labelledby="first-steps-heading">
           <h2 id="first-steps-heading">Find your corner of Knightfall</h2>
           <p>Explore at your own pace. These are optional starting points, not a daily streak or a requirement.</p>
-          <ul>
-            <li><a href="/profile-edit.html">Make your profile yours</a> · Add a bio and choose your look.</li>
-            <li><a href="/friends.html">Find your people</a> · Discover members and manage friend requests.</li>
-            <li><a href="/community.html">Enter the Madhouse</a> · Browse conversations and join a topic you enjoy.</li>
-            <li><a href="/chaos-cartridge.html">Play Chaos Cartridge</a> · Explore games and return to saved matches.</li>
-            <li><a href="/sanctuary-realm.html">Visit the Sanctuary</a> · Explore companions and their realm.</li>
-            <li><a href="/notifications.html">Choose your notifications</a> · Review alerts and manage optional push.</li>
+          <ul id="first-steps-list">
+            <li><label><input type="checkbox" data-first-step="profile-edit.html" aria-label="Mark Make your profile yours complete"> Done</label> · <a href="/profile-edit.html">Make your profile yours</a> · Add a bio and choose your look.</li>
+            <li><label><input type="checkbox" data-first-step="friends.html" aria-label="Mark Find your people complete"> Done</label> · <a href="/friends.html">Find your people</a> · Discover members and manage friend requests.</li>
+            <li><label><input type="checkbox" data-first-step="community.html" aria-label="Mark Enter the Madhouse complete"> Done</label> · <a href="/community.html">Enter the Madhouse</a> · Browse conversations and join a topic you enjoy.</li>
+            <li><label><input type="checkbox" data-first-step="chaos-cartridge.html" aria-label="Mark Play Chaos Cartridge complete"> Done</label> · <a href="/chaos-cartridge.html">Play Chaos Cartridge</a> · Explore games and return to saved matches.</li>
+            <li><label><input type="checkbox" data-first-step="sanctuary-realm.html" aria-label="Mark Visit the Sanctuary complete"> Done</label> · <a href="/sanctuary-realm.html">Visit the Sanctuary</a> · Explore companions and their realm.</li>
+            <li><label><input type="checkbox" data-first-step="notifications.html" aria-label="Mark Choose your notifications complete"> Done</label> · <a href="/notifications.html">Choose your notifications</a> · Review alerts and manage optional push.</li>
           </ul>
-          <p>You can return here anytime. No reminders are enabled by this guide.</p>
+          <p id="first-steps-progress" role="status" aria-live="polite"></p><button id="first-steps-reset" type="button" class="button secondary">Reset guide progress</button><p>Optional checklist progress stays on this device for your account. No reminders are enabled by this guide.</p>
         </section>
         <section id="account-tools" aria-labelledby="account-tools-heading">
           <h2 id="account-tools-heading">Your tools</h2>
@@ -116,6 +116,19 @@
         ${["admin","god"].includes(user.role) ? "" : '<section class="account-deletion" aria-labelledby="delete-account-title"><h2 id="delete-account-title">Delete your account</h2><p>Submit a permanent deletion request by confirming your exact username and current Ash-Fall password. For security, the signed-in request form requires both. If you use Google or Facebook without an Ash-Fall password, or cannot access your password, <a href="/account-deletion.html#deletion-assistance">request deletion assistance</a> instead. Staff must verify account ownership before processing. A valid request is due for operator processing within 30 days; submitting it does not erase data immediately.</p><form id="delete-account-form"><label for="delete-account-password">Current password (required to confirm deletion)</label><input id="delete-account-password" name="password" type="password" autocomplete="current-password" maxlength="128" required><label for="delete-account-username">Type your username to confirm</label><input id="delete-account-username" name="confirmation_username" autocomplete="username" required maxlength="24" placeholder="Your exact username"><label class="delete-confirm"><input id="delete-account-confirm" type="checkbox" required> I understand this requests permanent account deletion.</label><button class="logout" type="submit">Request account deletion</button></form><div id="deletion-request-status" role="status" aria-live="polite"></div><button id="cancel-deletion-request" class="logout" type="button" hidden>Cancel pending request</button><p><a href="/account-deletion.html">Read the deletion policy</a></p></section>'}
         <p id="account-status" class="account-status" role="status" aria-live="polite"></p>`;
       document.querySelector("#logout").addEventListener("click", logout);
+      const steps=[...document.querySelectorAll("[data-first-step]")];
+      const stepKey="kf-first-steps:v1:"+String(user.id??user.username);
+      let completed=[];
+      try{const stored=JSON.parse(localStorage.getItem(stepKey)||"[]");if(Array.isArray(stored))completed=stored;}catch{}
+      for(const step of steps)step.checked=completed.includes(step.dataset.firstStep);
+      function updateFirstSteps(){
+        const done=steps.filter(step=>step.checked).map(step=>step.dataset.firstStep);
+        document.querySelector("#first-steps-progress").textContent=done.length+" of "+steps.length+" optional steps marked complete.";
+        try{localStorage.setItem(stepKey,JSON.stringify(done));}catch{}
+      }
+      for(const step of steps)step.addEventListener("change",updateFirstSteps);
+      document.querySelector("#first-steps-reset").addEventListener("click",()=>{for(const step of steps)step.checked=false;updateFirstSteps();});
+      updateFirstSteps();
       const deletionForm=document.querySelector("#delete-account-form");
       if(deletionForm) deletionForm.addEventListener("submit", async event=>{
         event.preventDefault();
