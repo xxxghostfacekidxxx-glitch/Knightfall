@@ -1,0 +1,25 @@
+/* Scoped Celestial Sanctum tools. No shared theme overrides. */
+.kf-celestial-page .cs-room{border:1px solid color-mix(in srgb,var(--hub-edge),transparent 45%);border-radius:20px;padding:clamp(1rem,3vw,2.4rem);background:radial-gradient(ellipse at 100% 0,color-mix(in srgb,var(--hub-specific),transparent 87%),transparent 60%),var(--hub-surface);scroll-margin-top:7rem}
+.kf-celestial-page .cs-doors{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
+.kf-celestial-page .cs-form{display:flex;flex-wrap:wrap;align-items:end;gap:.7rem;margin:1rem 0}
+.kf-celestial-page .cs-form label{display:grid;gap:.35rem;flex:1 1 180px;min-width:0;color:var(--hub-quiet)}
+.kf-celestial-page .cs-room input,.kf-celestial-page .cs-room select,.kf-celestial-page .cs-room button{font:inherit;min-height:44px;border-radius:9px;border:1px solid var(--hub-edge);padding:.55rem .85rem;max-width:100%}
+.kf-celestial-page .cs-room input,.kf-celestial-page .cs-room select{background:#11131a;color:#f2e8de;width:100%;color-scheme:dark}
+.kf-celestial-page .cs-room button{background:var(--hub-edge);color:#141218;font-weight:800;cursor:pointer}
+.kf-celestial-page .cs-room button:focus-visible,.kf-celestial-page .cs-room select:focus-visible,.kf-celestial-page .cs-room summary:focus-visible{outline:3px solid var(--hub-second);outline-offset:3px}
+.kf-celestial-page .cs-room p,.kf-celestial-page .cs-room li{color:#dfd4e2;overflow-wrap:anywhere}
+.kf-celestial-page .cs-table-wrap{overflow-x:auto;max-width:100%;border:1px solid #a99acb44;border-radius:12px}
+.kf-celestial-page .cs-table{border-collapse:collapse;width:100%;text-align:left;font-size:.92rem}
+.kf-celestial-page .cs-table th,.kf-celestial-page .cs-table td{padding:.7rem;border-bottom:1px solid #a99acb33;color:#e5dce8;vertical-align:top}
+.kf-celestial-page .cs-table thead{background:#20202b}
+.kf-celestial-page .cs-reading,.kf-celestial-page .cs-library{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:.85rem;margin:1rem 0}
+.kf-celestial-page .cs-reading-card,.kf-celestial-page .cs-study{min-width:0;padding:1rem;border:1px solid #aa8fbb66;border-radius:14px;background:linear-gradient(155deg,#222033,#101017)}
+.kf-celestial-page .cs-reading-card{text-align:center;box-shadow:inset 0 0 0 5px #13121d}
+.kf-celestial-page .cs-roman{display:grid;place-items:center;border:1px solid #bca2ce88;border-radius:50%;width:74px;height:74px;margin:1rem auto;font:700 1.6rem Georgia,serif;color:#e3c9f2;background:radial-gradient(circle,#54416a,#1b1728)}
+.kf-celestial-page .cs-card-label{font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:var(--hub-second)}
+.kf-celestial-page .cs-room h3{color:#f5e8dc}
+.kf-celestial-page .cs-prompt{border-left:2px solid var(--hub-specific);padding-left:.7rem}
+.kf-celestial-page .cs-arcana details{padding:.6rem;border-bottom:1px solid #a99acb33}
+.kf-celestial-page .cs-arcana summary{cursor:pointer;padding:.45rem;color:#f1e5ee}
+@media(max-width:600px){.kf-celestial-page .cs-table{font-size:.8rem}.kf-celestial-page .cs-table td,.kf-celestial-page .cs-table th{padding:.45rem}.kf-celestial-page .cs-form button{flex:1 1 130px}}
+@media(forced-colors:active){.kf-celestial-page .cs-room,.kf-celestial-page .cs-study,.kf-celestial-page .cs-reading-card{border:1px solid CanvasText}.kf-celestial-page .cs-room button{background:ButtonFace;color:ButtonText}}

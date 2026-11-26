@@ -16,7 +16,7 @@ The new `public/realm-hubs.css` owns only `.kf-hub-page` components and consumes
 
 ## Working features vs future expansion
 
-The Celestial Sanctum connects existing Moonology (all eight phases), a Moon Journal, optional private-default natal charts, and Shadow Work. Numerology, mythological study, tarot/divination reference material and transit lessons are **planned, not yet tools**. Astrological interpretations are presented as symbolic traditions, not science or medical guidance.
+The Celestial Sanctum connects existing Moonology (all eight phases), a Moon Journal, optional private-default natal charts, and Shadow Work. The 2026-11-26 expansion adds an on-device planetary observatory (geocentric positions, estimated retrogrades, major aspects), a date-digit numerology calculator, a 22-card Major Arcana reflection deck and a searchable nine-entry study archive. Personal natal-transit comparison, the full 78-card deck, detailed citations and member study circles remain future work. No birth dates or readings are persisted by these tools. Astrological interpretations are presented as symbolic traditions, not science or medical guidance.
 
 Serrated Signal includes an original **tap-tempo and Web Audio metronome** at `public/music-rhythm-lab.js`. It never autoplays, opens no media stream or microphone, uses no third-party audio sample, and pauses when its tab is hidden. Music uploads, streaming, band profiles, release pages and collaboration discovery are planned and should require ownership/licensing, moderation and appropriate member permissions before launch.
 
@@ -31,3 +31,7 @@ Chaos Collective is a hub, not a new chatbot provider. It routes users into the 
 5. Preserve original illustrations, CSS-composed artwork and the creator system. The Creations Vault now protects all new hub page sources, their shared CSS and the original rhythm tool in addition to existing artwork and Creator's Foundry sources.
 
 **Deploy rule:** GitHub main commits and configured checks do not prove a Cloudflare Pages deployment is live. Check the actual successful deployment commit before announcing changes as published.
+
+## November 26 expansion verification
+
+`node --test scripts/celestial-sanctum.test.mjs` covers date validation, master numbers, card uniqueness, wraparound motion and aspects, UI IDs and offline entries. Production release guard includes this suite. Existing four tool destinations remain unchanged. Register the expansion and outstanding verification in the authenticated Between the Flames board when available; this document is evidence, not a second live board.

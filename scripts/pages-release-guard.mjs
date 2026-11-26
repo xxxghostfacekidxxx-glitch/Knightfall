@@ -31,7 +31,7 @@ const jobs=[
  ["Four reviewed artwork realms, future theme kit template and safe generator",["--test","scripts/knightfall-art-themes.test.mjs"]],
  ["Theme kit recipe compiler drift and source safety",["scripts/build-knightfall-theme-kits.mjs","--check"]],
  ["Independent realm theme routing, previews and isolation",["--test","scripts/realm-theme-engine.test.mjs"]],
- ["Celestial, music and chatbot hubs, links, original rhythm lab",["--test","scripts/realm-hubs.test.mjs"]],
+ ["Celestial, music and chatbot hubs, links, original rhythm lab",["--test","scripts/realm-hubs.test.mjs","scripts/celestial-sanctum.test.mjs"]],
  ["Internal navigation and duplicate links",["scripts/site-link-integrity.mjs"]],
  ["Approved Gothic colors, assets and PWA invariants",["scripts/site-theme-audit.mjs"]],
  ["Messaging theme regression",["scripts/messaging-theme-audit.mjs"]],

@@ -5,7 +5,8 @@
 <meta name="theme-color" content="#0d1013"><meta name="description" content="The Celestial Sanctum is Knightfall's home for astrology, Moonology, birth charts, shadow work, and the symbolic arts.">
 <title>Celestial Sanctum | Astrology, Moonology &amp; the Esoteric | Knightfall</title>
 <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/realm-hubs.css?v=20261120-hubs1">
-<script src="/nav.js" defer></script>
+<link rel="stylesheet" href="/celestial-sanctum.css?v=20261126"><script src="/nav.js" defer></script>
+<script type="module" src="/celestial-sanctum.mjs"></script>
 </head>
 <body class="kf-hub-page kf-celestial-page">
 <header class="kf-header"></header>
@@ -15,7 +16,7 @@
       <p class="kf-hub-eyebrow">KNIGHTFALL / THE INNER UNIVERSE</p>
       <h1 id="celestial-title">THE CELESTIAL <span>SANCTUM.</span></h1>
       <p class="kf-hub-lede">Stars above. Shadows within. One dedicated realm for astrology, lunar cycles, symbolism, self-inquiry, and the things we haven't dared to name yet.</p>
-      <div class="kf-hub-actions"><a class="kf-hub-action" href="#celestial-working">Explore the Sanctum</a><a class="kf-hub-action kf-hub-action-quiet" href="#celestial-horizon">What comes next</a></div>
+      <div class="kf-hub-actions"><a class="kf-hub-action" href="#celestial-working">Explore the Sanctum</a><a class="kf-hub-action kf-hub-action-quiet" href="#celestial-horizon">Explore the study chambers</a></div>
       <p class="kf-hub-disclaimer">Astrological interpretations are symbolic traditions and personal reflection, not scientific predictions or medical advice.</p>
     </div>
     <img class="kf-hub-art" src="/assets/knightfall/realm-moon.svg" alt="" aria-hidden="true" width="1280" height="560" fetchpriority="high">
@@ -30,12 +31,33 @@
     </div>
   </section>
   <section class="kf-hub-section kf-hub-coming" aria-labelledby="celestial-horizon">
-    <div class="kf-hub-heading"><span class="kf-hub-kicker">02 / THE EXPANSION</span><h2 id="celestial-horizon">More rooms beyond the veil</h2><p>Areas planned for expansion. No fake interactive tools or unavailable links.</p></div>
-    <div class="kf-hub-grid kf-hub-grid-small">
-      <article class="kf-hub-card kf-hub-prospect"><span aria-hidden="true">♄</span><h3>Planetary cycles</h3><p>Transits, retrogrades, and traditional planetary symbolism.</p><span class="kf-hub-planned">Planned</span></article>
-      <article class="kf-hub-card kf-hub-prospect"><span aria-hidden="true">Ⅲ</span><h3>Numerology &amp; divination</h3><p>Numbers, tarot traditions, correspondences, and an expandable reference library.</p><span class="kf-hub-planned">Planned</span></article>
-      <article class="kf-hub-card kf-hub-prospect"><span aria-hidden="true">𓂀</span><h3>Myths &amp; esoteric studies</h3><p>Egyptian mythology, historical occult traditions, and member-led study circles.</p><span class="kf-hub-planned">Planned</span></article>
-    </div>
+    <div class="kf-hub-heading"><span class="kf-hub-kicker">02 / THE INNER UNIVERSE</span><h2 id="celestial-horizon">Beyond the veil</h2><p>Three new study chambers. Astronomy is calculated; symbolic meanings are invitations to reflect, not predictions.</p></div>
+    <nav class="cs-doors" aria-label="Celestial study chambers"><a class="kf-hub-action" href="#cs-observatory">Planetary observatory</a><a class="kf-hub-action" href="#cs-numerology">Numerology</a><a class="kf-hub-action" href="#cs-tarot">Tarot chamber</a><a class="kf-hub-action" href="#cs-library">Esoteric archives</a></nav>
+    <noscript><p>Enable JavaScript to use the study tools. The existing Sanctum pages remain available above.</p></noscript>
+  </section>
+  <section class="kf-hub-section cs-room" id="cs-observatory" aria-labelledby="cs-sky-title">
+    <div class="kf-hub-heading"><span class="kf-hub-kicker">03 / THE OBSERVATORY</span><h2 id="cs-sky-title">Planetary cycles</h2><p>Explore ten geocentric ecliptic positions, tropical zodiac signs, estimated apparent retrograde motion and five major aspects. Calculated with Knightfall's existing Astronomy Engine; no fabricated ephemeris.</p></div>
+    <form class="cs-form" id="cs-sky-form"><label>Observation date (12:00 UTC)<input id="cs-sky-date" type="date" min="1900-01-01" max="2100-12-31" required></label><button type="submit">Calculate date</button><button id="cs-sky-now" type="button">Current sky</button></form>
+    <p id="cs-sky-status" role="status">Preparing the observatory…</p>
+    <div class="cs-table-wrap" tabindex="0" role="region" aria-label="Planetary positions"><table class="cs-table"><thead><tr><th scope="col">Body</th><th scope="col">Tropical position</th><th scope="col">Motion</th><th scope="col">Traditional theme</th></tr></thead><tbody id="cs-sky-body"></tbody></table></div>
+    <h3>Major aspects within 4°</h3><ul id="cs-aspects"></ul>
+    <p class="kf-hub-disclaimer">Motion is estimated using positions one day before and after the observation. This is a sky snapshot, not a natal transit comparison or a forecast.</p>
+  </section>
+  <section class="kf-hub-section cs-room" id="cs-numerology" aria-labelledby="cs-num-title">
+    <div class="kf-hub-heading"><span class="kf-hub-kicker">04 / THE NUMERICAL KEY</span><h2 id="cs-num-title">Life path calculator</h2><p>Explore one common modern numerology convention: add all birth-date digits, then reduce the total, retaining 11, 22 or 33 if encountered.</p></div>
+    <form id="cs-numbers" class="cs-form" autocomplete="off"><label>Birth date<input type="date" id="cs-birth" required min="1900-01-01" max="2100-12-31"></label><button type="submit">Calculate</button><button type="reset">Clear</button></form>
+    <p id="cs-number-result" role="status">No calculation yet.</p><p class="kf-hub-disclaimer">This calculator runs in your browser. It does not send or save your date. Numerology is not a scientific assessment of personality or destiny.</p>
+  </section>
+  <section class="kf-hub-section cs-room" id="cs-tarot" aria-labelledby="cs-tarot-title">
+    <div class="kf-hub-heading"><span class="kf-hub-kicker">05 / THE CHAMBER OF SYMBOLS</span><h2 id="cs-tarot-title">Major Arcana</h2><p>Draw one card or a three-card reflection spread from 22 Major Arcana, using the Rider–Waite–Smith numbering convention. Original prompts, no future predictions.</p></div>
+    <div class="cs-form"><button type="button" id="cs-one">Draw one card</button><button type="button" id="cs-three">Draw three cards</button><button type="button" id="cs-clear">Clear reading</button></div>
+    <p id="cs-reading-status" role="status">No cards drawn.</p><div id="cs-reading" class="cs-reading"></div>
+    <details><summary>Explore all 22 cards</summary><div id="cs-arcana" class="cs-arcana"></div></details>
+  </section>
+  <section class="kf-hub-section cs-room" id="cs-library" aria-labelledby="cs-study-title">
+    <div class="kf-hub-heading"><span class="kf-hub-kicker">06 / THE ARCHIVES</span><h2 id="cs-study-title">Myths &amp; esoteric studies</h2><p>Short introductory entries and study questions. Historical traditions are distinct from contemporary spiritual interpretations.</p></div>
+    <div class="cs-form"><label>Search the archives<input type="search" id="cs-study-search" placeholder="Osiris, alchemy, tarot…"></label><label>Tradition<select id="cs-study-category"><option value="">All traditions</option><option>Egyptian traditions</option><option>Greek mythology</option><option>Esoteric history</option><option>Symbolic arts</option></select></label></div>
+    <p id="cs-study-count" role="status"></p><div id="cs-study-list" class="cs-library"></div>
   </section>
 </main>
 <footer class="kf-hub-footer"><a href="/">Knightfall</a> · <a href="/die-ary.html">The Die-ary</a> · <a href="/members.html">Meet members</a></footer>
