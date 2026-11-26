@@ -52,7 +52,7 @@
   `;
   document.head.append(sheet);
   const nativeActive=()=>document.fullscreenElement||document.webkitFullscreenElement;
-  let lastTrigger=null;
+  let lastTrigger=null, toggling=false;
   const closeTheater=()=>{
     const open=document.querySelector(".af-game-root.af-game-theater");
     if(!open)return false;
@@ -77,7 +77,14 @@
     document.body.classList.toggle("af-game-theater-open",theaterOpen);
   }
   async function toggle(root){
-    lastTrigger=root.querySelector(".af-fullscreen-toggle");
+    if(toggling)return;
+    toggling=true;
+    const trigger=root.querySelector(".af-fullscreen-toggle");
+    if(trigger)trigger.disabled=true;
+    try{
+    const open=document.querySelector(".af-game-root.af-game-theater");
+    if(open&&open!==root)closeTheater();
+    lastTrigger=trigger;
     if(root.classList.contains("af-game-theater")){
       closeTheater();return;
     }
@@ -100,7 +107,11 @@
       root.classList.add("af-game-theater");
     }
     sync();notifyResize();
-    if(root.classList.contains("af-game-theater"))lastTrigger?.focus({preventScroll:true});
+    }finally{
+      toggling=false;
+      if(trigger)trigger.disabled=false;
+      if(root.classList.contains("af-game-theater"))trigger?.focus({preventScroll:true});
+    }
   }
   function init(){
     document.querySelectorAll(selector).forEach(root=>{
