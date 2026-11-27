@@ -4,8 +4,8 @@
   if (document.getElementById("miss-chaos-presence")) return;
   const API = "https://api.ash-fall.com";
   const AVATAR = "/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";
-  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261127-havoc1"; document.head.append(css);
-  const experience=document.createElement("link");experience.rel="stylesheet";experience.href="/miss-chaos-experience.css?v=20261127-havoc1";document.head.append(experience);
+  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261127-havoc2"; document.head.append(css);
+  const experience=document.createElement("link");experience.rel="stylesheet";experience.href="/miss-chaos-experience.css?v=20261127-havoc2";document.head.append(experience);
   const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261119-popup2"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
   root.innerHTML=`
@@ -225,7 +225,7 @@
       if(!memoPanel.hidden)closeMemo();
     }
   });
-  function add(role,text){const el=document.createElement("div");el.className="mc-bubble "+role;el.textContent=text;messages.append(el);if(role==="assistant")fieldKit?.decorate(el,text);messages.scrollTop=messages.scrollHeight;return el;}
+  function add(role,text){const follow=messages.scrollHeight-messages.scrollTop-messages.clientHeight<120;const el=document.createElement("div");el.className="mc-bubble "+role;el.textContent=text;messages.append(el);if(role==="assistant")fieldKit?.decorate(el,text);if(follow||role==="user")messages.scrollTop=messages.scrollHeight;return el;}
   async function request(path,options={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...options,headers:{...(options.body==null||options.body instanceof FormData?{}:{"content-type":"application/json"}),...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok){const err=new Error(d.error||"Request failed ("+r.status+").");err.status=r.status;throw err;}return d;}
   let accountPending=null;
   function ensureAccount(refresh=false){
@@ -312,7 +312,7 @@
   $("#mc-form").addEventListener("submit",async e=>{e.preventDefault();const sendingPhoto=chatPhoto?.hasImage()===true;const message=input.value.trim()||(sendingPhoto?"Describe this image and explain what you can see.":"");if(!message||busy)return;error.textContent="";busy=true;send.disabled=true;modeSelect.disabled=true;privateToggle.disabled=true;chatPhoto?.setBusy(true);input.value="";try{sessionStorage.removeItem(draftKey());}catch(_){} input.style.height="auto";add("user",message+(sendingPhoto?"\n📷 Image attached (original not stored)":""));const typing=add("mc-typing","Miss Chaos is thinking…");typing.className="mc-typing";setExpression("thinking");
     try{if(!(await ensureAccount())){typing.remove();return;}const id=await ensureConversation();const imageData=sendingPhoto?await chatPhoto.prepare():null;let result;try{result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:id,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode,image:imageData||undefined})});}catch(first){if(/conversation|not found|invalid/i.test(first.message)){conversationId="";sessionStorage.removeItem(key(userId,assistantMode));const fresh=await ensureConversation();result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:fresh,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode,image:imageData||undefined})});}else throw first;}typing.remove();chatPhoto?.clear();const reply=result.reply||"I got a response-shaped mystery. Try me again.";add("assistant",reply);setExpression(mood.value);speak(reply);}
     catch(err){typing.remove();error.textContent=err.message||"I couldn't reach the backend. Try again in a moment.";input.value=message;try{sessionStorage.setItem(draftKey(),message);}catch(_){} }
-    finally{busy=false;send.disabled=false;modeSelect.disabled=availableModes.length<2;chatPhoto?.setBusy(false);showModeLabel();input.focus({preventScroll:true});}
+    finally{busy=false;send.disabled=false;modeSelect.disabled=availableModes.length<2;chatPhoto?.setBusy(false);showModeLabel();}
   });
   // Verify companion modes at startup; requiring an initial chat click hid
   // the Osiris/Isis switch despite an already authenticated session.

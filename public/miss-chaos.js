@@ -14,6 +14,14 @@
   let activeConversation = null, busy = false, speakReplies = false, showDeleted = false, adminViewing = false, isAdmin = false;
   let conversationLoadVersion = 0, conversationListVersion = 0;
   const drafts = new Map();
+  const jumpLatest=document.getElementById("mc-jump-latest"),focusToggle=document.getElementById("mc-focus-toggle");
+  const nearBottom=()=>messagesEl.scrollHeight-messagesEl.scrollTop-messagesEl.clientHeight<150;
+  function syncJump(){if(jumpLatest)jumpLatest.hidden=nearBottom();}
+  messagesEl.addEventListener("scroll",syncJump,{passive:true});
+  jumpLatest?.addEventListener("click",()=>{scrollToBottom();syncJump();});
+  focusToggle?.addEventListener("click",()=>{const on=focusToggle.getAttribute("aria-pressed")!=="true";focusToggle.setAttribute("aria-pressed",String(on));focusToggle.textContent=on?"Exit focus":"Focus mode";document.querySelector(".chat-panel")?.classList.toggle("mc-focus-mode",on);});
+  function setExpression(state){const portrait=document.querySelector(".chaos-avatar");if(portrait)portrait.dataset.mcExpression=state;}
+  function setStreaming(value){messagesEl.setAttribute("aria-busy",String(value));setExpression(value?"thinking":"ready");}
   function saveDraft() { if (!adminViewing) drafts.set(activeConversation || "new", input.value); }
   function restoreDraft() { input.value = drafts.get(activeConversation || "new") || ""; input.dispatchEvent(new Event("input")); }
   // Task starters populate the existing composer; they do not claim access to unconfigured tools.
@@ -194,9 +202,10 @@
     return payload;
   }
   function showError(message) { errorEl.textContent = message; errorEl.hidden = !message; }
-  function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
+  function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; syncJump(); }
   function renderReplyText(node, content) {
-    node.replaceChildren();
+    if(globalThis.KnightfallChaosFormat){globalThis.KnightfallChaosFormat.render(node,content);return;}
+    node.mcRaw=String(content);node.replaceChildren();
     // Link only our own site and trusted public catalogs. Text nodes prevent markup injection.
     const allowed = new Set(["ash-fall.com","www.ash-fall.com","openlibrary.org",
       "www.openlibrary.org","doi.org","www.doi.org","polyhaven.com",
@@ -241,7 +250,7 @@
     copy.textContent = "Copy"; copy.setAttribute("aria-label", "Copy " + (role === "user" ? "your" : "Miss Chaos") + " message");
     copy.addEventListener("click", async () => {
       try {
-        await navigator.clipboard.writeText(text.textContent);
+        if(typeof text.mcRaw==="string")await navigator.clipboard.writeText(text.mcRaw);else await navigator.clipboard.writeText(text.textContent);
         copy.textContent = "Copied";
         setTimeout(() => { if (copy.isConnected) copy.textContent = "Copy"; }, 1600);
       } catch { showError("Copy failed. Select the message text to copy it manually."); }
@@ -264,11 +273,11 @@
     }
     article.append(heading, text, actions);
     messagesEl.append(article);
-    if (wasNearBottom || role === "user") scrollToBottom();
+    if (wasNearBottom || role === "user") scrollToBottom(); else syncJump();
     return article;
   }
   function showWelcome() {
-    messagesEl.innerHTML = "<div class=\"welcome-card\"><img class=\"mc-welcome-portrait\" src=\"/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c\" width=\"84\" height=\"84\" alt=\"\" decoding=\"async\"><p class=\"eyebrow\">YOUR LITTLE CORNER OF CHAOS</p><h2>Hey, trouble. 🖤</h2><p>Bring me the messy thoughts, wild ideas and questions nobody else gets. We can talk, create, laugh or figure things out together.</p><div class=\"mc-welcome-actions\" aria-label=\"Conversation ideas\"><button type=\"button\" data-mc-starter=\"talk\">♡ Just talk</button><button type=\"button\" data-mc-starter=\"create\">✦ Make something</button><button type=\"button\" data-mc-starter=\"laugh\">☾ Entertain me</button><button type=\"button\" data-mc-starter=\"help\">⚡ Help me figure it out</button></div><p class=\"welcome-hint\">Your chats stay attached to your account. You choose what to save in memory.</p></div>";
+    messagesEl.innerHTML = "<div class=\"welcome-card\"><img class=\"mc-welcome-portrait\" src=\"/assets/knightfall/miss-chaos/expression-playful.svg\" width=\"84\" height=\"84\" alt=\"\" decoding=\"async\"><p class=\"eyebrow\">YOUR LITTLE CORNER OF CHAOS</p><h2>Hey, trouble. 🖤</h2><p>Bring me the messy thoughts, wild ideas and questions nobody else gets. We can talk, create, laugh or figure things out together.</p><div class=\"mc-welcome-actions\" aria-label=\"Conversation ideas\"><button type=\"button\" data-mc-starter=\"talk\">♡ Just talk</button><button type=\"button\" data-mc-starter=\"create\">✦ Make something</button><button type=\"button\" data-mc-starter=\"laugh\">☾ Entertain me</button><button type=\"button\" data-mc-starter=\"help\">⚡ Help me figure it out</button></div><p class=\"welcome-hint\">Your chats stay attached to your account. You choose what to save in memory.</p></div>";
   }
   function renderConversationList(items) {
     listEl.replaceChildren();
@@ -851,11 +860,11 @@
     const sendingPhoto=chatPhoto?.hasImage()===true;
     if (adminViewing) { showError("Administrator archive is read-only. Open one of your own conversations to chat."); return; }
     if (!message || busy) return;
-    busy = true; sendButton.disabled = true; chatPhoto?.setBusy(true); showError("");
+    busy = true; sendButton.disabled = true; chatPhoto?.setBusy(true); showError("");setStreaming(true);
     input.value = ""; input.dispatchEvent(new Event("input"));
     const displayed=message+(sendingPhoto?"\n📷 Image attached (original not saved)":"");
     addMessage("user",displayed,"You");
-    const typing = document.createElement("div"); typing.className = "typing"; typing.setAttribute("role","status"); typing.textContent = "Miss Chaos is thinking…"; messagesEl.append(typing); scrollToBottom();
+    const typing = document.createElement("div"); typing.className = "typing"; typing.setAttribute("role","status"); typing.textContent = "Miss Chaos is thinking…";const face=document.createElement("img");face.src="/assets/knightfall/miss-chaos/expression-thinking.svg";face.alt="";face.width=32;face.height=32;typing.prepend(face); messagesEl.append(typing); scrollToBottom();
     let streamedArticle=null;
     try {
       if (!activeConversation) {
@@ -864,14 +873,15 @@
       }
       const imageData=sendingPhoto?await chatPhoto.prepare():null;
       const result=await streamChaosReply(activeConversation,message,moodSelect.value,partial=>{
+        const follow=nearBottom();
         if(!streamedArticle){typing.remove();streamedArticle=addMessage("assistant",partial,"Miss Chaos · "+(moodNames[moodSelect.value]||"Default"));}
         else streamedArticle.querySelector(".message-content").textContent=partial;
-        if(messagesEl.scrollHeight-messagesEl.scrollTop-messagesEl.clientHeight<180)scrollToBottom();
+        if(follow)scrollToBottom();else syncJump();
       },imageData);
       chatPhoto?.clear();
       typing.remove();
       if(!streamedArticle)addMessage("assistant",result.reply,"Miss Chaos · "+(moodNames[result.mood]||"Default"));
-      else renderReplyText(streamedArticle.querySelector(".message-content"),result.reply);
+      else {const follow=nearBottom();renderReplyText(streamedArticle.querySelector(".message-content"),result.reply);if(follow)scrollToBottom();else syncJump();}
       statusEl.textContent = "Connected · Miss Chaos is listening";
       if (speakReplies && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
@@ -890,9 +900,9 @@
       if (optimistic?.querySelector(".message-content")?.textContent === displayed) optimistic.remove();
       input.value = message; input.dispatchEvent(new Event("input"));
       showError((error.message || "Reply unavailable.") + " Check the conversation history before retrying, since the server may have saved the message.");
-    } finally { busy = false; sendButton.disabled = adminViewing; chatPhoto?.setBusy(false); if (!adminViewing) input.focus(); }
+    } finally { busy = false;setStreaming(false); sendButton.disabled = adminViewing; chatPhoto?.setBusy(false);syncJump(); }
   });
-  speakReplies=localStorage.getItem("missChaosSpeakReplies")==="1";
+  try{speakReplies=localStorage.getItem("missChaosSpeakReplies")==="1";}catch{}
   $("#speak-toggle").setAttribute("aria-pressed",String(speakReplies));
   $("#speak-toggle").addEventListener("click", () => {
     speakReplies = !speakReplies;

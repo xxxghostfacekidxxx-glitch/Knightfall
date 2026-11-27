@@ -275,7 +275,7 @@
   const mountMissChaos = () => {
     if (document.getElementById("miss-chaos-presence") || document.querySelector('script[data-miss-chaos-presence]')) return;
     const companion = document.createElement("script");
-    companion.src = "/miss-chaos-presence.js?v=20261127-havoc1";
+    companion.src = "/miss-chaos-presence.js?v=20261127-havoc2";
     companion.dataset.missChaosPresence = "true";
     companion.onerror = () => console.warn("Miss Chaos floating tools could not be loaded.");
     document.body.append(companion);
