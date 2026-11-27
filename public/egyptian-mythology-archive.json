@@ -1,0 +1,4140 @@
+{
+  "schemaVersion": 1,
+  "title": "Egyptian Mythology Archive",
+  "scope": "Historical reference database; not lessons or initiation. Source links provide research context; record-level scholarly review remains ongoing.",
+  "sources": {
+    "pantheon": [
+      "Regional deities — UCL Digital Egypt",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/religion/deitiesplaces.html"
+    ],
+    "gods": [
+      "Egyptian deities — Smarthistory",
+      "https://smarthistory.org/egyptian-deities"
+    ],
+    "creation": [
+      "Creation traditions — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/religion/deitiescreation.html"
+    ],
+    "context": [
+      "Divine Egypt — Metropolitan Museum of Art",
+      "https://www.metmuseum.org/de/exhibitions/divine-egypt/inside-the-exhibition"
+    ],
+    "set": [
+      "Nubt, cult center of Seth — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/naqada/nubt.html"
+    ],
+    "setfind": [
+      "Temple of Seth finds — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/naqada/temple/finds.html"
+    ],
+    "seti": [
+      "Offering table of Seti I — Met",
+      "https://www.metmuseum.org/art/collection/search/549218"
+    ],
+    "cult": [
+      "Cult and belief — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/religion/cultindex.html"
+    ],
+    "daily": [
+      "Daily cult — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/religion/dailycult.html"
+    ],
+    "demons": [
+      "Demons — UCLA Encyclopedia of Egyptology",
+      "https://escholarship.org/uc/item/1r72q9vv"
+    ],
+    "funerary": [
+      "Mortuary literature — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/literature/religious/index.html"
+    ],
+    "pyramid": [
+      "Pyramid Texts — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/literature/religious/pyramid.html"
+    ],
+    "coffin": [
+      "Coffin Texts — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/literature/religious/coffin.html"
+    ],
+    "dead": [
+      "Book of the Dead — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/literature/religious/bdfront.html"
+    ],
+    "judgment": [
+      "Book of the Dead 125 — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/literature/religious/bd125a.html"
+    ],
+    "spell17": [
+      "Book of the Dead 17 — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/literature/religious/bd17.html"
+    ],
+    "shabti": [
+      "Book of the Dead 6 — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/literature/religious/bd6.html"
+    ],
+    "amulets": [
+      "Ancient Egyptian amulets — Met",
+      "https://www.metmuseum.org/ja/essays/egyptian-amulets"
+    ],
+    "wedjat": [
+      "Wedjat eye — Met",
+      "https://www.metmuseum.org/art/collection/search/559004"
+    ],
+    "djed": [
+      "Djed pillar — Met",
+      "https://www.metmuseum.org/art/collection/search/329788"
+    ],
+    "amarna": [
+      "Amarna belief — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/amarna/belief.html"
+    ],
+    "ancestors": [
+      "Ancestor cult — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/religion/ancestor.html"
+    ],
+    "domestic": [
+      "Domestic religious practices — UCLA",
+      "https://escholarship.org/uc/item/7s07628w"
+    ],
+    "letters": [
+      "Letters to the Dead — UCLA",
+      "https://escholarship.org/uc/item/6bh8w50t"
+    ],
+    "reception": [
+      "Reinventing religion — Harvard CSWR",
+      "https://cswr.hds.harvard.edu/news/2014/05/10/reinventing-religion-ancient-egypt-european-history-religion"
+    ],
+    "lavey": [
+      "The age of Satanism — Oxford Academic",
+      "https://academic.oup.com/book/2880/chapter-abstract/143494071"
+    ],
+    "aquino": [
+      "Aquino's 1975 text — Oxford Academic",
+      "https://academic.oup.com/book/46787/chapter-abstract/413408886"
+    ],
+    "sites": [
+      "Archaeological sites — UCL",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/archaeology/sitesindex.html"
+    ]
+  },
+  "records": [
+    {
+      "id": "osiris",
+      "category": "Gods and goddesses",
+      "title": "Osiris",
+      "aliases": [
+        "Wesir",
+        "Asar"
+      ],
+      "theme": "Afterlife, kingship, fertility",
+      "description": "Mummiform ruler of the dead, husband of Isis and father of Horus in the familiar Osirian cycle. His restoration after death underlies the identification of the deceased with Osiris. Abydos and Busiris were major centers.",
+      "sourceIds": [
+        "gods",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "isis",
+      "category": "Gods and goddesses",
+      "title": "Isis",
+      "aliases": [
+        "Aset",
+        "Iset"
+      ],
+      "theme": "Magic, maternity, restoration",
+      "description": "Uses protective knowledge to recover Osiris and safeguard Horus; throne sign and later cow horns mark her images. Her worship spread widely across the Mediterranean.",
+      "sourceIds": [
+        "gods",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "horus",
+      "category": "Gods and goddesses",
+      "title": "Horus",
+      "aliases": [
+        "Heru",
+        "Hor"
+      ],
+      "theme": "Sky, kingship",
+      "description": "Falcon deity with multiple local and genealogical forms; the living king was identified with Horus, while Horus son of Isis contests Seth for sovereignty.",
+      "sourceIds": [
+        "gods",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set",
+      "category": "Gods and goddesses",
+      "title": "Set",
+      "aliases": [
+        "Seth",
+        "Sutekh",
+        "Setesh"
+      ],
+      "theme": "Storm, desert, conflict, defense",
+      "description": "Brother and rival of Osiris in the Ennead; an adversary of Horus but also a defender of the sun against Apep. Worship, iconography and political fortunes changed across regions and dynasties. See the dedicated Set dossier.",
+      "sourceIds": [
+        "set",
+        "gods",
+        "seti"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "nephthys",
+      "category": "Gods and goddesses",
+      "title": "Nephthys",
+      "aliases": [
+        "Nebet-Het"
+      ],
+      "theme": "Mourning, protection",
+      "description": "Sister of Isis, Osiris and Seth in the Ennead; appears with Isis protecting the deceased. Her relationship to Seth and Anubis differs across traditions.",
+      "sourceIds": [
+        "creation",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ra",
+      "category": "Gods and goddesses",
+      "title": "Ra",
+      "aliases": [
+        "Re"
+      ],
+      "theme": "Sun, creation",
+      "description": "Solar deity whose daily journey renews the cosmos; associated with Heliopolis and many composite gods. Solar theology includes dawn, midday and evening forms.",
+      "sourceIds": [
+        "creation",
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "atum",
+      "category": "Gods and goddesses",
+      "title": "Atum",
+      "aliases": [
+        "Tem",
+        "Atem"
+      ],
+      "theme": "Creation, completion",
+      "description": "Heliopolitan self-originating creator associated with the first emergence from primordial waters, father of Shu and Tefnut in major traditions.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "shu",
+      "category": "Gods and goddesses",
+      "title": "Shu",
+      "aliases": [
+        "Su"
+      ],
+      "theme": "Air, separation",
+      "description": "Separates Nut from Geb, making the inhabited world possible; paired with Tefnut in the Ennead.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "tefnut",
+      "category": "Gods and goddesses",
+      "title": "Tefnut",
+      "aliases": [
+        "Tefnet"
+      ],
+      "theme": "Moisture, solar power",
+      "description": "Paired with Shu and mother of Geb and Nut; participates in traditions about the departure and return of the solar goddess.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "geb",
+      "category": "Gods and goddesses",
+      "title": "Geb",
+      "aliases": [
+        "Seb"
+      ],
+      "theme": "Earth, inheritance",
+      "description": "Earth deity beneath Nut; father of the later Ennead generation and associated with royal succession.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "nut",
+      "category": "Gods and goddesses",
+      "title": "Nut",
+      "aliases": [
+        "Nuit",
+        "Nwt"
+      ],
+      "theme": "Sky, regeneration",
+      "description": "Arches over the world; receives the sun and gives birth to it again in solar imagery. Her body also shelters the deceased.",
+      "sourceIds": [
+        "creation",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "anubis",
+      "category": "Gods and goddesses",
+      "title": "Anubis",
+      "aliases": [
+        "Inpu",
+        "Anpu"
+      ],
+      "theme": "Embalming, burial",
+      "description": "Canid deity associated with necropolises, mummification and the protection of the body; guides or supervises judgment scenes.",
+      "sourceIds": [
+        "gods",
+        "judgment"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "thoth",
+      "category": "Gods and goddesses",
+      "title": "Thoth",
+      "aliases": [
+        "Djehuty",
+        "Tehuti"
+      ],
+      "theme": "Writing, moon, reckoning",
+      "description": "Ibis or baboon deity associated with sacred writing, measurement, lunar cycles and adjudication; principal god at Hermopolis.",
+      "sourceIds": [
+        "gods",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "maat",
+      "category": "Gods and goddesses",
+      "title": "Ma'at",
+      "aliases": [
+        "Maat",
+        "Maet"
+      ],
+      "theme": "Truth, justice, order",
+      "description": "Personification of the balanced order upheld by divine and human action; a feather identifies her in judgment iconography.",
+      "sourceIds": [
+        "judgment",
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hathor",
+      "category": "Gods and goddesses",
+      "title": "Hathor",
+      "aliases": [
+        "Het-Heru"
+      ],
+      "theme": "Love, music, sky, motherhood",
+      "description": "Cow or woman with horns and solar disk; associated with Dendera, celebration, the western necropolis and solar Eye traditions.",
+      "sourceIds": [
+        "gods",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sekhmet",
+      "category": "Gods and goddesses",
+      "title": "Sekhmet",
+      "aliases": [
+        "Sakhmet"
+      ],
+      "theme": "Disease, healing, solar wrath",
+      "description": "Lioness deity whose destructive power could also protect; linked to Ptah and Nefertum at Memphis.",
+      "sourceIds": [
+        "gods",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "bastet",
+      "category": "Gods and goddesses",
+      "title": "Bastet",
+      "aliases": [
+        "Bast"
+      ],
+      "theme": "Protection, festivity",
+      "description": "Feline goddess of Bubastis; earlier lioness forms and later domestic-cat imagery express differing aspects of her power.",
+      "sourceIds": [
+        "gods",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ptah",
+      "category": "Gods and goddesses",
+      "title": "Ptah",
+      "aliases": [
+        "Pteh"
+      ],
+      "theme": "Craft, creation",
+      "description": "Memphite creator associated with artisans; the Shabaka Stone relates creation through the heart and tongue.",
+      "sourceIds": [
+        "creation",
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "amun",
+      "category": "Gods and goddesses",
+      "title": "Amun",
+      "aliases": [
+        "Amen",
+        "Amon"
+      ],
+      "theme": "Hidden power, creation",
+      "description": "Theban god whose political prominence grew in the New Kingdom; Amun-Re combines his identity with solar theology.",
+      "sourceIds": [
+        "pantheon",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "mut",
+      "category": "Gods and goddesses",
+      "title": "Mut",
+      "aliases": [
+        "Mout"
+      ],
+      "theme": "Motherhood, royal protection",
+      "description": "Major Theban goddess and partner of Amun; frequently represented with the double crown or lioness aspects.",
+      "sourceIds": [
+        "pantheon",
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "khonsu",
+      "category": "Gods and goddesses",
+      "title": "Khonsu",
+      "aliases": [
+        "Khons",
+        "Chons"
+      ],
+      "theme": "Moon, healing",
+      "description": "Lunar deity of the Theban triad, child of Amun and Mut; associated with time and healing in later traditions.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "khepri",
+      "category": "Gods and goddesses",
+      "title": "Khepri",
+      "aliases": [
+        "Kheper",
+        "Khepera"
+      ],
+      "theme": "Dawn, becoming",
+      "description": "Scarab-associated solar manifestation expressing emergence and transformation.",
+      "sourceIds": [
+        "gods",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "aten",
+      "category": "Gods and goddesses",
+      "title": "Aten",
+      "aliases": [
+        "Aton"
+      ],
+      "theme": "Solar disk",
+      "description": "Promoted under Akhenaten as the central focus of royal worship; rays terminate in hands bestowing life. The Amarna reform was historically exceptional.",
+      "sourceIds": [
+        "amarna"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sobek",
+      "category": "Gods and goddesses",
+      "title": "Sobek",
+      "aliases": [
+        "Suchos",
+        "Sebek"
+      ],
+      "theme": "Crocodiles, water, royal power",
+      "description": "Crocodile god particularly prominent in the Fayum and Kom Ombo; dangerous strength could protect ruler and land.",
+      "sourceIds": [
+        "pantheon",
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "khnum",
+      "category": "Gods and goddesses",
+      "title": "Khnum",
+      "aliases": [
+        "Khnemu",
+        "Chnum"
+      ],
+      "theme": "Creation, Nile",
+      "description": "Ram god of Elephantine and Esna; shaping living beings on a potter's wheel is characteristic of his creative imagery.",
+      "sourceIds": [
+        "pantheon",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "satis",
+      "category": "Gods and goddesses",
+      "title": "Satet",
+      "aliases": [
+        "Satis",
+        "Sati"
+      ],
+      "theme": "Inundation, frontier",
+      "description": "Elephantine goddess linked to the southern boundary and flood waters; associated with Khnum and Anuket.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "anuket",
+      "category": "Gods and goddesses",
+      "title": "Anuket",
+      "aliases": [
+        "Anukis"
+      ],
+      "theme": "Nile, cataract",
+      "description": "Goddess of the First Cataract region, associated with Elephantine and the southern river landscape.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hapi",
+      "category": "Gods and goddesses",
+      "title": "Hapy",
+      "aliases": [
+        "Hapi",
+        "Nile inundation"
+      ],
+      "theme": "Flood, abundance",
+      "description": "Personifies the yearly inundation and its agricultural abundance; not the similarly named son of Horus.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "min",
+      "category": "Gods and goddesses",
+      "title": "Min",
+      "aliases": [
+        "Menu"
+      ],
+      "theme": "Fertility, desert routes",
+      "description": "Ithyphallic god prominent at Coptos and Akhmim; associated with reproduction, royal festivals and expeditions.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "montu",
+      "category": "Gods and goddesses",
+      "title": "Montu",
+      "aliases": [
+        "Monthu",
+        "Mentu"
+      ],
+      "theme": "War, royal power",
+      "description": "Falcon-associated warrior god of the Theban region, notably Armant and Tod.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "neith",
+      "category": "Gods and goddesses",
+      "title": "Neith",
+      "aliases": [
+        "Nit",
+        "Net"
+      ],
+      "theme": "Creation, weaving, war",
+      "description": "Goddess prominent at Sais; creator in Esna theology and guardian in funerary contexts. Her functions span different traditions.",
+      "sourceIds": [
+        "pantheon",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "serqet",
+      "category": "Gods and goddesses",
+      "title": "Serqet",
+      "aliases": [
+        "Selket",
+        "Selqet",
+        "Serket"
+      ],
+      "theme": "Venom, protection",
+      "description": "Scorpion-associated goddess invoked for protection; one of the goddesses guarding funerary equipment.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "nekhbet",
+      "category": "Gods and goddesses",
+      "title": "Nekhbet",
+      "aliases": [
+        "Nekhebet"
+      ],
+      "theme": "Upper Egypt, kingship",
+      "description": "Vulture goddess of Elkab and royal protector, paired with Wadjet as the Two Ladies.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "wadjet",
+      "category": "Gods and goddesses",
+      "title": "Wadjet",
+      "aliases": [
+        "Wadjyt",
+        "Uto",
+        "Buto"
+      ],
+      "theme": "Lower Egypt, kingship",
+      "description": "Cobra goddess of the Delta, linked to the uraeus and the royal Two Ladies title.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "bes",
+      "category": "Gods and goddesses",
+      "title": "Bes",
+      "aliases": [
+        "Bisu"
+      ],
+      "theme": "Household, childbirth",
+      "description": "Frontal dwarf-like protective figure, often represented with leonine features; appears on domestic objects and birth-related imagery.",
+      "sourceIds": [
+        "domestic",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "taweret",
+      "category": "Gods and goddesses",
+      "title": "Taweret",
+      "aliases": [
+        "Taurt",
+        "Thoeris"
+      ],
+      "theme": "Pregnancy, childbirth",
+      "description": "Composite hippopotamus figure with protective associations in domestic and birth contexts.",
+      "sourceIds": [
+        "domestic",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "heqa",
+      "category": "Gods and goddesses",
+      "title": "Heka",
+      "aliases": [
+        "Hike"
+      ],
+      "theme": "Magic, efficacy",
+      "description": "Divine personification of the power that enables effective speech and action; magic belongs within Egyptian religion rather than outside it.",
+      "sourceIds": [
+        "creation",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sia",
+      "category": "Gods and goddesses",
+      "title": "Sia",
+      "aliases": [
+        "Saa"
+      ],
+      "theme": "Perception",
+      "description": "Personified understanding or perception, frequently associated with the solar entourage.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hu",
+      "category": "Gods and goddesses",
+      "title": "Hu",
+      "aliases": [
+        "Huw"
+      ],
+      "theme": "Authoritative speech",
+      "description": "Personification of effective utterance, connected with creation and the solar bark.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "nefertum",
+      "category": "Gods and goddesses",
+      "title": "Nefertum",
+      "aliases": [
+        "Nefertem"
+      ],
+      "theme": "Lotus, fragrance",
+      "description": "Youthful lotus-associated deity linked to solar emergence and the Memphite divine family.",
+      "sourceIds": [
+        "pantheon",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "imhotep",
+      "category": "Gods and goddesses",
+      "title": "Imhotep",
+      "aliases": [
+        "Imouthes"
+      ],
+      "theme": "Healing, wisdom",
+      "description": "Historical official of Djoser later divinized; his healing cult flourished particularly in later Egypt.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "amenhotep-hapu",
+      "category": "Gods and goddesses",
+      "title": "Amenhotep son of Hapu",
+      "aliases": [
+        "Amenophis"
+      ],
+      "theme": "Healing, mediation",
+      "description": "New Kingdom official later revered as a divine intermediary, especially in the Theban region.",
+      "sourceIds": [
+        "cult",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "seshat",
+      "category": "Gods and goddesses",
+      "title": "Seshat",
+      "aliases": [
+        "Seshet"
+      ],
+      "theme": "Writing, measurement",
+      "description": "Goddess of recording and architectural measurement, prominent in royal foundation imagery.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "meretseger",
+      "category": "Gods and goddesses",
+      "title": "Meretseger",
+      "aliases": [
+        "Meret-seger"
+      ],
+      "theme": "Necropolis, protection",
+      "description": "Cobra-associated goddess linked to the Theban western mountain and the community of royal tomb workers.",
+      "sourceIds": [
+        "pantheon",
+        "domestic"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "renenutet",
+      "category": "Gods and goddesses",
+      "title": "Renenutet",
+      "aliases": [
+        "Ernutet",
+        "Thermouthis"
+      ],
+      "theme": "Harvest, nursing",
+      "description": "Cobra goddess linked with agricultural abundance, nourishment and protection of the child.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "shai",
+      "category": "Gods and goddesses",
+      "title": "Shai",
+      "aliases": [
+        "Shay"
+      ],
+      "theme": "Destiny",
+      "description": "Personified fate, appearing in birth and judgment contexts; sometimes associated with Renenutet and Meskhenet.",
+      "sourceIds": [
+        "context",
+        "judgment"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "meskhenet",
+      "category": "Gods and goddesses",
+      "title": "Meskhenet",
+      "aliases": [
+        "Meshkenet"
+      ],
+      "theme": "Birth, destiny",
+      "description": "Birth-associated goddess whose emblem relates to birthing bricks; appears in contexts of determining destiny.",
+      "sourceIds": [
+        "context",
+        "domestic"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "heqet",
+      "category": "Gods and goddesses",
+      "title": "Heqet",
+      "aliases": [
+        "Heket",
+        "Hekat"
+      ],
+      "theme": "Birth, life",
+      "description": "Frog-associated goddess connected with childbirth and the renewal of life.",
+      "sourceIds": [
+        "creation",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "wesret",
+      "category": "Gods and goddesses",
+      "title": "Wosret",
+      "aliases": [
+        "Waset",
+        "Woset"
+      ],
+      "theme": "Theban protection",
+      "description": "Theban goddess associated with royal names and divine protection; not simply interchangeable with Mut.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "bat",
+      "category": "Gods and goddesses",
+      "title": "Bat",
+      "aliases": [
+        "Bata goddess"
+      ],
+      "theme": "Sky, cattle",
+      "description": "Early bovine goddess with distinctive inward-curving horns, later closely associated with Hathor.",
+      "sourceIds": [
+        "gods",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "pakhet",
+      "category": "Gods and goddesses",
+      "title": "Pakhet",
+      "aliases": [
+        "Pachet"
+      ],
+      "theme": "Lioness, desert",
+      "description": "Lioness goddess worshipped near Beni Hasan, where rock-cut sanctuaries attest her cult.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "maahes",
+      "category": "Gods and goddesses",
+      "title": "Maahes",
+      "aliases": [
+        "Mahes",
+        "Mihos"
+      ],
+      "theme": "Lion, protection",
+      "description": "Lion deity associated with divine protection and later feline goddess cults.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "menhit",
+      "category": "Gods and goddesses",
+      "title": "Menhit",
+      "aliases": [
+        "Menhyt"
+      ],
+      "theme": "Lioness, war",
+      "description": "Lioness goddess especially connected with Esna traditions and the solar protective complex.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "werethekau",
+      "category": "Gods and goddesses",
+      "title": "Werethekau",
+      "aliases": [
+        "Weret-Hekau"
+      ],
+      "theme": "Magic, royalty",
+      "description": "Divine embodiment of great magical power, associated with crowns and protection of the ruler.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "nehebkau",
+      "category": "Gods and goddesses",
+      "title": "Nehebkau",
+      "aliases": [
+        "Nehebu-Kau"
+      ],
+      "theme": "Serpent, protection",
+      "description": "Serpent deity with protective and nourishing roles in funerary traditions; not synonymous with Apep.",
+      "sourceIds": [
+        "demons",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "mehen",
+      "category": "Gods and goddesses",
+      "title": "Mehen",
+      "aliases": [
+        "Coiled one"
+      ],
+      "theme": "Solar defense",
+      "description": "Protective serpent coils around the solar deity in netherworld imagery.",
+      "sourceIds": [
+        "demons",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "apep",
+      "category": "Gods and goddesses",
+      "title": "Apep",
+      "aliases": [
+        "Apophis"
+      ],
+      "theme": "Cosmic opposition",
+      "description": "Serpent threatening the solar journey, regularly defeated but returning; unlike Seth, he primarily embodies opposition to cosmic renewal.",
+      "sourceIds": [
+        "gods",
+        "demons"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ammit",
+      "category": "Gods and goddesses",
+      "title": "Ammit",
+      "aliases": [
+        "Ammut",
+        "Devourer"
+      ],
+      "theme": "Judgment",
+      "description": "Composite creature associated with the failed heart-weighing, combining crocodile, lion and hippopotamus features.",
+      "sourceIds": [
+        "judgment",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "wepwawet",
+      "category": "Gods and goddesses",
+      "title": "Wepwawet",
+      "aliases": [
+        "Upuaut",
+        "Ophois"
+      ],
+      "theme": "Opening ways, kingship",
+      "description": "Canid deity of Asyut, associated with processions and opening routes for the king and deceased.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "khentiamentiu",
+      "category": "Gods and goddesses",
+      "title": "Khentiamentiu",
+      "aliases": [
+        "Khenti-Amentiu"
+      ],
+      "theme": "Western dead",
+      "description": "Early Abydene deity or designation meaning foremost of the westerners; later strongly associated with Osiris.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sokar",
+      "category": "Gods and goddesses",
+      "title": "Sokar",
+      "aliases": [
+        "Seker",
+        "Sokaris"
+      ],
+      "theme": "Necropolis, regeneration",
+      "description": "Memphite funerary god associated with the desert cemetery and later Ptah-Sokar-Osiris forms.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "andjety",
+      "category": "Gods and goddesses",
+      "title": "Andjety",
+      "aliases": [
+        "Anedjti"
+      ],
+      "theme": "Kingship, fertility",
+      "description": "Busiris-associated god whose attributes became connected with Osiris.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "banebdjedet",
+      "category": "Gods and goddesses",
+      "title": "Banebdjedet",
+      "aliases": [
+        "Banebdjed",
+        "Mendes ram"
+      ],
+      "theme": "Fertility, divine ba",
+      "description": "Ram deity of Mendes with associations to Osiris and other gods in composite theology.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hatmehit",
+      "category": "Gods and goddesses",
+      "title": "Hatmehit",
+      "aliases": [
+        "Hatmehyt"
+      ],
+      "theme": "Fish, local protection",
+      "description": "Fish goddess of Mendes, associated with Banebdjedet in local traditions.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "neper",
+      "category": "Gods and goddesses",
+      "title": "Neper",
+      "aliases": [
+        "Nepri"
+      ],
+      "theme": "Grain",
+      "description": "Personification of grain and agricultural sustenance; linked with fertility and renewal.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hesat",
+      "category": "Gods and goddesses",
+      "title": "Hesat",
+      "aliases": [
+        "Hesat cow"
+      ],
+      "theme": "Milk, nourishment",
+      "description": "Bovine goddess associated with nourishment and divine milk, including funerary contexts.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "mekhit",
+      "category": "Gods and goddesses",
+      "title": "Mekhit",
+      "aliases": [
+        "Mehit"
+      ],
+      "theme": "Lioness",
+      "description": "Lioness goddess linked with Onuris in local traditions, part of a wider complex of protective solar goddesses.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "onuris",
+      "category": "Gods and goddesses",
+      "title": "Onuris",
+      "aliases": [
+        "Anhur",
+        "Anhuret"
+      ],
+      "theme": "War, distant goddess",
+      "description": "Warrior god of Thinis and Sebennytos, linked with bringing back a distant goddess.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "resheph",
+      "category": "Gods and goddesses",
+      "title": "Resheph",
+      "aliases": [
+        "Reshep"
+      ],
+      "theme": "War, disease",
+      "description": "Levantine deity incorporated into Egyptian worship, especially in the New Kingdom; illustrates cross-cultural religious exchange.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "anat",
+      "category": "Gods and goddesses",
+      "title": "Anat",
+      "aliases": [
+        "Anath"
+      ],
+      "theme": "War, protection",
+      "description": "Levantine goddess adopted in Egypt; associated with royal warfare and Seth in some New Kingdom contexts.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "astarte",
+      "category": "Gods and goddesses",
+      "title": "Astarte",
+      "aliases": [
+        "Ashtart"
+      ],
+      "theme": "War, horses",
+      "description": "Levantine goddess adopted into Egyptian religion; participates in traditions of conflict and divine kingship.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "qadesh",
+      "category": "Gods and goddesses",
+      "title": "Qadesh",
+      "aliases": [
+        "Qetesh",
+        "Qudshu"
+      ],
+      "theme": "Fertility, protection",
+      "description": "Goddess depicted in New Kingdom imagery alongside Min and Resheph; the interpretation of her origins and identity is debated.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "dedun",
+      "category": "Gods and goddesses",
+      "title": "Dedun",
+      "aliases": [
+        "Dedwen"
+      ],
+      "theme": "Incense, Nubia",
+      "description": "God associated with Nubia and southern products, particularly incense, in Egyptian religious texts.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "tutu",
+      "category": "Gods and goddesses",
+      "title": "Tutu",
+      "aliases": [
+        "Tithoes"
+      ],
+      "theme": "Protection, demons",
+      "description": "Late Period and Greco-Roman protective deity often shown as a composite sphinx; associated with controlling harmful forces.",
+      "sourceIds": [
+        "demons"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "harpocrates",
+      "category": "Gods and goddesses",
+      "title": "Harpocrates",
+      "aliases": [
+        "Horus the Child",
+        "Heru-pa-khered"
+      ],
+      "theme": "Childhood, protection",
+      "description": "Child form of Horus, frequently with finger at mouth. Greek interpretations of the gesture as silence are later reception.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "harakhte",
+      "category": "Gods and goddesses",
+      "title": "Horakhty",
+      "aliases": [
+        "Horus of the two horizons"
+      ],
+      "theme": "Solar sky",
+      "description": "Horus form associated with the horizons, prominently combined with Ra as Ra-Horakhty.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "harwer",
+      "category": "Gods and goddesses",
+      "title": "Horus the Elder",
+      "aliases": [
+        "Haroeris",
+        "Heru-wer"
+      ],
+      "theme": "Sky, kingship",
+      "description": "An elder form of Horus, distinguished from the child of Isis in some mythic genealogies; prominent at Kom Ombo.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "imsety",
+      "category": "Gods and goddesses",
+      "title": "Imsety",
+      "aliases": [
+        "Imset",
+        "Amset"
+      ],
+      "theme": "Canopic protection",
+      "description": "Human-headed son of Horus, generally associated with the liver and Isis in standard later canopic arrangements.",
+      "sourceIds": [
+        "spell17",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hapy-son",
+      "category": "Gods and goddesses",
+      "title": "Hapy son of Horus",
+      "aliases": [
+        "Hapi canopic"
+      ],
+      "theme": "Canopic protection",
+      "description": "Baboon-headed guardian generally associated with lungs and Nephthys, distinct from the inundation god.",
+      "sourceIds": [
+        "spell17",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "duamutef",
+      "category": "Gods and goddesses",
+      "title": "Duamutef",
+      "aliases": [
+        "Tuamutef"
+      ],
+      "theme": "Canopic protection",
+      "description": "Jackal-headed son of Horus, generally linked with the stomach and Neith.",
+      "sourceIds": [
+        "spell17",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "qebehsenuef",
+      "category": "Gods and goddesses",
+      "title": "Qebehsenuef",
+      "aliases": [
+        "Kebehsenuf",
+        "Qebehsenef"
+      ],
+      "theme": "Canopic protection",
+      "description": "Falcon-headed son of Horus, generally linked with intestines and Serqet.",
+      "sourceIds": [
+        "spell17",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "nun",
+      "category": "Gods and goddesses",
+      "title": "Nun",
+      "aliases": [
+        "Nu"
+      ],
+      "theme": "Primordial waters",
+      "description": "Pre-creation watery expanse, personified as a deity; remains beyond the ordered world after creation.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "naunet",
+      "category": "Gods and goddesses",
+      "title": "Naunet",
+      "aliases": [
+        "Nunut"
+      ],
+      "theme": "Primordial waters",
+      "description": "Female counterpart of Nun within the Hermopolitan Ogdoad.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "heh",
+      "category": "Gods and goddesses",
+      "title": "Heh",
+      "aliases": [
+        "Huh"
+      ],
+      "theme": "Boundlessness",
+      "description": "Male figure of the Ogdoad associated with indefinite extent and innumerable years.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hauhet",
+      "category": "Gods and goddesses",
+      "title": "Hauhet",
+      "aliases": [
+        "Hehet"
+      ],
+      "theme": "Boundlessness",
+      "description": "Female counterpart of Heh in the Ogdoad.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "kek",
+      "category": "Gods and goddesses",
+      "title": "Kek",
+      "aliases": [
+        "Kuk"
+      ],
+      "theme": "Darkness",
+      "description": "Primordial darkness personified among the Ogdoad.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "kauket",
+      "category": "Gods and goddesses",
+      "title": "Kauket",
+      "aliases": [
+        "Keket",
+        "Kuket"
+      ],
+      "theme": "Darkness",
+      "description": "Female counterpart of Kek in the Ogdoad.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "amunet",
+      "category": "Gods and goddesses",
+      "title": "Amunet",
+      "aliases": [
+        "Amaunet"
+      ],
+      "theme": "Hiddenness",
+      "description": "Female counterpart of Amun in some Ogdoad lists and a goddess worshipped at Thebes.",
+      "sourceIds": [
+        "creation",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "tenenet",
+      "category": "Gods and goddesses",
+      "title": "Tenenet",
+      "aliases": [
+        "Tjenenet"
+      ],
+      "theme": "Birth, brewing",
+      "description": "Local goddess associated with childbirth and the Armant divine circle.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "rat-tawy",
+      "category": "Gods and goddesses",
+      "title": "Raet-Tawy",
+      "aliases": [
+        "Rait-tawy"
+      ],
+      "theme": "Solar, Theban",
+      "description": "Female solar deity of the Two Lands, associated with Montu in Theban cults.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "qebehut",
+      "category": "Gods and goddesses",
+      "title": "Qebehut",
+      "aliases": [
+        "Kebechet"
+      ],
+      "theme": "Water, purification",
+      "description": "Serpent-associated goddess linked with cooling and refreshment of the dead, often described as Anubis's daughter.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "mihos",
+      "category": "Gods and goddesses",
+      "title": "Mafdet",
+      "aliases": [
+        "Mafdet"
+      ],
+      "theme": "Protection, dangerous animals",
+      "description": "Early feline or mongoose-like deity associated with protection against venomous creatures and royal justice; exact animal identification is debated.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "asht",
+      "category": "Gods and goddesses",
+      "title": "Ash",
+      "aliases": [
+        "Asha"
+      ],
+      "theme": "Western desert",
+      "description": "Early god associated with western desert and Libyan regions; sometimes portrayed in animal-headed forms.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "nemty",
+      "category": "Gods and goddesses",
+      "title": "Nemty",
+      "aliases": [
+        "Anti",
+        "Anty"
+      ],
+      "theme": "Ferryman, local cult",
+      "description": "Falcon-associated deity connected with Middle Egyptian local worship and divine ferrying in myth.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "babi",
+      "category": "Gods and goddesses",
+      "title": "Babi",
+      "aliases": [
+        "Baba",
+        "Babay"
+      ],
+      "theme": "Baboon, aggression",
+      "description": "Baboon-associated deity of threatening vitality, appearing in mortuary and protective contexts.",
+      "sourceIds": [
+        "demons",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "aker",
+      "category": "Gods and goddesses",
+      "title": "Aker",
+      "aliases": [
+        "Akeru"
+      ],
+      "theme": "Earth, horizons",
+      "description": "Earth deity represented by paired lions or a double-headed figure, associated with the passage of the sun below the horizon.",
+      "sourceIds": [
+        "context",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hesper",
+      "category": "Gods and goddesses",
+      "title": "Iah",
+      "aliases": [
+        "Yah",
+        "Aah"
+      ],
+      "theme": "Moon",
+      "description": "Lunar deity whose identity sometimes overlaps with Thoth and Khonsu; appears in personal and royal names.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sopdet",
+      "category": "Gods and goddesses",
+      "title": "Sopdet",
+      "aliases": [
+        "Sothis",
+        "Sirius"
+      ],
+      "theme": "Star, inundation",
+      "description": "Personifies Sirius, whose annual visibility was connected with calendrical and inundation symbolism.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sah",
+      "category": "Gods and goddesses",
+      "title": "Sah",
+      "aliases": [
+        "Orion"
+      ],
+      "theme": "Stars, afterlife",
+      "description": "Stellar figure associated with Orion and Osiris in funerary astronomy.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ap-is",
+      "category": "Gods and goddesses",
+      "title": "Apis",
+      "aliases": [
+        "Hapis",
+        "Hapi bull"
+      ],
+      "theme": "Sacred bull",
+      "description": "Living sacred bull of Memphis linked to Ptah; after death associated with Osiris-Apis, an important background to Serapis.",
+      "sourceIds": [
+        "pantheon",
+        "cult"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "mnevis",
+      "category": "Gods and goddesses",
+      "title": "Mnevis",
+      "aliases": [
+        "Mer-wer"
+      ],
+      "theme": "Sacred bull, solar",
+      "description": "Sacred bull of Heliopolis associated with solar religion.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "buchis",
+      "category": "Gods and goddesses",
+      "title": "Buchis",
+      "aliases": [
+        "Bakha"
+      ],
+      "theme": "Sacred bull, war",
+      "description": "Sacred bull associated with Montu, centered in Armant.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "serapis",
+      "category": "Gods and goddesses",
+      "title": "Serapis",
+      "aliases": [
+        "Sarapis"
+      ],
+      "theme": "Afterlife, healing",
+      "description": "Greco-Egyptian deity promoted in the Ptolemaic period, drawing on Osiris-Apis and Greek iconographic conventions.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "isis-thermouthis",
+      "category": "Gods and goddesses",
+      "title": "Isis-Thermouthis",
+      "aliases": [
+        "Isis-Renenutet"
+      ],
+      "theme": "Harvest, protection",
+      "description": "Later composite form bringing together Isis and the serpent goddess of nourishment.",
+      "sourceIds": [
+        "context",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-names",
+      "category": "Set: ancient cult and mythology",
+      "title": "Names and epithets of Seth",
+      "aliases": [
+        "Seth",
+        "Set",
+        "Sutekh",
+        "Nubti"
+      ],
+      "theme": "Language",
+      "description": "Different transliterations reflect Egyptian spellings and later linguistic traditions. Nubti associates him with Nubt. Epithets should be traced to particular monuments rather than treated as one timeless title list.",
+      "sourceIds": [
+        "set",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-animal",
+      "category": "Set: ancient cult and mythology",
+      "title": "The Seth animal",
+      "aliases": [
+        "Sha",
+        "Set animal"
+      ],
+      "theme": "Iconography",
+      "description": "Characteristic curved snout, upright squared ears and stiff or forked tail. No single zoological identification is certain; proposals remain disputed.",
+      "sourceIds": [
+        "gods",
+        "setfind"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-ennead",
+      "category": "Set: ancient cult and mythology",
+      "title": "Seth in the Ennead",
+      "aliases": [
+        "Geb",
+        "Nut",
+        "Nephthys"
+      ],
+      "theme": "Genealogy",
+      "description": "In the standard Heliopolitan family Seth belongs to the children of Geb and Nut. The relationships of Isis, Osiris and Nephthys differ in emphasis between narratives.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-osiris",
+      "category": "Set: ancient cult and mythology",
+      "title": "Seth and the death of Osiris",
+      "aliases": [
+        "Osirian cycle"
+      ],
+      "theme": "Myth",
+      "description": "Seth's violence against Osiris establishes the succession dispute and the conditions for funerary renewal. Surviving Egyptian allusions and later Greek retellings do not tell identical stories.",
+      "sourceIds": [
+        "creation",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-horus",
+      "category": "Set: ancient cult and mythology",
+      "title": "Contendings of Horus and Seth",
+      "aliases": [
+        "Chester Beatty I"
+      ],
+      "theme": "Myth",
+      "description": "Ramesside literary narrative depicts the gods debating kingship through trials, disputes and competing claims. It preserves humor and ambiguity as well as conflict; it is not the sole version of the myth.",
+      "sourceIds": [
+        "creation",
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-boat",
+      "category": "Set: ancient cult and mythology",
+      "title": "Seth defends the solar bark",
+      "aliases": [
+        "Apep",
+        "Apophis",
+        "Ra"
+      ],
+      "theme": "Protection",
+      "description": "In solar religion Seth can use his formidable force to repel the chaos serpent. This role is evidence against reducing him to an Egyptian equivalent of Satan.",
+      "sourceIds": [
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-nubt",
+      "category": "Set: ancient cult and mythology",
+      "title": "Nubt / Ombos near Naqada",
+      "aliases": [
+        "Naqada",
+        "Ombos",
+        "Nubti"
+      ],
+      "theme": "Cult center",
+      "description": "Upper Egyptian town with a sanctuary dedicated to Seth; excavated objects provide evidence for actual cult rather than myth alone. Distinct from Kom Ombo further south.",
+      "sourceIds": [
+        "set",
+        "setfind"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-votives",
+      "category": "Set: ancient cult and mythology",
+      "title": "Votive objects at Nubt",
+      "aliases": [
+        "Was scepter",
+        "temple finds"
+      ],
+      "theme": "Material evidence",
+      "description": "Faience and other temple finds attest the material expression of Seth worship. Object dates and provenance matter more than modern claims about secret orders.",
+      "sourceIds": [
+        "setfind",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-avaris",
+      "category": "Set: ancient cult and mythology",
+      "title": "Avaris and Seth",
+      "aliases": [
+        "Tell el-Dab'a",
+        "Sutekh",
+        "Baal"
+      ],
+      "theme": "Cult center",
+      "description": "The eastern Delta city became associated with Seth and Levantine storm-god traditions during the Second Intermediate Period. His local cult continued to matter in Ramesside royal ideology.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-ramesside",
+      "category": "Set: ancient cult and mythology",
+      "title": "Seth under Ramesside rulers",
+      "aliases": [
+        "Seti I",
+        "Ramesses II"
+      ],
+      "theme": "Royal cult",
+      "description": "Nineteenth Dynasty royal names and dedications show that Seth could be an honored state deity. Seti I's offering table is a surviving example.",
+      "sourceIds": [
+        "seti"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-peribsen",
+      "category": "Set: ancient cult and mythology",
+      "title": "Peribsen and Khasekhemwy",
+      "aliases": [
+        "Second Dynasty",
+        "serekh"
+      ],
+      "theme": "Royal ideology",
+      "description": "Peribsen's serekh carries the Seth animal instead of the conventional Horus falcon. Khasekhemwy's royal emblem combines both; political reasons remain debated.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-two-lands",
+      "category": "Set: ancient cult and mythology",
+      "title": "Horus and Seth as paired royal powers",
+      "aliases": [
+        "Union of the Two Lands"
+      ],
+      "theme": "Royal imagery",
+      "description": "The two gods can appear together binding or supporting royal authority. Conflict and cooperation are both part of the iconographic record.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-desert",
+      "category": "Set: ancient cult and mythology",
+      "title": "Desert, storms and foreigners",
+      "aliases": [
+        "Red land",
+        "deshret"
+      ],
+      "theme": "Associations",
+      "description": "Seth is connected with arid regions, storms and forces beyond settled order. Those associations are not evidence that every foreigner or desert god was regarded as evil.",
+      "sourceIds": [
+        "gods",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-baals",
+      "category": "Set: ancient cult and mythology",
+      "title": "Seth and Levantine storm gods",
+      "aliases": [
+        "Baal",
+        "Hadad",
+        "Sutekh"
+      ],
+      "theme": "Syncretism",
+      "description": "New Kingdom religious contact could align Seth with storm-god imagery from western Asia; local forms must be distinguished rather than collapsed into a single identity.",
+      "sourceIds": [
+        "pantheon",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-oases",
+      "category": "Set: ancient cult and mythology",
+      "title": "Seth in the western oases",
+      "aliases": [
+        "Dakhla",
+        "Kharga",
+        "Hibis"
+      ],
+      "theme": "Regional survival",
+      "description": "Oasis traditions preserved protective aspects of Seth into periods when hostile interpretations became influential elsewhere. Regional evidence complicates any single timeline of demonization.",
+      "sourceIds": [
+        "pantheon",
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-late",
+      "category": "Set: ancient cult and mythology",
+      "title": "Later hostility to Seth",
+      "aliases": [
+        "Late Period",
+        "Typhon"
+      ],
+      "theme": "Reception in antiquity",
+      "description": "Some first-millennium sources increasingly depict Seth as an enemy and damage or replace his image. Other local contexts retain positive roles; the shift was not uniform.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-typhon",
+      "category": "Set: ancient cult and mythology",
+      "title": "Seth and Typhon",
+      "aliases": [
+        "Plutarch",
+        "Greek interpretation"
+      ],
+      "theme": "Greco-Roman reception",
+      "description": "Greek authors could identify Seth with Typhon. Plutarch's account is valuable evidence for later interpretation, not a verbatim record of early Egyptian theology.",
+      "sourceIds": [
+        "context",
+        "reception"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-cult-definition",
+      "category": "Set: ancient cult and mythology",
+      "title": "What an ancient cult of Seth means",
+      "aliases": [
+        "Priests",
+        "temples",
+        "offerings"
+      ],
+      "theme": "Historical distinction",
+      "description": "Cult in Egyptological usage refers to organized veneration of a deity, expressed through sanctuaries, offerings and festivals. There is no established single continuous secret Setian institution spanning antiquity and the modern era.",
+      "sourceIds": [
+        "cult",
+        "set",
+        "reception"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-and-apep",
+      "category": "Set: ancient cult and mythology",
+      "title": "Seth is not Apep",
+      "aliases": [
+        "Chaos",
+        "opposition"
+      ],
+      "theme": "Distinction",
+      "description": "Seth can threaten order yet also defend it. Apep is a recurring opponent of the sun; their roles cannot be treated as equivalent or as a simple good-versus-evil dualism.",
+      "sourceIds": [
+        "gods",
+        "demons"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "set-research",
+      "category": "Set: ancient cult and mythology",
+      "title": "Research trail for Seth",
+      "aliases": [
+        "Herman te Velde",
+        "Seth God of Confusion"
+      ],
+      "theme": "Bibliography",
+      "description": "Herman te Velde's Seth, God of Confusion (1967) is a classic specialist study; compare it with archaeological records from Nubt, museum objects and recent regional work. Historical interpretations remain open to revision.",
+      "sourceIds": [
+        "setfind",
+        "seti",
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "heliopolis",
+      "category": "Myths and cosmology",
+      "title": "Heliopolitan creation",
+      "aliases": [
+        "Ennead",
+        "Iunu",
+        "Atum"
+      ],
+      "theme": "Cosmogony",
+      "description": "Atum emerges from the primordial waters and produces successive divine generations. The Ennead links creation to the later Osiris and Horus royal myths.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "memphis",
+      "category": "Myths and cosmology",
+      "title": "Memphite theology",
+      "aliases": [
+        "Ptah",
+        "Shabaka Stone"
+      ],
+      "theme": "Cosmogony",
+      "description": "Ptah brings things into being through conception and utterance in the surviving Memphite theological text. Its date of composition is debated; the extant stone is Kushite-period.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hermopolis",
+      "category": "Myths and cosmology",
+      "title": "Hermopolitan Ogdoad",
+      "aliases": [
+        "Khemenu",
+        "Eight"
+      ],
+      "theme": "Cosmogony",
+      "description": "Four pairs of primordial gods represent conditions preceding creation; versions include an emerging mound, lotus or egg. The roster and details vary.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "thebes",
+      "category": "Myths and cosmology",
+      "title": "Theban creation",
+      "aliases": [
+        "Amun",
+        "Amun-Re"
+      ],
+      "theme": "Cosmogony",
+      "description": "Theban theology emphasizes the hidden source of existence, frequently combining Amun with solar and other creator traditions.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "esna",
+      "category": "Myths and cosmology",
+      "title": "Esna creation",
+      "aliases": [
+        "Neith",
+        "Khnum"
+      ],
+      "theme": "Cosmogony",
+      "description": "Late temple inscriptions preserve elaborate local creation accounts involving Neith and Khnum; they demonstrate that creation theology continued developing.",
+      "sourceIds": [
+        "creation",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "elephantine",
+      "category": "Myths and cosmology",
+      "title": "Elephantine creation",
+      "aliases": [
+        "Khnum",
+        "Satet",
+        "Anuket"
+      ],
+      "theme": "Cosmogony",
+      "description": "Southern cult traditions associate Khnum with shaping bodies and the river's life-giving abundance, in a local divine family.",
+      "sourceIds": [
+        "creation",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "primeval-mound",
+      "category": "Myths and cosmology",
+      "title": "Primeval mound",
+      "aliases": [
+        "Benben",
+        "first land"
+      ],
+      "theme": "Cosmology",
+      "description": "The first land rising from the waters supplies an image of differentiation and the beginning of ordered existence; local sites claimed particular associations.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "lotus",
+      "category": "Myths and cosmology",
+      "title": "Solar lotus",
+      "aliases": [
+        "Nefertum",
+        "first sunrise"
+      ],
+      "theme": "Cosmology",
+      "description": "Emergence of the sun from a lotus appears in creation imagery; the flower's daily cycle makes it a sign of renewal.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "cosmic-egg",
+      "category": "Myths and cosmology",
+      "title": "Cosmic egg",
+      "aliases": [
+        "Ogdoad",
+        "solar birth"
+      ],
+      "theme": "Cosmology",
+      "description": "Some creation accounts describe the first sun emerging from an egg; the originating divine figures and circumstances vary by source.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "tears",
+      "category": "Myths and cosmology",
+      "title": "Humanity from divine tears",
+      "aliases": [
+        "Ra",
+        "human origins"
+      ],
+      "theme": "Anthropogony",
+      "description": "Some texts link humanity's origin to the creator's tears through wordplay; this is not a single canonical account of human origins.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sky-earth",
+      "category": "Myths and cosmology",
+      "title": "Separation of sky and earth",
+      "aliases": [
+        "Shu",
+        "Nut",
+        "Geb"
+      ],
+      "theme": "Cosmology",
+      "description": "Shu holding Nut above Geb expresses the separation of heaven and earth and the formation of the living world's space.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "solar-cycle",
+      "category": "Myths and cosmology",
+      "title": "The solar journey",
+      "aliases": [
+        "Ra",
+        "bark",
+        "dawn"
+      ],
+      "theme": "Cosmology",
+      "description": "The sun crosses the sky and passes through the night realm, encountering dangers before renewed emergence. Different funerary compositions structure the voyage differently.",
+      "sourceIds": [
+        "context",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "osiris-cycle",
+      "category": "Myths and cosmology",
+      "title": "Death and restoration of Osiris",
+      "aliases": [
+        "Isis",
+        "Nephthys",
+        "Horus",
+        "Seth"
+      ],
+      "theme": "Myth",
+      "description": "The slain ruler is restored sufficiently to father Horus and reign in the realm of the dead. Horus's succession ties the myth to royal continuity and funerary identity.",
+      "sourceIds": [
+        "creation",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "isis-secret-name",
+      "category": "Myths and cosmology",
+      "title": "Isis and the secret name of Ra",
+      "aliases": [
+        "Heka",
+        "serpent"
+      ],
+      "theme": "Myth",
+      "description": "A magical narrative describes Isis obtaining Ra's hidden name after he is bitten by a serpent. The tale explores divine knowledge, vulnerability and healing power.",
+      "sourceIds": [
+        "creation",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "eye-solar",
+      "category": "Myths and cosmology",
+      "title": "The Eye of Ra",
+      "aliases": [
+        "Hathor",
+        "Sekhmet",
+        "Tefnut"
+      ],
+      "theme": "Mythic complex",
+      "description": "A powerful female manifestation of the solar deity can be protective or destructive. The Eye's withdrawal and return are told in multiple local forms.",
+      "sourceIds": [
+        "gods",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "destruction-humanity",
+      "category": "Myths and cosmology",
+      "title": "Destruction of mankind",
+      "aliases": [
+        "Book of the Heavenly Cow",
+        "Sekhmet"
+      ],
+      "theme": "Myth",
+      "description": "When humanity rebels, the solar Eye is sent against it; the episode includes a stratagem using red-colored beer to avert further destruction and the subsequent withdrawal of Ra.",
+      "sourceIds": [
+        "context",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "distant-goddess",
+      "category": "Myths and cosmology",
+      "title": "The Distant Goddess",
+      "aliases": [
+        "Tefnut",
+        "Hathor",
+        "Onuris"
+      ],
+      "theme": "Myth",
+      "description": "A goddess withdraws into distant lands and her return restores well-being; the personnel, landscape and ritual setting vary between accounts.",
+      "sourceIds": [
+        "creation",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "eye-horus",
+      "category": "Myths and cosmology",
+      "title": "Injury and healing of Horus's eye",
+      "aliases": [
+        "Wedjat",
+        "Seth",
+        "Thoth"
+      ],
+      "theme": "Myth",
+      "description": "The contested eye is injured and restored in traditions about Horus and Seth. Its healed state becomes a powerful funerary and protective emblem.",
+      "sourceIds": [
+        "wedjat"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "moon-cycle",
+      "category": "Myths and cosmology",
+      "title": "Moon as restored eye",
+      "aliases": [
+        "Thoth",
+        "Khonsu",
+        "Iah"
+      ],
+      "theme": "Cosmology",
+      "description": "The changing moon could express injury, diminution and renewal; there were multiple lunar gods and explanations.",
+      "sourceIds": [
+        "gods",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "two-lands",
+      "category": "Myths and cosmology",
+      "title": "Unification of the Two Lands",
+      "aliases": [
+        "Sema-tawy",
+        "Horus",
+        "Seth"
+      ],
+      "theme": "Royal cosmology",
+      "description": "Joining Upper and Lower Egypt is represented through paired plants, deities and crowns; myth and political symbolism mutually reinforce royal order.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ben-bird",
+      "category": "Myths and cosmology",
+      "title": "Bennu bird",
+      "aliases": [
+        "Benu",
+        "phoenix"
+      ],
+      "theme": "Solar regeneration",
+      "description": "Heron-like bird of solar and Osirian associations, especially at Heliopolis; Greek phoenix traditions are not identical to the Egyptian figure.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "divine-birth",
+      "category": "Myths and cosmology",
+      "title": "Divine birth of kings",
+      "aliases": [
+        "Amun",
+        "Hatshepsut",
+        "Amenhotep III"
+      ],
+      "theme": "Royal myth",
+      "description": "Temple reliefs present a ruler's conception and birth as divinely authorized, linking biological kingship to cosmic legitimacy.",
+      "sourceIds": [
+        "cult",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "seven-hathors",
+      "category": "Myths and cosmology",
+      "title": "Seven Hathors",
+      "aliases": [
+        "Fate",
+        "birth"
+      ],
+      "theme": "Mythic group",
+      "description": "Groups of Hathor figures appear in protective and fate-related narratives, including stories where a child's future is pronounced.",
+      "sourceIds": [
+        "context",
+        "domestic"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "tale-two-brothers",
+      "category": "Myths and cosmology",
+      "title": "Tale of Two Brothers",
+      "aliases": [
+        "Anubis",
+        "Bata",
+        "Papyrus d'Orbiney"
+      ],
+      "theme": "Literature",
+      "description": "New Kingdom tale combines family conflict, transformation, magical survival and royal succession. Its figures should not simply be equated with all cult gods bearing similar names.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "shipwrecked-sailor",
+      "category": "Myths and cosmology",
+      "title": "Tale of the Shipwrecked Sailor",
+      "aliases": [
+        "Serpent",
+        "island"
+      ],
+      "theme": "Literature",
+      "description": "Middle Kingdom literary story of a voyager encountering a marvelous serpent and returning home; illustrates mythic imagery outside temple theology.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "famine-stela",
+      "category": "Myths and cosmology",
+      "title": "Famine Stela",
+      "aliases": [
+        "Djoser",
+        "Khnum",
+        "Sehel"
+      ],
+      "theme": "Reception in antiquity",
+      "description": "Ptolemaic inscription retrospectively situates a famine and its resolution in Djoser's reign; valuable for later claims about Khnum and Elephantine, not contemporary Old Kingdom evidence.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "world-order",
+      "category": "Myths and cosmology",
+      "title": "Ma'at and isfet",
+      "aliases": [
+        "Order",
+        "disorder"
+      ],
+      "theme": "Cosmology",
+      "description": "Ma'at describes the world sustained through proper conduct and divine order; isfet denotes disruptive wrong or disorder. Egyptian thought is not reducible to modern moral dualism.",
+      "sourceIds": [
+        "creation",
+        "judgment"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "duat",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Duat",
+      "aliases": [
+        "Dat",
+        "netherworld"
+      ],
+      "theme": "Otherworld",
+      "description": "A divine landscape traversed by the sun and the dead, variously celestial, subterranean or liminal. Its topography changes across the textual corpus.",
+      "sourceIds": [
+        "funerary",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "amenti",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Amentet",
+      "aliases": [
+        "Imentet",
+        "western realm"
+      ],
+      "theme": "Otherworld",
+      "description": "The west is linked with sunset and cemeteries, personified in a goddess who receives the dead. It is not a precise synonym for every representation of the Duat.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "field-reeds",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Field of Reeds",
+      "aliases": [
+        "Aaru",
+        "Sekhet-Iaru"
+      ],
+      "theme": "Afterlife",
+      "description": "An idealized agricultural landscape in funerary literature, presenting abundance and continued life after successful passage.",
+      "sourceIds": [
+        "dead"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "field-offerings",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Field of Offerings",
+      "aliases": [
+        "Sekhet-Hetep"
+      ],
+      "theme": "Afterlife",
+      "description": "Mortuary landscape associated with sustenance and ritual provisions, sometimes connected with the Field of Reeds.",
+      "sourceIds": [
+        "coffin",
+        "dead"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ka",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Ka",
+      "aliases": [
+        "Vital double"
+      ],
+      "theme": "Personhood",
+      "description": "Aspect of life and identity sustained through offerings and cult; the term cannot be translated adequately as a single Western concept of soul.",
+      "sourceIds": [
+        "funerary",
+        "cult"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ba",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Ba",
+      "aliases": [
+        "Bird with human head"
+      ],
+      "theme": "Personhood",
+      "description": "Manifestation of a being's mobility and capacity to appear; funerary images may show the ba traveling and returning to the body.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "akh",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Akh",
+      "aliases": [
+        "Effective spirit"
+      ],
+      "theme": "Personhood",
+      "description": "Transfigured and effective deceased, achieved through successful mortuary transformation; also an agent in relations with the living.",
+      "sourceIds": [
+        "letters",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ren",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Ren",
+      "aliases": [
+        "Name"
+      ],
+      "theme": "Personhood",
+      "description": "The name preserves and identifies a person; inscription, remembrance and erasure have religious and social consequences.",
+      "sourceIds": [
+        "funerary",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "shut",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Shut",
+      "aliases": [
+        "Sheut",
+        "shadow"
+      ],
+      "theme": "Personhood",
+      "description": "The shadow is one of several aspects of a person represented in funerary literature.",
+      "sourceIds": [
+        "dead"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ib",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Ib",
+      "aliases": [
+        "Heart"
+      ],
+      "theme": "Personhood",
+      "description": "Seat of thought, emotion and responsibility in Egyptian contexts; central to judgment imagery.",
+      "sourceIds": [
+        "judgment"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "khat",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Khat",
+      "aliases": [
+        "Body",
+        "corpse"
+      ],
+      "theme": "Personhood",
+      "description": "The physical remains of the deceased, preserved and ritually transformed in mortuary practice.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sah-body",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Sah",
+      "aliases": [
+        "Mummiform transformed body"
+      ],
+      "theme": "Personhood",
+      "description": "Term used for a ritually dignified or transformed body; distinct from the stellar deity Sah despite similar modern spelling.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "weighing",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Weighing of the heart",
+      "aliases": [
+        "Scales",
+        "feather",
+        "Osiris"
+      ],
+      "theme": "Judgment",
+      "description": "Chapter 125 imagery shows assessment of the deceased's heart in relation to Ma'at, often with Anubis, Thoth and Ammit. Manuscripts differ in details.",
+      "sourceIds": [
+        "judgment"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "negative-confession",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Declarations of innocence",
+      "aliases": [
+        "42 assessors",
+        "spell 125B"
+      ],
+      "theme": "Judgment",
+      "description": "The deceased addresses a group of divine judges with denials of wrongdoing. The statements vary by manuscript and are not a single universal Egyptian civil code.",
+      "sourceIds": [
+        "judgment"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "second-death",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Second death",
+      "aliases": [
+        "Annihilation",
+        "enemies"
+      ],
+      "theme": "Afterlife",
+      "description": "Funerary texts seek protection against destruction, deprivation and repeated death; failure is represented in more than one way rather than a standardized eternal punishment system.",
+      "sourceIds": [
+        "dead",
+        "demons"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "gates",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Gate guardians",
+      "aliases": [
+        "Duat",
+        "named beings"
+      ],
+      "theme": "Otherworld",
+      "description": "Underworld and mortuary compositions present guarded thresholds and beings with specialized names. Knowledge of names is an important literary motif.",
+      "sourceIds": [
+        "demons",
+        "dead"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "demons",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Egyptian demons and guardians",
+      "aliases": [
+        "Hostile beings",
+        "protective spirits"
+      ],
+      "theme": "Divine beings",
+      "description": "Modern Egyptological category for specialized beings who may harm or protect. They are not uniformly evil, and many operate under divine authority.",
+      "sourceIds": [
+        "demons"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "seven-arrows",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Seven arrows of Sekhmet",
+      "aliases": [
+        "Plague",
+        "protective magic"
+      ],
+      "theme": "Divine beings",
+      "description": "The dangerous agents associated with solar goddess traditions express illness and threat as well as the need for protection; names and groupings depend on the text.",
+      "sourceIds": [
+        "demons",
+        "domestic"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "four-sons",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Four Sons of Horus",
+      "aliases": [
+        "Imsety",
+        "Hapy",
+        "Duamutef",
+        "Qebehsenuef"
+      ],
+      "theme": "Funerary group",
+      "description": "A quartet of guardians associated with the protection of internal organs and the deceased; the familiar heads and organ assignments became standardized over time.",
+      "sourceIds": [
+        "spell17",
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ancestral-spirits",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Effective ancestors",
+      "aliases": [
+        "Akh",
+        "family cult"
+      ],
+      "theme": "Afterlife",
+      "description": "The dead could be addressed as continuing participants in household and social life, invoked for aid or resolution of difficulties.",
+      "sourceIds": [
+        "ancestors",
+        "letters"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "night-hours",
+      "category": "Afterlife, spirits and underworld",
+      "title": "Twelve hours of night",
+      "aliases": [
+        "Amduat",
+        "solar journey"
+      ],
+      "theme": "Otherworld",
+      "description": "Some New Kingdom royal compositions divide the nocturnal passage into twelve regions or hours with distinctive inhabitants and transformations.",
+      "sourceIds": [
+        "funerary",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "pyramid-texts",
+      "category": "Sacred texts and records",
+      "title": "Pyramid Texts",
+      "aliases": [
+        "Old Kingdom royal spells"
+      ],
+      "theme": "Corpus",
+      "description": "Mortuary utterances first extensively attested in late Old Kingdom royal pyramids, concerned with ascent, protection and divine transformation. Individual texts continued in later use.",
+      "sourceIds": [
+        "pyramid"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "coffin-texts",
+      "category": "Sacred texts and records",
+      "title": "Coffin Texts",
+      "aliases": [
+        "Middle Kingdom spells"
+      ],
+      "theme": "Corpus",
+      "description": "Collection attested particularly on Middle Kingdom coffins, developing and adapting earlier mortuary material; includes diverse maps and divine transformations.",
+      "sourceIds": [
+        "coffin"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "book-dead",
+      "category": "Sacred texts and records",
+      "title": "Book of the Dead",
+      "aliases": [
+        "Coming Forth by Day",
+        "Peret em heru"
+      ],
+      "theme": "Corpus",
+      "description": "Variable collection of funerary spells, especially on papyrus from the New Kingdom onward. Spell numbering is modern; no individual copy represents a universal complete scripture.",
+      "sourceIds": [
+        "dead"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "spell-17",
+      "category": "Sacred texts and records",
+      "title": "Book of the Dead spell 17",
+      "aliases": [
+        "Cosmogony",
+        "commentary"
+      ],
+      "theme": "Text",
+      "description": "Important composition interweaves declarations and explanations of divine identities and episodes, showing the complexity of Egyptian theological interpretation.",
+      "sourceIds": [
+        "spell17"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "spell-6",
+      "category": "Sacred texts and records",
+      "title": "Book of the Dead spell 6",
+      "aliases": [
+        "Shabti spell"
+      ],
+      "theme": "Text",
+      "description": "Inscription associated with figurines that perform work for the deceased in the afterlife.",
+      "sourceIds": [
+        "shabti"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "spell-30",
+      "category": "Sacred texts and records",
+      "title": "Heart scarab spell",
+      "aliases": [
+        "Book of the Dead 30B"
+      ],
+      "theme": "Text",
+      "description": "Formula asks the heart not to testify against its owner in judgment; frequently associated with heart scarabs.",
+      "sourceIds": [
+        "dead",
+        "amulets"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "spell-125",
+      "category": "Sacred texts and records",
+      "title": "Book of the Dead spell 125",
+      "aliases": [
+        "Judgment",
+        "confession"
+      ],
+      "theme": "Text",
+      "description": "Describes entry into the judgment hall and declarations of innocence; accompanying images are major sources for funerary theology.",
+      "sourceIds": [
+        "judgment"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "amduat",
+      "category": "Sacred texts and records",
+      "title": "Amduat",
+      "aliases": [
+        "What is in the Duat"
+      ],
+      "theme": "Corpus",
+      "description": "New Kingdom royal underworld composition mapping the sun's nocturnal passage in twelve hours; includes the midnight renewal of solar life.",
+      "sourceIds": [
+        "funerary",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "book-gates",
+      "category": "Sacred texts and records",
+      "title": "Book of Gates",
+      "aliases": [
+        "Royal netherworld books"
+      ],
+      "theme": "Corpus",
+      "description": "New Kingdom composition organizing the nightly journey into regions marked by guarded gates, with divine and human inhabitants.",
+      "sourceIds": [
+        "funerary",
+        "demons"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "book-caverns",
+      "category": "Sacred texts and records",
+      "title": "Book of Caverns",
+      "aliases": [
+        "Netherworld caverns"
+      ],
+      "theme": "Corpus",
+      "description": "Royal funerary composition depicting divine beings, enemies and regeneration in regions of the underworld.",
+      "sourceIds": [
+        "funerary",
+        "demons"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "book-earth",
+      "category": "Sacred texts and records",
+      "title": "Book of the Earth",
+      "aliases": [
+        "Creation of the solar disk"
+      ],
+      "theme": "Corpus",
+      "description": "Late New Kingdom royal funerary imagery emphasizing solar rebirth, subterranean forces and the bodies of gods.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "book-nut",
+      "category": "Sacred texts and records",
+      "title": "Book of Nut",
+      "aliases": [
+        "Fundamentals of the Course of the Stars"
+      ],
+      "theme": "Corpus",
+      "description": "Astronomical and mythological composition describing stellar and solar movements through the sky goddess.",
+      "sourceIds": [
+        "funerary",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "book-heavenly-cow",
+      "category": "Sacred texts and records",
+      "title": "Book of the Heavenly Cow",
+      "aliases": [
+        "Destruction of humanity"
+      ],
+      "theme": "Corpus",
+      "description": "Royal funerary myth concerning Ra's withdrawal, the reorganization of the cosmos and the solar Eye's destructive power.",
+      "sourceIds": [
+        "creation",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "book-two-ways",
+      "category": "Sacred texts and records",
+      "title": "Book of Two Ways",
+      "aliases": [
+        "Coffin Texts",
+        "paths"
+      ],
+      "theme": "Corpus",
+      "description": "Middle Kingdom coffin compositions depicting routes through the otherworld with fire, boundaries and dangerous beings.",
+      "sourceIds": [
+        "coffin"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "litany-ra",
+      "category": "Sacred texts and records",
+      "title": "Litany of Ra",
+      "aliases": [
+        "Solar forms"
+      ],
+      "theme": "Corpus",
+      "description": "New Kingdom royal funerary text invoking multiple manifestations of the solar deity and connecting the king with the divine cycle.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "book-breathing",
+      "category": "Sacred texts and records",
+      "title": "Books of Breathing",
+      "aliases": [
+        "Demotic and hieratic mortuary texts"
+      ],
+      "theme": "Corpus",
+      "description": "Late funerary compositions supporting renewed life and breath for the deceased; distinct from earlier Book of the Dead collections.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "shabaka-stone",
+      "category": "Sacred texts and records",
+      "title": "Shabaka Stone",
+      "aliases": [
+        "Memphite theology"
+      ],
+      "theme": "Artifact",
+      "description": "Kushite-period inscribed stone transmitting theology centered on Ptah. Claims of a much earlier original require careful evaluation.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "great-hymn-aten",
+      "category": "Sacred texts and records",
+      "title": "Great Hymn to the Aten",
+      "aliases": [
+        "Amarna",
+        "Ay tomb"
+      ],
+      "theme": "Text",
+      "description": "Amarna royal composition celebrates the solar disk as the source of life. Surviving context is a royal religious reform, not representative of every Egyptian period.",
+      "sourceIds": [
+        "amarna"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "letters-dead",
+      "category": "Sacred texts and records",
+      "title": "Letters to the Dead",
+      "aliases": [
+        "Mortuary correspondence"
+      ],
+      "theme": "Corpus",
+      "description": "Written petitions to deceased relatives preserve evidence of ongoing social relations, requests for protection and disputes.",
+      "sourceIds": [
+        "letters"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "temple-inscriptions",
+      "category": "Sacred texts and records",
+      "title": "Temple inscriptions",
+      "aliases": [
+        "Edfu",
+        "Dendera",
+        "Esna"
+      ],
+      "theme": "Corpus",
+      "description": "Late temple walls preserve complex local myths, calendars, theology and ritual formulae, often elaborating earlier traditions.",
+      "sourceIds": [
+        "cult",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "plutarch",
+      "category": "Sacred texts and records",
+      "title": "On Isis and Osiris",
+      "aliases": [
+        "De Iside et Osiride"
+      ],
+      "theme": "Later source",
+      "description": "Greek philosophical treatment by Plutarch preserves a later interpretation of Egyptian religion, including narrative details not uniformly attested in earlier Egyptian texts.",
+      "sourceIds": [
+        "reception",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "abydos",
+      "category": "Cult centers and sacred geography",
+      "title": "Abydos",
+      "aliases": [
+        "Abdju"
+      ],
+      "theme": "Osiris",
+      "description": "Major center of Osirian pilgrimage and royal mortuary commemoration, associated with festival processions and the tomb of the god.",
+      "sourceIds": [
+        "sites",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "busiris",
+      "category": "Cult centers and sacred geography",
+      "title": "Busiris",
+      "aliases": [
+        "Djedu"
+      ],
+      "theme": "Osiris",
+      "description": "Delta cult center associated with Osiris and earlier local divine identities; its history helps explain regional Osirian theology.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "heliopolis-site",
+      "category": "Cult centers and sacred geography",
+      "title": "Heliopolis",
+      "aliases": [
+        "Iunu",
+        "On"
+      ],
+      "theme": "Ra, Atum",
+      "description": "Solar cult and creation theology centered on Ra and Atum; later urban development has obscured much of the ancient site.",
+      "sourceIds": [
+        "pantheon",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "memphis-site",
+      "category": "Cult centers and sacred geography",
+      "title": "Memphis",
+      "aliases": [
+        "Men-nefer"
+      ],
+      "theme": "Ptah, Apis",
+      "description": "Administrative and religious center with major cults of Ptah, sacred Apis bulls and associated funerary gods.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "thebes-site",
+      "category": "Cult centers and sacred geography",
+      "title": "Thebes",
+      "aliases": [
+        "Waset",
+        "Karnak",
+        "Luxor"
+      ],
+      "theme": "Amun, Mut, Khonsu",
+      "description": "Theban temple network, royal burial landscape and state festivals were major expressions of New Kingdom religion.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hermopolis-site",
+      "category": "Cult centers and sacred geography",
+      "title": "Hermopolis Magna",
+      "aliases": [
+        "Khemenu",
+        "Ashmunein"
+      ],
+      "theme": "Thoth, Ogdoad",
+      "description": "Middle Egyptian center of Thoth worship and the theological group of eight primordial gods.",
+      "sourceIds": [
+        "pantheon",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "dendera",
+      "category": "Cult centers and sacred geography",
+      "title": "Dendera",
+      "aliases": [
+        "Iunet",
+        "Tentyris"
+      ],
+      "theme": "Hathor",
+      "description": "Major Hathor sanctuary whose surviving late temple includes celestial imagery, festivals and Osirian chapels.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "edfu",
+      "category": "Cult centers and sacred geography",
+      "title": "Edfu",
+      "aliases": [
+        "Behdet"
+      ],
+      "theme": "Horus",
+      "description": "Ptolemaic temple preserves a rich corpus of Horus myths, cult rituals and royal religious imagery.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "kom-ombo",
+      "category": "Cult centers and sacred geography",
+      "title": "Kom Ombo",
+      "aliases": [
+        "Ombos south"
+      ],
+      "theme": "Sobek, Horus the Elder",
+      "description": "Double temple associated with two divine cults; should not be confused with Seth's Nubt near Naqada.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "philae",
+      "category": "Cult centers and sacred geography",
+      "title": "Philae",
+      "aliases": [
+        "Isis sanctuary"
+      ],
+      "theme": "Isis",
+      "description": "Southern island cult complex important in later Isis religion, including worshipers from Nubia. The surviving temples were relocated to Agilkia.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "elephantine-site",
+      "category": "Cult centers and sacred geography",
+      "title": "Elephantine",
+      "aliases": [
+        "Abu"
+      ],
+      "theme": "Khnum, Satet, Anuket",
+      "description": "First Cataract religious center, linked with southern frontier and river inundation.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "bubastis",
+      "category": "Cult centers and sacred geography",
+      "title": "Bubastis",
+      "aliases": [
+        "Per-Bastet",
+        "Tell Basta"
+      ],
+      "theme": "Bastet",
+      "description": "Delta city celebrated for the worship of Bastet; festival traditions also appear in Greek testimony.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sais",
+      "category": "Cult centers and sacred geography",
+      "title": "Sais",
+      "aliases": [
+        "Sau"
+      ],
+      "theme": "Neith",
+      "description": "Delta city and major center of Neith, particularly prominent during the Twenty-sixth Dynasty.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "butō",
+      "category": "Cult centers and sacred geography",
+      "title": "Buto",
+      "aliases": [
+        "Pe and Dep"
+      ],
+      "theme": "Wadjet",
+      "description": "Delta cult center associated with the cobra goddess and Lower Egyptian royal traditions.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "elkab",
+      "category": "Cult centers and sacred geography",
+      "title": "Elkab",
+      "aliases": [
+        "Nekheb"
+      ],
+      "theme": "Nekhbet",
+      "description": "Upper Egyptian center of the vulture goddess and her royal protective role.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "asyut",
+      "category": "Cult centers and sacred geography",
+      "title": "Asyut",
+      "aliases": [
+        "Zawty",
+        "Lycopolis"
+      ],
+      "theme": "Wepwawet",
+      "description": "Middle Egyptian city with a strong canid deity tradition and important provincial funerary evidence.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "coptos",
+      "category": "Cult centers and sacred geography",
+      "title": "Coptos",
+      "aliases": [
+        "Gebtu",
+        "Qift"
+      ],
+      "theme": "Min",
+      "description": "Center of Min worship, connected to routes through the eastern desert.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "akhmim",
+      "category": "Cult centers and sacred geography",
+      "title": "Akhmim",
+      "aliases": [
+        "Ipu",
+        "Panopolis"
+      ],
+      "theme": "Min",
+      "description": "Upper Egyptian city associated with Min and extensive later religious traditions.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "fayum",
+      "category": "Cult centers and sacred geography",
+      "title": "Fayum",
+      "aliases": [
+        "Shedet",
+        "Crocodilopolis"
+      ],
+      "theme": "Sobek",
+      "description": "Lake and agricultural region with strong crocodile cult traditions, including multiple local forms of Sobek.",
+      "sourceIds": [
+        "pantheon",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "amarna-site",
+      "category": "Cult centers and sacred geography",
+      "title": "Akhetaten",
+      "aliases": [
+        "Tell el-Amarna"
+      ],
+      "theme": "Aten",
+      "description": "New capital established by Akhenaten for the Aten-centered royal cult; its archaeology documents the exceptional reform.",
+      "sourceIds": [
+        "amarna",
+        "sites"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "saqqara",
+      "category": "Cult centers and sacred geography",
+      "title": "Saqqara",
+      "aliases": [
+        "Serapeum",
+        "Memphite necropolis"
+      ],
+      "theme": "Sokar, Apis",
+      "description": "Mortuary landscape of Memphis, including royal pyramids and burial galleries for sacred Apis bulls.",
+      "sourceIds": [
+        "sites",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "medina",
+      "category": "Cult centers and sacred geography",
+      "title": "Deir el-Medina",
+      "aliases": [
+        "Set Maat"
+      ],
+      "theme": "Meretseger, ancestors",
+      "description": "Royal tomb workers' community preserves evidence of personal piety, household religion and petitions to deities.",
+      "sourceIds": [
+        "domestic",
+        "ancestors"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "mendes",
+      "category": "Cult centers and sacred geography",
+      "title": "Mendes",
+      "aliases": [
+        "Djedet"
+      ],
+      "theme": "Banebdjedet, Hatmehit",
+      "description": "Delta city with ram and fish divine traditions and important local cult identity.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "armant",
+      "category": "Cult centers and sacred geography",
+      "title": "Armant",
+      "aliases": [
+        "Iuny",
+        "Hermonthis"
+      ],
+      "theme": "Montu, Buchis",
+      "description": "Theban-region center of Montu worship and the sacred Buchis bull cult.",
+      "sourceIds": [
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "esna-site",
+      "category": "Cult centers and sacred geography",
+      "title": "Esna",
+      "aliases": [
+        "Iunyt",
+        "Latopolis"
+      ],
+      "theme": "Khnum, Neith",
+      "description": "Late temple inscriptions document rich local theology and creation traditions.",
+      "sourceIds": [
+        "pantheon",
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ankh",
+      "category": "Symbols, objects and religious practices",
+      "title": "Ankh",
+      "aliases": [
+        "Life sign"
+      ],
+      "theme": "Symbol",
+      "description": "Hieroglyph for life frequently carried by deities or offered to the king; later spiritual uses are separate interpretations.",
+      "sourceIds": [
+        "wedjat",
+        "amulets"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "djed",
+      "category": "Symbols, objects and religious practices",
+      "title": "Djed pillar",
+      "aliases": [
+        "Stability",
+        "Osiris"
+      ],
+      "theme": "Symbol",
+      "description": "Pillar sign associated with stability and Osirian regeneration; placed on or with funerary equipment as a protective emblem.",
+      "sourceIds": [
+        "djed"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "was",
+      "category": "Symbols, objects and religious practices",
+      "title": "Was scepter",
+      "aliases": [
+        "Power",
+        "dominion"
+      ],
+      "theme": "Symbol",
+      "description": "Long staff with distinctive animal-like head and forked base, held by gods and kings; material examples include finds connected with Seth's cult.",
+      "sourceIds": [
+        "setfind",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "wedjat",
+      "category": "Symbols, objects and religious practices",
+      "title": "Wedjat eye",
+      "aliases": [
+        "Eye of Horus",
+        "Udjat"
+      ],
+      "theme": "Symbol",
+      "description": "Restored eye signifies soundness and protection, commonly expressed in amulets. Modern claims of a universal fractional system require caution.",
+      "sourceIds": [
+        "wedjat"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "uraeus",
+      "category": "Symbols, objects and religious practices",
+      "title": "Uraeus",
+      "aliases": [
+        "Royal cobra"
+      ],
+      "theme": "Symbol",
+      "description": "Upright cobra on royal and divine headdresses expresses protective and destructive solar power.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "scarab",
+      "category": "Symbols, objects and religious practices",
+      "title": "Scarab",
+      "aliases": [
+        "Khepri",
+        "heart scarab"
+      ],
+      "theme": "Symbol",
+      "description": "Beetle imagery expresses becoming and renewal; heart scarabs have a specialized mortuary function connected with judgment.",
+      "sourceIds": [
+        "amulets",
+        "dead"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "tyet",
+      "category": "Symbols, objects and religious practices",
+      "title": "Tyet",
+      "aliases": [
+        "Isis knot"
+      ],
+      "theme": "Symbol",
+      "description": "Knot-shaped amulet associated with Isis and funerary protection, often made in red material.",
+      "sourceIds": [
+        "amulets"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "shen",
+      "category": "Symbols, objects and religious practices",
+      "title": "Shen ring",
+      "aliases": [
+        "Encirclement"
+      ],
+      "theme": "Symbol",
+      "description": "Looped sign associated with enclosure, protection and enduring continuity; related imagery appears in royal contexts.",
+      "sourceIds": [
+        "context",
+        "amulets"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "cartouche",
+      "category": "Symbols, objects and religious practices",
+      "title": "Cartouche",
+      "aliases": [
+        "Royal name ring"
+      ],
+      "theme": "Symbol",
+      "description": "Oval enclosure protecting or distinguishing royal names, not a generic magical name seal used identically in every era.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "sistrum",
+      "category": "Symbols, objects and religious practices",
+      "title": "Sistrum",
+      "aliases": [
+        "Sesheshet"
+      ],
+      "theme": "Ritual object",
+      "description": "Rattle associated particularly with Hathor and ritual music; its sound participates in divine celebration and appeasement.",
+      "sourceIds": [
+        "cult",
+        "gods"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "menat",
+      "category": "Symbols, objects and religious practices",
+      "title": "Menat",
+      "aliases": [
+        "Counterpoise necklace"
+      ],
+      "theme": "Ritual object",
+      "description": "Beaded necklace with counterpoise, associated with Hathoric ritual music, protection and renewal.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "crook-flail",
+      "category": "Symbols, objects and religious practices",
+      "title": "Crook and flail",
+      "aliases": [
+        "Heka and nekhakha"
+      ],
+      "theme": "Regalia",
+      "description": "Royal and Osirian emblems of authority, often crossed on the chest of a mummiform figure.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "feather",
+      "category": "Symbols, objects and religious practices",
+      "title": "Feather of Ma'at",
+      "aliases": [
+        "Ostrich feather"
+      ],
+      "theme": "Symbol",
+      "description": "Emblem of Ma'at used in divine iconography and mortuary judgment.",
+      "sourceIds": [
+        "judgment"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "double-crown",
+      "category": "Symbols, objects and religious practices",
+      "title": "Double crown",
+      "aliases": [
+        "Pschent",
+        "sekhemty"
+      ],
+      "theme": "Regalia",
+      "description": "Combines the white and red crowns to represent royal sovereignty over Upper and Lower Egypt.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "white-crown",
+      "category": "Symbols, objects and religious practices",
+      "title": "White crown",
+      "aliases": [
+        "Hedjet"
+      ],
+      "theme": "Regalia",
+      "description": "Crown associated with Upper Egypt, appearing in royal and divine representations.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "red-crown",
+      "category": "Symbols, objects and religious practices",
+      "title": "Red crown",
+      "aliases": [
+        "Deshret"
+      ],
+      "theme": "Regalia",
+      "description": "Crown associated with Lower Egypt; the same modern transliteration also refers to red land in other contexts.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "atef",
+      "category": "Symbols, objects and religious practices",
+      "title": "Atef crown",
+      "aliases": [
+        "Osirian crown"
+      ],
+      "theme": "Regalia",
+      "description": "Tall central element with feathers, particularly associated with Osiris and certain other gods.",
+      "sourceIds": [
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "winged-disk",
+      "category": "Symbols, objects and religious practices",
+      "title": "Winged solar disk",
+      "aliases": [
+        "Behdetite Horus"
+      ],
+      "theme": "Symbol",
+      "description": "Protective solar emblem above temple entrances, often incorporating wings and cobras.",
+      "sourceIds": [
+        "gods",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "benben",
+      "category": "Symbols, objects and religious practices",
+      "title": "Benben stone",
+      "aliases": [
+        "Heliopolis",
+        "mound"
+      ],
+      "theme": "Symbol",
+      "description": "Sacred solar stone linked with first emergence and Heliopolitan creation; related ideas informed obelisk and pyramid imagery.",
+      "sourceIds": [
+        "creation"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "obelisk",
+      "category": "Symbols, objects and religious practices",
+      "title": "Obelisk",
+      "aliases": [
+        "Tekhen"
+      ],
+      "theme": "Monument",
+      "description": "Tall tapering stone monument with solar associations, frequently erected in pairs at temples.",
+      "sourceIds": [
+        "cult",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "barque",
+      "category": "Symbols, objects and religious practices",
+      "title": "Sacred barque",
+      "aliases": [
+        "Solar bark",
+        "processional boat"
+      ],
+      "theme": "Ritual object",
+      "description": "Portable divine shrine or symbolic vessel used in temple festivals; celestial boats also carry the sun in myth.",
+      "sourceIds": [
+        "cult",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "canopic",
+      "category": "Symbols, objects and religious practices",
+      "title": "Canopic equipment",
+      "aliases": [
+        "Jars",
+        "chests"
+      ],
+      "theme": "Funerary object",
+      "description": "Containers and associated guardians protect organs of the deceased; practices and vessel use changed across periods.",
+      "sourceIds": [
+        "funerary",
+        "spell17"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "shabtis",
+      "category": "Symbols, objects and religious practices",
+      "title": "Shabti figurines",
+      "aliases": [
+        "Ushabti",
+        "shawabti"
+      ],
+      "theme": "Funerary object",
+      "description": "Figures associated with performing labor for the deceased, with inscribed examples linked to spell 6.",
+      "sourceIds": [
+        "shabti"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "offering-table",
+      "category": "Symbols, objects and religious practices",
+      "title": "Offering table",
+      "aliases": [
+        "Libation",
+        "bread"
+      ],
+      "theme": "Ritual object",
+      "description": "Provides a surface for sustaining a god or deceased through material and represented offerings; Seti I's dedication to Seth is a concrete example.",
+      "sourceIds": [
+        "seti",
+        "cult"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "daily-cult",
+      "category": "Symbols, objects and religious practices",
+      "title": "Daily temple service",
+      "aliases": [
+        "Divine image",
+        "offerings"
+      ],
+      "theme": "Practice",
+      "description": "Authorized personnel cared for the cult image through purification, dressing and offerings; the king was the ideal ritual officiant in formal temple representation.",
+      "sourceIds": [
+        "daily"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "temple-space",
+      "category": "Symbols, objects and religious practices",
+      "title": "Temple sanctuary",
+      "aliases": [
+        "Naos",
+        "sacred enclosure"
+      ],
+      "theme": "Practice",
+      "description": "Temples housed cult images and ritual institutions. Access and architectural arrangement varied, with central sanctuaries generally restricted.",
+      "sourceIds": [
+        "cult"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "personal-piety",
+      "category": "Symbols, objects and religious practices",
+      "title": "Personal and household religion",
+      "aliases": [
+        "Votive objects",
+        "prayer"
+      ],
+      "theme": "Practice",
+      "description": "People sought assistance through amulets, prayers, offerings and domestic shrines; state temples are only one part of the archaeological picture.",
+      "sourceIds": [
+        "domestic"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "ancestor-cult",
+      "category": "Symbols, objects and religious practices",
+      "title": "Ancestor veneration",
+      "aliases": [
+        "Family shrine",
+        "offerings"
+      ],
+      "theme": "Practice",
+      "description": "Households maintained relationships with deceased relatives through objects, remembrance, food and requests for intervention.",
+      "sourceIds": [
+        "ancestors",
+        "letters"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "oracles",
+      "category": "Symbols, objects and religious practices",
+      "title": "Divine oracles",
+      "aliases": [
+        "Processional consultation"
+      ],
+      "theme": "Practice",
+      "description": "Divine images or their carriers could communicate responses in public and institutional settings; procedures differed by place and period.",
+      "sourceIds": [
+        "cult"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "opet",
+      "category": "Symbols, objects and religious practices",
+      "title": "Opet festival",
+      "aliases": [
+        "Amun",
+        "Karnak",
+        "Luxor"
+      ],
+      "theme": "Festival",
+      "description": "Theban procession of divine images linking Karnak and Luxor and renewing royal legitimacy.",
+      "sourceIds": [
+        "cult",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "valley-festival",
+      "category": "Symbols, objects and religious practices",
+      "title": "Beautiful Festival of the Valley",
+      "aliases": [
+        "Thebes",
+        "western bank"
+      ],
+      "theme": "Festival",
+      "description": "Amun's visit to western Thebes linked temple processions with remembrance and mortuary cult.",
+      "sourceIds": [
+        "cult",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "khoiak",
+      "category": "Symbols, objects and religious practices",
+      "title": "Khoiak rites",
+      "aliases": [
+        "Osiris",
+        "corn mummies"
+      ],
+      "theme": "Festival",
+      "description": "Osirian festivals of death and regeneration include ritual images using earth and grain, especially well documented in later temple contexts.",
+      "sourceIds": [
+        "cult",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "new-year",
+      "category": "Symbols, objects and religious practices",
+      "title": "Egyptian New Year",
+      "aliases": [
+        "Wepet Renpet",
+        "Sirius"
+      ],
+      "theme": "Festival",
+      "description": "Renewal of the year was connected with solar, stellar and inundation symbolism; the civil calendar drifted relative to the seasonal year.",
+      "sourceIds": [
+        "cult",
+        "pantheon"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "opening-mouth",
+      "category": "Symbols, objects and religious practices",
+      "title": "Opening of the Mouth",
+      "aliases": [
+        "Mortuary ritual"
+      ],
+      "theme": "Practice",
+      "description": "Ritual complex restores the senses and capacities of a statue or deceased in religious representation; attested in texts and images.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "mummification",
+      "category": "Symbols, objects and religious practices",
+      "title": "Mummification",
+      "aliases": [
+        "Embalming",
+        "preservation"
+      ],
+      "theme": "Practice",
+      "description": "Techniques and associated rites preserved and transformed the body, varying with date, resources and local practice.",
+      "sourceIds": [
+        "funerary"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "animal-cults",
+      "category": "Symbols, objects and religious practices",
+      "title": "Sacred animal cults",
+      "aliases": [
+        "Apis",
+        "ibis",
+        "cat",
+        "crocodile"
+      ],
+      "theme": "Practice",
+      "description": "Distinguish particular living divine animals from votive animal offerings and the broader use of animal imagery for gods.",
+      "sourceIds": [
+        "cult",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "heka-practice",
+      "category": "Symbols, objects and religious practices",
+      "title": "Heka in daily life",
+      "aliases": [
+        "Protective speech",
+        "amulets"
+      ],
+      "theme": "Practice",
+      "description": "Magic and religious practice overlap in texts for healing, protection and birth. Historical descriptions do not establish supernatural efficacy.",
+      "sourceIds": [
+        "domestic",
+        "context"
+      ],
+      "period": "Ancient Egypt; date varies by evidence"
+    },
+    {
+      "id": "hermetica",
+      "category": "Later reception and historical boundaries",
+      "title": "Greco-Egyptian Hermetica",
+      "aliases": [
+        "Hermes Trismegistus",
+        "Thoth"
+      ],
+      "theme": "Later reception",
+      "description": "Greek and related philosophical and technical writings from the Hellenistic and Roman cultural world develop an Egyptian-associated wisdom figure. They are not simply translations of pharaonic scriptures.",
+      "sourceIds": [
+        "reception"
+      ],
+      "period": "Later reception / historical method"
+    },
+    {
+      "id": "isis-mediterranean",
+      "category": "Later reception and historical boundaries",
+      "title": "Mediterranean Isis cults",
+      "aliases": [
+        "Isiac religion"
+      ],
+      "theme": "Later reception",
+      "description": "The worship of Isis took new forms across the Greco-Roman Mediterranean, with local rituals and institutions distinct from earlier Egyptian settings.",
+      "sourceIds": [
+        "context",
+        "reception"
+      ],
+      "period": "Later reception / historical method"
+    },
+    {
+      "id": "egyptomania",
+      "category": "Later reception and historical boundaries",
+      "title": "Egyptomania and esoteric Egypt",
+      "aliases": [
+        "Hermetic revival",
+        "Blavatsky"
+      ],
+      "theme": "Later reception",
+      "description": "European and American esoteric movements repeatedly reimagined ancient Egypt as a source of hidden wisdom, often blending archaeology with their own religious claims.",
+      "sourceIds": [
+        "reception"
+      ],
+      "period": "Later reception / historical method"
+    },
+    {
+      "id": "crowley",
+      "category": "Later reception and historical boundaries",
+      "title": "Aleister Crowley and Egyptian imagery",
+      "aliases": [
+        "Thelema",
+        "Liber AL",
+        "1904"
+      ],
+      "theme": "Modern reception",
+      "description": "Thelema draws on reinterpreted Egyptian divine names and symbols, including Nuit, Hadit and Ra-Hoor-Khuit. Their modern theological meanings are not equivalent to the ancient cults of Nut, Horus or other gods.",
+      "sourceIds": [
+        "reception"
+      ],
+      "period": "Later reception / historical method"
+    },
+    {
+      "id": "stele",
+      "category": "Later reception and historical boundaries",
+      "title": "Stele of Revealing",
+      "aliases": [
+        "Ankh-ef-en-Khonsu",
+        "Crowley"
+      ],
+      "theme": "Modern reception",
+      "description": "An ancient funerary stele became a central object in Crowley's account of the origins of Thelema. Its original mortuary purpose and modern interpretation are separate historical contexts.",
+      "sourceIds": [
+        "reception"
+      ],
+      "period": "Later reception / historical method"
+    },
+    {
+      "id": "lavey",
+      "category": "Later reception and historical boundaries",
+      "title": "Anton Szandor LaVey",
+      "aliases": [
+        "Church of Satan",
+        "1966",
+        "Satanic Bible"
+      ],
+      "theme": "Modern reception",
+      "description": "LaVey founded the Church of Satan in 1966 and developed a modern Satanist philosophy. Its use of names and imagery from earlier cultures does not demonstrate descent from a pharaonic priesthood.",
+      "sourceIds": [
+        "lavey",
+        "reception"
+      ],
+      "period": "Later reception / historical method"
+    },
+    {
+      "id": "temple-set-modern",
+      "category": "Later reception and historical boundaries",
+      "title": "Temple of Set",
+      "aliases": [
+        "Michael Aquino",
+        "1975",
+        "Setianism"
+      ],
+      "theme": "Modern reception",
+      "description": "A modern religious organization established in 1975 following a split with LaVey's Church of Satan. Its interpretation of Set belongs to modern esoteric history, not documented survival of the ancient Nubt temple cult.",
+      "sourceIds": [
+        "lavey",
+        "aquino",
+        "reception"
+      ],
+      "period": "Later reception / historical method"
+    },
+    {
+      "id": "kemet-modern",
+      "category": "Later reception and historical boundaries",
+      "title": "Contemporary Kemetic religion",
+      "aliases": [
+        "Kemetism",
+        "reconstruction"
+      ],
+      "theme": "Modern reception",
+      "description": "Modern Egyptian-inspired religious communities vary in methods and theology. Reconstruction and personal adaptation should be distinguished from demonstrable ancient practice.",
+      "sourceIds": [
+        "reception"
+      ],
+      "period": "Later reception / historical method"
+    },
+    {
+      "id": "historical-method",
+      "category": "Later reception and historical boundaries",
+      "title": "Reading the archive",
+      "aliases": [
+        "Primary evidence",
+        "interpretation"
+      ],
+      "theme": "Scope",
+      "description": "Egyptian religion spans millennia, with local variation, lost texts and uncertain readings. Entries are reference summaries, not doctrinal instructions; source links are starting points, not proof of every detail.",
+      "sourceIds": [
+        "pantheon",
+        "cult"
+      ],
+      "period": "Later reception / historical method"
+    }
+  ]
+}
