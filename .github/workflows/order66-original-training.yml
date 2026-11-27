@@ -1,0 +1,31 @@
+name: Order 66 original research training
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '31 8 * * 0'
+permissions:
+  contents: read
+concurrency:
+  group: order66-original-training
+  cancel-in-progress: false
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test synthetic peer learning
+        run: node --test scripts/order66-peer.test.mjs
+      - name: Train isolated candidate checkpoints
+        run: |
+          mkdir -p candidate
+          node scripts/train-order66-code.mjs candidate/code.json
+          node scripts/train-order66-peer.mjs candidate/peer.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: order66-research-candidates
+          path: candidate/
+          retention-days: 7

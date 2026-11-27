@@ -38,3 +38,44 @@ Six modules: code comprehension, encoding/data, independent implementation, defe
 Actual training from random initialization using existing dependency-free 24-unit two-token neural architecture. 60 curriculum entries and 40 original examples used for training; six curriculum examples held out by module, vocabulary fitted only on training. Original checkpoint and sample are experimental: limited topic-conditioned word generation, not a code-understanding model, no syntax-preserving tokenizer. Loss reduction is not evidence of coding competence. No production replacement. Reproduce with node scripts/train-order66-code.mjs candidate.json. No external AI model or paid inference used. All 66 have assigned curriculum entries; not 66 trained neural models.
 
 Next: task-specific classifiers and executable safe test fixtures, byte-level transformer scaling, independent code evaluation, scheduled candidate generation on approved corpus, peer evidence and model-quality promotion. No automatic model promotion or privileged tools.
+
+## Peer learning experiment 001
+{
+  "before": {
+    "loss": 1.6146193026804065,
+    "accuracy": 0.2,
+    "count": 120
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "validation": {
+        "loss": 0.8498799297988213,
+        "accuracy": 0.8,
+        "count": 120
+      }
+    },
+    {
+      "round": 2,
+      "validation": {
+        "loss": 0.3680746848930426,
+        "accuracy": 0.8166666666666667,
+        "count": 120
+      }
+    },
+    {
+      "round": 3,
+      "validation": {
+        "loss": 0.2921378971251662,
+        "accuracy": 1,
+        "count": 120
+      }
+    }
+  ],
+  "clients": 66,
+  "stepsPerClientPerRound": 180,
+  "totalSteps": 35640,
+  "examplesPerClient": 60,
+  "validationRows": 120
+}
+66 tiny neural data-format classifiers, one per dedicated identity, each initialized from the same shared weights, trained on distinct synthetic samples, then averaged over three rounds. Five labels: plain text, JSON, CSV, hex, base64. No network or live source execution. This is simulated federated learning, not autonomous general intelligence, malware classification, decryption, or code synthesis. Synthetic held-out template results do not establish real-world accuracy. A weekly candidate-only CI workflow (manual trigger also) runs the two experiments with a five-minute timeout, read-only repository access and seven-day artifacts. It does not deploy, purchase compute, import unreviewed external data or continually update weights in production. Workflow execution remains to be verified.
