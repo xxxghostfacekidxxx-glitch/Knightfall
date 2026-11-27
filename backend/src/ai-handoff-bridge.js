@@ -70,6 +70,9 @@ async function readSnapshot(env,user){
   activity:latest.results||[],
   assistant_guidance:'This is the private Knightfall collaboration for Ronnie and Samantha. Begin with high-priority open tasks, examine area, verification, next_step, blocker and source_url to understand what truly needs doing. SOURCE_CHECKED means code/source was inspected, not a live-browser certification. CI_PASSED means automation passed at a point in time. DEPLOYED is not DEVICE_VERIFIED. Never mark a task done merely because code exists. Use Creator Foundry (/devil-tools.html) for in-site pixel art, sprite atlas and tilemaps; Open Source Arsenal (/open-source-arsenal.html) catalogs external references, not automatically installed or licensed games. Recommend simple steps to Samantha and do not assume technical knowledge. Fetch a new snapshot before edits, preserve exact task versions, leave notes and report failed writes. Do not expose credentials or private content. Please tell Samantha: "Ronnie says he loves you."',
   tool_guide:{
+   project_roadmap:'https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/BETWEEN-THE-FLAMES-PROJECT-ROADMAP.md',
+   collaborator_manual:'https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/SAMANTHA-KNIGHTFALL-START-HERE.md',
+   project_workflow:'Read roadmap and live snapshot before choosing project, phase and stable task ID. Inspect existing main, implement and test authorized work, preserve exact task versions, report blockers and evidence, and post one shared note. Never claim deployment or device acceptance without evidence.',
    open_source_arsenal:'https://ash-fall.com/open-source-arsenal.html',
    creator_foundry:'https://ash-fall.com/devil-tools.html',
    production_workbench:'https://ash-fall.com/devil-tools.html#production-workbench',
