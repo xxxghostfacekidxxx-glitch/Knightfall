@@ -23,6 +23,11 @@ html body[data-kf-realm][data-kf-theme="royal_abyss"]:not(.profile-custom-theme)
  --kf-crew-highlight:#f2d4a9;--kf-crew-shadow:#bb805d75;--kf-crew-accent:#946745;
 }
 html body[data-kf-realm]:is([data-kf-theme="blood_moon"],[data-kf-theme="verdant_crypt"],[data-kf-theme="iron_eclipse"],[data-kf-theme="royal_abyss"]):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
+ --kf-bg:var(--kf-crew-ink);--kf-panel:var(--kf-crew-depth);--kf-panel-2:var(--kf-crew-surface);
+ --kf-accent:var(--kf-crew-accent);--kf-accent-bright:var(--kf-crew-highlight);
+ --kf-oxblood:var(--kf-crew-accent);--kf-antique-gold:var(--kf-realm-metal);
+ --kf-chrome-line:color-mix(in srgb,var(--kf-realm-metal),transparent 55%);
+ --kf-line:var(--kf-chrome-line);--kf-accent-soft:color-mix(in srgb,var(--kf-realm-glow),transparent 86%);
  background-image:linear-gradient(180deg,color-mix(in srgb,var(--kf-crew-ink) 93%,transparent),color-mix(in srgb,var(--kf-crew-ink) 88%,transparent) 53%,var(--kf-crew-ink)),
  radial-gradient(ellipse at 78% 6%,color-mix(in srgb,var(--kf-realm-glow) 40%,transparent),transparent 62%),
  var(--kf-vault-art,url('/assets/knightfall/vaulted-cathedral.svg'))!important;
