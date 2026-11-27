@@ -65,6 +65,7 @@ async function readSnapshot(env,user){
   connected:true,
   account:user.username,
   snapshot_at:new Date().toISOString(),
+  timestamp_convention:'Database timestamps are UTC; snapshot_at is ISO 8601 UTC. Use permanent note IDs. Note-body dates may refer to earlier work; board displays America/Chicago and UTC.',
   tasks:tasks.results||[],
   notes:notes.results||[],
   activity:latest.results||[],
