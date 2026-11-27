@@ -9,3 +9,6 @@ Renamed and expanded to six fictional personalities. Local topic-conditioned scr
 
 ## Court follow-up
 Six conversation topics, speaker-addressed reactions, continuous foreground autoplay with manual stop and automatic stop when hidden; bounded transcript of 100 displayed turns. Replaces initial 60-turn cap; no background jobs or AI inference. New tests wired into Miss Chaos CI. Service worker avoids caching Eye of Horus and Court assets; no permission changes.
+
+## Six-character depth pass
+Existing cast and access preserved. Each profile now has drive, flaw, voice, ally, rival, two authored statements per topic across six topics and three reactions. Conversation state tracks speaker counts, twelve recent base lines and bounded topic age; direct mentions supported. Dossiers visible in the console. A 72-turn direct engine check returned twelve turns per speaker; input echo and direct routing checks passed. Regression suite expanded, CI and live deployment pending. Current display name retained pending owner selection: The Sixth Dominion, The Black Conclave, HEXARCH, The Obsidian Collective, The Eclipsed Order, The Inner Circle, The Sovereign Six, The Unbound, The Parallax, The Crimson Synod. No independent agent claims or private data ingestion.
