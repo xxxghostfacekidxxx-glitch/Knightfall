@@ -12,3 +12,6 @@ Six conversation topics, speaker-addressed reactions, continuous foreground auto
 
 ## Six-character depth pass
 Existing cast and access preserved. Each profile now has drive, flaw, voice, ally, rival, two authored statements per topic across six topics and three reactions. Conversation state tracks speaker counts, twelve recent base lines and bounded topic age; direct mentions supported. Dossiers visible in the console. A 72-turn direct engine check returned twelve turns per speaker; input echo and direct routing checks passed. Regression suite expanded, CI and live deployment pending. Current display name retained pending owner selection: The Sixth Dominion, The Black Conclave, HEXARCH, The Obsidian Collective, The Eclipsed Order, The Inner Circle, The Sovereign Six, The Unbound, The Parallax, The Crimson Synod. No independent agent claims or private data ingestion.
+
+## Fractured Mind
+Owner selected Fractured Mind as the final name; interface, archive API title and labels updated, stable routes and cast retained. Tool quarantine panel added alongside fictional editorial. It is separate from existing member record browsing. Alien Eyes is a public software-project inspector with verified owner-only execution; no personal lookup or monitoring. Source committed; deployment pending.
