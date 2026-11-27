@@ -38,7 +38,9 @@ test("Cloudflare and the PWA revalidate theme files instead of freezing old URLs
  assert.match(worker,/const CACHE_NAME = "knightfall-shell-v\d+";/);
  assert.match(worker,/"\/theme\.css"/);
  assert.match(worker,/"\/theme-crew-runtime\.js"/);
- assert.match(worker,/Prefer fresh shared assets after deployments/);
+ assert.match(worker,/const response=await fetch\(request\)/);
+ assert.match(worker,/event.respondWith\(responseReady\)/);
+ assert.match(worker,/event.waitUntil\(responseReady.then\(\(\)=>write/);
 });
 
 test("Arcade catalog builder does not resurrect obsolete shared-theme paths",()=>{
