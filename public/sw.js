@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v109";
+const CACHE_NAME = "knightfall-shell-v110";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -48,6 +48,11 @@ const APP_SHELL = [
   "/egyptian-mythology-archive.json",
   "/egyptian-hall-of-gods.mjs",
   "/egyptian-civilization.html",
+  "/kemet-royal-archives.html",
+  "/kemet-house-of-life.html",
+  "/kemet-temple-archives.html",
+  "/kemet-museum.html",
+  "/kemet-research-library.html",
   "/egyptian-civilization.json",
   "/egyptian-civilization.mjs",
   "/kemet.css",

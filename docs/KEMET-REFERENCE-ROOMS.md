@@ -1,0 +1,5 @@
+# Kemet — reference room completion
+
+2026-11-27. Five dedicated reference rooms now render from the same 371-record civilization inventory. All 296 previous civilization records and the separate 264 mythology records remain unchanged. Added 75 records, including all 31 conventional numbered dynasties (with uncertainties and overlap), later rule, visual culture and targeted scientific/religious/primary-source extensions. Total 635 references across both archives. All fourteen civilization collections are assigned to exactly one dedicated room, while the full legacy archive remains accessible.
+
+The Royal Archives, House of Life, Temple Archives, Museum of Kemet and Library of Alexandria are independent static routes with no-script records, filtering and deep anchors. The research library links 36 research starting points; these are not exhaustive item-level scholarly citations. Theban tool unchanged this pass; local artwork remains unresolved. No educational lessons, doctrine, or other realms modified. Browser/CI/deployment/live board verification pending.

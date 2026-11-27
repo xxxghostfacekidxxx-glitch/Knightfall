@@ -62,6 +62,16 @@
       "id": "primary-sources-and-artifacts",
       "title": "Primary sources and artifacts",
       "description": "Traceable objects and documentary corpora that provide the foundation for historical claims."
+    },
+    {
+      "id": "dynastic-register",
+      "title": "Dynastic register",
+      "description": "A chronological orientation to all thirty-one conventional dynasties, overlapping powers and later rulers. Not a complete king list."
+    },
+    {
+      "id": "art-and-visual-culture",
+      "title": "Art and visual culture",
+      "description": "Artistic conventions, workshops, architecture, materials and cultural interpretation."
     }
   ],
   "sources": {
@@ -172,6 +182,42 @@
     "mathobjects": [
       "MAA — Rhind and Moscow papyri",
       "https://old.maa.org/press/periodicals/convergence/mathematical-treasure-the-rhind-and-moscow-mathematical-papyri"
+    ],
+    "uee": [
+      "UCLA Encyclopedia of Egyptology",
+      "https://www.uee.ucla.edu/"
+    ],
+    "ueeChron": [
+      "UCLA Encyclopedia of Egyptology — chronology",
+      "https://uee.ucla.edu/chronology"
+    ],
+    "metKings": [
+      "Met — rulers of Egypt and Nubia",
+      "https://www.metmuseum.org/ko/toah/hd/phar/hd_phar.htm"
+    ],
+    "tla": [
+      "Thesaurus Linguae Aegyptiae",
+      "https://thesaurus-linguae-aegyptiae.de/home"
+    ],
+    "ifao": [
+      "IFAO — Egyptology research resources",
+      "https://www.ifao.egnet.net/recherche/ressources-bibliographies/"
+    ],
+    "uclaGuide": [
+      "UCLA — ancient Near East and Egypt research guide",
+      "https://guides.library.ucla.edu/ancient-near-east"
+    ],
+    "jhuGuide": [
+      "Johns Hopkins — Egyptology research tools",
+      "https://guides.library.jhu.edu/near-east/researchtools/egyptology"
+    ],
+    "bm": [
+      "British Museum — collection",
+      "https://www.britishmuseum.org/collection"
+    ],
+    "indiana": [
+      "Indiana University — Egyptology resources",
+      "https://egyptology.indiana.edu/resources/"
     ]
   },
   "records": [
@@ -3638,6 +3684,906 @@
       "sources": [
         "guide",
         "sites"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-01",
+      "collection": "dynastic-register",
+      "title": "Dynasty 1",
+      "context": "Early Dynastic",
+      "description": "Royal cemeteries at Abydos, sealings and inscribed objects document institutions of the emerging Egyptian state.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-02",
+      "collection": "dynastic-register",
+      "title": "Dynasty 2",
+      "context": "Early Dynastic",
+      "description": "Royal succession and political organization are incompletely reconstructed. Peribsen and Khasekhemwy demonstrate variation in royal divine symbolism.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-03",
+      "collection": "dynastic-register",
+      "title": "Dynasty 3",
+      "context": "Old Kingdom",
+      "description": "Djoser's Saqqara complex marks an important stage in monumental stone architecture; other royal successions are less securely understood.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-04",
+      "collection": "dynastic-register",
+      "title": "Dynasty 4",
+      "context": "Old Kingdom",
+      "description": "Sneferu and the Giza rulers sponsored large pyramid complexes, supported by organized labor, resources and administration.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-05",
+      "collection": "dynastic-register",
+      "title": "Dynasty 5",
+      "context": "Old Kingdom",
+      "description": "Solar sanctuaries, royal pyramids and funerary administrative archives provide evidence for the relationship between monarchy and cult.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-06",
+      "collection": "dynastic-register",
+      "title": "Dynasty 6",
+      "context": "Old Kingdom",
+      "description": "Royal and provincial monuments document evolving local authority, administration and funerary practice.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-07",
+      "collection": "dynastic-register",
+      "title": "Dynasty 7",
+      "context": "First Intermediate Period convention",
+      "description": "The existence and historical organization of a distinct seventh dynasty remain uncertain. Later lists do not establish a securely documented succession.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-08",
+      "collection": "dynastic-register",
+      "title": "Dynasty 8",
+      "context": "First Intermediate Period convention",
+      "description": "Fragmentary inscriptions and decrees provide evidence for late Memphite royal authority; chronology and relationships with other rulers are disputed.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-09",
+      "collection": "dynastic-register",
+      "title": "Dynasty 9",
+      "context": "First Intermediate Period",
+      "description": "Herakleopolitan rulers are associated with northern and Middle Egyptian authority during political fragmentation; reconstruction is incomplete.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-10",
+      "collection": "dynastic-register",
+      "title": "Dynasty 10",
+      "context": "First Intermediate Period",
+      "description": "Herakleopolitan royal traditions overlap with emerging Theban power. The division between Dynasties 9 and 10 is not firmly established.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-11",
+      "collection": "dynastic-register",
+      "title": "Dynasty 11",
+      "context": "First Intermediate Period and Middle Kingdom",
+      "description": "Theban rulers extended their authority and Mentuhotep II reunited much of Egypt.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-12",
+      "collection": "dynastic-register",
+      "title": "Dynasty 12",
+      "context": "Middle Kingdom",
+      "description": "Royal projects, literature, frontier fortifications and administrative documents attest major institutional developments.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-13",
+      "collection": "dynastic-register",
+      "title": "Dynasty 13",
+      "context": "Middle Kingdom and later transition",
+      "description": "Many relatively short reigns are documented, but exact succession and the timing of political fragmentation are disputed.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-14",
+      "collection": "dynastic-register",
+      "title": "Dynasty 14",
+      "context": "Second Intermediate Period",
+      "description": "Rulers associated with the Delta are imperfectly documented; chronological relationships with Dynasties 13 and 15 remain debated.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-15",
+      "collection": "dynastic-register",
+      "title": "Dynasty 15",
+      "context": "Second Intermediate Period",
+      "description": "Hyksos kings ruled from Avaris in the eastern Delta, participating in regional trade and political networks.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-16",
+      "collection": "dynastic-register",
+      "title": "Dynasty 16",
+      "context": "Second Intermediate Period",
+      "description": "The classification and territorial identity of these rulers differ across scholarly reconstructions; some schemes place a Theban dynasty here.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-17",
+      "collection": "dynastic-register",
+      "title": "Dynasty 17",
+      "context": "Second Intermediate Period",
+      "description": "Theban kings challenged Hyksos rule. Their conflict forms the background to the establishment of Dynasty 18.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-18",
+      "collection": "dynastic-register",
+      "title": "Dynasty 18",
+      "context": "New Kingdom",
+      "description": "Imperial expansion, international correspondence, major temple programs and the Amarna reform distinguish this varied period.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-19",
+      "collection": "dynastic-register",
+      "title": "Dynasty 19",
+      "context": "New Kingdom",
+      "description": "Ramesside royal power, temple construction and diplomatic relations with the Hittite kingdom are extensively documented.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-20",
+      "collection": "dynastic-register",
+      "title": "Dynasty 20",
+      "context": "New Kingdom",
+      "description": "Royal inscriptions, administrative records and the Deir el-Medina corpus illuminate military and economic pressures.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-21",
+      "collection": "dynastic-register",
+      "title": "Dynasty 21",
+      "context": "Third Intermediate Period",
+      "description": "Tanis-based royal authority coexisted with powerful Theban priestly institutions; their relationships changed over time.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-22",
+      "collection": "dynastic-register",
+      "title": "Dynasty 22",
+      "context": "Third Intermediate Period",
+      "description": "Libyan-origin royal families exercised power through kingship and regional institutions, with growing political fragmentation.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-23",
+      "collection": "dynastic-register",
+      "title": "Dynasty 23",
+      "context": "Third Intermediate Period",
+      "description": "Multiple contemporary rulers complicate the dynastic classification; it is not a single simple succession after Dynasty 22.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-24",
+      "collection": "dynastic-register",
+      "title": "Dynasty 24",
+      "context": "Third Intermediate Period",
+      "description": "Saite rulers in the western Delta participated in struggles for authority during Kushite expansion.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-25",
+      "collection": "dynastic-register",
+      "title": "Dynasty 25",
+      "context": "Kushite rule",
+      "description": "Kings from Kush ruled Egypt and promoted major religious and monumental projects; their reigns belong to both Egyptian and Nubian history.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-26",
+      "collection": "dynastic-register",
+      "title": "Dynasty 26",
+      "context": "Late Period",
+      "description": "Saite kings reestablished broad Egyptian authority, supported trade and commissioned monuments drawing on earlier artistic traditions.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-27",
+      "collection": "dynastic-register",
+      "title": "Dynasty 27",
+      "context": "Late Period",
+      "description": "Egypt formed part of the Achaemenid Persian Empire, with local institutions operating within imperial administration.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-28",
+      "collection": "dynastic-register",
+      "title": "Dynasty 28",
+      "context": "Late Period",
+      "description": "Amyrtaeus is the only king conventionally assigned to this dynasty after the end of the first Persian occupation.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-29",
+      "collection": "dynastic-register",
+      "title": "Dynasty 29",
+      "context": "Late Period",
+      "description": "Kings associated with Mendes ruled during renewed native independence; regional competition and foreign relations shaped the period.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-30",
+      "collection": "dynastic-register",
+      "title": "Dynasty 30",
+      "context": "Late Period",
+      "description": "The last native dynasty before renewed Persian conquest sponsored major temple programs and defensive efforts.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-31",
+      "collection": "dynastic-register",
+      "title": "Dynasty 31",
+      "context": "Late Period",
+      "description": "A second period of Achaemenid rule ended with Alexander's conquest in 332 BCE.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-macedonian",
+      "collection": "dynastic-register",
+      "title": "Macedonian kings",
+      "context": "332–305 BCE transition",
+      "description": "Alexander's conquest and the reigns of his successors preceded the formal establishment of the Ptolemaic royal dynasty.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-ptolemaic-house",
+      "collection": "dynastic-register",
+      "title": "Ptolemaic dynasty",
+      "context": "305–30 BCE",
+      "description": "A Macedonian royal house governed a multilingual kingdom, supporting both Egyptian temples and Greek institutions.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dynasty-roman-province",
+      "collection": "dynastic-register",
+      "title": "Roman provincial government",
+      "context": "From 30 BCE",
+      "description": "Roman imperial rule replaced Ptolemaic monarchy, while temples, local communities and administrative practices continued to change.",
+      "sources": [
+        "ueeChron",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-registers",
+      "collection": "art-and-visual-culture",
+      "title": "Registers in Egyptian art",
+      "context": "Composition",
+      "description": "Horizontal bands organize figures, events and offerings. They may communicate relationships rather than literal spatial perspective.",
+      "sources": [
+        "uee",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-hierarchical-scale",
+      "collection": "art-and-visual-culture",
+      "title": "Hierarchical scale",
+      "context": "Composition",
+      "description": "Relative figure size may communicate importance, especially in royal and elite contexts; it does not necessarily represent physical stature.",
+      "sources": [
+        "uee",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-composite-view",
+      "collection": "art-and-visual-culture",
+      "title": "Composite views of the body",
+      "context": "Artistic convention",
+      "description": "Artists combined characteristic viewpoints of body parts to communicate recognizable forms; conventions changed with purpose and period.",
+      "sources": [
+        "uee",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-grid-canon",
+      "collection": "art-and-visual-culture",
+      "title": "Proportional grids",
+      "context": "Workshop evidence",
+      "description": "Surviving grids and preparatory marks document methods of organizing figure proportions; their dimensions and conventions varied.",
+      "sources": [
+        "uee",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-relief",
+      "collection": "art-and-visual-culture",
+      "title": "Raised and sunk relief",
+      "context": "Stoneworking",
+      "description": "Relief techniques shape surfaces through different cutting methods, adapted to architecture, light and artistic intention.",
+      "sources": [
+        "uee",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-polychromy",
+      "collection": "art-and-visual-culture",
+      "title": "Painted architecture and sculpture",
+      "context": "Materials",
+      "description": "Many monuments now appearing as bare stone once carried pigments; surviving traces and scientific analysis help reconstruct their appearance.",
+      "sources": [
+        "uee",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-statuary",
+      "collection": "art-and-visual-culture",
+      "title": "Divine and royal statuary",
+      "context": "Art and ritual",
+      "description": "Statues served diverse functions in temples, tombs and elite settings. Material, inscription and find context help identify intended use.",
+      "sources": [
+        "uee",
+        "bm"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-block-statues",
+      "collection": "art-and-visual-culture",
+      "title": "Block statues",
+      "context": "Sculpture",
+      "description": "Compact seated figures offered surfaces for inscriptions and became prominent in particular periods and institutional contexts.",
+      "sources": [
+        "uee",
+        "bm"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-shabti-art",
+      "collection": "art-and-visual-culture",
+      "title": "Shabti manufacture and imagery",
+      "context": "Funerary art",
+      "description": "Figurines vary in material, inscriptions and form, reflecting changing burial practices and workshop production.",
+      "sources": [
+        "uee",
+        "bm"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-coffin-decoration",
+      "collection": "art-and-visual-culture",
+      "title": "Coffin decoration",
+      "context": "Mortuary art",
+      "description": "Coffin surfaces combine protective imagery, writing and bodily representation; conventions vary across region, date and resources.",
+      "sources": [
+        "uee",
+        "bm"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-tomb-painting",
+      "collection": "art-and-visual-culture",
+      "title": "Tomb painting and daily life",
+      "context": "Interpretation",
+      "description": "Scenes of work and offerings are valuable evidence but are constructed for mortuary purposes rather than neutral photographs of daily life.",
+      "sources": [
+        "uee",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-amarna-art",
+      "collection": "art-and-visual-culture",
+      "title": "Amarna artistic conventions",
+      "context": "Dynasty 18",
+      "description": "Royal imagery adopted distinctive bodily proportions and scenes of family intimacy; stylistic changes are not direct medical diagnoses.",
+      "sources": [
+        "uee",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-jewelry",
+      "collection": "art-and-visual-culture",
+      "title": "Jewelry and inlay",
+      "context": "Craft",
+      "description": "Metalworking, stone carving, glass and faience supported elaborate ornament, with symbolic and economic roles varying by owner and setting.",
+      "sources": [
+        "uee",
+        "bm"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ostraca-art",
+      "collection": "art-and-visual-culture",
+      "title": "Artists' sketches on ostraca",
+      "context": "Workshop evidence",
+      "description": "Drawings on stone or pottery fragments preserve studies, informal images and preparatory work that complement finished monuments.",
+      "sources": [
+        "ostraca",
+        "uee"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-fayum-portraits",
+      "collection": "art-and-visual-culture",
+      "title": "Mummy portraits",
+      "context": "Roman-period art",
+      "description": "Painted portraits combine Mediterranean artistic traditions with Egyptian funerary contexts; their individual identities and original settings are often uncertain.",
+      "sources": [
+        "uee",
+        "bm"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-restoration",
+      "collection": "art-and-visual-culture",
+      "title": "Conservation and reconstruction",
+      "context": "Modern method",
+      "description": "Technical imaging, pigment analysis and careful documentation help interpret damaged works; reconstructions should identify conjectural areas.",
+      "sources": [
+        "uee",
+        "guide"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-medical-prognosis",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Ancient prognosis categories",
+      "context": "Medical writing",
+      "description": "Trauma texts distinguish conditions assessed as manageable, uncertain or beyond intervention. These are historical assessments, not modern triage recommendations.",
+      "sources": [
+        "smith",
+        "medicalart"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-medical-libraries",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Medical text transmission",
+      "context": "Scribal history",
+      "description": "Recurring passages in healing manuscripts reveal copying, compilation and adaptation; shared material need not imply one original author.",
+      "sources": [
+        "med",
+        "uee"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-embalming-variation",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Variation in embalming practices",
+      "context": "Bioarchaeology",
+      "description": "Preservation methods differ by period, locality and access to resources. Not all Egyptian burials were artificially mummified.",
+      "sources": [
+        "uee",
+        "smith"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-parasites",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Ancient parasite evidence",
+      "context": "Bioarchaeology",
+      "description": "Preserved remains can contain evidence of parasites; identification and population-level conclusions depend on sampling and preservation.",
+      "sources": [
+        "uee",
+        "smith"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-false-position",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "False-position reasoning",
+      "context": "Mathematics",
+      "description": "Some unknown-quantity problems can be interpreted through a provisional value followed by proportional adjustment. Modern labels describe the method rather than the original wording.",
+      "sources": [
+        "math",
+        "arithmetic"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-mathematical-units",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Units in mathematical manuscripts",
+      "context": "Mathematics",
+      "description": "Quantities are tied to commodities, lengths and capacities; converting units requires attention to the particular problem and historical notation.",
+      "sources": [
+        "math",
+        "rhind2"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-mathematical-verification",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Checking an arithmetic result",
+      "context": "Mathematics",
+      "description": "Worked examples may use related operations to check results; the surviving exercises illuminate scribal computational practice without establishing a general formal proof system.",
+      "sources": [
+        "math",
+        "arithmetic"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-astronomy-horizon",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Horizon observation",
+      "context": "Astronomy",
+      "description": "Sunrise, sunset and stellar visibility depend on latitude, horizon conditions and season. These factors matter in interpreting ancient observations.",
+      "sources": [
+        "astro",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-astronomy-depiction",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Reading astronomical imagery",
+      "context": "Astronomy and art",
+      "description": "Celestial figures in tombs combine cosmological and astronomical ideas. A modern star chart is not automatically an equivalent representation.",
+      "sources": [
+        "astro",
+        "decans"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-lunar-phases",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Lunar phases in Egyptian traditions",
+      "context": "Calendar and religion",
+      "description": "Moon imagery and observations informed temporal and religious systems; reconstructing exact rules requires specific dated evidence.",
+      "sources": [
+        "astro",
+        "time"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-temple-economy",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Temple service and provisioning",
+      "context": "Institutional religion",
+      "description": "Cult required supplies, labor, storage and administration. Account records complement idealized scenes of the king serving the gods.",
+      "sources": [
+        "religious",
+        "primary"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-processional-shrines",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Processional shrines",
+      "context": "Ritual objects",
+      "description": "Portable sacred images or shrines enabled movement beyond the innermost sanctuary in selected festivals and oracular practices.",
+      "sources": [
+        "religious",
+        "uee"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-mortuary-offerings",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Mortuary offering institutions",
+      "context": "Religion and economy",
+      "description": "Endowments, personnel, texts and material offerings supported remembrance of the deceased; the duration and resources of cults varied.",
+      "sources": [
+        "religious",
+        "primary"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-votive-inscriptions",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Votive inscriptions",
+      "context": "Personal religion",
+      "description": "Dedications can express gratitude, requests and relationships with deities, but the intended meaning depends on language and archaeological context.",
+      "sources": [
+        "religious",
+        "uee"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-tla-corpus",
+      "collection": "language-writing-and-literature",
+      "title": "Egyptian textual corpora",
+      "context": "Research tool",
+      "description": "Digital corpora make transliterations and lexical information searchable; specialist knowledge remains necessary to assess restorations and grammar.",
+      "sources": [
+        "tla",
+        "indiana"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-demotic-research",
+      "collection": "language-writing-and-literature",
+      "title": "Demotic lexicography",
+      "context": "Research tool",
+      "description": "Demotic dictionaries and document corpora support study of later Egyptian writing and its vocabulary; different transliteration systems require care.",
+      "sources": [
+        "ifao",
+        "indiana"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-royal-titulary",
+      "collection": "language-writing-and-literature",
+      "title": "Royal titulary",
+      "context": "Writing and kingship",
+      "description": "Royal names and titles employ conventional forms linked to divine and political authority. Their number and presentation evolved over time.",
+      "sources": [
+        "uee",
+        "metKings"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-bubastis-site",
+      "collection": "monuments-and-archaeological-sites",
+      "title": "Bubastis (Tell Basta)",
+      "context": "Delta archaeological landscape",
+      "description": "Remains of the Bastet temple and settlement attest a long regional history, including prominent later religious activity.",
+      "sources": [
+        "sites",
+        "uee"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-sais-site",
+      "collection": "monuments-and-archaeological-sites",
+      "title": "Sais (Sa el-Hagar)",
+      "context": "Delta archaeological landscape",
+      "description": "A major center associated with Neith and Saite kingship. Preservation and later occupation complicate archaeological reconstruction.",
+      "sources": [
+        "sites",
+        "uee"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-aswan-quarries",
+      "collection": "monuments-and-archaeological-sites",
+      "title": "Aswan quarry landscape",
+      "context": "Multiple periods",
+      "description": "Granite sources, unfinished works and inscriptions illustrate the relationship between geology, labor and monument production.",
+      "sources": [
+        "sites",
+        "uee"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-wadi-hammamat",
+      "collection": "monuments-and-archaeological-sites",
+      "title": "Wadi Hammamat",
+      "context": "Desert route and quarry",
+      "description": "Rock inscriptions and quarry evidence document expeditions across the Eastern Desert and the procurement of stone.",
+      "sources": [
+        "sites",
+        "uee"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-shabaka-object",
+      "collection": "primary-sources-and-artifacts",
+      "title": "Shabaka Stone",
+      "context": "Inscribed theological monument",
+      "description": "The surviving Kushite-period inscription is a major witness to Memphite theology; claims about the age of its underlying source are debated.",
+      "sources": [
+        "bm",
+        "uee"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-kadesh-treaty",
+      "collection": "primary-sources-and-artifacts",
+      "title": "Egyptian-Hittite treaty texts",
+      "context": "Diplomatic evidence",
+      "description": "Surviving versions of the agreement between Ramesses II and Hattusili III provide complementary evidence for international relations and political language.",
+      "sources": [
+        "uee",
+        "guide"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-restoration-stela",
+      "collection": "primary-sources-and-artifacts",
+      "title": "Tutankhamun Restoration Stela",
+      "context": "Royal inscription",
+      "description": "Describes restoration of cults following Amarna and presents the new regime's ideological account; it is not an impartial description of every local community.",
+      "sources": [
+        "uee",
+        "guide"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dream-stela",
+      "collection": "primary-sources-and-artifacts",
+      "title": "Thutmose IV Dream Stela",
+      "context": "Royal inscription",
+      "description": "The monument between the Sphinx's paws presents a divine encounter and royal legitimacy through a narrative linked to the Giza landscape.",
+      "sources": [
+        "sites",
+        "uee"
       ],
       "review": "editorial reference; specialist review pending"
     }
