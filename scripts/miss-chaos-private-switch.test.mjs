@@ -59,8 +59,9 @@ test("full private chat requests use backend-authorized roles and account-bound 
  assert.match(chat,/request\("\/api\/chaos\/companion"\)/);
  assert.match(chat,/if\(scope\.role!=="owner"\)/);
  assert.match(chat,/companion:companionVariant/);
- assert.match(ownerPage,/miss-chaos\.js\?v=20261120-textract1/);
- assert.match(partnerPage,/miss-chaos\.js\?v=20261120-textract1/);
+ const version=ownerPage.match(/miss-chaos\.js\?v=(20\d{6}-[a-z0-9-]+)/)?.[1];
+ assert.ok(version,"versioned full chat script");
+ assert.ok(partnerPage.includes("miss-chaos.js?v="+version),"shared renderer revisions must agree");
  assert.match(partnerPage,/data-chaos-companion="partner"/);
  assert.doesNotMatch(companion,/role:\s*body\./);
 });
