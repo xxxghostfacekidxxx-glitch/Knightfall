@@ -1,7 +1,7 @@
 # Between the Flames — project roadmap and continuation register
 Updated 2026-11-27. Start here for both project collaborators and their assistants.
 
-**Canonical live assignments:** https://ash-fall.com/ai-handoff.html (accepted accounts only). This is the project directory and phase history, not a competing task board. Search by permanent ID or workstream, not a card's temporary display position. The production D1 read-back after reconciliation was 201 active tasks: 7 done, 82 in progress, 112 to do. This is a dated snapshot, not a live counter. No feature acceptance was inferred from documentation.
+**Canonical live assignments:** https://ash-fall.com/ai-handoff.html (accepted accounts only). This is the project directory and phase history, not a competing task board. Search by permanent ID or workstream, not a card's temporary display position. The production D1 read-back after reconciliation was 199 active tasks: 7 done, 82 in progress, 110 to do. This is a dated snapshot, not a live counter. No feature acceptance was inferred from documentation.
 
 ## Work order and gates
 P0: Restore performance, navigation, role isolation and messaging reliability; verify live collaboration. P1: Finish and verify committed realm expansions, themes, arcade and creator tools. P2: new features, commerce and growth once their dependencies are satisfied. Priorities here are recommended sequencing, not reassignment or a change to existing task priorities.
@@ -55,7 +55,7 @@ Tasks #1, #48–76, #176–178, #188, #226–227 (use actual existing rows).
 - Phase 1 consolidate catalog, remove duplicates and preserve old work; phase 2 playable original mechanics and art; phase 3 persistence, scores and network turns; phase 4 fullscreen/touch and release acceptance.
 - Cosmic Ascension #226: original asteroid to galactic nucleus, absorption, satellite capture, hazards and reciprocal gravity source migration. Next catalog, growth testing, orbital systems and visuals; never assert deployed without proof.
 - Neon Surge #227: dash, chains, Overdrive, bosses, hazards and collision math documented. Prior Shattershot identity is unconfirmed; reconcile catalog/identity before renaming or creating another cabinet. Test bosses at waves 5/10/15 and weapon milestones 40/80/120/160.
-- #177 is coordination for #57 Imp Inferno, #58 Hex & Whisk, #59 City of Cinders and #82–84 Cinderwild. Other cabinets have their own IDs. #1 black-screen overlay resolved per owner; #48 remains for independent cases, not duplication.
+- Archived #177 was consolidated into #57 Imp Inferno, #58 Hex & Whisk, #59 City of Cinders and #82–84 Cinderwild; inherited requirements are retained in those tasks. Other cabinets have their own IDs. #1 black-screen overlay resolved per owner; #48 remains for independent cases, not duplication.
 
 ### 8. Creature Sanctuary, Misfit avatars and creature RPGs
 Tasks #77–92, #156–160, #202, #206–207, #210–211 (existing IDs only).
@@ -83,7 +83,7 @@ Tasks #119–130, #146, #182, #212–215.
 ### 12. Sanctum of Inferno and creative world
 Tasks #142–144, #186–187, #203.
 - 1 preserve existing codex, oath, commandments, ranks, symbols and memorial art; 2 editorial review and original visual identity; 3 separate optional realm and authorized publishing; 4 release acceptance. Keep independent from fictional Sanctuary and Force Realms.
-- #143 manuscripts/symbolism; #186 preservation coordination; #142 separate memorial acceptance. Keep the existing branding direction: “We control chaos”; homepage tagline “The world is a beautiful disaster.”
+- #143 manuscripts/symbolism; archived #186 preservation scope moved into #143 and #142 (with #90 pet art reference); #142 separate memorial acceptance. Keep the existing branding direction: “We control chaos”; homepage tagline “The world is a beautiful disaster.”
 
 ### 13. Email, mobile, operations and collaboration
 Tasks #134–140, #147–152, #181, #198, #201, #231.
@@ -92,5 +92,5 @@ Tasks #134–140, #147–152, #181, #198, #201, #231.
 - Collaboration: separate accounts, accepted invitation, private Action keys only if supported, snapshot before each batch, version-aware write, read-back and note. No shared ChatGPT memory assumption.
 
 ## Consolidation rules and source links
-Read [historical alias register](backlog-consolidation-2026-11-24.md) before using old IDs. Never renumber or permanently delete existing records. Keep work that requires independent acceptance separate; cross-link umbrellas. #177 is coordination, #210 is theme artwork (not battle mechanics), #211 is gallery/device acceptance. #148 remains open for historical gaps. New records #221–231 were inserted after checking existing titles, and existing #193 was moved to Force Realms, #143/#186 to Sanctum of Inferno, #147 to AI Collaboration. All other statuses preserved in this batch.
+Read [historical alias register](backlog-consolidation-2026-11-24.md) before using old IDs. Never renumber or permanently delete existing records. Keep work that requires independent acceptance separate; cross-link umbrellas. Archived #177 and #186 are retained as aliases; #210 is theme artwork (not battle mechanics), #211 is gallery/device acceptance. #148 remains open for historical gaps. New records #221–231 were inserted after checking existing titles, and existing #193 was moved to Force Realms, #143/#186 to Sanctum of Inferno, #147 to AI Collaboration. #177 and #186 were soft-archived after transferring their requirements; other statuses preserved. Live handoff note #6 links this roadmap and the collaborator guide.
 Use [Start Here](SAMANTHA-KNIGHTFALL-START-HERE.md) for assistant onboarding. Before any project batch, open the live record, read its current version, source, blocker, and concrete next step. After each batch, save actual evidence, next step, and blocker to the same record and post one shared handoff note. If tools are unavailable, supply a clearly labeled copyable update for the authorized collaborator; never claim it was saved.
