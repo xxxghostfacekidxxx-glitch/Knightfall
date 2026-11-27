@@ -51,6 +51,10 @@ try {
         if (session.status === 200) return route.fulfill({ headers, contentType: "text/html", body: "<p>Bad gateway</p>" });
         return route.fulfill({ headers, status: session.status, json: {} });
       }
+      if(url.pathname==="/api/site-settings")return route.fulfill({headers,json:{settings:{
+        announcements_enabled:"true",announcement_title:"Navigation regression",announcement_body:"A long announcement should not cover navigation links.",
+        ticker_osiris:"Osiris fixture announcement",ticker_isis:"Isis fixture announcement"
+      }}});
       return route.fulfill({ headers, json: { unread_count: 3, settings: {} } });
     });
 
@@ -61,14 +65,19 @@ try {
       await auth;
       const nav = page.getByRole("navigation", { name: "Primary navigation" });
       const toggle = page.getByRole("button", { name: "Open navigation" });
+      const ticker=page.locator("#kf-shared-announcement");
+      await ticker.waitFor({state:"visible"});
       if (mobile) {
         await toggle.click();
+        await ticker.waitFor({state:"hidden"});
         assert.equal(await page.locator("body").evaluate(body => body.classList.contains("kf-navigation-open")), true,
           "Opening the mobile menu must lock background page scrolling");
         await page.keyboard.press("Escape");
         assert.equal(await page.locator("body").evaluate(body => body.classList.contains("kf-navigation-open")), false,
           "Escape must restore normal page scrolling");
+        await ticker.waitFor({state:"visible"});
         await page.getByRole("button", { name: "Open navigation" }).click();
+        await ticker.waitFor({state:"hidden"});
       }
       await nav.waitFor();
       assert.equal(await page.getByRole("link", { name: "Knightfall home" }).getAttribute("aria-current"), "page");
@@ -78,6 +87,21 @@ try {
       await community.click();
       const forum = nav.getByRole("link", { name: "Forums" });
       await forum.waitFor();
+      await page.waitForFunction(()=>document.querySelector(".kf-header")?.dataset.kfMenuActive==="true");
+      const geometry=await nav.evaluate(node=>{
+        const header=node.parentElement,ticker=header.querySelector(".kf-leadership-ticker");
+        const group=node.querySelector(".kf-nav-group[open]");
+        const menu=group.querySelector(".kf-nav-menu");
+        const scrollBox=node.classList.contains("open")?node:menu;
+        const rect=scrollBox.getBoundingClientRect(),visual=window.visualViewport;
+        return {navZ:Number(getComputedStyle(node).zIndex),tickerZ:Number(getComputedStyle(ticker).zIndex),
+          bottom:rect.bottom,viewportBottom:(visual?.offsetTop||0)+(visual?.height||innerHeight),
+          overflow:getComputedStyle(scrollBox).overflowY,paused:getComputedStyle(ticker.querySelector(".kf-ticker-track")).animationPlayState};
+      });
+      assert.ok(geometry.navZ>geometry.tickerZ,"Dropdown must paint above ticker");
+      assert.ok(geometry.bottom<=geometry.viewportBottom+2,"Navigation scroll area must fit viewport");
+      assert.equal(geometry.overflow,"auto","Navigation must scroll to reach every link");
+      assert.equal(geometry.paused,"paused","Ticker motion must pause during navigation");
       assert.equal(await nav.getByRole("link", { name: "Member Directory" }).count(), 1);
       await forum.focus();
       await page.keyboard.press("Escape");
