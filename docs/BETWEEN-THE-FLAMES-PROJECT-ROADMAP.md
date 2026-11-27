@@ -131,3 +131,9 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 - Fractured Mind: owner-selected name committed in console and archive response.
 - Alien Eyes: moved to verified Osiris-only Worker execution, owner decision state and review UI. Ten direct mocked authorization/state checks passed. Public/Isis release requires separately verified access adapter; scrapping disables execution. Live Worker/Pages and CI verification pending.
 - Candidate review currently contains Alien Eyes only. Existing previously public tools remain unchanged. Live task board not synchronized.
+
+## November 27 — executable compiler and code interpretation
+- Iron Crucible: real WebAssembly emitter, no-import execution, VM comparison and binary export. Six native emitter fixtures passed on Node 22.16.0; full integration and deployment pending.
+- Miss Chaos existing code inspection: structural AST summaries, functions/classes/loops/branches/import/export counts, async signatures, regression fixtures committed; dependency-backed tests pending CI.
+- Osiris tool quarantine: six individually reviewable source candidates (Tree-sitter, Pyright, Tokenizers, llama.cpp, LM Evaluation Harness, Wasmtime). No installation or publication. Alien Eyes remains software-project inspection, not personal account correlation.
+- Research roster cadence remains three assignments per hour (72/day maximum attempted, 22 hours per rotation); live successful run rate and neural quality not verified. No live task board write.
