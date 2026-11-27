@@ -126,3 +126,8 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 - Alien Eyes public project inspector: source committed and direct fixture checks passed; browser and deployment verification pending. See [implementation](ALIEN-EYES-PUBLIC-PROJECT-INSPECTOR.md).
 - Miss Chaos experiment 003: conditioning audit reproduced from checkpoint; regression suite and independent CI job committed. Model remains research-only; quality insufficient for production. See [model record](MISS-CHAOS-ORIGINAL-MODEL.md).
 - Six-character collective: current label unchanged pending name selection; prior expanded cast preserved. Live Between the Flames records not synchronized from this source-only session.
+
+## November 27 — Fractured Mind and tool quarantine
+- Fractured Mind: owner-selected name committed in console and archive response.
+- Alien Eyes: moved to verified Osiris-only Worker execution, owner decision state and review UI. Ten direct mocked authorization/state checks passed. Public/Isis release requires separately verified access adapter; scrapping disables execution. Live Worker/Pages and CI verification pending.
+- Candidate review currently contains Alien Eyes only. Existing previously public tools remain unchanged. Live task board not synchronized.
