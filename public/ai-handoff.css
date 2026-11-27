@@ -24,7 +24,7 @@
 .task-metric span{font-size:.76rem;color:#cdbacc}
 .task-metric.urgent{border-color:#ff8f7675}
 .task-metric.blocked{border-color:#f8cf7780}
-.workstream-summary{display:flex;flex-wrap:wrap;gap:.45rem;margin:.8rem 0 1rem;max-height:155px;overflow:auto}
+.workstream-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:.65rem;margin:.8rem 0 1rem}.workstream-summary>.task-content{min-width:0;padding:.75rem;border:1px solid #b47a974f;border-radius:12px}.workstream-summary>.task-content:first-child{grid-column:1/-1}.workstream-summary h3{margin:0 0 .45rem;font-size:.95rem}.workstream-summary .handoff-actions{display:flex;flex-wrap:wrap;gap:.4rem}
 .workstream-chip{border:1px solid #90687888;border-radius:99px;background:#1c1424;color:#e5cdd9;font:650 .78rem system-ui;padding:.43rem .7rem;cursor:pointer;min-height:36px}
 .workstream-chip:hover,.workstream-chip.selected{background:#7c315c;color:white;border-color:#ffb4d2}
 .task-filterbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:.7rem;margin:1rem 0 .45rem;padding:1rem;background:#100c1a;border:1px solid #b47a974f;border-radius:13px}
