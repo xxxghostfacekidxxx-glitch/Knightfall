@@ -52,7 +52,7 @@ const cached=fromStorage();
 let live={preset:cached?.preset||"cathedral",revision:cached?.revision??-1,
  realms:cached?.realms&&typeof cached.realms==="object"?cached.realms:{},
  globalControls:validGlobal(cached?.globalControls)?cached.globalControls:GLOBAL_DEFAULT};
-let pendingRefresh=null;
+let pendingRefresh=null,lastRefreshStart=0;
 const publishedState=scope=>{
  const site={preset:live.preset,revision:live.revision};
  const scoped=scope!=="site"?live.realms[scope]:null;
@@ -82,9 +82,11 @@ const paint=()=>{
   detail:{scope:activeScope,preset:chosen,published:state.preset,preview:!!privatePreset,revision:state.revision,globalControls:global}
  }));
 };
-const refresh=()=>{
- if(!isLive||document.visibilityState==="hidden")return Promise.resolve();
+const refresh=(force=false)=>{
+ if(!isLive||document.visibilityState==="hidden"||navigator.onLine===false)return Promise.resolve();
  if(pendingRefresh)return pendingRefresh;
+ if(!force&&Date.now()-lastRefreshStart<2000)return Promise.resolve();
+ lastRefreshStart=Date.now();
  pendingRefresh=(async()=>{
   try{
    const response=await fetch(API,{credentials:"include",cache:"no-store",headers:{accept:"application/json"}});
@@ -116,12 +118,12 @@ const start=()=>{
  addFallbackRealm();paint();refresh();
  window.addEventListener("storage",event=>{
   if(event.key?.startsWith(PREVIEW)||event.key===GLOBAL_PREVIEW)paint();
-  if(event.key===PUBLISH_SIGNAL)refresh();
+  if(event.key===PUBLISH_SIGNAL)refresh(true);
  });
- channel?.addEventListener("message",event=>{if(event?.data?.kind==="theme-published")refresh()});
+ channel?.addEventListener("message",event=>{if(event?.data?.kind==="theme-published")refresh(true)});
  window.addEventListener("pageshow",()=>{paint();refresh()});
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refresh()});
- if(isLive)window.setInterval(refresh,20000);
+ if(isLive)window.setInterval(()=>refresh(),activeScope==="admin"?20000:60000);
 };
 window.KnightfallThemeCrew=Object.freeze({
  previewGlobal(value){
@@ -142,7 +144,7 @@ window.KnightfallThemeCrew=Object.freeze({
   if(scope===activeScope)paint();
   return true;
  },
- refresh(){return refresh()},
+ refresh(){return refresh(true)},
  current(realm=activeScope){
   const scope=safeRealm(realm);if(!scope)return null;
   const state=publishedState(scope),privatePreset=preview(scope);
@@ -152,13 +154,13 @@ window.KnightfallThemeCrew=Object.freeze({
   if(!Number.isSafeInteger(revision)||revision<0)return false;
   channel?.postMessage({kind:"theme-published",realm:"global",revision});
   try{localStorage.setItem(PUBLISH_SIGNAL,"global:"+revision+":"+Date.now())}catch{}
-  refresh();return true;
+  refresh(true);return true;
  },
  announcePublished(revision,realm="site"){
   if(!Number.isSafeInteger(revision)||revision<0||!safeRealm(realm))return false;
   channel?.postMessage({kind:"theme-published",realm,revision});
   try{localStorage.setItem(PUBLISH_SIGNAL,realm+":"+revision+":"+Date.now())}catch{}
-  refresh();return true;
+  refresh(true);return true;
  }
 });
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
