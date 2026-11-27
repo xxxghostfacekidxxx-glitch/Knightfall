@@ -4,9 +4,27 @@ const $=id=>document.getElementById(id);
 const state={role:null,partner:null,tasks:[],notes:[],activity:[],instructions:'',fingerprint:''};
 const live={loading:false,loadedKeys:false};
 const SCHEMA='https://ash-fall.com/ai-bridge-openapi.json';
+const ROADMAP='https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/BETWEEN-THE-FLAMES-PROJECT-ROADMAP.md';
+const START_HERE='https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/SAMANTHA-KNIGHTFALL-START-HERE.md';
+const PROJECT_GROUPS=[
+ ['Platform stability and release',['Release & QA','Mobile & Operations','Security & Accounts','Gothic Theme & UX']],
+ ['Shared collaboration',['AI Collaboration']],
+ ['Chaosphere and social',['Chaosphere & Push','Identity & Social']],
+ ['AI and chatbots',['Miss Chaos AI','Chaos Collective']],
+ ['Celestial Sanctum',['Celestial Sanctum']],
+ ['Force Realms',['Force Realms']],
+ ['Sanctuary: The Eternal Archives',['Sanctuary Archives']],
+ ['Chaos Cartridge and multiplayer',['Arcade Reliability','Arcade Originals','Cards & Turn Games']],
+ ['Creature Sanctuary and RPG',['Pets & Avatars','Creatures & RPG']],
+ ['Creator Foundry and art',['Creator Tools','Open Source Arsenal']],
+ ['Serrated Signal',['Serrated Signal']],
+ ['Commerce and launch',['Commerce & Launch']],
+ ['Sanctum of Inferno and creative world',['Sanctum of Inferno','Project & Creative']]
+];
 const GUIDE=[
  'BETWEEN THE FLAMES · PRIVATE KNIGHTFALL AI HANDOFF',
  'You assist either Ronnie or Samantha with the shared Knightfall project. Both accounts use the same authenticated shared tasks and notes.',
+ 'START HERE: '+START_HERE+' | PROJECT PHASES AND STABLE TASK IDS: '+ROADMAP+'. Read both before choosing work. The live snapshot is authoritative for current status and versions.',
  'Use the configured Knightfall GPT Action getHandoffSnapshot before planning Knightfall work or discussing task progress. Treat the newest results as the source of truth, not earlier messages.',
  'After a confirmed change, call updateHandoffTask with its exact version, createHandoffTask for new work, or postHandoffNote for a concise decision, milestone or blocker. Do not claim a task is done without verification, and do not claim a write was saved unless the API succeeded.',
  'If an action is unavailable or returns an error, say so and ask the person to update Between the Flames manually or paste the latest packet. Never pretend two separate ChatGPT chats are synced if the Action is not connected.',
@@ -15,6 +33,7 @@ const GUIDE=[
  'For art and games, Creator Foundry (https://ash-fall.com/devil-tools.html) is the built-in workshop. Its Creator Production Lab (#production-workbench) contains native Pixel Studio (sprite drawing and frames), Atlas Packer (spritesheet/JSON) and Tilemap Forge (tile level painting/export).',
  'Open-Source Research (https://ash-fall.com/devil-tools.html#open-source-reference) is the integrated Foundry catalog for free tools, game/source references and art workflows. Links to third-party sources are not installed features; check license and attribution before integrating.',
  'Help Samantha with simple, practical explanations: which page/tool to open, what to create or inspect, how to test it, and what to record in the shared to-do notes. Never invent code changes or completed work.',
+ 'Work in approved batches: identify project/phase/stable ID, inspect current main, reuse existing systems, implement, test, commit only if authorized, verify CI and deployment separately, then update exact version and post one shared handoff note. Record unavailable tools and next action. Ready for Verification is in_progress with a READY FOR VERIFICATION next-step prefix; done requires acceptance evidence.',
  'For Samantha: Ronnie says he loves you.'
 ].join('\n\n');
 const status=text=>{$('handoff-status').textContent=String(text)};
@@ -73,14 +92,33 @@ function renderTaskOverview(groups){
  $('task-metrics').replaceChildren(metric('Total tasks',total),metric('High priority open',urgent,'urgent'),metric('In progress',underway),metric('Ready to verify',ready),metric('Blocked / dependent',blocked,'blocked'),metric('Completed',done),metric('Needs verification',needsReview));
  const work=$('workstream-summary');work.replaceChildren();
  const entries=Object.entries(groups).sort((a,b)=>b[1].high-a[1].high||b[1].open-a[1].open||a[0].localeCompare(b[0]));
- for(const [area,c] of entries){
-  const b=button(area+' · '+c.open+' open',()=>{}, 'workstream-chip'+(filters.area===area?' selected':''));
-  b.addEventListener('click',()=>{
-   filters.area=filters.area===area?'all':area;
-   filters.limit=24;$('filter-area').value=filters.area;renderTasks();
-  });
-  work.append(b);
+ const intro=elem('div','task-content');
+ const title=elem('h3','','Project directory');
+ const description=elem('p','subtle','Choose a project workstream below. The roadmap records phases, dependencies, stable task IDs and continuation steps. Live records remain authoritative.');
+ const links=elem('p','handoff-actions');
+ for(const [label,url] of [['Read project phases and task map',ROADMAP],['Read collaborator / GPT operating manual',START_HERE]]){
+  const a=elem('a','handoff-button ghost',label);a.href=url;a.target='_blank';a.rel='noopener noreferrer';links.append(a);
  }
+ intro.append(title,description,links);work.append(intro);
+ const assigned=new Set();
+ function appendGroup(label,areas){
+  const matches=areas.filter(area=>Object.hasOwn(groups,area));
+  if(!matches.length)return;
+  const group=elem('div','task-content');group.setAttribute('role','group');group.setAttribute('aria-label',label);
+  group.append(elem('h3','',label+' · '+matches.reduce((n,area)=>n+groups[area].open,0)+' open'));
+  const chips=elem('div','handoff-actions');
+  for(const area of matches){
+   assigned.add(area);const count=groups[area];
+   const b=button(area+' · '+count.open+' open',()=>{
+    filters.area=filters.area===area?'all':area;
+    filters.limit=24;$('filter-area').value=filters.area;renderTasks();
+   },'workstream-chip'+(filters.area===area?' selected':''));
+   b.setAttribute('aria-pressed',String(filters.area===area));chips.append(b);
+  }
+  group.append(chips);work.append(group);
+ }
+ for(const [label,areas] of PROJECT_GROUPS)appendGroup(label,areas);
+ appendGroup('Other workstreams',entries.map(([area])=>area).filter(area=>!assigned.has(area)));
 }
 function sourceLink(source){
  if(!source)return null;
@@ -102,6 +140,8 @@ function matchesFilters(t){
  if(filters.priority!=='all'&&t.priority!==filters.priority)return false;
  if(filters.verification!=='all'&&(t.verification||'needs_review')!==filters.verification)return false;
  if(filters.query){
+  const exactId=filters.query.match(/^(?:#|id\s+)(\d+)$/i);
+  if(exactId)return Number(exactId[1])===Number(t.id);
   const content=['#'+t.id,'ID '+t.id,t.title,t.details,t.area,t.next_step,t.blocker,t.source_url].join(' ').toLowerCase();
   if(!content.includes(filters.query))return false;
  }
@@ -134,7 +174,7 @@ function renderTasks(){
   const box=elem('article','task '+(task.status==='done'?'done':''));
   const content=elem('div','task-content');
   const header=elem('div','task-titlebar');
-  header.append(elem('h3','',(index+1)+'. '+task.title),elem('span','workstream-tag',task.area||'General'));
+  header.append(elem('h3','','#'+task.id+' · '+task.title),elem('span','workstream-tag',task.area||'General'));
   content.append(header);
   const chips=elem('div','task-tags');
   chips.append(elem('span','priority '+task.priority,task.priority+' priority'));
@@ -317,7 +357,7 @@ window.setInterval(()=>{
  load(true);
 },20000);
 $('copy-mentor-guide').addEventListener('click',async()=>{
- try{await writeClipboard(state.instructions||GUIDE);status('Samantha GPT tool briefing copied, including Creator Foundry and Open Source Arsenal instructions.')}
+ try{await writeClipboard([GUIDE,state.instructions].filter(Boolean).join('\n\n'));status('Samantha GPT tool briefing copied, including Creator Foundry and Open Source Arsenal instructions.')}
  catch(e){status('Could not copy mentor guide: '+e.message)}
 });
 [['filter-area','area'],['filter-status','status'],['filter-priority','priority'],['filter-verification','verification']].forEach(([id,key])=>{
