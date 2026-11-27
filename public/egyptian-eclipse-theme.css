@@ -10,6 +10,9 @@ html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-t
  --kf-crew-ink:#060d14;--kf-crew-surface:#15323a;--kf-crew-depth:#09141a;
  --kf-crew-highlight:#ffdf96;--kf-crew-shadow:#23bfb35d;--kf-crew-accent:#caa05b;
  --kf-accent:#c5a054;--kf-accent-bright:#f8dc96;--af-ember:#b18b50;--af-ember-light:#f8dc96;
+ --kf-bg:#080e14;--kf-panel:#09141a;--kf-panel-2:#15323a;
+ --kf-oxblood:#33e4d9;--kf-antique-gold:#e7b65c;
+ --kf-chrome-line:#c7a3608c;--kf-line:var(--kf-chrome-line);--kf-accent-soft:#33e4d91f;
  --kf-egypt-gold:#e7b65c;--kf-egypt-ivory:#fff0d3;--kf-egypt-turquoise:#43d8d2;
  --kf-egypt-metal:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/header.svg');
  --kf-egypt-hero:url('/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-hero.png');
@@ -18,148 +21,148 @@ html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-t
  background-position:center top,center top;
  background-size:cover,cover;background-attachment:scroll;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header{
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header{
  position:sticky;isolation:isolate;
  border-bottom:2px solid var(--kf-egypt-gold);
  box-shadow:0 12px 37px #000b,0 0 21px #31beb82a,inset 0 -2px #f0cc7d40;
  background:linear-gradient(90deg,#090d16f2,#0c1820f0 51%,#070f16f2);
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header::before{
- content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header::before{
+ content:"";position:absolute;inset:0;height:auto;z-index:0;pointer-events:none;
  background:linear-gradient(90deg,#081219cf,#09152159 48%,#081219cc),url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/header.svg') center/100% 100% no-repeat;
  opacity:.9;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header>*{position:relative;z-index:1}
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header::after{
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header>*{position:relative;z-index:1}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header::after{
  content:"";position:absolute;left:18%;right:18%;bottom:-14px;height:25px;
  background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/divider.svg') center/100% 100% no-repeat;
  pointer-events:none;opacity:.75;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-brand{
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .kf-brand{
  color:#f8e2ad;text-shadow:0 2px 17px #000,0 0 24px #3bafad69;font-family:Georgia,serif;letter-spacing:.13em;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-brand b{color:var(--kf-egypt-turquoise)}
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-nav :is(a,.kf-nav-group>summary){
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .kf-brand b{color:var(--kf-egypt-turquoise)}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .kf-nav :is(a,.kf-nav-group>summary){
  color:#ffe9c7;border-color:#d9a95e51;background:#0c1821c9;
  text-shadow:0 1px 6px #000;transition:background-color .16s ease,border-color .16s ease;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-nav :is(a,.kf-nav-group>summary):is(:hover,:focus-visible){
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .kf-nav :is(a,.kf-nav-group>summary):is(:hover,:focus-visible){
  background:#1f3940;border-color:#f6d493;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.kf-hub-hero,.kf-start-here,.kf-realm-atlas,.ecosystem-section,.foundry-card,.moon-panel,.theme-crew-panel,.kf-hub-card,.kf-atlas-card){
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-hub-hero,.kf-start-here,.kf-realm-atlas,.ecosystem-section,.foundry-card,.moon-panel,.theme-crew-panel,.kf-hub-card,.kf-atlas-card){
  border-color:#c7a3608c;
  box-shadow:0 22px 52px #0009,0 0 25px #4ad6bf13,inset 0 1px #ffe5aa24;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.kf-start-card,.kf-atlas-card,.foundry-card,.kf-hub-card,.theme-crew-panel,.moon-panel){
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-start-card,.kf-atlas-card,.foundry-card,.kf-hub-card,.theme-crew-panel,.moon-panel){
  position:relative;isolation:isolate;border:1px solid #d8ad6496;
  background-color:#111a21;background-image:linear-gradient(145deg,#1a292fe6,#0b121aeb);
  border-radius:15px;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.kf-start-card,.kf-atlas-card,.foundry-card,.kf-hub-card,.theme-crew-panel,.moon-panel)::before{
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-start-card,.kf-atlas-card,.foundry-card,.kf-hub-card,.theme-crew-panel,.moon-panel)::before{
  content:"";position:absolute;inset:0;z-index:0;
  pointer-events:none;background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/panel.svg') center/100% 100% no-repeat;
  opacity:.43;border-radius:inherit;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.kf-start-card,.kf-atlas-card,.foundry-card,.kf-hub-card,.theme-crew-panel,.moon-panel)>*{position:relative;z-index:1}
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.home-intro h1,.kf-start-heading h2,.kf-hub-heading h2,.theme-crew-header h1){
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-start-card,.kf-atlas-card,.foundry-card,.kf-hub-card,.theme-crew-panel,.moon-panel)>*{position:relative;z-index:1}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.home-intro h1,.kf-start-heading h2,.kf-hub-heading h2,.theme-crew-header h1){
  color:#f8dfad;font-family:Georgia,serif;text-shadow:0 2px 14px #000,0 0 21px #dca84d42;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.home-sign-in,.kf-hub-action,.button-primary,.primary-button,.foundry-link-main){
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.home-sign-in,.kf-hub-action,.button-primary,.primary-button,.foundry-link-main){
  border:1px solid #e4b369;color:#fff1d4;
  background:linear-gradient(130deg,#162932ab,#0e1d2acc),url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/button.svg') center/100% 100% no-repeat;
  box-shadow:0 7px 22px #0008,0 0 17px #39dacf27;
  text-shadow:0 1px 5px #000;
 }
-html body[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(.kf-section-back a,.kf-nav a,.home-sign-in,.kf-hub-action,.button-primary,.primary-button):focus-visible{
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-section-back a,.kf-nav a,.home-sign-in,.kf-hub-action,.button-primary,.primary-button):focus-visible{
  outline:3px solid var(--kf-egypt-turquoise);outline-offset:3px;
 }
 /* Egyptian hero is a proper painted illustration, independent of legacy Black Sun art. */
 .kf-egyptian-feature,.kf-egyptian-pavilion{display:none}
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .home-intro{
  position:relative;isolation:isolate;overflow:hidden;
  background:linear-gradient(170deg,#0a141be9,#0c1b20f2),url('/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-throne-hall.png') center/cover;
  border:2px solid #dab66f;border-radius:clamp(17px,3vw,31px);
  box-shadow:0 30px 80px #000c,0 0 38px #33d9d324;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-feature{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-feature{
  display:block;position:relative;order:-1;width:100%;margin:0;overflow:hidden;
  background:#0c1920;border-bottom:3px solid #d8a450;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-feature img{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-feature img{
  display:block;width:100%;aspect-ratio:1672/941;max-height:660px;object-fit:cover;object-position:center;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-feature::after{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-feature::after{
  content:"";position:absolute;inset:0;pointer-events:none;
  background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/frame.svg') center/100% 100% no-repeat;opacity:.84;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro>h1,
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro>p,
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro>.home-intro-actions{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .home-intro>h1,
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .home-intro>p,
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .home-intro>.home-intro-actions{
  margin-inline:clamp(1rem,3vw,2.5rem);position:relative;z-index:1;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro>h1{margin-top:clamp(1rem,3vw,2.2rem)}
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .home-intro>h1{margin-top:clamp(1rem,3vw,2.2rem)}
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion{
  display:block;position:relative;isolation:isolate;padding:clamp(1.2rem,3vw,2.6rem);
  margin:1.5rem auto 2.5rem;max-width:1320px;
  border:2px solid #e1b86e;border-radius:24px;
  background:linear-gradient(160deg,#0a1215e8,#112832ee 55%,#080f15f3),url('/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-throne-hall.png') center/cover;
  box-shadow:0 32px 70px #000b,0 0 42px #1fc7d326;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion::before{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion::before{
  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
  background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/frame.svg') center/100% 100% no-repeat;opacity:.65;border-radius:inherit;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion::after{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion::after{
  content:"";position:absolute;inset:0 auto 0 0;width:55px;z-index:0;pointer-events:none;
  background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/side-rail.svg') center/100% 100% no-repeat;opacity:.64;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion>*{position:relative;z-index:1}
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-head{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion>*{position:relative;z-index:1}
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion-head{
  display:flex;align-items:center;gap:clamp(.8rem,2vw,1.7rem);
  margin:0 0 clamp(1rem,2vw,1.5rem);padding:0 0 1.5rem;
  background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/divider.svg') center bottom/100% 25px no-repeat;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-head img{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion-head img{
  width:clamp(74px,10vw,130px);height:auto;flex:0 0 auto;filter:drop-shadow(0 0 22px #16bfbba6);
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-head h2{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion-head h2{
  margin:0;color:#fae3aa;font:800 clamp(1.5rem,3.8vw,3rem)/1.14 Georgia,serif;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-head p{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion-head p{
  color:#e8dbc8;max-width:72ch;line-height:1.65;margin:.55rem 0 0;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-grid{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion-grid{
  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.7rem,1.8vw,1.5rem);
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-art-card{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-art-card{
  position:relative;min-width:0;padding:12px;border:1px solid #cda66b;
  background:linear-gradient(140deg,#102029,#070e16);border-radius:13px;overflow:hidden;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-art-card::before{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-art-card::before{
  content:"";position:absolute;inset:0;pointer-events:none;
  background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/corner.svg') left top/72px 72px no-repeat;opacity:.96;z-index:2;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-art-card img{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-art-card img{
  display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border:1px solid #cfad7199;border-radius:7px;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-art-card h3{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-art-card h3{
  color:#ffe8b0;font:750 clamp(1.08rem,2vw,1.4rem) Georgia,serif;margin:.9rem .3rem .35rem;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-art-card p{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-art-card p{
  color:#d9cfc1;font-size:.9rem;line-height:1.58;margin:0 .3rem .6rem;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-actions{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion-actions{
  display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.3rem;
  background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/divider.svg') center top/100% 25px no-repeat;
  padding:2rem 0 0;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-actions a{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion-actions a{
  display:inline-flex;align-items:center;justify-content:center;min-height:46px;
  padding:.7rem 1.3rem;color:#fff0d3;text-decoration:none;font-weight:800;
  background:#10242bb9 url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/button.svg') center/100% 100% no-repeat;
  border:1px solid #e5c280;border-radius:9px;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-actions a:focus-visible{outline:3px solid var(--kf-egypt-turquoise);outline-offset:3px}
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion-actions a:focus-visible{outline:3px solid var(--kf-egypt-turquoise);outline-offset:3px}
 @media(max-width:850px){
  html body.home-page[data-kf-theme="egyptian_eclipse"] .kf-egyptian-pavilion-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  html body.home-page[data-kf-theme="egyptian_eclipse"] .kf-egyptian-pavilion{padding:1.25rem}
@@ -179,13 +182,34 @@ html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme)
 }
 
 /* Published Egyptian collection: original gateway, concept painting and emblem. */
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion{
  background-image:linear-gradient(135deg,#06131ce8,#10282be8),url('/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-temple-gateway.png');
  background-position:center,center;background-size:cover;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-pavilion-head{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-pavilion-head{
  background-image:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/emblem.svg');background-repeat:no-repeat;background-position:right center;background-size:72px 72px;padding-right:80px;
 }
-html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-egyptian-feature{
+html body.home-page[data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)[data-kf-realm] .kf-egyptian-feature{
  background-image:linear-gradient(90deg,#06131cdd,#06131c88),url('/assets/knightfall/theme-collections/egyptian-eclipse/egyptian-eclipse-theme-preview.png');background-position:center;background-size:cover;
 }
+
+/* Egyptian palette owns paint, the canonical navigation owns layout. */
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) >.kf-header :is(.kf-nav-menu,.kf-nav.open){
+ background:linear-gradient(145deg,#15323a,#080e14);
+ border:1px solid var(--kf-egypt-gold);box-shadow:0 14px 38px #000c;
+}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) >.kf-header :is(.kf-nav-toggle,.kf-install-pill,.kf-admin-quick-link){
+ background:#09141a;color:#fff1d4;border:1px solid var(--kf-egypt-gold);
+}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) >.kf-header :is(.kf-nav-group[open]>summary,.kf-nav a[aria-current="page"]){
+ color:#fff1d4;border-color:var(--kf-egypt-gold);background:#15323a
+}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) >.kf-header .kf-notify-badge{background:var(--kf-egypt-gold);color:#080e14}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) >.kf-header .kf-leadership-ticker{background:#09141a;border-color:var(--kf-chrome-line)}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) [data-kf-art-hero]{
+ background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/frame.svg') center/100% 100% no-repeat,
+ linear-gradient(100deg,#080e14,#09141acc,transparent),var(--kf-egypt-hero) center/cover no-repeat;
+ border:1px solid var(--kf-egypt-gold);box-shadow:0 20px 55px #0009
+}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .home-intro h1 span{color:var(--kf-egypt-gold);background:none;-webkit-text-fill-color:currentColor;filter:none}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-start-card,.kf-atlas-card,.foundry-card,.kf-hub-card,.theme-crew-panel,.moon-panel){border-radius:var(--kf-global-panel-corner,15px)}
