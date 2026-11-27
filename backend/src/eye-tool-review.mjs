@@ -1,4 +1,4 @@
-import {parseRepository,inspectRepository} from "../../public/alien-eyes-core.mjs";
+import {parseRepository,inspectRepository} from "./alien-eyes-core.mjs";
 export function canReviewTools(user,partner){return Boolean(user?.status==="active"&&user.role==="god"&&Number.isSafeInteger(Number(user.id))&&Number(user.id)>0&&Number(partner?.invited_by)===Number(user.id));}
 const registry=Object.freeze([{"id":"alien-eyes","name":"Alien Eyes","description":"Inspect a known public software repository; review declared license and maintenance metadata.","scope":"Public software projects only","execution":"owner-only"}]);
 const key=id=>"eye_tool_review:"+id;
