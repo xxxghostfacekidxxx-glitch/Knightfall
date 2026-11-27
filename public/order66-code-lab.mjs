@@ -1,0 +1,13 @@
+// Original, restricted arithmetic expression compiler. No eval, functions, filesystem or network.
+export function compileExpression(source){
+ if(typeof source!=="string"||source.length>256)throw Error("Expression must be at most 256 characters");
+ const tokens=[];let i=0;
+ while(i<source.length){if(/\s/.test(source[i])){i++;continue;}const m=source.slice(i).match(/^\d+(?:\.\d+)?/);if(m){const n=Number(m[0]);if(!Number.isFinite(n))throw Error("Invalid number");tokens.push(n);i+=m[0].length;continue;}const c=source[i++];if(!"+-*/()".includes(c))throw Error("Unsupported character");tokens.push(c);}
+ let pos=0,depth=0;const ops=[];
+ function atom(){if(++depth>32)throw Error("Expression too deeply nested");const t=tokens[pos++];if(typeof t==="number")ops.push(["const",t]);else if(t==="("){expr();if(tokens[pos++]!==")")throw Error("Expected closing parenthesis");}else if(t==="-"||t==="+"){atom();if(t==="-")ops.push(["neg"]);}else throw Error("Expected number");depth--;}
+ function term(){atom();while(tokens[pos]==="*"||tokens[pos]==="/"){const t=tokens[pos++];atom();ops.push([t==="*"?"mul":"div"]);}}
+ function expr(){term();while(tokens[pos]==="+"||tokens[pos]==="-"){const t=tokens[pos++];term();ops.push([t==="+"?"add":"sub"]);}}
+ expr();if(pos!==tokens.length)throw Error("Unexpected token");return ops;
+}
+export function runExpression(ops){if(!Array.isArray(ops)||ops.length>256)throw Error("Invalid bytecode");const s=[];for(const op of ops){if(!Array.isArray(op))throw Error("Invalid instruction");const [k,v]=op;if(k==="const"&&typeof v==="number"&&Number.isFinite(v)){s.push(v);continue;}if(k==="neg"&&s.length){s.push(-s.pop());continue;}if(!["add","sub","mul","div"].includes(k)||s.length<2)throw Error("Invalid instruction or stack");const b=s.pop(),a=s.pop();if(k==="div"&&b===0)throw Error("Division by zero");const n=k==="add"?a+b:k==="sub"?a-b:k==="mul"?a*b:a/b;if(!Number.isFinite(n))throw Error("Nonfinite result");s.push(n);}if(s.length!==1)throw Error("Invalid stack");return s[0];}
+export function decodeData(format,input){if(typeof input!=="string"||input.length>4096)throw Error("Input too long");if(format==="json")return JSON.stringify(JSON.parse(input),null,2);let bytes;if(format==="hex"){if(!/^(?:[0-9a-fA-F]{2})*$/.test(input))throw Error("Invalid hex");bytes=Uint8Array.from(input.match(/../g)||[],x=>parseInt(x,16));}else if(format==="base64"){if(!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(input))throw Error("Invalid base64");bytes=Uint8Array.from(atob(input),c=>c.charCodeAt(0));}else throw Error("Unknown format");return new TextDecoder("utf-8",{fatal:true}).decode(bytes);}

@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import {compileExpression,runExpression,decodeData} from "../public/order66-code-lab.mjs";
+test("compiler respects precedence and unary expressions",()=>{for(const [x,y] of [["2+3*4",14],["(2+3)*4",20],["-2*-3",6],["8/2/2",2]])assert.equal(runExpression(compileExpression(x)),y);});
+test("rejects executable syntax and invalid expressions",()=>{for(const x of ["process.exit()","fetch('x')","1;2","1+","(1","2 3","(".repeat(40)+"1"+")".repeat(40)])assert.throws(()=>compileExpression(x));assert.throws(()=>runExpression(compileExpression("1/0")));assert.throws(()=>runExpression([["exec","x"]]));});
+test("decodes data as text, never executes it",()=>{assert.equal(decodeData("hex","4869"),"Hi");assert.equal(decodeData("base64","SGk="),"Hi");assert.equal(decodeData("json",'{"a":1}'),'{\n  "a": 1\n}');assert.throws(()=>decodeData("hex","a"));assert.throws(()=>decodeData("base64","!!!"));});

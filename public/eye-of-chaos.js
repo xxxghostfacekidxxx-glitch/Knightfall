@@ -67,6 +67,7 @@ async function loadKnowledge(){
  }catch(e){status.textContent=e.message;}
 }
 $("knowledge-refresh")?.addEventListener("click",loadKnowledge);
+$("knowledge-run")?.addEventListener("click",async()=>{if(!state.canGod)return;const b=$("knowledge-run");b.disabled=true;try{await api("/knowledge/run","POST",{});await loadKnowledge();}catch(e){$("knowledge-status").textContent=e.message;}finally{b.disabled=false;}});
 $("knowledge-export")?.addEventListener("click",async()=>{if(!state.canGod)return;try{const data=await api("/knowledge/export"),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));const a=node("a");a.href=url;a.download="miss-chaos-reviewed-cc0.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){$("knowledge-status").textContent=e.message;}});
 
 function openSection(name){
