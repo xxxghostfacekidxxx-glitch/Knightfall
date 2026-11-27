@@ -39,7 +39,7 @@
   const mountCrewRuntime = () => {
     if(document.querySelector('script[data-kf-theme-crew-runtime],script[src^="/theme-crew-runtime.js"]'))return;
     const script=document.createElement("script");
-    script.src="/theme-crew-runtime.js";
+    script.src="/theme-crew-runtime.js?v=20261126-perf1";
     script.dataset.kfThemeCrewRuntime="true";
     script.defer=true;
     document.head.appendChild(script);
@@ -448,9 +448,11 @@
     if (event.target.closest("a")) setDrawer(false);
   });
 
-  let notificationRefreshVersion=0;
+  let notificationRefreshVersion=0, notificationPending=false, notificationLastStart=0, memberAuthenticated=false;
   function refreshNotifications() {
-    if (!cloudAccountAvailable) return;
+    if (!cloudAccountAvailable || !memberAuthenticated || document.hidden || navigator.onLine===false || notificationPending || Date.now()-notificationLastStart<1500) return;
+    notificationPending=true;
+    notificationLastStart=Date.now();
     const requestVersion=++notificationRefreshVersion;
     fetch("https://api.ash-fall.com/api/notifications?unread=true&limit=1", {credentials:"include",cache:"no-store"})
       .then(r => { if (r.status===401 || r.status===403) return null; if (!r.ok) throw new Error("Auth temporarily unavailable: "+r.status); const type=r.headers.get("content-type")||""; if (!type.toLowerCase().includes("json")) throw new Error("Auth endpoint returned non-JSON"); return r.json(); })
@@ -459,7 +461,7 @@
         const count = Number(d.unread_count || 0);
         badge.textContent = count > 99 ? "99+" : String(count);
         badge.hidden = count === 0;
-      }).catch(() => {});
+      }).catch(() => {}).finally(() => {notificationPending=false;});
   }
 
   // Read receipts, other browser tabs, and push clicks must refresh the badge.
@@ -517,9 +519,12 @@
     .then(d => {
       const user = d?.user;
       if (!user) return;
+      memberAuthenticated=true;
       // One shared WebSocket signal for inbox bubbles, with polling fallback.
       if (!["/messages", "/messages.html"].includes(location.pathname)) {
+        let chatLoadFailures=0;
         const startChatHeads=()=>{
+          if(chatLoadFailures>=3)return;
           if (!document.querySelector('link[data-kf-chat-bubbles]')) {
             const sheet=document.createElement("link");
             sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261125-apotheosis4";
@@ -533,10 +538,10 @@
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
             const bubbles=document.createElement("script");
-            bubbles.src="/chat-bubbles.js?v=20261125-apotheosis4";
+            bubbles.src="/chat-bubbles.js?v=20261126-perf1";
             bubbles.dataset.kfChatBubbles="true";
             bubbles.dataset.userId=String(user.id);
-            bubbles.onerror=()=>{bubbles.remove();setTimeout(startChatHeads,3000);};
+            bubbles.onerror=()=>{bubbles.remove();chatLoadFailures++;if(chatLoadFailures<3)setTimeout(startChatHeads,3000*chatLoadFailures);};
             document.body.append(bubbles);
           }
         };
@@ -616,9 +621,16 @@
       nav.querySelector(".kf-my-profile-link").href = "/profile.html?username=" + encodeURIComponent(user.username);
       refreshNotifications();
       setInterval(refreshNotifications, 45000);
-      const pingActivity = () => fetch("https://api.ash-fall.com/api/activity/ping", {method:"POST",credentials:"include"}).catch(() => {});
+      let activityPending=false, activityLastStart=0;
+      const pingActivity = () => {
+        if(document.hidden || navigator.onLine===false || activityPending || Date.now()-activityLastStart<115000)return;
+        activityPending=true;activityLastStart=Date.now();
+        return fetch("https://api.ash-fall.com/api/activity/ping", {method:"POST",credentials:"include"})
+          .catch(() => {}).finally(()=>{activityPending=false;});
+      };
       pingActivity();
       setInterval(pingActivity, 120000);
+      document.addEventListener("visibilitychange",()=>{if(!document.hidden)pingActivity();});
     }).catch(() => {});
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeNavigation, {once:true});
