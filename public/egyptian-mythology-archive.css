@@ -1,0 +1,11 @@
+/* Isolated archive only; does not affect the Sanctum hub or global themes. */
+#egyptian-archive{max-width:1200px;margin:auto;padding:clamp(12px,3vw,32px);color:var(--kf-text,#f4e8d1)}
+#egyptian-archive .cs-library{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1rem}
+#egyptian-archive .cs-study{min-width:0;overflow-wrap:anywhere;padding:1rem;border:1px solid currentColor;border-radius:12px}
+#egyptian-archive .cs-study p{line-height:1.55}
+#egyptian-archive a{color:var(--kf-accent,#e7b65c);text-decoration:underline}
+#egyptian-archive .eg-jump{display:inline-block;margin:.25rem .7rem .25rem 0}
+#egyptian-archive [hidden]{display:none!important}
+#egyptian-archive input,#egyptian-archive select{max-width:100%;width:100%;font:inherit}
+#egyptian-archive a:focus-visible,#egyptian-archive input:focus-visible,#egyptian-archive select:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+body:has(#egyptian-archive){background:var(--kf-bg,#111317);margin:0;font-family:system-ui,sans-serif}
