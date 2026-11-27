@@ -53,7 +53,23 @@ async function loadQuotaGuardian(){
   status.textContent="D1 diagnostics updated "+new Date(data.collected_at).toLocaleString()+". "+(data.provider_usage_note||"Account usage unavailable.");
  }catch(error){status.textContent="Quota Guardian unavailable: "+error.message;}
 }
+async function loadKnowledge(){
+ const status=$("knowledge-status"),totals=$("knowledge-totals"),candidates=$("knowledge-candidates"),runs=$("knowledge-runs");
+ status.textContent="Reading archive evidence…";
+ try{const d=await api("/knowledge");totals.replaceChildren();candidates.replaceChildren();runs.replaceChildren();
+ status.textContent=(d.active?"Collection enabled":"Collection paused")+" · "+d.roster+" assigned identities · "+d.cron+" UTC · "+d.training;
+ for(const key of ["pending","approved","rejected"]){const card=node("article","chaos-card");card.append(node("strong","",d.totals.find(x=>x.review_status===key)?.count??0),node("p","",key));totals.append(card);}
+ for(const r of d.candidates){const card=node("article","chaos-mission");card.append(node("h3","",r.title),node("p","",r.description),node("p","",r.agent_key+" · "+r.license));const a=node("a","","Inspect source");a.href="https://www.wikidata.org/wiki/"+encodeURIComponent(r.entity_id);a.target="_blank";a.rel="noopener noreferrer";card.append(a);if(state.canApprove){for(const decision of ["approved","rejected"]){const b=node("button","",decision==="approved"?"Approve candidate":"Reject candidate");b.type="button";b.addEventListener("click",async()=>{if(!confirm(decision==="approved"?"Confirm you inspected the source and approve this metadata for training review?":"Reject this candidate?"))return;b.disabled=true;try{await api("/knowledge/review","POST",{entity_id:r.entity_id,decision});await loadKnowledge();}catch(e){status.textContent=e.message;b.disabled=false;}});card.append(b);}}candidates.append(card);}
+ if(!d.candidates.length)candidates.append(node("p","chaos-empty","No pending candidates."));
+ for(const r of d.latest){const card=node("article","chaos-mission");card.append(node("strong","",r.agent_key+" · "+r.status),node("p","",r.query+" · "+r.found+" new candidates · "+fmtTime(r.started_at)));runs.append(card);}
+ if(!d.latest.length)runs.append(node("p","chaos-empty","No recorded runs. Scheduler execution not yet verified."));
+ }catch(e){status.textContent=e.message;}
+}
+$("knowledge-refresh")?.addEventListener("click",loadKnowledge);
+$("knowledge-export")?.addEventListener("click",async()=>{if(!state.canGod)return;try{const data=await api("/knowledge/export"),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));const a=node("a");a.href=url;a.download="miss-chaos-reviewed-cc0.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){$("knowledge-status").textContent=e.message;}});
+
 function openSection(name){
+ if(name==="knowledge")void loadKnowledge();
  if(name==="quota"&&!state.canGod)return;
  const section=document.querySelector('.chaos-panel[data-panel="'+name+'"]');
  if(!section)return;

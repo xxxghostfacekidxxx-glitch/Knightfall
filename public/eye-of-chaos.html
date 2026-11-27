@@ -7,7 +7,7 @@
 <meta name="description" content="Eye of Chaos staff fleet and game QA command console.">
 <title>𓂀 Eye of Chaos | Knightfall Staff</title>
 <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/eye-of-chaos.css?v=20261121-quota2">
-<script src="/nav.js" defer></script><script src="/eye-of-chaos.js?v=20261126-identityqa1" defer></script>
+<script src="/nav.js" defer></script><script src="/eye-of-chaos.js?v=20261127-knowledge1" defer></script>
 <script type="module" src="/chaos-dev-review-ui.mjs?v=20261119-candidate2"></script>
 </head>
 <body class="chaos-console"><header class="kf-header"></header>
@@ -36,6 +36,7 @@
   <button type="button" data-section="identity-qa">Identity QA</button>
   <button type="button" data-section="forums">Madhouse</button>
   <button type="button" data-section="quota" data-chaos-god-only hidden>Quota Guardian</button>
+  <button type="button" data-section="knowledge">Knowledge Fleet</button>
   <button type="button" data-section="history">History</button>
  </nav>
  <section class="chaos-panel" data-panel="overview">
@@ -135,6 +136,9 @@
   </article>
   <article class="chaos-card"><h3>Configured service bindings</h3><div id="chaos-quota-services" class="chaos-registry"></div></article>
  </section>
+ <section class="chaos-panel" data-panel="knowledge" hidden>
+<div class="chaos-section-head"><div><h2>Miss Chaos · Knowledge Fleet</h2><p>32 scheduled research identities. Public structured data, not autonomous accounts or published posts.</p></div><button type="button" id="knowledge-refresh">Refresh evidence</button></div>
+<p id="knowledge-status" role="status" class="chaos-status">Awaiting evidence.</p><div id="knowledge-totals" class="chaos-grid"></div><article class="chaos-card"><h3>Candidate review</h3><p>Verify each source before approving it for training. Approval does not update model weights.</p><button id="knowledge-export" type="button" data-chaos-god-only hidden>Export approved training metadata</button><div id="knowledge-candidates" class="chaos-stack"></div></article><article class="chaos-card"><h3>Recent scheduled runs</h3><div id="knowledge-runs" class="chaos-stack"></div></article></section>
  <section class="chaos-panel" data-panel="history" hidden>
   <div class="chaos-section-head"><div><h2>Mission history</h2><p>Operational changes are recorded without copying private research text into event logs.</p></div><button id="chaos-history-refresh" class="chaos-quiet" type="button">Refresh</button></div>
   <div id="chaos-history-list" class="chaos-stack"></div>
