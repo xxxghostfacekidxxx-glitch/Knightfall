@@ -32,9 +32,9 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /theme-crew.html
   Cache-Control: no-cache, max-age=0, must-revalidate
-# One shared art rule: Egyptian originals and older realm illustrations revalidate together.
+# Public artwork can be reused briefly between navigations; updates revalidate after five minutes.
 /assets/knightfall/*
-  Cache-Control: no-cache, max-age=0, must-revalidate
+  Cache-Control: public, max-age=300, must-revalidate
 /visual-refresh.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 /nav.js
