@@ -4,7 +4,8 @@
   if (document.getElementById("miss-chaos-presence")) return;
   const API = "https://api.ash-fall.com";
   const AVATAR = "/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";
-  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261125-overlay-recovery2"; document.head.append(css);
+  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261127-havoc1"; document.head.append(css);
+  const experience=document.createElement("link");experience.rel="stylesheet";experience.href="/miss-chaos-experience.css?v=20261127-havoc1";document.head.append(experience);
   const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261119-popup2"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
   root.innerHTML=`
@@ -26,9 +27,9 @@
       <label class="sr-only" for="mc-mood">Miss Chaos mood</label><select id="mc-mood"><option value="default">Mood: Default</option><option value="playful">Playful</option><option value="dark">Dark humor</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option></select>
       <button type="button" id="mc-game-tips" hidden>🎮 Ask for game tips</button>
       </div></details>
-      <div id="mc-messages" aria-live="polite"><div class="mc-bubble system">I'm here. Ask me something, throw me an idea, or let me help untangle the mess. 🖤</div></div><div id="mc-error" role="status" aria-live="polite"></div>
+      <div id="mc-messages" aria-live="polite"><div class="mc-bubble system">Hey, trouble. 🖤 Want to talk, make something, or untangle a thought?</div></div><div id="mc-error" role="status" aria-live="polite"></div>
       <p id="mc-attachment-status" class="mc-attachment-status" aria-live="polite" role="status" hidden></p>
-      <form id="mc-form"><label class="sr-only" for="mc-input">Message Miss Chaos</label><textarea id="mc-input" rows="1" maxlength="4000" placeholder="Message or photo question…" ></textarea><button id="mc-send" type="submit">Send ↗</button></form>
+      <form id="mc-form"><label class="sr-only" for="mc-input">Message Miss Chaos</label><textarea id="mc-input" rows="1" maxlength="4000" placeholder="Talk to me…" ></textarea><button id="mc-send" type="submit">Send ↗</button></form>
       <div class="mc-footer">Account chat · Saved to your Miss Chaos conversations. AI can make mistakes.</div>
     </section>
     <section id="mc-memo-panel" aria-label="Private Memo Pad" aria-hidden="true" hidden>
