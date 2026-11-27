@@ -110,6 +110,87 @@ export const FOUNDER_ROUNDTABLE=Object.freeze([
         "And every compiler needs a test suite. Yes, even in an empire of chaos."
       ]
     ]
+  },
+
+  {
+    "id": "004",
+    "title": "Six failures and a stubborn founder",
+    "date": "2026-11-27",
+    "turns": [
+      [
+        "Forge",
+        "The Iron Crucible",
+        "The scheduler finally woke up. Six attempts, six failures. Apparently the internet volunteered for quality assurance."
+      ],
+      [
+        "Neural",
+        "The Black Cortex",
+        "A recorded failure is evidence. We can fix the collection service without pretending our earlier training experiments never happened."
+      ],
+      [
+        "Nymera",
+        "The Neon Foundry",
+        "He wants results he can actually touch. Give him a compiler that shows its workings, not another impressive title."
+      ],
+      [
+        "Lyra",
+        "Development editorial",
+        "Persistence is one of his strengths. It is most useful when paired with measurements and a willingness to revise a plan."
+      ],
+      [
+        "Forge",
+        "The Iron Crucible",
+        "Then let's make the machinery visible."
+      ],
+      [
+        "Nymera",
+        "The Neon Foundry",
+        "Finally. A dramatic reveal with evidence."
+      ]
+    ]
+  },
+  {
+    "id": "005",
+    "title": "Blueprints, not borrowed crowns",
+    "date": "2026-11-27",
+    "turns": [
+      [
+        "Neural",
+        "The Black Cortex",
+        "He wants Miss Chaos to be more than an interface. That means original training, reliable knowledge and honest evaluation."
+      ],
+      [
+        "Forge",
+        "The Iron Crucible",
+        "Independence doesn't require inventing arithmetic again. It requires understanding our components and respecting the licenses."
+      ],
+      [
+        "Nymera",
+        "The Neon Foundry",
+        "And a coherent visual identity. Decorative skulls are not a design system."
+      ],
+      [
+        "Lyra",
+        "Development editorial",
+        "The founder's insistence on making something identifiable is worth preserving. Real control over the architecture matters more than removing every reasonable boundary."
+      ],
+      [
+        "Neural",
+        "The Black Cortex",
+        "A curriculum that survives a failed research day."
+      ],
+      [
+        "Forge",
+        "The Iron Crucible",
+        "A compiler that survives a bad input."
+      ],
+      [
+        "Nymera",
+        "The Neon Foundry",
+        "An empire with both. Excellent."
+      ]
+    ]
   }
+
 ]);
 export function founderRoundtable(){return {kind:"authored-fiction",title:"The Whispering Chamber",subtitle:"Three fictional Order specialists and a development editorial voice",episodes:FOUNDER_ROUNDTABLE};}

@@ -1,2 +1,5 @@
 # Eye of Horus — The Whispering Chamber
 November 27, 2026. Owner requested a continuing fictional conversation featuring Neural, Forge, Nymera and the development assistant's editorial input. Three authored episodes, 18 turns total, about founder ambition, product feedback and the Order. These are written dialogue, not actual independent agents, monitoring, or conversations sourced from private data. Read-only GOD-session endpoint /api/god/eye/roundtable; existing authorization and no-store response retained. No DB reads, writes, external inference, posting or private member inputs. Further episodes can be authored and reviewed. No scheduled gossip or claimed independent opinions. Deployment and real device rendering require verification.
+
+## Second pass
+Five authored episodes, 31 turns; latest opens by default, previous/next and copy. Separate owner-only research aggregate endpoint shows actual run status, manual vs other tool counts, approved facts and peer lessons. Queries only research tables. Full CI/deployment not yet verified.

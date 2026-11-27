@@ -68,6 +68,16 @@ export async function handleEyeOfHorus(request,env,url,{requireUser,json,origin}
  if(!canAccessEyeOfHorus(user))return respond({error:"God-only access."},403);
  if(request.method!=="GET"&&request.method!=="HEAD")return respond({error:"Eye of Horus is read-only."},405);
  if(url.pathname===prefix+"/roundtable")return respond(founderRoundtable());
+ if(url.pathname===prefix+"/roundtable/progress"){
+  try{const [runs,tools,knowledge,lessons,control]=await Promise.all([
+   env.DB.prepare("SELECT status,COUNT(*) AS n FROM chaos_knowledge_runs WHERE agent_key LIKE 'mc-%' GROUP BY status").all(),
+   env.DB.prepare("SELECT CASE WHEN agent_key='manual-curation' THEN 'manual' ELSE 'other' END AS provenance,COUNT(*) AS n FROM chaos_knowledge_tools GROUP BY provenance").all(),
+   env.DB.prepare("SELECT review_status,COUNT(*) AS n FROM chaos_knowledge_candidates GROUP BY review_status").all(),
+   env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_lessons").first(),
+   env.DB.prepare("SELECT k.enabled,e.paused FROM chaos_knowledge_66_control k JOIN eye_chaos_controls e ON e.id=1 WHERE k.id=1").first()]);
+   return respond({kind:"research-aggregate",as_of:new Date().toISOString(),runs:runs.results||[],tools:tools.results||[],knowledge:knowledge.results||[],lessons:Number(lessons?.n||0),enabled:Number(control?.enabled)===1&&Number(control?.paused)===0});
+  }catch{return respond({error:"Research evidence unavailable."},503);}
+ }
  if(url.pathname===prefix+"/status")return respond({god:true,unlocked:true,datasets:Object.entries(EYE_DATASETS).map(([id,d])=>({id,label:d.name}))});
  if(url.pathname===prefix+"/browse"){
    const category=url.searchParams.get("category")||"direct_messages";

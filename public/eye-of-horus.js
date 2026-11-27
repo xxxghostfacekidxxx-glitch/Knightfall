@@ -31,13 +31,20 @@ function renderRecord(category,item){
  }
  return card;
 }
+async function loadProgress(){
+ const grid=$("eye-progress-grid"),status=$("eye-progress-status"),button=$("eye-progress-refresh");button.disabled=true;status.textContent="Checking actual research records…";
+ try{const d=await request(ROOT+"/roundtable/progress");if(d.kind!=="research-aggregate")throw Error("Evidence unavailable");const sum=(list,key,value)=>Number(list.find(r=>r[key]===value)?.n||0);
+ grid.replaceChildren();for(const [label,value] of [["Completed assignments",sum(d.runs,"status","complete")],["Failed assignments",sum(d.runs,"status","failed")],["Manual tool records",sum(d.tools,"provenance","manual")],["Other tool records",sum(d.tools,"provenance","other")],["Approved knowledge",sum(d.knowledge,"review_status","approved")],["Peer exchanges",d.lessons]]){const card=element("div","eye-progress-stat");card.append(element("strong","",value),element("small","",label));grid.append(card);}status.textContent=(d.enabled?"Collector enabled":"Collector paused")+" · "+time(d.as_of);
+ }catch(e){grid.replaceChildren();status.textContent=e.message;}finally{button.disabled=false;}
+}
+$("eye-progress-refresh").addEventListener("click",loadProgress);
 async function loadRoundtable(){
  const panel=$("eye-roundtable"),picker=$("eye-episode"),lines=$("eye-roundtable-lines"),notice=$("eye-roundtable-status");
  panel.hidden=false;
  try{const d=await request(ROOT+"/roundtable");if(d.kind!=="authored-fiction"||!Array.isArray(d.episodes))throw Error("Editorial unavailable");
  picker.replaceChildren();for(const ep of d.episodes){const option=element("option","",ep.title);option.value=ep.id;picker.append(option);}
  function render(){const ep=d.episodes.find(x=>x.id===picker.value);lines.replaceChildren();if(!ep)return;for(const [name,division,body] of ep.turns){const row=element("article","eye-whisper");row.dataset.speaker=name.toLowerCase();const mark=element("span","eye-whisper-mark",name.slice(0,1));mark.setAttribute("aria-hidden","true");const copy=element("div","eye-whisper-copy");copy.append(element("h3","",name),element("small","",division),element("p","",body));row.append(mark,copy);lines.append(row);}notice.textContent="Authored fictional conversation · "+ep.date;}
- picker.addEventListener("change",render);render();
+ const prev=$("eye-episode-prev"),next=$("eye-episode-next"),copy=$("eye-episode-copy");function select(i){picker.selectedIndex=Math.max(0,Math.min(d.episodes.length-1,i));render();prev.disabled=picker.selectedIndex===0;next.disabled=picker.selectedIndex===d.episodes.length-1;}picker.addEventListener("change",()=>select(picker.selectedIndex));prev.addEventListener("click",()=>select(picker.selectedIndex-1));next.addEventListener("click",()=>select(picker.selectedIndex+1));copy.addEventListener("click",async()=>{const ep=d.episodes[picker.selectedIndex];try{await navigator.clipboard.writeText(ep.title+"\n\n"+ep.turns.map(t=>t[0]+": "+t[2]).join("\n\n"));notice.textContent="Copied authored fictional episode.";}catch{notice.textContent="Clipboard unavailable.";}});select(d.episodes.length-1);void loadProgress();
  }catch(e){notice.textContent=e.message;}
 }
 async function browse(continued=false){
