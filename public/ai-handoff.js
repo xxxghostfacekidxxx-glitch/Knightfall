@@ -12,6 +12,8 @@ const PROJECT_GROUPS=[
  ['Chaosphere and social',['Chaosphere & Push','Identity & Social']],
  ['AI and chatbots',['Miss Chaos AI','Chaos Collective']],
  ['The Veil — Kemet and occult archives',['The Veil','Kemet']],
+ ['Philosophy',['Philosophy']],
+ ['Languages and sound studio',['Languages']],
  ['Celestial Sanctum',['Celestial Sanctum']],
  ['Force Realms',['Force Realms']],
  ['Sanctuary: The Eternal Archives',['Sanctuary Archives']],
