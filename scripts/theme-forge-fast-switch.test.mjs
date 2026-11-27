@@ -62,7 +62,7 @@ test("fast switching reuses the vetted API with rollback and revision protection
  assert.match(backend,/!allowedOrigin\.has\(request\.headers\.get\("Origin"\)\)/);
  assert.match(backend,/acceptedAdminPartner\(env,user\)/);
  assert.match(backend,/UPDATE site_settings SET value=/);
- assert.match(root,/\/theme-crew\.css\?v=20261121-theme-forge2/);
+ assert.match(root,/\/theme-crew\.css\?v=20261126-theme-owner1/);
 });
 
 test("new visual identity does not introduce game canvas or custom profile overrides",()=>{
