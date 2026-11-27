@@ -279,7 +279,7 @@
     return article;
   }
   function showWelcome() {
-    messagesEl.innerHTML = "<div class=\"welcome-card\"><img class=\"mc-welcome-portrait\" src=\"/assets/knightfall/miss-chaos/expression-playful.svg\" width=\"84\" height=\"84\" alt=\"\" decoding=\"async\"><p class=\"eyebrow\">YOUR LITTLE CORNER OF CHAOS</p><h2>Hey, trouble. 🖤</h2><p>Bring me the messy thoughts, wild ideas and questions nobody else gets. We can talk, create, laugh or figure things out together.</p><div class=\"mc-welcome-actions\" aria-label=\"Conversation ideas\"><button type=\"button\" data-mc-starter=\"talk\">♡ Just talk</button><button type=\"button\" data-mc-starter=\"create\">✦ Make something</button><button type=\"button\" data-mc-starter=\"laugh\">☾ Entertain me</button><button type=\"button\" data-mc-starter=\"help\">⚡ Help me figure it out</button><button type=\"button\" data-mc-starter=\"study\">✧ Learn something</button><button type=\"button\" data-mc-starter=\"explore\">☄ Explore Knightfall</button></div><p class=\"welcome-hint\">Your chats stay attached to your account. You choose what to save in memory.</p></div>";
+    messagesEl.innerHTML = "<div class=\"welcome-card\"><img class=\"mc-welcome-portrait\" src=\"/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c\" width=\"84\" height=\"84\" alt=\"\" decoding=\"async\"><p class=\"eyebrow\">YOUR LITTLE CORNER OF CHAOS</p><h2>Hey, trouble. 🖤</h2><p>Bring me the messy thoughts, wild ideas and questions nobody else gets. We can talk, create, laugh or figure things out together.</p><div class=\"mc-welcome-actions\" aria-label=\"Conversation ideas\"><button type=\"button\" data-mc-starter=\"talk\">♡ Just talk</button><button type=\"button\" data-mc-starter=\"create\">✦ Make something</button><button type=\"button\" data-mc-starter=\"laugh\">☾ Entertain me</button><button type=\"button\" data-mc-starter=\"help\">⚡ Help me figure it out</button><button type=\"button\" data-mc-starter=\"study\">✧ Learn something</button><button type=\"button\" data-mc-starter=\"explore\">☄ Explore Knightfall</button></div><p class=\"welcome-hint\">Your chats stay attached to your account. You choose what to save in memory.</p></div>";
   }
   function renderConversationList(items) {
     listEl.replaceChildren();
@@ -866,7 +866,7 @@
     input.value = ""; input.dispatchEvent(new Event("input"));
     const displayed=message+(sendingPhoto?"\n📷 Image attached (original not saved)":"");
     addMessage("user",displayed,"You");
-    const typing = document.createElement("div"); typing.className = "typing"; typing.setAttribute("role","status"); typing.textContent = "Miss Chaos is thinking…";const face=document.createElement("img");face.src="/assets/knightfall/miss-chaos/expression-thinking.svg";face.alt="";face.width=32;face.height=32;typing.prepend(face); messagesEl.append(typing); scrollToBottom();
+    const typing = document.createElement("div"); typing.className = "typing"; typing.setAttribute("role","status"); typing.textContent = "Miss Chaos is thinking…";const face=document.createElement("img");face.src="/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";face.alt="";face.width=32;face.height=32;typing.prepend(face); messagesEl.append(typing); scrollToBottom();
     let streamedArticle=null;
     try {
       if (!activeConversation) {
