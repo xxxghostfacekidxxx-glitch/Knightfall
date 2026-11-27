@@ -27,7 +27,7 @@ async function load(){
  if(loading)return loading;
  loading=(async()=>{
   try{
-   const response=await fetch(source,{credentials:"same-origin",cache:"no-store"});
+   const response=await fetch(source,{credentials:"same-origin",cache:"default"});
    if(!response.ok)throw Error("Cannot load the reviewed art inventory");
    const payload=await response.json();
    if(payload.version!==1||!Array.isArray(payload.themes))throw Error("Unrecognized art kit catalog");
@@ -69,7 +69,7 @@ function draw(kit){
 async function sync(){
  const preset=document.body?.dataset.kfTheme;
  if(!preset||document.body?.dataset.kfArtTheme!=="true"){
-  root.hidden=true;rendered=null;gallery.replaceChildren();return;
+  if(!root.hidden||rendered!==null){root.hidden=true;rendered=null;gallery.replaceChildren();}return;
  }
  const recipes=await load();
  if(document.body?.dataset.kfTheme!==preset||document.body?.dataset.kfArtTheme!=="true")return;
