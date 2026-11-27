@@ -97,7 +97,14 @@ test("new art visual engine reuses one module without intrusive CSS or unsafe HT
  const imports=[...rootCss.matchAll(/@import\s+url\(["']?\/([^"'?)]+)(?:\?[^)"']*)?["']?\);/g)].map(x=>x[1]);
  assert.deepEqual(imports.slice(-4),["egyptian-eclipse-theme.css","knightfall-art-theme-variables.css","knightfall-art-theme-template.css","home-responsive.css"]);
  const fallback=read("public/theme-crew.css");
- for(const preset of extended)assert.match(fallback,new RegExp(':not\\(\\[data-kf-theme="'+preset+'"\\]\\)'));
+ const crewOnly=':is([data-kf-theme="blood_moon"],[data-kf-theme="verdant_crypt"],[data-kf-theme="iron_eclipse"],[data-kf-theme="royal_abyss"])';
+ assert.ok(fallback.includes(crewOnly));
+ for(const preset of [...original,...development.collections.map(x=>x.slug.replaceAll("-","_"))])assert.ok(!fallback.includes('[data-kf-theme="'+preset+'"]'),preset+" must not activate legacy color presets");
+ for(const name of ["knightfall-gothic-chrome.css","knightfall-illustrated-realms.css","knightfall-unified-theme.css"]){
+  const old=read("public/"+name);assert.ok(old.includes(':not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])'));
+ }
+ assert.match(read("public/index.html"),/id="kf-theme-art-showcase" class="kf-theme-art-showcase"/);
+ assert.match(read("public/index.html"),/id="kf-theme-art-showcase-grid" class="kf-theme-art-grid"/);
  const home=read("public/index.html"),gallery=read("public/knightfall-art-theme-showcase.js");
  for(const s of ['id="kf-theme-art-showcase"','id="kf-theme-art-showcase-grid"','knightfall-art-theme-showcase.js'])assert.ok(home.includes(s));
  assert.doesNotThrow(()=>new Script(gallery));
