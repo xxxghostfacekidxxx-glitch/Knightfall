@@ -1,16 +1,21 @@
-// Original, restricted arithmetic expression compiler. No eval, functions, filesystem or network.
+// Original restricted arithmetic compiler. No eval, functions, filesystem or network.
 export function compileExpression(source){
  if(typeof source!=="string"||source.length>256)throw Error("Expression must be at most 256 characters");
  const tokens=[];let i=0;
- while(i<source.length){if(/\s/.test(source[i])){i++;continue;}const m=source.slice(i).match(/^\d+(?:\.\d+)?/);if(m){const n=Number(m[0]);if(!Number.isFinite(n))throw Error("Invalid number");tokens.push(n);i+=m[0].length;continue;}const c=source[i++];if(!"+-*/()".includes(c))throw Error("Unsupported character");tokens.push(c);}
+ const fail=(message,at)=>{throw Error(message+" at column "+(at+1));};
+ while(i<source.length){if(/\s/.test(source[i])){i++;continue;}const m=source.slice(i).match(/^(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?/);if(m){const n=Number(m[0]);if(!Number.isFinite(n))fail("Invalid number",i);tokens.push({value:n,at:i});i+=m[0].length;continue;}const c=source[i];if(!"+-*/%^()".includes(c))fail("Unsupported character",i);tokens.push({value:c,at:i++});}
  let pos=0,depth=0;const ops=[];
- function atom(){if(++depth>32)throw Error("Expression too deeply nested");const t=tokens[pos++];if(typeof t==="number")ops.push(["const",t]);else if(t==="("){expr();if(tokens[pos++]!==")")throw Error("Expected closing parenthesis");}else if(t==="-"||t==="+"){atom();if(t==="-")ops.push(["neg"]);}else throw Error("Expected number");depth--;}
- function term(){atom();while(tokens[pos]==="*"||tokens[pos]==="/"){const t=tokens[pos++];atom();ops.push([t==="*"?"mul":"div"]);}}
- function expr(){term();while(tokens[pos]==="+"||tokens[pos]==="-"){const t=tokens[pos++];term();ops.push([t==="+"?"add":"sub"]);}}
- expr();if(pos!==tokens.length)throw Error("Unexpected token");return ops;
+ const peek=()=>tokens[pos]?.value;
+ const location=()=>tokens[pos]?.at??source.length;
+ function nested(fn){if(++depth>32)fail("Expression too deeply nested",location());try{fn();}finally{depth--;}}
+ function atom(){const token=tokens[pos++];if(typeof token?.value==="number")ops.push(["const",token.value]);else if(token?.value==="("){nested(expr);if(peek()!==")")fail("Expected closing parenthesis",location());pos++;}else fail("Expected number",token?.at??source.length);}
+ function power(){atom();if(peek()==="^"){pos++;nested(unary);ops.push(["pow"]);}}
+ function unary(){if(peek()==="-"||peek()==="+"){const sign=tokens[pos++].value;nested(unary);if(sign==="-")ops.push(["neg"]);}else power();}
+ function term(){unary();while(["*","/","%"].includes(peek())){const op=tokens[pos++].value;unary();ops.push([{ "*":"mul","/":"div","%":"mod"}[op]]);}}
+ function expr(){term();while(peek()==="+"||peek()==="-"){const op=tokens[pos++].value;term();ops.push([op==="+"?"add":"sub"]);}}
+ expr();if(pos!==tokens.length)fail("Unexpected token",location());return ops;
 }
-export function runExpression(ops){if(!Array.isArray(ops)||ops.length>256)throw Error("Invalid bytecode");const s=[];for(const op of ops){if(!Array.isArray(op))throw Error("Invalid instruction");const [k,v]=op;if(k==="const"&&typeof v==="number"&&Number.isFinite(v)){s.push(v);continue;}if(k==="neg"&&s.length){s.push(-s.pop());continue;}if(!["add","sub","mul","div"].includes(k)||s.length<2)throw Error("Invalid instruction or stack");const b=s.pop(),a=s.pop();if(k==="div"&&b===0)throw Error("Division by zero");const n=k==="add"?a+b:k==="sub"?a-b:k==="mul"?a*b:a/b;if(!Number.isFinite(n))throw Error("Nonfinite result");s.push(n);}if(s.length!==1)throw Error("Invalid stack");return s[0];}
+function execute(ops,withTrace=false){if(!Array.isArray(ops)||ops.length>256)throw Error("Invalid bytecode");const stack=[],trace=[];for(const instruction of ops){if(!Array.isArray(instruction))throw Error("Invalid instruction");const [op,arg]=instruction;if(op==="const"&&instruction.length===2&&typeof arg==="number"&&Number.isFinite(arg))stack.push(arg);else if(op==="neg"&&instruction.length===1&&stack.length>=1)stack.push(-stack.pop());else{if(instruction.length!==1||!["add","sub","mul","div","mod","pow"].includes(op)||stack.length<2)throw Error("Invalid instruction or stack");const b=stack.pop(),a=stack.pop();if((op==="div"||op==="mod")&&b===0)throw Error("Division by zero");const n=op==="add"?a+b:op==="sub"?a-b:op==="mul"?a*b:op==="div"?a/b:op==="mod"?a%b:a**b;if(!Number.isFinite(n))throw Error("Nonfinite result");stack.push(n);}if(withTrace)trace.push({instruction:op==="const"?"const "+arg:op,stack:stack.slice()});}if(stack.length!==1)throw Error("Invalid stack");return {result:stack[0],trace};}
+export function runExpression(ops){return execute(ops).result;}
 export function decodeData(format,input){if(typeof input!=="string"||input.length>4096)throw Error("Input too long");if(format==="json")return JSON.stringify(JSON.parse(input),null,2);let bytes;if(format==="hex"){if(!/^(?:[0-9a-fA-F]{2})*$/.test(input))throw Error("Invalid hex");bytes=Uint8Array.from(input.match(/../g)||[],x=>parseInt(x,16));}else if(format==="base64"){if(!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(input))throw Error("Invalid base64");bytes=Uint8Array.from(atob(input),c=>c.charCodeAt(0));}else throw Error("Unknown format");return new TextDecoder("utf-8",{fatal:true}).decode(bytes);}
-
-// Explain the restricted virtual machine with a stack snapshot per step.
-export function traceExpression(source){const ops=compileExpression(source),result=runExpression(ops),stack=[],trace=[];for(const [op,arg] of ops){if(op==="const")stack.push(arg);else if(op==="neg")stack.push(-stack.pop());else{const b=stack.pop(),a=stack.pop();stack.push(op==="add"?a+b:op==="sub"?a-b:op==="mul"?a*b:a/b);}trace.push({instruction:op==="const"?"const "+arg:op,stack:stack.slice()});}return {ops,trace,result};}
+export function traceExpression(source){const ops=compileExpression(source);return {ops,...execute(ops,true)};}
