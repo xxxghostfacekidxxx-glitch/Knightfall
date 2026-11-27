@@ -193,4 +193,4 @@ export const FOUNDER_ROUNDTABLE=Object.freeze([
   }
 
 ]);
-export function founderRoundtable(){return {kind:"authored-fiction",title:"The Whispering Chamber",subtitle:"Three fictional Order specialists and a development editorial voice",episodes:FOUNDER_ROUNDTABLE};}
+export function founderRoundtable(){return {kind:"authored-fiction",title:"The Mad Court",subtitle:"Three fictional Order specialists and a development editorial voice",episodes:FOUNDER_ROUNDTABLE};}

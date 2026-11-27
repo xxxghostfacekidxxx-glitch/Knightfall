@@ -3,3 +3,6 @@ November 27, 2026. Owner requested a continuing fictional conversation featuring
 
 ## Second pass
 Five authored episodes, 31 turns; latest opens by default, previous/next and copy. Separate owner-only research aggregate endpoint shows actual run status, manual vs other tool counts, approved facts and peer lessons. Queries only research tables. Full CI/deployment not yet verified.
+
+## The Mad Court
+Renamed and expanded to six fictional personalities. Local topic-conditioned scripted simulator supports direct address, user participation, rotating speakers, theatrical energy, step, autoplay/pause/reset. 60 turns per autoplay session, stops when page hidden, last 100 displayed turns retained in memory. No external inference, background conversations or private data. Original five episodes preserved. CI and real browser verification pending.
