@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-27T08:46:30.470Z",
+  "generatedAt": "2026-11-27T08:51:30.197Z",
   "reportsFound": 10,
   "catalogRoutes": 129,
   "targets": {
@@ -12,10 +12,22 @@
       "duplicatedShards": [],
       "duplicatedRoutes": [],
       "malformedReports": [],
-      "failures": [],
-      "coverageOk": true
+      "failures": [
+        {
+          "game": "cinder-crossing",
+          "route": "/arcade/hosted/cinder-crossing/index.html",
+          "profile": "phone",
+          "action": "start game",
+          "reason": "Error: Browser errors or failed assets\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:167:43",
+          "target": "live",
+          "screenshot": "003.png",
+          "networkErrorCount": 1,
+          "browserErrorCount": 0
+        }
+      ],
+      "coverageOk": false
     }
   },
   "passed": false,
-  "sourceRunId": 45968081783
+  "sourceRunId": 45968714255
 }
