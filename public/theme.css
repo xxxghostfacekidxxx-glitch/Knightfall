@@ -197,3 +197,32 @@ body>.kf-header,.kf-header{overflow:visible!important;isolation:isolate;align-co
  .kf-header .kf-nav.open .kf-nav-group[open]>.kf-nav-menu{position:relative;inset:auto;max-height:none;overflow:visible;box-shadow:none}
  .kf-header .kf-nav.open .kf-nav-group{width:100%}
 }
+
+
+/* Mobile compositor budget: preserve the themed art and colors, but avoid
+   repeatedly blurring everything behind fixed chrome while the page scrolls. */
+@media (max-width:1080px) and (pointer:coarse){
+  body>.kf-header,.kf-header,
+  .kf-header .kf-nav.open,.kf-header .kf-nav-menu,.kf-header .kf-profile-menu{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  #miss-chaos-presence #mc-dock,#kf-chat-heads .kf-chat-panel{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
+    background-attachment:scroll!important;
+  }
+  .kf-ticker-track{will-change:auto}
+}
+body[data-kf-global-effects="minimal"]>.kf-header,
+body[data-kf-global-effects="minimal"]>.kf-header .kf-nav-menu{
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+body[data-kf-global-effects="minimal"] .kf-ticker-track{
+  animation:none;padding-left:0;white-space:normal;will-change:auto
+}
+body[data-kf-global-effects="minimal"] .kf-ticker-viewport{white-space:normal;mask-image:none}
+html[data-kf-page-hidden="true"] .kf-ticker-track{animation-play-state:paused}
