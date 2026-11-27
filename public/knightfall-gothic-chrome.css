@@ -258,9 +258,9 @@ body:not(.profile-custom-theme) .kf-header .kf-brand{min-width:0;max-width:100%;
 body:not(.profile-custom-theme) .kf-nav.open{z-index:100;overscroll-behavior:contain}
 body:not(.profile-custom-theme) .kf-nav-menu a{white-space:normal}
 @media(max-width:1080px){
- body:not(.profile-custom-theme) .kf-header{flex-wrap:nowrap;align-items:center}
+ body:not(.profile-custom-theme) .kf-header{align-items:center}
  body:not(.profile-custom-theme) .kf-header .kf-nav-toggle{margin-left:auto;flex:none;min-height:44px}
- body:not(.profile-custom-theme) .kf-header .kf-nav.open{left:max(.5rem,env(safe-area-inset-left));right:max(.5rem,env(safe-area-inset-right));width:auto;max-height:calc(100dvh - 78px);overflow-y:auto}
+ /* Drawer geometry is owned by the canonical theme.css navigation shell. */
  body:not(.profile-custom-theme) .kf-header .kf-nav-menu{position:static;max-width:100%;min-width:0}
 }
 @media(max-width:680px){
@@ -276,9 +276,8 @@ body:not(.profile-custom-theme) .kf-nav-menu a{white-space:normal}
 /* Canonical navigation chrome. Previously duplicated as FOUR high-specificity
    injected <style> blocks in nav.js, including retired pink and lime. */
 html body>.kf-header{
-  position:sticky!important;top:0!important;z-index:2147483001!important;
-  overflow:visible!important;transform:none!important;
-  isolation:isolate;width:100%!important;box-sizing:border-box!important;
+  transform:none!important;
+  isolation:isolate;box-sizing:border-box!important;
   display:flex!important;align-items:center!important;gap:clamp(.35rem,1vw,.8rem);
   min-height:64px;visibility:visible!important;opacity:1!important
 }
@@ -299,7 +298,7 @@ html body>.kf-header .kf-nav a{pointer-events:auto!important}
 html body>.kf-header .kf-nav [hidden],
 html body>.kf-header :is(.kf-install-pill,.kf-admin-quick-link)[hidden]{display:none!important}
 html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{display:grid!important}
-html body>.kf-header .kf-nav-menu{z-index:2147483003!important}
+
 html body>.kf-header .kf-install-pill,
 html body>.kf-header .kf-admin-quick-link{
   display:inline-flex;align-items:center;justify-content:center;flex:none;
@@ -326,31 +325,25 @@ html body>.kf-header .kf-shared-maintenance{
   font:700 12px/1.4 system-ui,sans-serif;text-align:center
 }
 html body>.kf-header .kf-shared-announcement strong{color:var(--kf-antique-gold)}
-body.kf-navigation-open #kf-chat-heads{visibility:hidden!important;pointer-events:none!important}
+
 @media(min-width:1081px){
  html body>.kf-header .kf-nav{display:flex!important;visibility:visible!important;
-  opacity:1!important;position:static!important;flex-wrap:wrap!important;
+  opacity:1!important;flex-wrap:wrap!important;
   align-items:center!important}
  html body>.kf-header .kf-nav-toggle{display:none!important}
- html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{position:absolute!important}
+
 }
 @media(max-width:1080px){
  html body>.kf-header .kf-nav-toggle{display:inline-flex!important;margin-left:auto;flex:none}
  html body>.kf-header .kf-nav:not(.open){display:none!important}
  html body>.kf-header .kf-nav.open{
-  position:absolute!important;display:grid!important;
-  top:calc(100% + .25rem)!important;left:max(.5rem,env(safe-area-inset-left))!important;
-  right:max(.5rem,env(safe-area-inset-right))!important;width:auto!important;
-  max-height:calc(100dvh - 76px)!important;overflow-y:auto!important;
-  z-index:2147483002!important;pointer-events:auto!important;
-  overscroll-behavior:contain!important;padding:.7rem!important;border-radius:12px!important
+  pointer-events:auto!important;
+  overscroll-behavior:contain;padding:.7rem;border-radius:var(--kf-global-panel-corner,12px)
  }
 html body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))>.kf-header .kf-nav.open{
   background:linear-gradient(145deg,#28222b,#12151a)!important;
   border:1px solid #78666a!important;}
- html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{
-  position:static!important;overflow:visible!important;max-height:none!important
- }
+
  html body>.kf-header .kf-nav.open a,
  html body>.kf-header .kf-nav.open summary{visibility:visible!important;opacity:1!important;min-height:44px}
 }
