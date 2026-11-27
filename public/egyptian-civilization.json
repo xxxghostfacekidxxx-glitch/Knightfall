@@ -1,0 +1,2202 @@
+{
+  "schemaVersion": 1,
+  "title": "Kemet — Ancient Egyptian Civilization",
+  "scope": "Historical reference, not curriculum or modern medical advice. Sources provide research context; detailed item-level review remains ongoing.",
+  "collections": [
+    {
+      "id": "history-and-dynasties",
+      "title": "History and dynasties",
+      "description": "Chronology, political developments and significant rulers."
+    },
+    {
+      "id": "society-government-and-law",
+      "title": "Society, government and law",
+      "description": "Institutions, households, social status and legal practice."
+    },
+    {
+      "id": "daily-life-agriculture-and-economy",
+      "title": "Daily life, agriculture and economy",
+      "description": "The Nile, work, food, material life and trade."
+    },
+    {
+      "id": "medicine-anatomy-and-healing",
+      "title": "Medicine, anatomy and healing",
+      "description": "Medical texts, practitioners, bodies and historical healing practices."
+    },
+    {
+      "id": "mathematics-measurement-and-accounting",
+      "title": "Mathematics, measurement and accounting",
+      "description": "Surviving calculations, numerals, geometry and administration."
+    },
+    {
+      "id": "astronomy-calendars-and-timekeeping",
+      "title": "Astronomy, calendars and timekeeping",
+      "description": "Stellar observation, instruments and temporal systems."
+    },
+    {
+      "id": "engineering-technology-and-material-science",
+      "title": "Engineering, technology and material science",
+      "description": "Construction, crafts, materials and transport."
+    },
+    {
+      "id": "language-writing-and-literature",
+      "title": "Language, writing and literature",
+      "description": "Writing systems, language history, documents and literary traditions."
+    },
+    {
+      "id": "religion-magic-and-occult-reception",
+      "title": "Religion, magic and occult reception",
+      "description": "Historical religious practice and distinct later esoteric traditions."
+    },
+    {
+      "id": "archaeology-evidence-and-cultural-legacy",
+      "title": "Archaeology, evidence and cultural legacy",
+      "description": "How evidence survives, is interpreted and preserved."
+    }
+  ],
+  "sources": {
+    "chronology": [
+      "UCL Digital Egypt — chronology",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/chronology/index.html"
+    ],
+    "timeline": [
+      "University of Memphis — timeline",
+      "https://www.memphis.edu/egypt/resources/timeline.php"
+    ],
+    "history": [
+      "OpenStax — ancient Egypt",
+      "https://openstax.org/books/world-history-volume-1/pages/3-3-ancient-egypt"
+    ],
+    "index": [
+      "UCL Digital Egypt — thematic research index",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/sitemap.html"
+    ],
+    "science": [
+      "Cambridge — Egyptian science bibliography",
+      "https://www.hps.cam.ac.uk/students/research-guide/ancient-egyptian-science"
+    ],
+    "math": [
+      "Open University — Egyptian mathematics",
+      "https://www.open.edu/openlearn/science-maths-technology/mathematics-statistics/egyptian-mathematics/content-section-1.1.2/?printable=1"
+    ],
+    "arithmetic": [
+      "Oxford — Egyptian arithmetic",
+      "https://www.maths.ox.ac.uk/node/36258"
+    ],
+    "med": [
+      "UCL — healing papyri",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/med/healingpapyri.html"
+    ],
+    "smith": [
+      "Met — art of medicine and Edwin Smith Papyrus",
+      "https://www.metmuseum.org/met-publications/the-art-of-medicine-in-ancient-egypt"
+    ],
+    "ebers": [
+      "Leipzig University — Ebers Papyrus",
+      "https://www.ub.uni-leipzig.de/en/about-us/exhibitions/permanent-exhibition/ebers-papyrus"
+    ],
+    "astro": [
+      "McMaster — Ancient Egyptian Astronomy Database",
+      "https://aea.mcmaster.ca/index.php/en/"
+    ],
+    "time": [
+      "Met — telling time",
+      "https://www.metmuseum.org/pt/essays/telling-time-in-ancient-egypt"
+    ],
+    "decans": [
+      "Museo Egizio — diagonal star tables",
+      "https://www.museoegizio.it/en/discover/funded-projects/the-diagonal-star-tables-of-ancient-egypt-corpus-texts-and-cosmology"
+    ],
+    "early": [
+      "Met — Egypt 8000–2000 BCE",
+      "https://www.metmuseum.org/de/toah/ht/02/afe"
+    ],
+    "late": [
+      "Met — Egypt 1000 BCE–1 CE",
+      "https://www.metmuseum.org/it/toah/ht/04/afe.html"
+    ],
+    "theban": [
+      "Trithemius — Polygraphia (1518) alphabet facsimile",
+      "https://commons.wikimedia.org/wiki/File:Theban_alphabet_from_Polygraphia_1518.png"
+    ],
+    "glyphs": [
+      "Wikimedia Commons — Theban glyph collection",
+      "https://commons.wikimedia.org/wiki/Category:Theban_alphabet"
+    ],
+    "religious": [
+      "UCL — religion and cult",
+      "https://www.ucl.ac.uk/museums-static/digitalegypt/religion/cultindex.html"
+    ],
+    "reception": [
+      "Harvard — modern reception of Egyptian religion",
+      "https://cswr.hds.harvard.edu/news/2014/05/10/reinventing-religion-ancient-egypt-european-history-religion"
+    ]
+  },
+  "records": [
+    {
+      "id": "civ-predynastic",
+      "collection": "history-and-dynasties",
+      "title": "Predynastic communities",
+      "context": "Before c. 3100 BCE",
+      "description": "Badarian and Naqada archaeological traditions document settlement, agriculture, burial, craft specialization and growing political integration before the early state.",
+      "sources": [
+        "early",
+        "chronology"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-badarian",
+      "collection": "history-and-dynasties",
+      "title": "Badarian culture",
+      "context": "Fifth millennium BCE",
+      "description": "Middle Egyptian cemeteries preserve pottery, ornaments and burial evidence; these archaeological classifications are not names of known ethnic nations.",
+      "sources": [
+        "early",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-naqada",
+      "collection": "history-and-dynasties",
+      "title": "Naqada I–III",
+      "context": "Fourth millennium BCE",
+      "description": "Changes in material culture, trade and elite burials trace increasing social differentiation before dynastic kingship.",
+      "sources": [
+        "early"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-unification",
+      "collection": "history-and-dynasties",
+      "title": "Formation of the state",
+      "context": "c. 3100 BCE",
+      "description": "Royal iconography and archaeological evidence indicate a long process of territorial integration. Narmer is a key early ruler, not proof that unification happened in one battle.",
+      "sources": [
+        "early",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-early-dynastic",
+      "collection": "history-and-dynasties",
+      "title": "Early Dynastic Period",
+      "context": "Dynasties 1–2",
+      "description": "Royal tombs, seals and writing document the emergence of centralized institutions and royal mortuary ritual.",
+      "sources": [
+        "chronology",
+        "early"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-old-kingdom",
+      "collection": "history-and-dynasties",
+      "title": "Old Kingdom",
+      "context": "Dynasties 3–6, broadly",
+      "description": "Large pyramid complexes, elite tombs and administrative records attest the concentration of labor and resources; regional institutions remained important.",
+      "sources": [
+        "chronology",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-first-intermediate",
+      "collection": "history-and-dynasties",
+      "title": "First Intermediate Period",
+      "context": "After Old Kingdom",
+      "description": "Political authority fragmented, with provincial rulers and competing centers. It was not simply a period without culture or economic activity.",
+      "sources": [
+        "chronology"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-middle-kingdom",
+      "collection": "history-and-dynasties",
+      "title": "Middle Kingdom",
+      "context": "Dynasties 11–13, broadly",
+      "description": "Reunification and later administrations developed major literature, provincial monuments, irrigation projects and southern frontier institutions.",
+      "sources": [
+        "chronology",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-second-intermediate",
+      "collection": "history-and-dynasties",
+      "title": "Second Intermediate Period",
+      "context": "After Middle Kingdom",
+      "description": "Multiple kingdoms coexisted, including Hyksos rulers in the eastern Delta, Theban dynasties and Kerma in Nubia.",
+      "sources": [
+        "chronology",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-new-kingdom",
+      "collection": "history-and-dynasties",
+      "title": "New Kingdom",
+      "context": "Dynasties 18–20",
+      "description": "Military expansion, international diplomacy and major temple building transformed Egypt's relationship with neighboring states and its internal economy.",
+      "sources": [
+        "chronology",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-amarna",
+      "collection": "history-and-dynasties",
+      "title": "Amarna Period",
+      "context": "Dynasty 18",
+      "description": "Akhenaten founded Akhetaten and reorganized royal religion around Aten; subsequent rulers restored other cults. Evidence varies between official and domestic practice.",
+      "sources": [
+        "chronology",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-third-intermediate",
+      "collection": "history-and-dynasties",
+      "title": "Third Intermediate Period",
+      "context": "After c. 1070 BCE",
+      "description": "Thebes, Tanis and other centers shared or contested authority; Libyan-origin dynasties and Kushite rulers were prominent.",
+      "sources": [
+        "late"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-late-period",
+      "collection": "history-and-dynasties",
+      "title": "Late Period",
+      "context": "664–332 BCE, conventional",
+      "description": "Saite renewal, Persian conquest and successive native dynasties shaped Egyptian political and religious institutions.",
+      "sources": [
+        "late"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ptolemaic",
+      "collection": "history-and-dynasties",
+      "title": "Ptolemaic Egypt",
+      "context": "305–30 BCE",
+      "description": "A Macedonian dynasty ruled through Greek and Egyptian institutions; major indigenous temples continued developing alongside Alexandria's multicultural society.",
+      "sources": [
+        "late",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-roman",
+      "collection": "history-and-dynasties",
+      "title": "Roman Egypt",
+      "context": "From 30 BCE",
+      "description": "Egypt became a Roman province while older religious and administrative traditions persisted and transformed. Later Christianity altered religious landscapes over centuries.",
+      "sources": [
+        "chronology",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-djoser",
+      "collection": "history-and-dynasties",
+      "title": "Djoser",
+      "context": "Dynasty 3",
+      "description": "His Saqqara complex with its step pyramid demonstrates early monumental stone construction and an elaborate royal mortuary landscape.",
+      "sources": [
+        "early",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-khufu",
+      "collection": "history-and-dynasties",
+      "title": "Khufu",
+      "context": "Dynasty 4",
+      "description": "Associated with the Great Pyramid at Giza; contemporary quarry and transport records illuminate the logistical system behind royal construction.",
+      "sources": [
+        "early",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-hatshepsut",
+      "collection": "history-and-dynasties",
+      "title": "Hatshepsut",
+      "context": "Dynasty 18",
+      "description": "Ruled as king, commissioned major temples and represented an expedition to Punt; her monuments illuminate royal legitimacy and international exchange.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-thutmose-iii",
+      "collection": "history-and-dynasties",
+      "title": "Thutmose III",
+      "context": "Dynasty 18",
+      "description": "Campaign accounts and temple monuments record Egyptian expansion in the eastern Mediterranean; official inscriptions frame events through royal ideology.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ramesses-ii",
+      "collection": "history-and-dynasties",
+      "title": "Ramesses II",
+      "context": "Dynasty 19",
+      "description": "Long reign with extensive monument building, military campaigns and diplomacy with the Hittites; inscriptions are political as well as historical evidence.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-cleopatra",
+      "collection": "history-and-dynasties",
+      "title": "Cleopatra VII",
+      "context": "51–30 BCE",
+      "description": "Last reigning Ptolemaic monarch; ruled in a multilingual kingdom and negotiated Roman political conflicts before annexation.",
+      "sources": [
+        "late"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-pharaoh",
+      "collection": "society-government-and-law",
+      "title": "Kingship and pharaoh",
+      "context": "Government",
+      "description": "Royal authority united political and ritual functions; pharaoh derives from a term for the royal establishment, later applied to the ruler.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-vizier",
+      "collection": "society-government-and-law",
+      "title": "Vizier and central administration",
+      "context": "Government",
+      "description": "The vizier supervised major administrative functions, including records, justice and labor organization. Responsibilities and jurisdictions shifted over time.",
+      "sources": [
+        "index",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-nomes",
+      "collection": "society-government-and-law",
+      "title": "Provinces and nomes",
+      "context": "Government",
+      "description": "Regional districts with local officials linked settlements and agricultural resources to state administration; nomes are a later Greek terminology for Egyptian divisions.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-scribes",
+      "collection": "society-government-and-law",
+      "title": "Scribes",
+      "context": "Literacy and government",
+      "description": "Training in writing and accounting enabled officials to record deliveries, labor, legal transactions and ritual texts; literacy was not equally distributed.",
+      "sources": [
+        "index",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-social-status",
+      "collection": "society-government-and-law",
+      "title": "Social hierarchy",
+      "context": "Society",
+      "description": "Kings, elite officials, priesthoods, skilled workers, farmers, dependents and enslaved persons occupied unequal and changing positions, not a fixed pyramid of immutable castes.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-women",
+      "collection": "society-government-and-law",
+      "title": "Women and legal capacity",
+      "context": "Law",
+      "description": "Surviving records show women could own and transmit property and enter transactions in many periods; economic power and public opportunities were unequal.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-family",
+      "collection": "society-government-and-law",
+      "title": "Family and household",
+      "context": "Society",
+      "description": "Households structured care, economic cooperation and inheritance; family forms and surviving evidence vary with period and status.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-marriage",
+      "collection": "society-government-and-law",
+      "title": "Marriage and separation",
+      "context": "Law",
+      "description": "Marriage was primarily a social and household arrangement, with later written agreements documenting property and obligations; divorce was possible.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-inheritance",
+      "collection": "society-government-and-law",
+      "title": "Inheritance and wills",
+      "context": "Law",
+      "description": "Property transfer could involve children, spouses and chosen beneficiaries; documents show negotiation, conflict and changing legal conventions.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-courts",
+      "collection": "society-government-and-law",
+      "title": "Courts and petitions",
+      "context": "Law",
+      "description": "Local councils and officials adjudicated disputes using testimony, written evidence and oaths. Surviving cases show practices rather than a complete uniform legal code.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-maat-law",
+      "collection": "society-government-and-law",
+      "title": "Maat and justice",
+      "context": "Political ideology",
+      "description": "Maat linked legitimate authority and just conduct, but idealized statements should be distinguished from actual legal institutions and inequality.",
+      "sources": [
+        "religious",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-labor",
+      "collection": "society-government-and-law",
+      "title": "Labor obligations",
+      "context": "Economy",
+      "description": "State and temple projects mobilized workers through rations, skilled employment, obligations and coercion; labor arrangements differed by occupation and period.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-enslavement",
+      "collection": "society-government-and-law",
+      "title": "Slavery and dependency",
+      "context": "Society",
+      "description": "War captivity, forced labor and dependent statuses are documented. Egyptian categories do not map exactly onto modern forms of slavery.",
+      "sources": [
+        "index",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-strike",
+      "collection": "society-government-and-law",
+      "title": "Deir el-Medina workers' strike",
+      "context": "Dynasty 20",
+      "description": "Records describe royal tomb workers protesting delayed provisions during Ramesses III's reign, documenting collective action and state provisioning problems.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-tax",
+      "collection": "society-government-and-law",
+      "title": "Taxation and assessment",
+      "context": "Economy",
+      "description": "Officials measured and recorded agricultural production, deliveries, estates and labor. Much accounting was in goods rather than coined currency.",
+      "sources": [
+        "index",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-temple-estates",
+      "collection": "society-government-and-law",
+      "title": "Temple estates",
+      "context": "Economy",
+      "description": "Temples held land, employed personnel and received offerings and revenues; their economic role varied with royal policy and regional circumstances.",
+      "sources": [
+        "religious",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-diplomacy",
+      "collection": "society-government-and-law",
+      "title": "International diplomacy",
+      "context": "Government",
+      "description": "Amarna letters show correspondence with Near Eastern rulers, negotiated marriages, gifts and disputes; Egyptian foreign policy was embedded in wider networks.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-army",
+      "collection": "society-government-and-law",
+      "title": "Military institutions",
+      "context": "Government",
+      "description": "Egyptian armies relied on changing combinations of infantry, chariots, logistics and local or foreign soldiers; royal victory accounts require critical reading.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-nile",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "The Nile and floodplain",
+      "context": "Environment",
+      "description": "Seasonal river flooding replenished much agricultural land, while the river also connected communities and trade routes. Flood reliability varied.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-kemet",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Kemet and Deshret",
+      "context": "Geography",
+      "description": "The black and red land contrast fertile cultivated soil with surrounding desert; the distinction also informed cultural and symbolic geography.",
+      "sources": [
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-seasons",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Akhet, Peret and Shemu",
+      "context": "Agriculture",
+      "description": "Three named civil-calendar seasons conventionally correspond to inundation, emergence and harvest; calendar drift gradually separated dates from seasonal conditions.",
+      "sources": [
+        "time"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-irrigation",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Irrigation and basins",
+      "context": "Agriculture",
+      "description": "Canals, embankments and managed fields distributed water in local settings; systems evolved rather than appearing as a single centralized invention.",
+      "sources": [
+        "index",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-shaduf",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Shaduf water lift",
+      "context": "Technology",
+      "description": "A counterweighted lever raises water in small quantities; depicted in New Kingdom contexts, it complemented rather than replaced other water-management practices.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-grain",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Emmer wheat and barley",
+      "context": "Agriculture",
+      "description": "Principal cereal crops supplied bread, beer, rations and reserves; species identification and crop patterns come from texts and botanical remains.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-flax",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Flax cultivation",
+      "context": "Agriculture",
+      "description": "Flax fibers supported linen manufacture and seeds had additional uses; processing required harvesting, preparation, spinning and weaving.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-livestock",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Livestock and herding",
+      "context": "Agriculture",
+      "description": "Cattle, sheep, goats, pigs and donkeys contributed labor, food and wealth, with local and status-based differences in consumption.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-bread",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Bread production",
+      "context": "Food",
+      "description": "Grinding, dough preparation and baking were central household and institutional activities; archaeological ovens and bread remains supplement artistic depictions.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-beer",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Beer",
+      "context": "Food",
+      "description": "Grain-based beer supplied nutrition, rations and offerings; historical production differed from many modern brewing techniques.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-diet",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Food and diet",
+      "context": "Food",
+      "description": "Grain, legumes, vegetables, fruits, fish and animal products contributed in different proportions according to region and wealth; tomb banquets are not typical menus.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-housing",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Mudbrick houses",
+      "context": "Domestic life",
+      "description": "Sun-dried bricks dominated domestic architecture, with courtyards, storage and roof use varying by settlement and household means.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-clothing",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Linen clothing",
+      "context": "Domestic life",
+      "description": "Linen garments appear across social levels, with textile quality, pleating, ornaments and style reflecting resources and context.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-cosmetics",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Cosmetics and grooming",
+      "context": "Domestic life",
+      "description": "Eye paint, oils, wigs and mirrors served aesthetic, practical and symbolic purposes; ancient formulations are not modern safety-tested cosmetics.",
+      "sources": [
+        "smith",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-music",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Music and performance",
+      "context": "Culture",
+      "description": "Harps, flutes, drums, clappers and sistra appear in domestic, festive and temple imagery; precise sound and performance conventions are incompletely recoverable.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-games",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Senet and other games",
+      "context": "Recreation",
+      "description": "Board games served recreation and sometimes funerary symbolism; exact ancient rules are not fully known, and modern reconstructions differ.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-markets",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Exchange and markets",
+      "context": "Economy",
+      "description": "Goods circulated through redistribution, barter, local exchange and long-distance trade. Monetization changed especially in later periods.",
+      "sources": [
+        "index",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-deben",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Deben as value and weight",
+      "context": "Economy",
+      "description": "A weight unit also used to express the value of goods in records; actual standard and commodity context matter.",
+      "sources": [
+        "index",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-trade",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "Trade with neighbors",
+      "context": "Economy",
+      "description": "Egypt exchanged goods with Nubia, the Levant, Punt and desert regions; exchange included commercial, diplomatic and coercive relationships.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-transport",
+      "collection": "daily-life-agriculture-and-economy",
+      "title": "River transport",
+      "context": "Technology",
+      "description": "Boats carried grain, stone, people and ritual images; northward current and prevailing northerly winds supported movement in both directions.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-edwin-smith",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Edwin Smith Papyrus",
+      "context": "Second millennium BCE manuscript",
+      "description": "Organizes traumatic injuries into observations, assessment and proposed management, including cases regarded as beyond treatment. Earlier textual layers may underlie the copy.",
+      "sources": [
+        "smith",
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ebers",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Ebers Papyrus",
+      "context": "c. 1550 BCE",
+      "description": "Large collection of healing material, combining preparations, diagnoses, incantations and bodily theories. It is a historical text, not a safe treatment manual.",
+      "sources": [
+        "ebers",
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-kahun",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Kahun gynecological papyrus",
+      "context": "Middle Kingdom",
+      "description": "Preserves observations concerning reproductive health and gynecology; interpretations of difficult terminology remain provisional.",
+      "sources": [
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-hearst",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Hearst Papyrus",
+      "context": "Dynasty 18",
+      "description": "Collection of healing formulations and other medical material, overlapping some Ebers material and showing textual transmission.",
+      "sources": [
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ramesseum",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Ramesseum healing papyri",
+      "context": "Middle Kingdom textual collection",
+      "description": "Fragments include healing and protective compositions; archaeological context helps reconstruct scribal and ritual practice.",
+      "sources": [
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-london",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "London Medical Papyrus",
+      "context": "New Kingdom",
+      "description": "Combines incantations and remedies, illustrating the inseparability of protective ritual and historical healing practice.",
+      "sources": [
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-brooklyn",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Brooklyn snakebite papyrus",
+      "context": "Late Period",
+      "description": "Describes snakes and responses to bites in an Egyptian medical and ritual framework. Species identifications and ancient efficacy are not always secure.",
+      "sources": [
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-physicians",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Physicians and healers",
+      "context": "Profession",
+      "description": "Titles and texts identify healing specialists, including physicians and ritual practitioners; rigid modern divisions among medical professions cannot be projected backward.",
+      "sources": [
+        "ebers",
+        "smith"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-hesy-ra",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Hesy-Ra",
+      "context": "Dynasty 3 official",
+      "description": "Held a title often interpreted as chief of dentists and physicians; the precise meaning of early medical titles is debated.",
+      "sources": [
+        "smith",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-pesehet",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Peseshet",
+      "context": "Old Kingdom",
+      "description": "A title associated with supervision of female physicians is often cited in discussions of women healers; the exact translation and professional scope need caution.",
+      "sources": [
+        "smith",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-anatomy",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Anatomical observation",
+      "context": "Knowledge",
+      "description": "Injury texts identify bodily structures and observable symptoms; embalming provides a different kind of anatomical experience, not proof of a modern anatomical system.",
+      "sources": [
+        "smith",
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-heart-vessels",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Heart and vessels",
+      "context": "Physiology",
+      "description": "Medical texts describe networks linking the heart with parts of the body. Their concept of bodily channels does not amount to the modern theory of blood circulation.",
+      "sources": [
+        "ebers",
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-trauma",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Trauma classification",
+      "context": "Clinical history",
+      "description": "The Edwin Smith manuscript proceeds systematically through injuries from head downward, using inspection and prognosis; this organization is a significant historical feature.",
+      "sources": [
+        "smith"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dentistry",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Dental disease",
+      "context": "Archaeological evidence",
+      "description": "Human remains show tooth wear, abscesses and other pathology; evidence for particular ancient dental interventions is more limited and sometimes debated.",
+      "sources": [
+        "smith",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-maternal-health",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Pregnancy and childbirth",
+      "context": "Medical and social history",
+      "description": "Texts, household protective objects and archaeological evidence illuminate reproductive concerns; mortality and care varied, and surviving texts are incomplete.",
+      "sources": [
+        "med",
+        "smith"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-pharmacology",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Medicinal ingredients",
+      "context": "Healing history",
+      "description": "Plant, animal and mineral materials appear in surviving remedies; translations and ingredient identification are uncertain, and historical use does not demonstrate effectiveness or safety.",
+      "sources": [
+        "med",
+        "ebers"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-heka-healing",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Magic and medicine",
+      "context": "Healing history",
+      "description": "Incantation, protective images and material preparations were integrated in healing traditions. The distinction between medicine and magic is often a modern analytical choice.",
+      "sources": [
+        "med",
+        "smith"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-imhotep-healing",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Imhotep as a healing god",
+      "context": "Later religion",
+      "description": "The historical official of Djoser was deified over time and associated with healing especially in later Egypt; not evidence that he authored every early medical text.",
+      "sources": [
+        "smith"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-disease-evidence",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Paleopathology",
+      "context": "Modern research method",
+      "description": "Study of skeletal and mummified remains can identify some injuries and diseases but preservation, sampling and uncertain diagnoses limit reconstruction of ancient health.",
+      "sources": [
+        "smith",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-medical-limits",
+      "collection": "medicine-anatomy-and-healing",
+      "title": "Medical evidence and safety",
+      "context": "Research method",
+      "description": "Ancient treatments are presented as history. They are not instructions for modern illness, and ancient claims are evaluated independently of contemporary medical evidence.",
+      "sources": [
+        "science",
+        "med"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-rhind",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Rhind Mathematical Papyrus",
+      "context": "Second millennium BCE",
+      "description": "Scribe Ahmes copied a mathematical compilation including arithmetic, fractions, distribution, area and volume problems; dating conventions vary.",
+      "sources": [
+        "math",
+        "arithmetic"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-moscow",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Moscow Mathematical Papyrus",
+      "context": "Middle Kingdom",
+      "description": "Contains worked problems, including calculation of the volume of a truncated square pyramid, a major surviving example of practical geometry.",
+      "sources": [
+        "math",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-berlin",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Berlin mathematical papyri",
+      "context": "Middle Kingdom",
+      "description": "Fragments contain mathematical exercises involving relationships between quantities and areas; modern equation notation is interpretive.",
+      "sources": [
+        "science",
+        "math"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-egyptian-numerals",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Egyptian numerals",
+      "context": "Number system",
+      "description": "Hieroglyphic signs represent powers of ten with repeated additive signs. Hieratic notation uses more compact forms; these systems are not modern positional decimals.",
+      "sources": [
+        "science",
+        "math"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-unit-fractions",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Unit fractions",
+      "context": "Arithmetic",
+      "description": "Most fractions were represented as sums of distinct reciprocals, with special notation for some fractions such as two-thirds. Tables supported conversion and calculation.",
+      "sources": [
+        "math",
+        "arithmetic"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-doubling",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Doubling multiplication",
+      "context": "Arithmetic",
+      "description": "Multiplication problems could use doubling and selecting terms whose multipliers sum to the desired value; division used related procedures.",
+      "sources": [
+        "math"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-division",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Division and distribution",
+      "context": "Arithmetic",
+      "description": "Worked problems allocate quantities or determine missing factors through arithmetic procedures, demonstrating practical proportional reasoning.",
+      "sources": [
+        "math"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-aha",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Aha quantity problems",
+      "context": "Mathematics",
+      "description": "Some problems seek an unknown quantity, often solved using proportional adjustment or related methods; modern algebra is a useful description, not their notation.",
+      "sources": [
+        "math"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-circle-area",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Area of a circle",
+      "context": "Geometry",
+      "description": "A Rhind problem obtains the area of a circle from a square with side eight ninths of its diameter, yielding a useful approximation without modern pi notation.",
+      "sources": [
+        "math"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-field-area",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Field areas",
+      "context": "Geometry",
+      "description": "Textual problems calculate areas of rectangular and triangular plots; records and survey practices illuminate practical measurement beyond school exercises.",
+      "sources": [
+        "math",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-seked",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Seked and pyramid slope",
+      "context": "Geometry",
+      "description": "Measures horizontal displacement per vertical royal cubit using palms; mathematical examples relate this ratio to pyramid dimensions.",
+      "sources": [
+        "math",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-truncated-pyramid",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Truncated pyramid volume",
+      "context": "Geometry",
+      "description": "A Moscow papyrus problem gives an effective procedure equivalent to the modern square-frustum volume expression. Its derivation is not explicitly preserved.",
+      "sources": [
+        "math"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-cubit",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Royal cubit",
+      "context": "Measurement",
+      "description": "A standard length near 52 centimeters in many royal contexts, subdivided into palms and digits; actual rods and historical units show variation.",
+      "sources": [
+        "index",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-hekat",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Hekat",
+      "context": "Capacity",
+      "description": "Grain capacity unit with fractional subdivisions, prominent in accounts and mathematical problems; local and chronological differences must be considered.",
+      "sources": [
+        "math",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-setat",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Setat or aroura",
+      "context": "Land area",
+      "description": "Land measurement associated with a square of one hundred cubits per side in standard descriptions; Greek usage and later practice must be contextualized.",
+      "sources": [
+        "index",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-accounting",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "Ration and estate accounts",
+      "context": "Administration",
+      "description": "Scribes recorded deliveries, balances, work allocations and storage; mathematical knowledge was embedded in administrative training and daily practice.",
+      "sources": [
+        "index",
+        "arithmetic"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-math-limits",
+      "collection": "mathematics-measurement-and-accounting",
+      "title": "What the mathematical record proves",
+      "context": "Research method",
+      "description": "Only a limited corpus survives; avoid claims that all Greek mathematics originated in Egypt or that Egyptian methods were identical to modern symbolic mathematics.",
+      "sources": [
+        "science",
+        "arithmetic"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-civil-calendar",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "365-day civil calendar",
+      "context": "Calendar",
+      "description": "Twelve thirty-day months plus five additional days formed the civil year. Without regular intercalation in the traditional system, dates shifted relative to seasons.",
+      "sources": [
+        "time",
+        "astro"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-epagomenal",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Five additional days",
+      "context": "Calendar",
+      "description": "Days outside the twelve civil months acquired divine and ritual associations; interpretations differ among surviving traditions.",
+      "sources": [
+        "time"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-lunar-calendar",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Lunar calendars",
+      "context": "Calendar",
+      "description": "Lunar reckoning existed alongside the civil calendar, with religious observances and definitions reconstructed from texts and astronomical evidence.",
+      "sources": [
+        "astro",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-sirius",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Sirius and the heliacal rising",
+      "context": "Stellar observation",
+      "description": "The seasonal reappearance of Sirius after solar invisibility was important in calendrical and flood symbolism; observation dates vary with latitude and conditions.",
+      "sources": [
+        "time",
+        "astro"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-sothic",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Sothic chronology",
+      "context": "Historical method",
+      "description": "Modern chronology sometimes uses recorded Sirius risings to constrain dates, but assumptions about observation location, calendar and textual interpretation affect results.",
+      "sources": [
+        "astro",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-decans",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Decans",
+      "context": "Stellar groups",
+      "description": "Groups of stars associated with recurring ten-day intervals help organize stellar timekeeping; identifying every ancient group with modern stars remains difficult.",
+      "sources": [
+        "decans",
+        "astro"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-diagonal-tables",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Diagonal star tables",
+      "context": "Astronomical records",
+      "description": "Middle Kingdom coffin tables arrange successive stellar groups in patterned sequences; their religious and timekeeping interpretations are the subject of specialist study.",
+      "sources": [
+        "decans"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ramesside-clocks",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Ramesside star clocks",
+      "context": "Astronomical records",
+      "description": "Later tables describe stellar positions with reference to a human figure and times of night; their exact operational reconstruction is debated.",
+      "sources": [
+        "astro"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-water-clock",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Water clocks",
+      "context": "Instrument",
+      "description": "Vessels with calibrated markings measure elapsed time through water flow; their accuracy depends on construction and environmental conditions.",
+      "sources": [
+        "time",
+        "astro"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-shadow-clock",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Shadow clocks and sundials",
+      "context": "Instrument",
+      "description": "Devices use the sun's shadow to estimate daytime hours. Different forms and markings attest development rather than a single uniform design.",
+      "sources": [
+        "time",
+        "astro"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-seasonal-hours",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Twelve day and twelve night hours",
+      "context": "Timekeeping",
+      "description": "Day and night were each divided into twelve parts; duration could vary seasonally rather than matching fixed modern sixty-minute hours.",
+      "sources": [
+        "time"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-merkhet",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Merkhet and sighting instruments",
+      "context": "Instrument",
+      "description": "A plumb-line sighting tool is associated with astronomical observation and alignment; specific reconstructed methods must be evaluated against surviving evidence.",
+      "sources": [
+        "astro",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-circumpolar",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Circumpolar stars",
+      "context": "Astronomy and religion",
+      "description": "Northern stars that do not set at relevant Egyptian latitudes became associated with permanence and royal afterlife; identifications vary by text.",
+      "sources": [
+        "astro",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-astronomical-ceilings",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Astronomical ceilings",
+      "context": "Art and astronomy",
+      "description": "Tombs and temples preserve depictions of stellar groups, planets, divinities and calendars; symbolic imagery and observation overlap without being identical.",
+      "sources": [
+        "astro"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-dendera-zodiac",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Dendera zodiac",
+      "context": "Late astronomical imagery",
+      "description": "The late temple ceiling combines Egyptian religious and astronomical traditions with zodiacal imagery familiar in the wider Hellenistic world.",
+      "sources": [
+        "astro",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-planets",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Visible planets",
+      "context": "Astronomical observation",
+      "description": "Egyptian texts and images identify visible planets using divine names and associations; modern orbital theory should not be attributed without evidence.",
+      "sources": [
+        "astro",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-orientation",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Monument orientation",
+      "context": "Research question",
+      "description": "Some structures display strong cardinal or celestial orientations. The exact observation methods and intended alignments vary, and unsupported numerical coincidences are not evidence.",
+      "sources": [
+        "astro",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-solar-lunar-eclipses",
+      "collection": "astronomy-calendars-and-timekeeping",
+      "title": "Eclipses and ancient evidence",
+      "context": "Research question",
+      "description": "Eclipse observations and interpretations require text-specific evidence; modern retrocalculations alone do not establish what a particular Egyptian community knew or predicted.",
+      "sources": [
+        "science",
+        "astro"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-mudbrick",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Mudbrick technology",
+      "context": "Construction",
+      "description": "Clay-rich earth mixed and molded into bricks was dried in the sun; material was practical for houses, walls and much institutional construction.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-stonework",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Stone quarrying and working",
+      "context": "Construction",
+      "description": "Quarries, unfinished objects and tool traces reveal methods for extracting and shaping limestone, sandstone and harder stone using different techniques.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-pyramid-building",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Pyramid construction",
+      "context": "Engineering",
+      "description": "Archaeological evidence includes workers' settlements, quarrying, transport and administrative records. Specific ramp arrangements and sequences are still debated.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-giza-workers",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Giza workers' settlements",
+      "context": "Engineering and labor",
+      "description": "Excavated housing, food production and burials document organized construction communities; they challenge the simplistic claim that pyramids were built solely by enslaved masses.",
+      "sources": [
+        "index",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-merer",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Diary of Merer",
+      "context": "Administrative evidence",
+      "description": "Old Kingdom papyri from Wadi el-Jarf document a crew's transport of limestone toward Khufu's pyramid project, providing contemporary logistical evidence.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ramps",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Ramps and sledges",
+      "context": "Transport engineering",
+      "description": "Sledges and inclined surfaces are attested in ancient construction contexts; no single surviving source explains every aspect of pyramid construction.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-metals",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Copper and bronze",
+      "context": "Material technology",
+      "description": "Copper alloys supported tool, vessel and ornament production; composition and technology varied, with bronze increasingly significant in later Bronze Age contexts.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-iron",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Iron working",
+      "context": "Material technology",
+      "description": "Early iron objects include rare meteoritic material; widespread iron use developed much later and should not be projected onto early pyramid construction.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-gold",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Goldsmithing",
+      "context": "Material technology",
+      "description": "Mining, hammering, joining and decorative techniques supplied jewelry and ritual objects, with Nubia an important region for Egyptian gold procurement.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-faience",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Egyptian faience",
+      "context": "Material technology",
+      "description": "Silica-rich glazed material made into beads, vessels, amulets and tiles; despite its name, it is not equivalent to later tin-glazed pottery.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-glass",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Glass production",
+      "context": "Material technology",
+      "description": "New Kingdom workshops and objects document colored glassmaking and shaping; raw material networks and specialized production varied.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-pottery",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Pottery",
+      "context": "Material technology",
+      "description": "Vessel forms, fabrics and firing methods provide evidence for storage, preparation, trade and chronology across social settings.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-woodworking",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Woodworking and joinery",
+      "context": "Craft",
+      "description": "Furniture, coffins and boats preserve evidence of joints, tool marks and imported or local timber; surviving objects reflect both craft and preservation conditions.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-textiles",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Spinning and weaving",
+      "context": "Craft",
+      "description": "Linen fibers were processed into yarn and woven using changing loom technologies, supporting clothing, trade and funerary requirements.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-pigments",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Pigments and Egyptian blue",
+      "context": "Material technology",
+      "description": "Mineral and manufactured pigments supported painting, including Egyptian blue produced through controlled material processing; recipes and compositions vary.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-papyrus-making",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Papyrus manufacture",
+      "context": "Material technology",
+      "description": "Strips of the plant's pith were layered and pressed into sheets, then joined in rolls; preparation details are reconstructed from materials and later descriptions.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-shipbuilding",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Boat and ship construction",
+      "context": "Engineering",
+      "description": "Preserved vessels reveal sophisticated woodworking, fastening and construction traditions adapted to river and maritime contexts.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-nilometer",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Nilometers",
+      "context": "Measurement technology",
+      "description": "Marked installations monitored river levels, especially well attested in later periods; readings supported administration and religious interpretations of inundation.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-mining",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Mining and quarry expeditions",
+      "context": "Technology and administration",
+      "description": "Expeditions combined skilled labor, provisioning, transport and inscriptions documenting royal organization and extraction in desert landscapes.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-architecture",
+      "collection": "engineering-technology-and-material-science",
+      "title": "Temple architecture",
+      "context": "Engineering and religion",
+      "description": "Pylons, courts, hypostyle halls and sanctuaries shaped movement and ritual access; temple plans differed by date, cult and available resources.",
+      "sources": [
+        "index",
+        "religious"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-hieroglyphs",
+      "collection": "language-writing-and-literature",
+      "title": "Hieroglyphic writing",
+      "context": "Script",
+      "description": "Combines signs representing sounds, words and semantic categories; signs do not correspond one-to-one with modern English letters.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-hieratic",
+      "collection": "language-writing-and-literature",
+      "title": "Hieratic",
+      "context": "Script",
+      "description": "Cursive Egyptian writing used extensively for administration, letters, literature and ritual manuscripts, alongside monumental hieroglyphs.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-demotic",
+      "collection": "language-writing-and-literature",
+      "title": "Demotic",
+      "context": "Script and language stage",
+      "description": "A more abbreviated writing tradition developed in the first millennium BCE and served legal, literary and religious uses, among others.",
+      "sources": [
+        "index",
+        "late"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-coptic",
+      "collection": "language-writing-and-literature",
+      "title": "Coptic",
+      "context": "Language and script",
+      "description": "Latest major written stage of Egyptian, predominantly using Greek letters with additional signs derived from Demotic; survives in liturgical use.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-old-egyptian",
+      "collection": "language-writing-and-literature",
+      "title": "Old Egyptian",
+      "context": "Language stage",
+      "description": "Linguistic stage attested in early royal and private inscriptions; textual distribution differs from spoken language reconstruction.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-middle-egyptian",
+      "collection": "language-writing-and-literature",
+      "title": "Middle Egyptian",
+      "context": "Language stage",
+      "description": "Classical literary language of the Middle Kingdom retained in formal and religious writing for centuries.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-late-egyptian",
+      "collection": "language-writing-and-literature",
+      "title": "Late Egyptian",
+      "context": "Language stage",
+      "description": "New Kingdom and later documents preserve a language stage closer to contemporary speech in many contexts, alongside older formal registers.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-phonograms",
+      "collection": "language-writing-and-literature",
+      "title": "Phonograms and determinatives",
+      "context": "Writing structure",
+      "description": "Consonantal signs and semantic classifiers work together in Egyptian spelling; the same sign may have different functions according to context.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-direction",
+      "collection": "language-writing-and-literature",
+      "title": "Reading direction",
+      "context": "Writing structure",
+      "description": "Hieroglyphs can be arranged in rows or columns and read from either direction; human and animal signs usually face the beginning of the line.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-rosetta",
+      "collection": "language-writing-and-literature",
+      "title": "Rosetta Stone",
+      "context": "196 BCE decree",
+      "description": "A decree in hieroglyphic, Demotic and Greek scripts helped enable modern decipherment; its political and priestly setting is also historically important.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-champollion",
+      "collection": "language-writing-and-literature",
+      "title": "Champollion and decipherment",
+      "context": "Modern scholarship",
+      "description": "Decipherment in the nineteenth century drew on Coptic, bilingual inscriptions and earlier research, including Thomas Young's contributions.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ostraca",
+      "collection": "language-writing-and-literature",
+      "title": "Ostraca",
+      "context": "Writing materials",
+      "description": "Pottery and limestone fragments served as inexpensive surfaces for notes, exercises, accounts, letters and sketches.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-scribal-tools",
+      "collection": "language-writing-and-literature",
+      "title": "Scribal tools",
+      "context": "Technology",
+      "description": "Palettes, inks and reed implements were used with papyrus and other surfaces. Red and black ink often distinguish headings or categories.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-sinuhe",
+      "collection": "language-writing-and-literature",
+      "title": "Tale of Sinuhe",
+      "context": "Middle Kingdom literature",
+      "description": "Narrates exile, life abroad and return, presenting questions of identity, kingship and burial in a highly crafted literary form.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ptahhotep",
+      "collection": "language-writing-and-literature",
+      "title": "Instruction of Ptahhotep",
+      "context": "Wisdom literature",
+      "description": "A composition transmitted through later manuscripts articulates ideals of speech, conduct and authority; attributed authorship is not automatically historical.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-eloquent-peasant",
+      "collection": "language-writing-and-literature",
+      "title": "Eloquent Peasant",
+      "context": "Literature",
+      "description": "Narrative of a wronged man whose petitions explore the relationship between rhetoric, authority and justice.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-love-poetry",
+      "collection": "language-writing-and-literature",
+      "title": "Love poetry",
+      "context": "Literature",
+      "description": "New Kingdom texts preserve sophisticated representations of longing, beauty and relationships, distinct from formal ritual literature.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-theban-alphabet",
+      "collection": "language-writing-and-literature",
+      "title": "Theban alphabet",
+      "context": "Renaissance occult reception",
+      "description": "The cipher was printed in Trithemius's Polygraphia in 1518 and later used in esoteric traditions. It is not an Egyptian language or pharaonic script.",
+      "sources": [
+        "theban",
+        "glyphs"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-religion-context",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Religion as social practice",
+      "context": "Historical method",
+      "description": "Temples, state institutions, domestic worship, festivals and burial practices overlap; the surviving religious record varies by region and social status.",
+      "sources": [
+        "religious",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-priesthood",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Priestly institutions",
+      "context": "Religion",
+      "description": "Temple personnel performed service, administration and specialized rituals in diverse institutional arrangements; priestly status and training varied.",
+      "sources": [
+        "religious"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-lector-priest",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Lector priests",
+      "context": "Ritual history",
+      "description": "Specialists associated with reciting and transmitting ritual texts appear in temples and funerary settings; literary portrayals also associate them with magical expertise.",
+      "sources": [
+        "religious",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-wab-priest",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Wab priests",
+      "context": "Ritual history",
+      "description": "Priestly titles related to purity and service occur in temple records; duties and hierarchy differed across institutions.",
+      "sources": [
+        "religious"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-house-life",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "House of Life",
+      "context": "Scribal and ritual institutions",
+      "description": "Per Ankh institutions are associated with learned textual, ritual and medical traditions; their organization should be established from particular evidence.",
+      "sources": [
+        "religious",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-ritual-purity",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Purity and ritual service",
+      "context": "Religion",
+      "description": "Purification and restrictions were important in particular temple contexts; practices varied rather than following one universal code for all Egyptians.",
+      "sources": [
+        "religious"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-execration",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Execration texts and objects",
+      "context": "Ritual history",
+      "description": "Inscribed or represented enemies appear in ritual objects used to express opposition and protection. Study their political and symbolic contexts without assuming efficacy.",
+      "sources": [
+        "religious",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-magical-wands",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Protective ivory wands",
+      "context": "Domestic religion",
+      "description": "Curved objects with protective imagery are associated with birth and household protection in Middle Kingdom contexts; exact use remains partly uncertain.",
+      "sources": [
+        "smith",
+        "religious"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-horus-stelae",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Horus cippi and healing stelae",
+      "context": "Protective religion",
+      "description": "Images of Horus overcoming dangerous animals accompany protective and healing texts; the objects illustrate ritual care, not modern clinical efficacy.",
+      "sources": [
+        "smith",
+        "religious"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-divine-oracles",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Oracular consultation",
+      "context": "Religion and law",
+      "description": "Processions and divine consultation could intersect with personal disputes, institutional decisions and requests for help; context determines interpretation.",
+      "sources": [
+        "religious"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-animal-votives",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Animal votives",
+      "context": "Temple economy",
+      "description": "Mummified animals could serve as dedicated offerings, distinct from the worship of particular sacred living animals; production supported substantial institutions.",
+      "sources": [
+        "religious",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-funeral-industry",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Funerary specialists",
+      "context": "Religion and economy",
+      "description": "Embalmers, priests, craftspeople and suppliers contributed to burial practices according to resources and local customs.",
+      "sources": [
+        "religious",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-magic-papyri",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Greek and Demotic magical papyri",
+      "context": "Greco-Roman reception",
+      "description": "Late collections combine diverse Egyptian, Greek and other cultural elements. They attest a complex ancient Mediterranean ritual milieu rather than one unified occult system.",
+      "sources": [
+        "reception",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-hermetic-bridge",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Hermetica and Egyptian symbolism",
+      "context": "Later reception",
+      "description": "Greco-Egyptian writings and later European interpretations reworked Egyptian-associated wisdom into new philosophical frameworks; chronology matters.",
+      "sources": [
+        "reception"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-renaissance-occult",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Renaissance occult alphabets",
+      "context": "Later reception",
+      "description": "Learned magic and cryptography in early modern Europe produced or transmitted several symbolic alphabets, including Theban. Their Egyptian associations are not evidence of pharaonic origin.",
+      "sources": [
+        "theban",
+        "reception"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-modern-reception",
+      "collection": "religion-magic-and-occult-reception",
+      "title": "Modern Egyptian-inspired esotericism",
+      "context": "Later reception",
+      "description": "Thelema, modern Satanism and Setianism have distinct historical origins and use Egyptian imagery in different ways; consult the linked mythology archive's reception records.",
+      "sources": [
+        "reception"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-archaeological-context",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Archaeological context",
+      "context": "Research method",
+      "description": "An object's find location, stratigraphy, associations and acquisition history can be as important as its inscription or appearance.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-chronology-method",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Dating and chronology",
+      "context": "Research method",
+      "description": "Royal lists, regnal dates, synchronisms, archaeological sequences and scientific dating help reconstruct chronology; absolute dates can differ among scholarly schemes.",
+      "sources": [
+        "chronology",
+        "science"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-tomb-bias",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Tomb and temple preservation bias",
+      "context": "Research method",
+      "description": "Stone monuments and arid cemeteries survive disproportionately; domestic activities and marginalized people are often less visible in surviving evidence.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-royal-propaganda",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Royal inscriptions and ideology",
+      "context": "Research method",
+      "description": "Monumental inscriptions present selective claims about victory, piety and legitimacy; compare independent administrative or archaeological evidence where possible.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-translation-limits",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Translation and uncertainty",
+      "context": "Research method",
+      "description": "Ancient terminology often has no exact modern equivalent. Transliteration, translation and interpretation are distinct operations, and scholarly readings can change.",
+      "sources": [
+        "science",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-museum-provenance",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Provenance and collections",
+      "context": "Ethics",
+      "description": "Research should record acquisition history, excavation permissions and current stewardship; cultural heritage is not merely a resource for modern symbolism.",
+      "sources": [
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-living-egypt",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Ancient heritage and modern Egypt",
+      "context": "Cultural context",
+      "description": "Ancient Egyptian history belongs to the wider heritage of Egypt and connected regions. Modern Egyptians and their diverse institutions are active participants in its study and preservation.",
+      "sources": [
+        "history",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-nubia",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Egypt and Nubia",
+      "context": "Intercultural history",
+      "description": "The Nile valley supported neighboring societies with their own histories, including Kerma and Kush; trade, conflict and cultural exchange moved in multiple directions.",
+      "sources": [
+        "history",
+        "late"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-punt",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Punt and Red Sea networks",
+      "context": "Intercultural history",
+      "description": "Egyptian records describe expeditions for valued products; Punt's exact geographical extent is debated and must not be reduced to unsupported certainty.",
+      "sources": [
+        "index",
+        "history"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-alexandria",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Alexandria and Hellenistic learning",
+      "context": "Later history",
+      "description": "The city became a major intellectual and cultural center within a multilingual kingdom; it represents later developments, not a direct snapshot of the Old Kingdom.",
+      "sources": [
+        "late"
+      ],
+      "review": "editorial reference; specialist review pending"
+    },
+    {
+      "id": "civ-pseudohistory",
+      "collection": "archaeology-evidence-and-cultural-legacy",
+      "title": "Evaluating extraordinary claims",
+      "context": "Research method",
+      "description": "Claims of lost supertechnology, aliens or secret unbroken priesthoods require evidence. Known Egyptian achievements stand on their own and should not be diminished by unsupported explanations.",
+      "sources": [
+        "science",
+        "index"
+      ],
+      "review": "editorial reference; specialist review pending"
+    }
+  ]
+}

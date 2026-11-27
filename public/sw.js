@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v107";
+const CACHE_NAME = "knightfall-shell-v108";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -47,6 +47,13 @@ const APP_SHELL = [
   "/egyptian-mythology-archive.mjs",
   "/egyptian-mythology-archive.json",
   "/egyptian-hall-of-gods.mjs",
+  "/egyptian-civilization.html",
+  "/egyptian-civilization.json",
+  "/egyptian-civilization.mjs",
+  "/kemet.css",
+  "/theban-translator.html",
+  "/theban-core.mjs",
+  "/theban-studio.mjs",
   "/celestial-sanctum.html",
   "/celestial-sanctum.css",
   "/celestial-sanctum.mjs",

@@ -406,6 +406,8 @@
       ["/moonology", "/celestial-sanctum"],
       ["/shadow-work", "/celestial-sanctum"],
       ["/egyptian-mythology-archive", "/the-veil"],
+      ["/egyptian-civilization", "/the-veil"],
+      ["/theban-translator", "/the-veil"],
       ["/force-realms", "/the-veil"],
       ["/jedi-temple", "/the-veil"],
       ["/sith-order", "/the-veil"],

@@ -1,0 +1,15 @@
+.kemet-hub .kemet-record{min-width:0;overflow-wrap:anywhere;padding:1rem;border:1px solid color-mix(in srgb,var(--veil-edge),transparent 65%);border-radius:12px}
+.kemet-hub .kemet-record h3{margin:.35rem 0}
+.kemet-hub .kemet-record summary{cursor:pointer}
+.kemet-hub .kemet-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:.8rem}
+.kemet-hub label{display:grid;gap:.4rem}
+.kemet-hub :is(input,select,textarea,button){font:inherit;max-width:100%;padding:.65rem;border:1px solid var(--veil-edge);border-radius:8px;color:var(--kf-ink,#eee1d2);background:var(--veil-panel)}
+.kemet-hub textarea{width:100%;min-height:7rem;box-sizing:border-box}
+.kemet-hub button{cursor:pointer;min-height:44px}
+.kemet-hub [hidden]{display:none!important}
+.kemet-hub .theban-chart{display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr));gap:.45rem;margin:1rem 0}
+.kemet-hub .theban-key{display:grid;justify-items:center;gap:.3rem}
+.kemet-hub .theban-glyph{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;width:2.2rem;height:2rem;background:#f5e8cf;color:#161616;border-radius:3px}
+.kemet-hub .theban-glyph img{width:100%;height:100%;object-fit:contain}
+.kemet-hub #theban-output{padding:.7rem;min-height:3rem;white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--veil-edge);border-radius:8px;line-height:2.2}
+.kemet-hub #theban-output .theban-glyph{margin:1px}
