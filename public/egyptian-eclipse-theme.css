@@ -213,3 +213,7 @@ html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-t
 }
 html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .home-intro h1 span{color:var(--kf-egypt-gold);background:none;-webkit-text-fill-color:currentColor;filter:none}
 html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :is(.kf-start-card,.kf-atlas-card,.foundry-card,.kf-hub-card,.theme-crew-panel,.moon-panel){border-radius:var(--kf-global-panel-corner,15px)}
+
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) :where(.entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,.tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card,.wallet-card,.public-chat-panel,.memo-panel,.listing-card,.quick-card,.directory-group,.threads-panel,.builder-panel){
+ border-color:var(--kf-chrome-line);background-color:var(--kf-panel);border-radius:var(--kf-global-panel-corner,15px)
+}

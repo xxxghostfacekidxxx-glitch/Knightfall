@@ -70,8 +70,9 @@ const paint=()=>{
  const state=publishedState(activeScope),privatePreset=preview(activeScope);
  const chosen=privatePreset||state.preset;
  const global=globalPreview()||safeGlobal(live.globalControls);
+ const artPaint=ART_KITS.has(chosen)||chosen==="egyptian_eclipse";
  const fingerprint=JSON.stringify([activeScope,chosen,state.preset,state.revision,!!privatePreset,global]);
- if(lastPaint===fingerprint&&document.body.dataset.kfTheme===chosen&&document.body.dataset.kfThemeScope===activeScope)return;
+ if(lastPaint===fingerprint&&document.body.dataset.kfTheme===chosen&&document.body.dataset.kfThemeScope===activeScope&&("kfArt" in document.body.dataset)===artPaint)return;
  lastPaint=fingerprint;
  document.body.dataset.kfGlobalDensity=global.density;
  document.body.dataset.kfGlobalCorners=global.corners;
@@ -80,6 +81,8 @@ const paint=()=>{
  document.body.dataset.kfThemeScope=activeScope;
  document.body.dataset.kfTheme=chosen;
  document.body.dataset.kfArtTheme=String(ART_KITS.has(chosen));
+ // One compact paint-family marker; layout and realm selectors remain independent.
+ if(artPaint)document.body.dataset.kfArt="";else delete document.body.dataset.kfArt;
  if(privatePreset)document.body.dataset.kfThemePreview="true";
  else delete document.body.dataset.kfThemePreview;
  document.dispatchEvent(new CustomEvent("kf:theme-change",{

@@ -30,7 +30,8 @@ test('dock has four corners, automatic control avoidance, minimize, and fullscre
  assert.match(dock,/function overlap\(a,b\)/);
  assert.ok(dock.includes('textarea,h1,h2,h3'));
  assert.ok(dock.includes('document.createRange'));
- assert.match(dock,/querySelectorAll\('a\[href\],button,input,select,textarea/);
+ assert.match(dock,/const obstacleSelector='a\[href\],button,input,select,textarea/);
+ assert.match(dock,/querySelectorAll\(obstacleSelector\)/);
  assert.match(dock,/function score\(position,width,height,blocked\)/);
  assert.match(dock,/function occupiedSize\(dock\)/);
  assert.match(dock,/#kf-chat-heads,\.kf-chat-panel,\.kf-chat-head-row/);

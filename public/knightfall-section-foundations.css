@@ -1,41 +1,20 @@
-/* KNIGHTFALL / SECTION FOUNDATIONS
- * Formerly the first part of the canonical monolith. Kept in the exact same
- * cascade position before the Gothic, artwork and cathedral layers.
- * Do not add global body styles here. Scoped section foundations only.
- */
 /* === CANONICAL KNIGHTFALL CHROME: SECTION FOUNDATIONS === */
-/* Ash-Fall section overhaul. Scoped by page roots to avoid legacy layout collisions. */
 :where(.community-directory,.messages-shell,.admin-shell,.profile-shell,.cartridge-shelf,.foundry,.members-page,.friends-page,.dt-workspace-nav){
- --section-surface:var(--af-v2-card);--section-raised:var(--kf-panel-2);--section-stroke:rgba(178,91,104,.34);
- --section-green:var(--kf-antique-gold);--section-pink:var(--kf-oxblood);--section-muted:#c4b9d3;
-}
+--section-surface:var(--af-v2-card);--section-raised:var(--kf-panel-2);--section-stroke:rgba(178,91,104,.34);--section-green:var(--kf-antique-gold);--section-pink:var(--kf-oxblood);--section-muted:#c4b9d3}
 .community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero,.foundry .foundry-hero{
- position:relative;isolation:isolate;border-radius:20px;padding:clamp(1.15rem,3vw,2.4rem);
- background:radial-gradient(ellipse at 95% 5%,rgba(178,91,104,.14),transparent 46%),linear-gradient(135deg,#201d24,#14181c 74%);
- border:1px solid var(--section-stroke);box-shadow:0 18px 44px #0007,inset 0 1px #ffffff12;
-}
+position:relative;isolation:isolate;border-radius:20px;padding:clamp(1.15rem,3vw,2.4rem);background:radial-gradient(ellipse at 95% 5%,rgba(178,91,104,.14),transparent 46%),linear-gradient(135deg,#201d24,#14181c 74%);border:1px solid var(--section-stroke);box-shadow:0 18px 44px #0007,inset 0 1px #ffffff12}
 .community-directory :where(.community-directory-grid,.threads),.cartridge-shelf{gap:clamp(.7rem,2vw,1.3rem)}
 .community-directory :where(.category,.thread-card,.forum-message,.threads-panel),.cartridge-shelf :where(.cartridge-cabinet,.arcade-flat-card){
- position:relative;min-width:0;overflow-wrap:anywhere;border:1px solid var(--section-stroke);
- border-radius:15px;background:linear-gradient(145deg,#272229,#171a20 72%);
- box-shadow:0 10px 26px #0005,inset 0 1px #ffffff0c;
-}
+position:relative;min-width:0;overflow-wrap:anywhere;border:1px solid var(--section-stroke);border-radius:15px;background:linear-gradient(145deg,#272229,#171a20 72%);box-shadow:0 10px 26px #0005,inset 0 1px #ffffff0c}
 .community-directory :where(.category,.thread-card):hover,.cartridge-shelf :where(.cartridge-cabinet,.arcade-flat-card):hover{
- border-color:rgba(146,161,138,.6);box-shadow:0 12px 34px #0007,0 0 19px #b25b6818;
-}
+border-color:rgba(146,161,138,.6);box-shadow:0 12px 34px #0007,0 0 19px #b25b6818}
 .community-directory :where(.thread-search,.thread-toolbar input){max-width:100%;min-width:0}
 .community-directory .category-mark{color:var(--section-green)}
 .cartridge-hero .cartridge-title{text-wrap:balance;line-height:1.03}
 .cartridge-shelf .cartridge-number{color:var(--section-green)}
 .cartridge-shelf :where(.flat-actions,.hero-actions){gap:.55rem;flex-wrap:wrap}
 .messages-shell{
- /* Realm-owned palette; individual message content and game art stay untouched. */
- --kf-msg-base:var(--kf-crew-ink,#0b0d1b);
- --kf-msg-surface:var(--kf-crew-surface,#201d24);
- --kf-msg-depth:var(--kf-crew-depth,#0d0e1a);
- --kf-msg-accent:var(--kf-realm-metal,#b25b68);
- --kf-msg-text:var(--kf-relic-ivory,#ece1d3);
-}
+--kf-msg-base:var(--kf-crew-ink,#0b0d1b);--kf-msg-surface:var(--kf-crew-surface,#201d24);--kf-msg-depth:var(--kf-crew-depth,#0d0e1a);--kf-msg-accent:var(--kf-realm-metal,#b25b68);--kf-msg-text:var(--kf-relic-ivory,#ece1d3)}
 .messages-shell .messages-hero{align-items:center;margin-bottom:1rem}
 .messages-shell .messages-hero h1,.admin-shell .hero h1{font-size:clamp(2.4rem,6vw,5.4rem);line-height:.98}
 .messages-shell .message-layout{background:#0e0d1a;border:1px solid var(--section-stroke);border-radius:18px;box-shadow:0 22px 54px #0007;min-width:0}
@@ -57,7 +36,6 @@
 .admin-shell .admin-tabs .active{border-color:var(--section-green);box-shadow:0 0 0 1px #c7a77c55}
 .admin-shell .table-wrap{overflow-x:auto;max-width:100%;border-radius:12px}
 .admin-shell :where(.admin-shortcuts,.settings-grid,.test-bot-grid){min-width:0}
-/* The profile-custom-theme guard keeps its match behavior while :where()\n   removes avoidable selector weight. Page-specific profile CSS still wins. */
 body:where(:not(.profile-custom-theme)) .profile-shell .card{border:1px solid var(--section-stroke);border-radius:18px;background:linear-gradient(145deg,#191426,#0c0d19);box-shadow:0 18px 42px #0006}
 body:where(:not(.profile-custom-theme)) .profile-shell :where(.profile-cover,.avatar){border-color:rgba(178,91,104,.45)}
 body:where(:not(.profile-custom-theme)) .profile-shell :where(.wallet-card,.profile-stats>div,.friend-card){border-radius:14px;box-shadow:0 10px 25px #0004}
@@ -71,53 +49,34 @@ body:where(:not(.profile-custom-theme)) .profile-shell :where(.action,.friend-re
 .dt-workspace-nav :where(button,a){min-height:40px}
 :where(.community-directory,.messages-shell,.admin-shell,.profile-shell,.foundry,.members-page) :where(button,a,input,textarea,select):focus-visible{outline:2px solid var(--section-green);outline-offset:3px}
 @media(max-width:800px){
- .messages-shell .messages-hero,.admin-shell>.hero{gap:.9rem;align-items:stretch;flex-wrap:wrap}
- .messages-shell .messages-hero-actions{display:flex;flex-wrap:wrap;gap:.5rem}
- .admin-shell .stats{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
- .admin-shell .admin-shortcuts{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
- .community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero{border-radius:14px}
-}
+.messages-shell .messages-hero,.admin-shell>.hero{gap:.9rem;align-items:stretch;flex-wrap:wrap}
+.messages-shell .messages-hero-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.admin-shell .stats{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.admin-shell .admin-shortcuts{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
+.community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero{border-radius:14px}}
 @media(max-width:600px){
- .messages-shell,.admin-shell{width:calc(100% - 1rem);padding-top:.75rem}
- .messages-shell .messages-hero,.admin-shell>.hero{padding:1rem}
- .messages-shell .message-layout{border-radius:12px}
- .admin-shell .admin-tabs{position:relative}
- .profile-shell{width:calc(100% - 1rem)}
- .community-directory :where(.category,.thread-card){border-radius:12px}
-}
+.messages-shell,.admin-shell{width:calc(100% - 1rem);padding-top:.75rem}
+.messages-shell .messages-hero,.admin-shell>.hero{padding:1rem}
+.messages-shell .message-layout{border-radius:12px}
+.admin-shell .admin-tabs{position:relative}
+.profile-shell{width:calc(100% - 1rem)}
+.community-directory :where(.category,.thread-card){border-radius:12px}}
 @media(prefers-reduced-motion:reduce){.messages-shell .conversation{transition:none}}
-
-/* Mobile inbox: avoid overlay overlap and preserve the composer when the keyboard opens. */
 @media(max-width:850px){
- .messages-shell .message-layout.show-chat .chat-panel{
-  min-width:0;min-height:0;overflow:hidden;
-  height:calc(100dvh - 155px);max-height:calc(100dvh - 155px);
-  grid-template-rows:auto minmax(0,1fr) auto;
- }
- .messages-shell .message-layout.show-chat .messages-list{min-height:0;overflow-y:auto;overscroll-behavior:contain}
- .messages-shell .message-layout.show-chat .composer{
-  position:relative;z-index:2;flex-shrink:0;
-  padding-bottom:max(.65rem,env(safe-area-inset-bottom));
-  background:#171326;
- }
- .messages-shell .composer-main{min-width:0;max-width:100%}
- .messages-shell .composer textarea{max-width:100%;max-height:min(22dvh,150px)}
- .messages-shell .chat-tools{min-width:0;flex-wrap:wrap}
-}
+.messages-shell .message-layout.show-chat .chat-panel{
+min-width:0;min-height:0;overflow:hidden;height:calc(100dvh - 155px);max-height:calc(100dvh - 155px);grid-template-rows:auto minmax(0,1fr) auto}
+.messages-shell .message-layout.show-chat .messages-list{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.messages-shell .message-layout.show-chat .composer{
+position:relative;z-index:2;flex-shrink:0;padding-bottom:max(.65rem,env(safe-area-inset-bottom));background:#171326}
+.messages-shell .composer-main{min-width:0;max-width:100%}
+.messages-shell .composer textarea{max-width:100%;max-height:min(22dvh,150px)}
+.messages-shell .chat-tools{min-width:0;flex-wrap:wrap}}
 @media(max-width:480px){
- .messages-shell .message-layout.show-chat .chat-panel{height:calc(100dvh - 130px);max-height:calc(100dvh - 130px)}
- .messages-shell .composer{gap:.35rem}
-}
+.messages-shell .message-layout.show-chat .chat-panel{height:calc(100dvh - 130px);max-height:calc(100dvh - 130px)}
+.messages-shell .composer{gap:.35rem}}
 @media(max-width:850px) and (max-height:500px){
- .messages-shell .message-layout.show-chat .chat-panel{height:calc(100dvh - 48px);max-height:calc(100dvh - 48px)}
-}
-/* Decorative layers must never intercept primary navigation or compose controls. */
+.messages-shell .message-layout.show-chat .chat-panel{height:calc(100dvh - 48px);max-height:calc(100dvh - 48px)}}
 .gw-character-crew,.gw-ambient,.gw-panel-mascot{pointer-events:none!important}
-
-
-/* Canonical composer chrome. Older page CSS retains layout ownership, but the
-   approved Chaosphere realm supplies its palette. Forced declarations are
-   temporary until the message stylesheet is migrated into local components. */
 body:not(.profile-custom-theme) .messages-shell .composer{background:linear-gradient(180deg,var(--kf-msg-surface),var(--kf-msg-depth))!important;border-top:1px solid color-mix(in srgb,var(--kf-msg-accent) 34%,transparent)!important;padding-bottom:max(.75rem,env(safe-area-inset-bottom))!important}
 body:not(.profile-custom-theme) .messages-shell .composer textarea{background:var(--kf-msg-base)!important;border:1px solid color-mix(in srgb,var(--kf-msg-accent) 40%,transparent)!important;color:var(--kf-msg-text)!important;min-width:0;max-width:100%;font-size:16px}
 body:not(.profile-custom-theme) .messages-shell .composer textarea:focus{outline:2px solid var(--kf-msg-accent)!important;border-color:var(--kf-msg-accent)!important}
@@ -129,4 +88,3 @@ body:not(.profile-custom-theme) .messages-shell :where(.composer button.primary,
 body:has(.messages-shell) .gw-character-crew{display:none!important}
 @media(max-width:680px){.messages-shell .composer{position:relative;z-index:3}.messages-shell .composer textarea{width:100%;flex-basis:100%}.messages-shell .composer-actions{justify-content:flex-end}.messages-shell .message-layout{min-height:0}}
 /* === END SECTION FOUNDATIONS === */
-

@@ -182,3 +182,16 @@ test("shared chrome controls preserve gameplay, profile themes, and zero importa
  assert.match(ui,/announceGlobalPublished/);
  assert.match(ui,/\/global\/rollback/);
 });
+
+ test("only the nine illustrated presets activate the legacy paint exclusion marker",async()=>{
+ const b=browser("/",published);await b.window.KnightfallThemeCrew.refresh();
+ const api=b.window.KnightfallThemeCrew;
+ for(const preset of ["egyptian_eclipse","dark_lord_ascendant","korriban_necropolis","mustafar_forge","jedi_sanctuary","neon_dystopia","the_asylum","arcade_anarchy","astral_dominion"]){
+  assert.equal(api.preview(preset,"site"),true);assert.ok("kfArt" in b.body.dataset,preset);
+ }
+ for(const preset of ["cathedral","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"]){
+  assert.equal(api.preview(preset,"site"),true);assert.ok(!("kfArt" in b.body.dataset),preset);
+ }
+ const before=b.events.length;api.preview("royal_abyss","site");assert.equal(b.events.length,before);
+ assert.equal(api.preview(null,"site"),true);assert.equal(b.body.dataset.kfTheme,"blood_moon");
+ });

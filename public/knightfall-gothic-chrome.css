@@ -1,251 +1,149 @@
 /* Legacy forced paint is excluded from original-art presets. Layout remains shared. */
-/* KNIGHTFALL / GOTHIC CHROME. Former canonical layer, preserved in its original cascade position.
- * Migrate shared chrome to design tokens; do not introduce standalone app or realm layouts.
- */
 /* === CANONICAL KNIGHTFALL CHROME: GOTHIC CHROME === */
-/* Knightfall Gothic Creator, approved Nov 14 with skull-and-eclipse crest.
-   Bone, steel, moss, bronze, muted crimson and eclipse-violet. Site chrome only.
-   Never replace original artwork, game canvases or member-customized profile colors. */
 :root{
- --kf-bone:#ece1d3;--kf-steel:#96949e;--kf-moss:#92a18a;
- --kf-oxblood:#b25b68;--kf-antique-gold:#c7a77c;--kf-eclipse:#82617c;
- --kf-ink:#0d1013;--kf-ink-raised:#201d24;
- --kf-chrome-line:rgba(178,148,151,.37);
- --kf-chrome-shadow:0 14px 35px rgba(0,0,0,.52),inset 0 1px rgba(236,225,211,.055);
- --kf-yellow:var(--kf-antique-gold);--kf-yellow-soft:rgba(199,167,124,.12);
- --kf-yellow-line:rgba(199,167,124,.35);
- --kf-bg:var(--kf-ink);--kf-panel:#17171c;--kf-panel-2:#242128;
- --kf-text:var(--kf-bone);--kf-muted:#b9afa8;--kf-line:var(--kf-chrome-line);
- --kf-accent:var(--kf-oxblood);--kf-accent-bright:var(--kf-antique-gold);
- --kf-accent-soft:rgba(178,91,104,.15);
- --af-v2-ink:#0d1013;--af-v2-card:#19191e;--af-v2-raised:#242128;
- --af-v2-pink:var(--kf-oxblood);--af-v2-green:var(--kf-moss);
- --af-v2-text:var(--kf-bone);--af-v2-muted:var(--kf-muted);
- --af-v2-line:var(--kf-chrome-line);
- accent-color:var(--kf-antique-gold);color-scheme:dark
-}
+--kf-bone:#ece1d3;--kf-steel:#96949e;--kf-moss:#92a18a;--kf-oxblood:#b25b68;--kf-antique-gold:#c7a77c;--kf-eclipse:#82617c;--kf-ink:#0d1013;--kf-ink-raised:#201d24;--kf-chrome-line:rgba(178,148,151,.37);--kf-chrome-shadow:0 14px 35px rgba(0,0,0,.52),inset 0 1px rgba(236,225,211,.055);--kf-yellow:var(--kf-antique-gold);--kf-yellow-soft:rgba(199,167,124,.12);--kf-yellow-line:rgba(199,167,124,.35);--kf-bg:var(--kf-ink);--kf-panel:#17171c;--kf-panel-2:#242128;--kf-text:var(--kf-bone);--kf-muted:#b9afa8;--kf-line:var(--kf-chrome-line);--kf-accent:var(--kf-oxblood);--kf-accent-bright:var(--kf-antique-gold);--kf-accent-soft:rgba(178,91,104,.15);--af-v2-ink:#0d1013;--af-v2-card:#19191e;--af-v2-raised:#242128;--af-v2-pink:var(--kf-oxblood);--af-v2-green:var(--kf-moss);--af-v2-text:var(--kf-bone);--af-v2-muted:var(--kf-muted);--af-v2-line:var(--kf-chrome-line);accent-color:var(--kf-antique-gold);color-scheme:dark}
 html{background:#0d1013;scrollbar-color:#6f6266 #0d1013}
 body:not(.profile-custom-theme){
- color:var(--kf-bone);color-scheme:dark}
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme){
- background-color:#0d1013!important;
- background-image:radial-gradient(ellipse at 86% 2%,rgba(131,86,114,.17),transparent 42%),
- radial-gradient(ellipse at 2% 78%,rgba(101,114,92,.10),transparent 48%),
- linear-gradient(160deg,#111218,#0d1013 49%,#151319)!important
-;}
+color:var(--kf-bone);color-scheme:dark}
+body:where(:not([data-kf-art])):not(.profile-custom-theme){
+background-color:#0d1013!important;background-image:radial-gradient(ellipse at 86% 2%,rgba(131,86,114,.17),transparent 42%),
+radial-gradient(ellipse at 2% 78%,rgba(101,114,92,.10),transparent 48%),
+linear-gradient(160deg,#111218,#0d1013 49%,#151319)!important
+}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(h1,h2,h3){color:var(--kf-bone);text-shadow:none;text-wrap:balance}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(a){color:var(--kf-antique-gold);text-underline-offset:.18em}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(a:hover){color:#edcda0}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(a,button,input,select,textarea,[role="button"]):focus-visible{
- outline:2px solid var(--kf-antique-gold)!important;outline-offset:3px
-}
+outline:2px solid var(--kf-antique-gold)!important;outline-offset:3px}
 .kf-header{
- isolation:isolate}
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-header{background:linear-gradient(100deg,rgba(24,20,28,.97),rgba(12,15,18,.97))!important;
- border-bottom:1px solid rgba(199,167,124,.42)!important;
- box-shadow:0 13px 32px #0008,inset 0 -1px rgba(177,93,107,.19)!important
-;}
+isolation:isolate}
+:where(body:not([data-kf-art])) .kf-header{background:linear-gradient(100deg,rgba(24,20,28,.97),rgba(12,15,18,.97))!important;border-bottom:1px solid rgba(199,167,124,.42)!important;box-shadow:0 13px 32px #0008,inset 0 -1px rgba(177,93,107,.19)!important
+}
 .kf-header::after{
- content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
- opacity:.75;pointer-events:none
-}
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-header::after{
- background:linear-gradient(90deg,transparent,#984557 23%,#b99e79 48%,#778a79 75%,transparent)!important;}
+content:"";position:absolute;left:0;right:0;bottom:0;height:2px;opacity:.75;pointer-events:none}
+:where(body:not([data-kf-art])) .kf-header::after{
+background:linear-gradient(90deg,transparent,#984557 23%,#b99e79 48%,#778a79 75%,transparent)!important}
 .kf-brand{
- display:inline-flex;align-items:center;white-space:nowrap;
- font:900 clamp(.95rem,1.8vw,1.28rem)/1.1 Georgia,"Times New Roman",serif;text-decoration:none
-}
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-brand{color:var(--kf-bone)!important;
- letter-spacing:.04em!important;text-shadow:0 2px 7px #0009!important;}
+display:inline-flex;align-items:center;white-space:nowrap;font:900 clamp(.95rem,1.8vw,1.28rem)/1.1 Georgia,"Times New Roman",serif;text-decoration:none}
+:where(body:not([data-kf-art])) .kf-brand{color:var(--kf-bone)!important;letter-spacing:.04em!important;text-shadow:0 2px 7px #0009!important}
 .kf-brand::before{
- content:"";display:inline-block;flex:none;width:clamp(34px,3.5vw,46px);height:clamp(34px,3.5vw,46px);
- margin-right:.5rem;background:url("/icons/knightfall-crest-192.png") center/contain no-repeat;
- filter:drop-shadow(0 3px 6px #000a)
-}
-
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-brand b{color:#d6b0a7!important;}.kf-brand::after{display:none!important}
+content:"";display:inline-block;flex:none;width:clamp(34px,3.5vw,46px);height:clamp(34px,3.5vw,46px);margin-right:.5rem;background:url("/icons/knightfall-crest-192.png") center/contain no-repeat;filter:drop-shadow(0 3px 6px #000a)}
+:where(body:not([data-kf-art])) .kf-brand b{color:#d6b0a7!important}.kf-brand::after{display:none!important}
 .kf-header :where(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle){border-radius:9px}
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-header :where(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle){color:#e3d7ce!important;}
-
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-header :where(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle):hover,
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-header .kf-nav-group[open]>summary{
- color:#fff7e8!important;background:linear-gradient(135deg,#392834,#24242b)!important;
- border-color:#ab7777!important
-;}
-
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-header :where(.kf-nav a[aria-current="page"],.kf-nav-section-current,.kf-nav-group:has(a[aria-current="page"])>summary){
- color:#f1d5aa!important;background:rgba(178,91,104,.18)!important;
- border-color:#a8807d!important;box-shadow:inset 0 -2px 0 var(--kf-antique-gold)!important
-;}
-
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-header .kf-nav-menu,
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-header .kf-nav.open{
- background:linear-gradient(145deg,#28222b,#12151a)!important;
- border:1px solid #78666a!important;box-shadow:0 19px 44px #000c!important
-;}
-
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-header .kf-notify-badge{background:#bd9a6e!important;color:#191518!important;}
+:where(body:not([data-kf-art])) .kf-header :where(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle){color:#e3d7ce!important}
+:where(body:not([data-kf-art])) .kf-header :where(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle):hover,
+:where(body:not([data-kf-art])) .kf-header .kf-nav-group[open]>summary{
+color:#fff7e8!important;background:linear-gradient(135deg,#392834,#24242b)!important;border-color:#ab7777!important
+}
+:where(body:not([data-kf-art])) .kf-header :where(.kf-nav a[aria-current="page"],.kf-nav-section-current,.kf-nav-group:has(a[aria-current="page"])>summary){
+color:#f1d5aa!important;background:rgba(178,91,104,.18)!important;border-color:#a8807d!important;box-shadow:inset 0 -2px 0 var(--kf-antique-gold)!important
+}
+:where(body:not([data-kf-art])) .kf-header .kf-nav-menu,
+:where(body:not([data-kf-art])) .kf-header .kf-nav.open{
+background:linear-gradient(145deg,#28222b,#12151a)!important;border:1px solid #78666a!important;box-shadow:0 19px 44px #000c!important
+}
+:where(body:not([data-kf-art])) .kf-header .kf-notify-badge{background:#bd9a6e!important;color:#191518!important}
 .kf-announcement,.kf-maintenance{
- background:#201a20!important;border-bottom-color:#77656a!important;color:#e4d6ca!important
-}
+background:#201a20!important;border-bottom-color:#77656a!important;color:#e4d6ca!important}
 .kf-announcement strong{color:#dec19a!important}
-/* Shared surfaces retain original layout, scrolling, interactions and accessibility. */
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
- .entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
- .tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
- .game-card,.wallet-card,.public-chat-panel,.memo-panel,.listing-card,.quick-card,
- .directory-group,.kf-start-card
-){border-radius:clamp(12px,1.5vw,19px);
- box-shadow:var(--kf-chrome-shadow)
-}
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
- .entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
- .tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
- .game-card,.wallet-card,.public-chat-panel,.memo-panel,.listing-card,.quick-card,
- .directory-group,.kf-start-card
+.entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
+.tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
+.game-card,.wallet-card,.public-chat-panel,.memo-panel,.listing-card,.quick-card,
+.directory-group,.kf-start-card
+){border-radius:clamp(12px,1.5vw,19px);box-shadow:var(--kf-chrome-shadow)}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
+.entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
+.tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
+.game-card,.wallet-card,.public-chat-panel,.memo-panel,.listing-card,.quick-card,
+.directory-group,.kf-start-card
 ){
- border-color:var(--kf-chrome-line)!important;}
-:where(body:where(:is([data-kf-art-theme="true"],[data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
- .entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
- .tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
- .game-card,.wallet-card,.public-chat-panel,.memo-panel,.listing-card,.quick-card,
- .directory-group,.kf-start-card
-)){
- border-color:var(--kf-chrome-line);}
+border-color:var(--kf-chrome-line)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
- .entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
- .tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
- .game-card,.public-chat-panel,.listing-card,.quick-card,.directory-group
+.entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
+.tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
+.game-card,.public-chat-panel,.listing-card,.quick-card,.directory-group
 ){
- color:var(--kf-bone)!important;
- background:radial-gradient(ellipse at 96% 5%,rgba(153,71,92,.10),transparent 47%),
- linear-gradient(145deg,#262128,#15181c 88%)!important
-}
+color:var(--kf-bone)!important;background:radial-gradient(ellipse at 96% 5%,rgba(153,71,92,.10),transparent 47%),
+linear-gradient(145deg,#262128,#15181c 88%)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.community-directory,.messages-shell,.admin-shell,.profile-shell,.foundry,.members-page,.friends-page,.cartridge-shelf,.memo-page){min-width:0}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
- .community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,
- .members-page .members-hero,.foundry .foundry-hero,.directory-hero
+.community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,
+.members-page .members-hero,.foundry .foundry-hero,.directory-hero
 ){
- border-color:var(--kf-chrome-line)!important;
- background:radial-gradient(ellipse at 98% 3%,rgba(138,77,100,.14),transparent 45%),
- linear-gradient(130deg,#29202c,#12161a 76%)!important;color:var(--kf-bone)
-}
+border-color:var(--kf-chrome-line)!important;background:radial-gradient(ellipse at 98% 3%,rgba(138,77,100,.14),transparent 45%),
+linear-gradient(130deg,#29202c,#12161a 76%)!important;color:var(--kf-bone)}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.eyebrow,.arcade-kicker,.section-label,.cartridge-number,.kf-start-eyebrow){
- color:var(--kf-antique-gold)!important;letter-spacing:.12em
-}
+color:var(--kf-antique-gold)!important;letter-spacing:.12em}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.muted,.subtitle,.helper-text,.directory-hero>p,.listing-description,.quick-card p){
- color:var(--kf-muted)!important
-}
+color:var(--kf-muted)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),textarea,select){
- min-width:0;max-width:100%;border-radius:10px;
- background-color:#17181d!important;color:var(--kf-bone)!important;border-color:#75636b!important
-}
+min-width:0;max-width:100%;border-radius:10px;background-color:#17181d!important;color:var(--kf-bone)!important;border-color:#75636b!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input,textarea,select)::placeholder{color:#b6a9a4;opacity:1}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input,textarea,select):focus{
- border-color:var(--kf-antique-gold)!important;box-shadow:0 0 0 2px rgba(199,167,124,.15)!important
-}
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)){font-weight:800;
- box-shadow:0 7px 19px rgba(0,0,0,.33),inset 0 1px rgba(255,243,228,.10)
-}
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)){
- background:linear-gradient(125deg,#883e51,#b25b68)!important;border-color:#c3948d!important;
- color:#fff3e4!important;}
+border-color:var(--kf-antique-gold)!important;box-shadow:0 0 0 2px rgba(199,167,124,.15)!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)){font-weight:800;box-shadow:0 7px 19px rgba(0,0,0,.33),inset 0 1px rgba(255,243,228,.10)}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)){
+background:linear-gradient(125deg,#883e51,#b25b68)!important;border-color:#c3948d!important;color:#fff3e4!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)):hover{filter:brightness(1.12)}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(button:disabled,[aria-disabled="true"]){cursor:not-allowed}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.status.good,.success,[role="status"].success){color:#aabc9f!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.tabs [aria-selected="true"],.tabs .active,.admin-shell .admin-tabs .active){
- border-color:var(--kf-antique-gold)!important;
- background:rgba(199,167,124,.16)!important;color:var(--kf-bone)!important
-}
+border-color:var(--kf-antique-gold)!important;background:rgba(199,167,124,.16)!important;color:var(--kf-bone)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .admin-shell .admin-tabs .active{
- box-shadow:inset 0 -2px 0 var(--kf-antique-gold)!important
-}
+box-shadow:inset 0 -2px 0 var(--kf-antique-gold)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .messages-shell .conversation.active{
- border-color:#b7a080!important;background:linear-gradient(105deg,#342430,#201f26)!important;
- box-shadow:inset 3px 0 var(--kf-oxblood)!important
-}
-/* Chaosphere composer paint is now owned by knightfall-section-foundations.css. */
+border-color:#b7a080!important;background:linear-gradient(105deg,#342430,#201f26)!important;box-shadow:inset 3px 0 var(--kf-oxblood)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-shelf .cartridge-number{color:var(--kf-antique-gold)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-cabinet{border-top:1px solid #a18876!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .directory-group li+li{border-color:rgba(199,167,124,.18)}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .site-footer,
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) #ashfall-support-footer{
- background:linear-gradient(100deg,#16171b,#221b21)!important;
- border-top:1px solid rgba(199,167,124,.48)!important;color:var(--kf-muted)!important
-}
+background:linear-gradient(100deg,#16171b,#221b21)!important;border-top:1px solid rgba(199,167,124,.48)!important;color:var(--kf-muted)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.site-footer a,#ashfall-support-footer a){color:#dac098!important}
-/* Approved crest watermark: subdued, never on top of working controls. */
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-intro,.cartridge-hero){
- isolation:isolate;position:relative;overflow:hidden;
- border-radius:clamp(15px,2vw,23px)
+isolation:isolate;position:relative;overflow:hidden;border-radius:clamp(15px,2vw,23px)}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-intro,.cartridge-hero){border:1px solid rgba(199,167,124,.48)!important}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-hero:not([data-kf-art-hero]){
+background:radial-gradient(circle at 93% 3%,rgba(149,73,92,.18),transparent 46%),
+linear-gradient(120deg,#29202b,#14191d)!important
 }
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-intro,.cartridge-hero){border:1px solid rgba(199,167,124,.48)!important;}
-/* The shared palette must never hide illustrated heroes. Artwork lives in
-   ORIGINAL ARTWORK block below; only the non-illustrated fallback uses gradients. */
-
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-hero:not([data-kf-art-hero]){
- background:radial-gradient(circle at 93% 3%,rgba(149,73,92,.18),transparent 46%),
- linear-gradient(120deg,#29202b,#14191d)!important
-;}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-hero::after{
- content:"";position:absolute;pointer-events:none;z-index:-1;
- right:clamp(-70px,-2vw,0px);top:50%;transform:translateY(-50%);
- width:min(31vw,230px);height:min(31vw,230px);
- background:url("/icons/knightfall-crest-512.png") center/contain no-repeat;
- opacity:.20;filter:saturate(.70)
-}
-
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1{color:#f3e7d9!important;}
-
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1 span{color:#dbac9a!important;}
-
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro p{color:#d0c3bc!important;}
+content:"";position:absolute;pointer-events:none;z-index:-1;right:clamp(-70px,-2vw,0px);top:50%;transform:translateY(-50%);width:min(31vw,230px);height:min(31vw,230px);background:url("/icons/knightfall-crest-512.png") center/contain no-repeat;opacity:.20;filter:saturate(.70)}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1{color:#f3e7d9!important}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1 span{color:#dbac9a!important}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro p{color:#d0c3bc!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-sign-in:not([hidden]){
- display:inline-flex!important;align-items:center;justify-content:center;
- min-height:44px;padding:.6rem 1rem;border:1px solid #b89b78;border-radius:10px;text-decoration:none;font-weight:800
+display:inline-flex!important;align-items:center;justify-content:center;min-height:44px;padding:.6rem 1rem;border:1px solid #b89b78;border-radius:10px;text-decoration:none;font-weight:800}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-sign-in:not([hidden]){
+background:#713d4a!important;color:#fff2e6!important}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-explore-link,.kf-start-card a){
+border-color:#a0886d!important;color:#e7cfaa!important;background:#28252a!important
 }
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-sign-in:not([hidden]){
- background:#713d4a!important;color:#fff2e6!important;}
-
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-explore-link,.kf-start-card a){
- border-color:#a0886d!important;color:#e7cfaa!important;background:#28252a!important
-;}
-
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-here{
- border-color:#8f7273!important;background:linear-gradient(140deg,#251e27,#171c1d)!important
-;}
-
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-card{
- background:linear-gradient(140deg,#2a242b,#1b2021)!important
-;}
-
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-card>span{color:#cea98a!important;}
-/* Cached older Gravewave decorations no longer participate in shared chrome. */
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-here{
+border-color:#8f7273!important;background:linear-gradient(140deg,#251e27,#171c1d)!important
+}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-card{
+background:linear-gradient(140deg,#2a242b,#1b2021)!important
+}
+body:where(:not([data-kf-art])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-card>span{color:#cea98a!important}
 body .gw-character-crew,body .gw-ambient,body .gw-panel-mascot,
 body .kf-gravewave-ribbon,body .kf-gravewave-title,body .kf-gravewave-corner,
 body .kf-devil-title-stamps,body .kf-devil-footer-stamps{display:none!important}
 body.gravewave-everywhere::after{display:none!important}
-
-body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])).gravewave-everywhere :where(h1,h2,.kf-brand){text-shadow:none!important;}
+body:where(:not([data-kf-art])).gravewave-everywhere :where(h1,h2,.kf-brand){text-shadow:none!important}
 @media(max-width:760px){
- .kf-header{min-height:64px}
- .kf-header .kf-brand{font-size:.94rem}
- .kf-brand::before{width:34px;height:34px;margin-right:.35rem}
- 
-:where(body:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])) .kf-nav-menu{box-shadow:none!important;}
- body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.entry-card,.panel,.card,.arcade-card,.game-card){border-radius:14px}
- body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input,textarea,select){font-size:16px}
- body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-hero::after{
-  width:124px;height:124px;right:-22px;opacity:.10
- }
-}
+.kf-header{min-height:64px}
+.kf-header .kf-brand{font-size:.94rem}
+.kf-brand::before{width:34px;height:34px;margin-right:.35rem}
+:where(body:not([data-kf-art])) .kf-nav-menu{box-shadow:none!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.entry-card,.panel,.card,.arcade-card,.game-card){border-radius:14px}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input,textarea,select){font-size:16px}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-hero::after{
+width:124px;height:124px;right:-22px;opacity:.10}}
 @media(prefers-reduced-motion:reduce){
- body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.btn,.button,.card,.game-card,.arcade-card){
-  transition:none!important;animation:none!important
- }
-}
-/* Never target canvas, svg, video or member profile-custom-theme. */
-
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.btn,.button,.card,.game-card,.arcade-card){
+transition:none!important;animation:none!important}}
 /* Gothic Creator responsive integrity: shared chrome, not game canvases or custom profiles. */
 html{max-width:100%;overflow-x:clip}
 body:not(.profile-custom-theme){max-width:100%;min-width:0}
@@ -258,138 +156,90 @@ body:not(.profile-custom-theme) .kf-header .kf-brand{min-width:0;max-width:100%;
 body:not(.profile-custom-theme) .kf-nav.open{z-index:100;overscroll-behavior:contain}
 body:not(.profile-custom-theme) .kf-nav-menu a{white-space:normal}
 @media(max-width:1080px){
- body:not(.profile-custom-theme) .kf-header{align-items:center}
- body:not(.profile-custom-theme) .kf-header .kf-nav-toggle{margin-left:auto;flex:none;min-height:44px}
- /* Drawer geometry is owned by the canonical theme.css navigation shell. */
- body:not(.profile-custom-theme) .kf-header .kf-nav-menu{position:static;max-width:100%;min-width:0}
-}
+body:not(.profile-custom-theme) .kf-header{align-items:center}
+body:not(.profile-custom-theme) .kf-header .kf-nav-toggle{margin-left:auto;flex:none;min-height:44px}
+body:not(.profile-custom-theme) .kf-header .kf-nav-menu{position:static;max-width:100%;min-width:0}}
 @media(max-width:680px){
- body:not(.profile-custom-theme) :where(.directory-shell,.profile-shell,.admin-shell,.foundry,.messages-shell){width:100%;min-width:0}
- body:not(.profile-custom-theme) :where(input:not([type="checkbox"]):not([type="radio"]),textarea,select){min-width:0;max-width:100%;font-size:16px}
- body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat{min-height:0;max-width:100%}
- /* Message panel height is owned by messages.css to protect fullscreen chat. */
- body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat .messages-list{min-height:0;overflow-y:auto;overscroll-behavior:contain}
- body:not(.profile-custom-theme) .messages-shell .composer{min-width:0;max-width:100%;padding-bottom:max(.75rem,env(safe-area-inset-bottom))!important}
- body:not(.profile-custom-theme) .messages-shell .composer-main{min-width:0;max-width:100%}
-}
-
+body:not(.profile-custom-theme) :where(.directory-shell,.profile-shell,.admin-shell,.foundry,.messages-shell){width:100%;min-width:0}
+body:not(.profile-custom-theme) :where(input:not([type="checkbox"]):not([type="radio"]),textarea,select){min-width:0;max-width:100%;font-size:16px}
+body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat{min-height:0;max-width:100%}
+body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat .messages-list{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+body:not(.profile-custom-theme) .messages-shell .composer{min-width:0;max-width:100%;padding-bottom:max(.75rem,env(safe-area-inset-bottom))!important}
+body:not(.profile-custom-theme) .messages-shell .composer-main{min-width:0;max-width:100%}}
 /* Canonical navigation chrome. Previously duplicated as FOUR high-specificity
-   injected <style> blocks in nav.js, including retired pink and lime. */
+injected <style> blocks in nav.js, including retired pink and lime. */
 html body>.kf-header{
-  transform:none!important;
-  isolation:isolate;box-sizing:border-box!important;
-  display:flex!important;align-items:center!important;gap:clamp(.35rem,1vw,.8rem);
-  min-height:64px;visibility:visible!important;opacity:1!important
-}
-html body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))>.kf-header{filter:none!important;}
+transform:none!important;isolation:isolate;box-sizing:border-box!important;display:flex!important;align-items:center!important;gap:clamp(.35rem,1vw,.8rem);min-height:64px;visibility:visible!important;opacity:1!important}
+html body:where(:not([data-kf-art]))>.kf-header{filter:none!important}
 html body>.kf-header .kf-brand{
-  display:inline-flex!important;align-items:center;flex-shrink:1;min-width:0;font-weight:900!important
-}
-html body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))>.kf-header .kf-brand{
-  color:var(--kf-bone)!important;}
+display:inline-flex!important;align-items:center;flex-shrink:1;min-width:0;font-weight:900!important}
+html body:where(:not([data-kf-art]))>.kf-header .kf-brand{
+color:var(--kf-bone)!important}
 html body>.kf-header .kf-nav-toggle{
-  cursor:pointer!important;pointer-events:auto!important;
-  min-height:44px!important;align-items:center;justify-content:center;
-  border-radius:9px}
-html body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))>.kf-header .kf-nav-toggle{
-  border:1px solid var(--kf-antique-gold)!important;background:#211d25!important;color:var(--kf-bone)!important
-;}
+cursor:pointer!important;pointer-events:auto!important;min-height:44px!important;align-items:center;justify-content:center;border-radius:9px}
+html body:where(:not([data-kf-art]))>.kf-header .kf-nav-toggle{
+border:1px solid var(--kf-antique-gold)!important;background:#211d25!important;color:var(--kf-bone)!important
+}
 html body>.kf-header .kf-nav a{pointer-events:auto!important}
 html body>.kf-header .kf-nav [hidden],
 html body>.kf-header :is(.kf-install-pill,.kf-admin-quick-link)[hidden]{display:none!important}
 html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{display:grid!important}
-
 html body>.kf-header .kf-install-pill,
 html body>.kf-header .kf-admin-quick-link{
-  display:inline-flex;align-items:center;justify-content:center;flex:none;
-  gap:4px;min-height:38px;padding:5px 9px;border:1px solid #9b807b;
-  border-radius:9px;background:linear-gradient(115deg,#342430,#1b2021);text-decoration:none!important;
-  font:800 12px/1.2 system-ui,sans-serif;white-space:nowrap
-}
-html body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))>.kf-header .kf-install-pill,
-html body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))>.kf-header .kf-admin-quick-link{
-  color:#ece1d3!important;}
+display:inline-flex;align-items:center;justify-content:center;flex:none;gap:4px;min-height:38px;padding:5px 9px;border:1px solid #9b807b;border-radius:9px;background:linear-gradient(115deg,#342430,#1b2021);text-decoration:none!important;font:800 12px/1.2 system-ui,sans-serif;white-space:nowrap}
+html body:where(:not([data-kf-art]))>.kf-header .kf-install-pill,
+html body:where(:not([data-kf-art]))>.kf-header .kf-admin-quick-link{
+color:#ece1d3!important}
 html body>.kf-header .kf-admin-quick-link{border-color:#82617c}
 html body>.kf-header :is(.kf-install-pill,.kf-admin-quick-link):focus-visible{
-  outline:2px solid var(--kf-antique-gold);outline-offset:2px
-}
+outline:2px solid var(--kf-antique-gold);outline-offset:2px}
 html body>.kf-header:has(>.kf-shared-announcement),
 html body>.kf-header:has(>.kf-shared-maintenance){flex-wrap:wrap!important}
 html body>.kf-header .kf-shared-announcement,
 html body>.kf-header .kf-shared-maintenance{
-  position:relative!important;order:99;flex:1 0 100%!important;
-  display:flex;justify-content:center;gap:.5rem;align-items:center;
-  min-height:35px;margin:0!important;padding:6px 12px!important;
-  border:1px solid #8f7273;border-radius:8px;
-  background:#201d24;color:var(--kf-bone);
-  font:700 12px/1.4 system-ui,sans-serif;text-align:center
-}
+position:relative!important;order:99;flex:1 0 100%!important;display:flex;justify-content:center;gap:.5rem;align-items:center;min-height:35px;margin:0!important;padding:6px 12px!important;border:1px solid #8f7273;border-radius:8px;background:#201d24;color:var(--kf-bone);font:700 12px/1.4 system-ui,sans-serif;text-align:center}
 html body>.kf-header .kf-shared-announcement strong{color:var(--kf-antique-gold)}
-
 @media(min-width:1081px){
- html body>.kf-header .kf-nav{display:flex!important;visibility:visible!important;
-  opacity:1!important;flex-wrap:wrap!important;
-  align-items:center!important}
- html body>.kf-header .kf-nav-toggle{display:none!important}
-
-}
+html body>.kf-header .kf-nav{display:flex!important;visibility:visible!important;opacity:1!important;flex-wrap:wrap!important;align-items:center!important}
+html body>.kf-header .kf-nav-toggle{display:none!important}}
 @media(max-width:1080px){
- html body>.kf-header .kf-nav-toggle{display:inline-flex!important;margin-left:auto;flex:none}
- html body>.kf-header .kf-nav:not(.open){display:none!important}
- html body>.kf-header .kf-nav.open{
-  pointer-events:auto!important;
-  overscroll-behavior:contain;padding:.7rem;border-radius:var(--kf-global-panel-corner,12px)
- }
-html body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))>.kf-header .kf-nav.open{
-  background:linear-gradient(145deg,#28222b,#12151a)!important;
-  border:1px solid #78666a!important;}
-
- html body>.kf-header .kf-nav.open a,
- html body>.kf-header .kf-nav.open summary{visibility:visible!important;opacity:1!important;min-height:44px}
-}
+html body>.kf-header .kf-nav-toggle{display:inline-flex!important;margin-left:auto;flex:none}
+html body>.kf-header .kf-nav:not(.open){display:none!important}
+html body>.kf-header .kf-nav.open{
+pointer-events:auto!important;overscroll-behavior:contain;padding:.7rem;border-radius:var(--kf-global-panel-corner,12px)}
+html body:where(:not([data-kf-art]))>.kf-header .kf-nav.open{
+background:linear-gradient(145deg,#28222b,#12151a)!important;border:1px solid #78666a!important}
+html body>.kf-header .kf-nav.open a,
+html body>.kf-header .kf-nav.open summary{visibility:visible!important;opacity:1!important;min-height:44px}}
 @media(max-width:490px){
- html body>.kf-header{gap:.25rem!important;padding:.5rem .65rem!important}
- html body>.kf-header .kf-brand{font-size:clamp(.77rem,3.3vw,.94rem)!important}
- html body>.kf-header .kf-install-pill{min-width:0;padding:5px 6px;font-size:11px}
- html body>.kf-header .kf-nav-toggle{padding:.45rem .6rem!important;min-width:44px}
-}
-
-
-/* Gothic Creator default profile surfaces; never override member-selected
-   profiles or the deliberately separate Miss Chaos art/controls. */
+html body>.kf-header{gap:.25rem!important;padding:.5rem .65rem!important}
+html body>.kf-header .kf-brand{font-size:clamp(.77rem,3.3vw,.94rem)!important}
+html body>.kf-header .kf-install-pill{min-width:0;padding:5px 6px;font-size:11px}
+html body>.kf-header .kf-nav-toggle{padding:.45rem .6rem!important;min-width:44px}}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell{
-  --gw-profile-bg:#0d1013;--gw-profile-raised:#242128;
-  --gw-profile-line:rgba(199,167,124,.32);--gw-profile-text:#ece1d3;
-  --gw-profile-muted:#b9afa8
-}
+--gw-profile-bg:#0d1013;--gw-profile-raised:#242128;--gw-profile-line:rgba(199,167,124,.32);--gw-profile-text:#ece1d3;--gw-profile-muted:#b9afa8}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) #profile{
-  --gw-panel-accent:var(--profile-accent,#b25b68)
-}
+--gw-panel-accent:var(--profile-accent,#b25b68)}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
- .profile-shell>.card,.profile-shell .card,.friends-page-card,.friends-panel,
- .friend-discover,.wallet-card
+.profile-shell>.card,.profile-shell .card,.friends-page-card,.friends-panel,
+.friend-discover,.wallet-card
 ){
- border-color:rgba(199,167,124,.32)!important;
- background:radial-gradient(ellipse at 9% 0%,rgba(130,97,124,.12),transparent 56%),
- linear-gradient(145deg,#242128,#17171c)!important;color:#ece1d3!important
-}
+border-color:rgba(199,167,124,.32)!important;background:radial-gradient(ellipse at 9% 0%,rgba(130,97,124,.12),transparent 56%),
+linear-gradient(145deg,#242128,#17171c)!important;color:#ece1d3!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) #profile :where(
- .profile-stats>div,.profile-favorites,.profile-birth-chart,.profile-album-tools,
- .friend-request-form,.profile-photo-card,.activity-card,.profile-status-message,.profile-quote
+.profile-stats>div,.profile-favorites,.profile-birth-chart,.profile-album-tools,
+.friend-request-form,.profile-photo-card,.activity-card,.profile-status-message,.profile-quote
 ){border-color:rgba(199,167,124,.30)!important;background:linear-gradient(145deg,#242128,#17171c)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
- .friends-summary strong,.friend-count,.friend-person .friend-avatar,
- .wallet-kicker,.wallet-balance small,.profile-shell .studio-jump a
+.friends-summary strong,.friend-count,.friend-person .friend-avatar,
+.wallet-kicker,.wallet-balance small,.profile-shell .studio-jump a
 ){color:var(--kf-antique-gold)!important}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
- .friend-card,.profile-shell .studio-layout-presets button,.profile-shell .studio-layout-row
+.friend-card,.profile-shell .studio-layout-presets button,.profile-shell .studio-layout-row
 ){background-color:#201d24!important;border-color:rgba(199,167,124,.28)!important}
 @media(max-width:600px){
- body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell{width:calc(100% - 1.25rem)}
- body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell .card{padding:clamp(.85rem,3vw,1.15rem)}
-}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell{width:calc(100% - 1.25rem)}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell .card{padding:clamp(.85rem,3vw,1.15rem)}}
 @media(prefers-reduced-motion:reduce){
- body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell :where(.card,.friend-card){transition:none!important}
-}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell :where(.card,.friend-card){transition:none!important}}
 /* === END GOTHIC CHROME === */
-
