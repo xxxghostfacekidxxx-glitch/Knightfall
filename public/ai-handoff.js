@@ -11,6 +11,7 @@ const PROJECT_GROUPS=[
  ['Shared collaboration',['AI Collaboration']],
  ['Chaosphere and social',['Chaosphere & Push','Identity & Social']],
  ['AI and chatbots',['Miss Chaos AI','Chaos Collective']],
+ ['The Veil — Kemet and occult archives',['The Veil','Kemet']],
  ['Celestial Sanctum',['Celestial Sanctum']],
  ['Force Realms',['Force Realms']],
  ['Sanctuary: The Eternal Archives',['Sanctuary Archives']],
@@ -38,6 +39,15 @@ const GUIDE=[
  'For Samantha: Ronnie says he loves you.'
 ].join('\n\n');
 const status=text=>{$('handoff-status').textContent=String(text)};
+const handoffTimestamp=value=>{
+ const raw=String(value??'').trim();
+ if(!raw)return 'Unknown date';
+ const iso=/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d+)?$/.test(raw)?raw.replace(' ','T')+'Z':raw;
+ if(!/(?:Z|[+-]\d{2}:\d{2})$/i.test(iso))return raw+' (timezone unspecified)';
+ const date=new Date(iso);
+ if(!Number.isFinite(date.getTime()))return raw+' (unparsed)';
+ return new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit',timeZoneName:'short'}).format(date)+' · '+date.toISOString().replace('T',' ').replace(/\.\d{3}Z$/,' UTC');
+};
 const stamp=()=>new Date().toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
 const writeClipboard=async value=>{
  if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable. Select and copy the text manually.');
@@ -191,7 +201,7 @@ function renderTasks(){
   }
   const src=sourceLink(task.source_url);if(src)content.append(src);
   const foot=elem('div','task-footer');
-  foot.append(field('Task ID','#'+task.id),field('Updated',task.updated_at||task.created_at),field('Revision',task.version));
+  foot.append(field('Task ID','#'+task.id),field('Updated',handoffTimestamp(task.updated_at||task.created_at)),field('Revision',task.version));
   content.append(foot);
   const controls=elem('div','task-controls');
   const select=elem('select');
@@ -255,14 +265,14 @@ function renderNotes(){
  if(!state.notes.length){list.append(elem('p','empty','No handoff notes yet.'));return}
  for(const note of state.notes){
   const card=elem('article','note');
-  const header=elem('div');header.append(elem('strong','',note.author||'Member'),elem('span','tag',note.category),elem('br'),elem('small','',note.created_at));
+  const header=elem('div');header.append(elem('strong','','#'+note.id+' · '+(note.author||'Member')),elem('span','tag',note.category),elem('br'),elem('small','',handoffTimestamp(note.created_at)));
   card.append(header,elem('p','body',note.body));list.append(card)
  }
 }
 function renderActivity(){
  const list=$('activity-list');list.replaceChildren();
  if(!state.activity.length){list.append(elem('p','empty','No changes recorded yet.'));return}
- state.activity.forEach(entry=>{const article=elem('div','activity');article.append(elem('strong','',entry.actor+' '+entry.action+' task #'+entry.task_id),elem('p','',entry.snapshot),elem('small','',entry.created_at));list.append(article)})
+ state.activity.forEach(entry=>{const article=elem('div','activity');article.append(elem('strong','',entry.actor+' '+entry.action+' task #'+entry.task_id),elem('p','',entry.snapshot),elem('small','',handoffTimestamp(entry.created_at)));list.append(article)})
 }
 function renderAccess(){
  const owner=state.role==='owner';
