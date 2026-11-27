@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS chaos_knowledge_run_diagnostics(hour INTEGER NOT NULL,agent_key TEXT NOT NULL,source_requested TEXT NOT NULL,source_used TEXT NOT NULL,primary_failure TEXT,error_code TEXT,PRIMARY KEY(hour,agent_key));
