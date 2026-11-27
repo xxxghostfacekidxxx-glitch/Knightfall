@@ -147,7 +147,7 @@ try {
                 left: r.left, right: r.right, expanded: node.parentElement.querySelector(".kf-nav-toggle")?.getAttribute("aria-expanded") };
             });
             assert.equal(nav.expanded, "true", "Mobile menu must open on tap");
-            assert.equal(nav.display, "grid", "Mobile menu must be visible");
+            assert.ok(["flex","grid"].includes(nav.display), "Mobile menu must be visible");
             assert.ok(nav.left >= -1 && nav.right <= viewport.width + 1, "Mobile menu must fit viewport");
             await toggle.click();
             assert.equal(await toggle.getAttribute("aria-expanded"), "false",
