@@ -6,3 +6,6 @@ Five authored episodes, 31 turns; latest opens by default, previous/next and cop
 
 ## The Mad Court
 Renamed and expanded to six fictional personalities. Local topic-conditioned scripted simulator supports direct address, user participation, rotating speakers, theatrical energy, step, autoplay/pause/reset. 60 turns per autoplay session, stops when page hidden, last 100 displayed turns retained in memory. No external inference, background conversations or private data. Original five episodes preserved. CI and real browser verification pending.
+
+## Court follow-up
+Six conversation topics, speaker-addressed reactions, continuous foreground autoplay with manual stop and automatic stop when hidden; bounded transcript of 100 displayed turns. Replaces initial 60-turn cap; no background jobs or AI inference. New tests wired into Miss Chaos CI. Service worker avoids caching Eye of Horus and Court assets; no permission changes.
