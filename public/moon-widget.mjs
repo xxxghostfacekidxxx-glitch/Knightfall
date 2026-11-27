@@ -1,4 +1,4 @@
-import { phases, lunarSnapshot } from './lunar-phases.mjs';
+import { phases, phaseIndex } from './lunar-phases.mjs';
 
 let engine;
 export function loadAstronomy() {
@@ -31,21 +31,34 @@ export function mountMoonStrip(link) {
   const row = link.querySelector('.kf-lunar-disks');
   const label = link.querySelector('.kf-lunar-label');
   row.replaceChildren(...disks);
+  let pending=false,lastRefresh=0,lastIndex=-1;
   async function refresh() {
+    if(document.hidden||pending||Date.now()-lastRefresh<55_000)return;
+    pending=true;lastRefresh=Date.now();
     try {
       const astronomy = await loadAstronomy();
-      const {index} = lunarSnapshot(astronomy, new Date());
+      if(document.hidden){lastRefresh=0;return;}
+      // The header only needs the phase sector, not illumination calculations.
+      const index = phaseIndex(astronomy.MoonPhase(new Date()));
+      if(index===lastIndex)return;
+      lastIndex=index;
       disks.forEach((disk, i) => disk.classList.toggle('is-current', i === index));
       label.textContent = phases[index].name;
       link.setAttribute('aria-label', 'Moonology. Current Moon phase: ' + phases[index].name);
     } catch {
+      lastIndex=-1;
       label.textContent = 'Moonology';
       link.setAttribute('aria-label', 'Moonology. Current Moon phase unavailable.');
-    }
+    } finally {pending=false;}
   }
-  refresh();
-  setInterval(refresh, 60_000);
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) refresh();
+  // The header remains a usable Moonology link while the astronomy engine
+  // loads after the critical first render. Hidden tabs do no lunar work.
+  if(typeof window.requestIdleCallback==="function")window.requestIdleCallback(refresh,{timeout:2000});
+  else setTimeout(refresh,300);
+  const timer=setInterval(refresh,60_000);
+  const resume=()=>{if(!document.hidden)void refresh();};
+  document.addEventListener('visibilitychange',resume);
+  window.addEventListener('pagehide',event=>{
+    if(!event.persisted){clearInterval(timer);document.removeEventListener('visibilitychange',resume);}
   });
 }
