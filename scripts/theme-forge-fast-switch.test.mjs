@@ -9,6 +9,7 @@ const deck=text("public/theme-crew.html");
 const ui=text("public/theme-crew-ui.js");
 const css=text("public/theme-crew.css");
 const artVariables=text("public/knightfall-art-theme-variables.css");
+const egyptian=text("public/egyptian-eclipse-theme.css");
 const dashboard=text("public/theme-crew-dashboard.css");
 const runtime=text("public/theme-crew-runtime.js");
 const root=text("public/theme.css");
@@ -54,7 +55,7 @@ test("fast switching reuses the vetted API with rollback and revision protection
  assert.match(runtime,/LIVE_CACHE/);
  assert.match(runtime,/if\(pendingRefresh\)return pendingRefresh/);
  assert.match(runtime,/channel\?\.addEventListener\("message"/);
- assert.match(runtime,/window\.setInterval\(refresh,20000\)/);
+ assert.match(runtime,/window\.setInterval\(\(\)=>refresh\(\),activeScope==="admin"\?20000:60000\)/);
  assert.match(runtime,/Number\.isSafeInteger\(revision\)/);
  assert.match(runtime,/PREVIEW="kf:theme-crew-preview"/);
  assert.match(runtime,/arcade\\\/hosted/);
@@ -85,7 +86,7 @@ test("backend presets, runtime allowlist and local preview assets never drift ap
  assert.deepEqual(previews.map(x=>x[1]).sort(),allowed);
  for(const [,key,file] of previews)readFileSync(new URL("../public"+file,import.meta.url));
  for(const key of allowed){
-  assert.ok(css.includes('data-kf-theme="'+key+'"') || artVariables.includes('data-kf-theme="'+key+'"') || (key==="cathedral"&&visual.includes('data-kf-theme="cathedral"')),
+  assert.ok(css.includes('data-kf-theme="'+key+'"') || artVariables.includes('data-kf-theme="'+key+'"') || (key==="egyptian_eclipse"&&egyptian.includes('data-kf-theme="egyptian_eclipse"')) || (key==="cathedral"&&visual.includes('data-kf-theme="cathedral"')),
    "Missing presentation recipe for "+key);
  }
 });
