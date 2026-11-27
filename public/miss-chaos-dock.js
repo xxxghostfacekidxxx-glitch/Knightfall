@@ -6,7 +6,10 @@ if(!root||root.dataset.dockReady)return;
 root.dataset.dockReady='true';
 const button=id=>root.querySelector('#'+id),move=button('mc-move'),mini=button('mc-minimize'),restore=button('mc-restore');
 const options=['br','bl','tl','tr'],descriptions={br:'bottom right',bl:'bottom left',tl:'top left',tr:'top right'};
-let preference='auto',frame=0,current='br',headerBottom=0;
+let preference='auto',frame=0,timer=0,lastScan=0,current='br',headerBottom=0;
+const SCAN_INTERVAL=180;
+const obstacleSelector='a[href],button,input,select,textarea,h1,h2,h3,[role="button"],[role="navigation"],[data-mc-keep-clear],#ashfall-support-footer,#kf-chat-heads,.kf-chat-panel,.kf-chat-head-row';
+const modalSelector='dialog[open],[aria-modal="true"],[role="dialog"][data-overlay-blocking="true"]';
 const compactKey='kf:miss-chaos:compact';
 // A phone is not a reason to hide the entire assistant, its memo pad or mode switch.
 // Reset the old compact setting once for existing members who lost the dock.
@@ -26,31 +29,24 @@ function overlap(a,b){
  const y=Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
  return x*y;
 }
-function valid(el){
- if(!el||root.contains(el))return false;
- const r=el.getBoundingClientRect();
- if(r.width<10||r.height<10||r.bottom<0||r.top>innerHeight||r.right<0||r.left>innerWidth)return false;
- const style=getComputedStyle(el);
- if(style.display==='none'||style.visibility==='hidden'||style.pointerEvents==='none'||Number(style.opacity)===0)return false;
- return true;
-}
-function obstacles(){
- const result=[],seen=new Set();
- const elements=document.querySelectorAll('a[href],button,input,select,textarea,h1,h2,h3,[role="button"],[role="navigation"],[data-mc-keep-clear],#ashfall-support-footer,#kf-chat-heads,.kf-chat-panel,.kf-chat-head-row');
+function obstacles(width,height){
+ const result=[];
+ const corners=options.map(position=>anchorBox(position,width,height));
+ const elements=document.querySelectorAll(obstacleSelector);
  for(const el of elements){
   if(result.length>=500)break;
-  if(!valid(el)||seen.has(el))continue;
-  seen.add(el);
-  // Headings are content too. Measure painted text, not a full-width block,
-  // so the dock avoids words without constantly chasing empty heading space.
+  if(root.contains(el))continue;
   let rect=el.getBoundingClientRect();
+  if(rect.width<10||rect.height<10||!corners.some(corner=>overlap(corner,rect)>0))continue;
+  const style=getComputedStyle(el);
+  if(style.display==='none'||style.visibility==='hidden'||style.pointerEvents==='none'||Number(style.opacity)===0)continue;
+  // Only measure text bounds for headings that could actually overlap the dock.
   if(/^H[1-3]$/.test(el.tagName) && document.createRange){
     const range=document.createRange();
     range.selectNodeContents(el);
     const painted=range.getBoundingClientRect();
     if(painted.width>0&&painted.height>0)rect=painted;
   }
-  const style=getComputedStyle(el);
   // Exclude huge general containers but include full-width sticky nav/footer bars.
   const structural=el.hasAttribute('data-mc-keep-clear')||el.id==='ashfall-support-footer'||style.position==='fixed'||style.position==='sticky';
   if((rect.width>innerWidth*.89||rect.height>innerHeight*.57)&&!structural)continue;
@@ -90,7 +86,10 @@ function occupiedSize(dock){
 }
 function recalculate(){
  frame=0;
+ lastScan=performance.now();
+ if(document.hidden)return;
  syncOverlaySuspension();
+ if(root.classList.contains('mc-overlay-suspended'))return;
  const header=document.querySelector('body > .kf-header');
  const bounds=header?.getBoundingClientRect();
  headerBottom=bounds && bounds.top<=1 ? Math.max(0,bounds.bottom) : 0;
@@ -107,7 +106,7 @@ function recalculate(){
  const oldPosition=root.dataset.dock||'br';
  const dockBounds=dock.getBoundingClientRect();
  const {width,height}=occupiedSize(dockBounds);
- const blocked=obstacles();
+ const blocked=obstacles(width,height);
  let winner='br',best=Infinity;
  for(const candidate of options){
   const rank=score(candidate,width,height,blocked);
@@ -123,7 +122,7 @@ function recalculate(){
 // Keeping the dock mounted but visually and interactively suspended prevents
 // its very high utility layer from covering confirmation, upload, or auth UI.
 function syncOverlaySuspension(){
- const blocking=[...document.querySelectorAll('dialog[open],[aria-modal="true"],[role="dialog"][data-overlay-blocking="true"]')]
+ const blocking=[...document.querySelectorAll(modalSelector)]
   .some(el=>{
    if(root.contains(el))return false;
    if(el.hidden)return false;
@@ -133,9 +132,12 @@ function syncOverlaySuspension(){
  root.classList.toggle('mc-overlay-suspended',blocking);
 }
 function schedule(){
- if(frame)return;
- frame=requestAnimationFrame(recalculate);
+ if(frame||timer||document.hidden)return;
+ const remaining=Math.max(0,SCAN_INTERVAL-(performance.now()-lastScan));
+ if(remaining>0)timer=setTimeout(()=>{timer=0;if(!document.hidden)frame=requestAnimationFrame(recalculate);},remaining);
+ else frame=requestAnimationFrame(recalculate);
 }
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule();});
 move.addEventListener('click',()=>{
  const next=preference==='auto'?options[(options.indexOf(current)+1)%options.length]:
   options.indexOf(preference)===options.length-1?'auto':options[options.indexOf(preference)+1];
@@ -184,10 +186,20 @@ const header=document.querySelector('body > .kf-header');
 if(header && window.ResizeObserver)new ResizeObserver(schedule).observe(header);
 // Observe newly mounted sticky bars and footers without changing page layout.
 if(window.MutationObserver){
+ const structuralSelector='dialog,[role="dialog"],[aria-modal],[data-overlay-blocking],[data-mc-keep-clear],.kf-header,#ashfall-support-footer,#kf-chat-heads';
+ const relevantNode=node=>node.nodeType===1&&!root.contains(node)&&
+  (node.matches(obstacleSelector)||node.matches(structuralSelector)||!!node.querySelector(structuralSelector+','+obstacleSelector));
  const observer=new MutationObserver(records=>{
-  if(records.some(r=>r.type==='attributes'?!root.contains(r.target):[...r.addedNodes].some(n=>n.nodeType===1&&!root.contains(n))))schedule();
+  if(records.some(r=>{
+   if(root.contains(r.target))return false;
+   if(r.type==='attributes')return r.target.matches(structuralSelector)||
+    (r.attributeName!=='class'&&r.target.matches(obstacleSelector))||
+    // A custom modal may disappear by removing its identifying attribute.
+    r.attributeName==='aria-modal'||r.attributeName==='data-overlay-blocking';
+   return [...r.addedNodes,...r.removedNodes].some(relevantNode);
+  }))schedule();
  });
- observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['open','hidden','aria-modal','aria-hidden','class']});
+ observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['open','hidden','aria-modal','aria-hidden','class','data-overlay-blocking']});
 }
 root.dataset.minimized=initiallyMinimized?'true':'false';
 restore.hidden=!initiallyMinimized;
