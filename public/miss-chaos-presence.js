@@ -21,7 +21,7 @@
         <a href="/eye-of-chaos.html" id="mc-private-eye" hidden>𓂀 Eye of Chaos</a>
       </nav>
       <label for="mc-visual-theme">Miss Chaos theme
-        <select id="mc-visual-theme"><option value="obsidian">Obsidian Neon</option><option value="hellfire">Hellfire</option><option value="egypt">Egyptian Eclipse</option><option value="mustafar">Mustafar</option><option value="korriban">Korriban</option><option value="vader">Dark Lord</option><option value="hex">Hex Signal · Cyan</option><option value="anarchy">Anarchy · Red/Black</option><option value="chaos">Chaos Star · Lime/Black</option><option value="blood">Blood &amp; Ink</option><option value="astral">Astral Abyss · Galaxy &amp; Black Hole</option><option value="inferno">Trouble’s Hangout · Inferno</option></select>
+        <select id="mc-visual-theme"><option value="obsidian">Obsidian Neon</option><option value="bubblegum-havoc">Bubblegum Havoc · Pink &amp; plum</option><option value="hellfire">Hellfire</option><option value="egypt">Egyptian Eclipse</option><option value="mustafar">Mustafar</option><option value="korriban">Korriban</option><option value="vader">Dark Lord</option><option value="hex">Hex Signal · Cyan</option><option value="anarchy">Anarchy · Red/Black</option><option value="chaos">Chaos Star · Lime/Black</option><option value="blood">Blood &amp; Ink</option><option value="astral">Astral Abyss · Galaxy &amp; Black Hole</option><option value="inferno">Trouble’s Hangout · Inferno</option></select>
       </label>
       <a class="mc-realm-entry" href="/miss-chaos-realm.html">✦ Visit her realm · Tools &amp; creative workspaces</a>
       <label class="sr-only" for="mc-mood">Miss Chaos mood</label><select id="mc-mood"><option value="default">Mood: Default</option><option value="playful">Playful</option><option value="dark">Dark humor</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option></select>
@@ -96,12 +96,12 @@
   $("#mc-memo-close").addEventListener('click',()=>{closeMemo();memoToggle.focus({preventScroll:true})});
 
   // Shared theme selection; visuals are client preferences, never purchase entitlements.
-  const visualThemes=new Set(["obsidian","hellfire","egypt","mustafar","korriban","vader","hex","anarchy","chaos","blood","astral","inferno"]);
+  const visualThemes=new Set(["obsidian","bubblegum-havoc","hellfire","egypt","mustafar","korriban","vader","hex","anarchy","chaos","blood","astral","inferno"]);
   const themeKey="kf:miss-chaos-theme";
   const themeControl=root.querySelector("#mc-visual-theme");
   const themeArt={
     hex:"hex",anarchy:"anarchy",chaos:"chaos",blood:"blood",astral:"hex",inferno:"anarchy",
-    obsidian:"hex",hellfire:"anarchy",egypt:"hex",mustafar:"anarchy",korriban:"chaos",vader:"blood"
+    obsidian:"hex","bubblegum-havoc":"hex",hellfire:"anarchy",egypt:"hex",mustafar:"anarchy",korriban:"chaos",vader:"blood"
   };
   const setVisualTheme=value=>{
     const theme=visualThemes.has(value)?value:"obsidian";
