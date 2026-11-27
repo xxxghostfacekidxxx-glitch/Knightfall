@@ -20,3 +20,6 @@ L7 release: verify all source links, keyboard, screen-reader labels, glyph font 
 
 ## Shared implementation
 public/independent-study.css and public/study-search.js are scoped to the independent study pages. Existing shared navigation and homepage links updated; Between the Flames groups Philosophy and Languages separately. No database schema migration or member permissions changes. Existing Kemet language task #238 cross-references Languages rather than duplicating code. 
+
+## Live task mapping — verified November 27
+Philosophy #250 directory, #251 Nietzsche, #252 major philosophers/comparison, #253 acceptance. Languages #254 Egyptian lab, #255 Sound Studio, #256 scripts/grammar, #257 world languages, #258 acceptance. Existing #238 updated. Handoff #14 saved at 09:23:58 UTC (03:23:58 CST). Run `node --test scripts/independent-study.test.mjs` and `node scripts/static-audit.mjs`; full Node execution and deployed browser audio remain unverified.
