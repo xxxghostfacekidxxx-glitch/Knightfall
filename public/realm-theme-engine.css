@@ -164,3 +164,6 @@ body.chaos-page[data-mc-realm-theme] .chaos-shell .message{border-radius:18px}
 #profile[data-theme="villain-eddie"],.profile-page [data-theme="villain-eddie"]{--kf-member-theme-accent:#d54aff;--kf-member-theme-art:url("/assets/knightfall/themes/villain-eddie-realm.svg");background:linear-gradient(155deg,#12091acc,#1a0817a8),var(--kf-member-theme-art) center/cover no-repeat;color:#fff1f6}
 #profile[data-theme="boogie-minion"] :is(.profile-card,.profile-section,.profile-panel),.profile-page [data-theme="boogie-minion"] :is(.profile-card,.profile-section,.profile-panel){border-color:#ff3aa988;box-shadow:0 10px 35px #ff3aa920}
 #profile[data-theme="villain-eddie"] :is(.profile-card,.profile-section,.profile-panel),.profile-page [data-theme="villain-eddie"] :is(.profile-card,.profile-section,.profile-panel){border-color:#d54aff88;box-shadow:0 10px 35px #d54aff20}
+
+/* Bubblegum Havoc is an independent Miss Chaos preset, not a global site theme. */
+#miss-chaos-presence[data-mc-theme="bubblegum-havoc"],body[data-mc-realm-theme="bubblegum-havoc"]{--mc-realm-accent:#ff91ce;--mc-realm-glow:#f56ab75a;--mc-realm-font:system-ui,sans-serif;--mc-realm-art:url("/assets/knightfall/miss-chaos/bubblegum-realm.svg");--mc-realm-frame:url("/assets/knightfall/miss-chaos/hex-portrait-frame.svg?v=20261121-art2")}
