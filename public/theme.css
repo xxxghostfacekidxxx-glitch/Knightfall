@@ -254,4 +254,7 @@ body[data-kf-global-effects="minimal"] .kf-ticker-viewport{white-space:normal;ma
 html[data-kf-page-hidden="true"] .kf-ticker-track{animation-play-state:paused}
 
 /* Restricted shortcuts remain hidden even when a theme sets display:flex/grid. */
-[data-kf-access][hidden],.kf-header [hidden],#staff-controls[hidden],#workshop[hidden]{display:none!important}
+[data-kf-access][hidden],.kf-header [hidden],#staff-controls[hidden],#workshop[hidden],
+[data-god-only][hidden],[data-god-vault-tab][hidden],[data-god-vault-panel][hidden],
+[data-chaos-god-only][hidden],[data-chaos-approval-access][hidden],[data-protected-control][hidden],
+[data-theme-forge][hidden],[data-handoff-admin][hidden]{display:none!important}

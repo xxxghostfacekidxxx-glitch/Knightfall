@@ -25,6 +25,7 @@ export function staffCapabilities(user) {
     can_delegate_approval:god||isis,
     can_theme_forge:admin, can_publish_theme:god||isis,
     can_private_vault:god,
+    can_read_handoff:god||Boolean(active&&user&&Number(user.is_isis)===1),
     can_handoff:god||Boolean(active&&user&&(Number(user.is_isis)===1||Number(user.handoff_invited)===1)),
     // Private external correspondence is never inherited by admin or Isis.
     can_owner_mailbox:god,
