@@ -285,9 +285,11 @@
     const syncHeight=()=>{
       headerFrame=null;
       const height=Math.ceil(header.getBoundingClientRect().height);
-      if(height===lastHeight)return;
-      lastHeight=height;
-      document.documentElement.style.setProperty("--kf-header-height",height+"px");
+      if(height!==lastHeight){
+        lastHeight=height;
+        document.documentElement.style.setProperty("--kf-header-height",height+"px");
+      }
+      scheduleMenuBounds();
     };
     const scheduleHeight=()=>{if(headerFrame===null)headerFrame=requestAnimationFrame(syncHeight);};
     if(typeof ResizeObserver==="function")new ResizeObserver(scheduleHeight).observe(header);
@@ -394,6 +396,7 @@
   nav.querySelectorAll(".kf-nav-group").forEach(group => {
     group.addEventListener("toggle", () => {
       if (group.open) nav.querySelectorAll(".kf-nav-group").forEach(other => { if (other !== group) other.open = false; });
+      syncMenuState();
     });
   });
   const installLink=header.querySelector(".kf-install-pill");
@@ -428,6 +431,35 @@
     nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.open = false);
   };
   const mobileNavViewport = window.matchMedia("(max-width: 1080px)");
+  let menuFrame=null;
+  function menuRoom(top,bottom){return Math.max(0,Math.floor(bottom-top-8));}
+  function scheduleMenuBounds(){
+    if(menuFrame!==null||header.dataset.kfMenuActive!=="true")return;
+    menuFrame=requestAnimationFrame(()=>{
+      menuFrame=null;
+      if(header.dataset.kfMenuActive!=="true")return;
+      const visual=window.visualViewport;
+      const bottom=visual?(visual.offsetTop||0)+visual.height:window.innerHeight;
+      if(nav.classList.contains("open")){
+        const top=header.getBoundingClientRect().bottom;
+        nav.style.setProperty("--kf-drawer-room",menuRoom(top,bottom)+"px");
+      }else{
+        const group=nav.querySelector(".kf-nav-group[open]");
+        if(group){
+          const top=group.querySelector("summary").getBoundingClientRect().bottom+5;
+          group.style.setProperty("--kf-dropdown-room",menuRoom(top,bottom)+"px");
+        }
+      }
+    });
+  }
+  function syncMenuState(){
+    const active=nav.classList.contains("open")||!!nav.querySelector(".kf-nav-group[open]");
+    header.dataset.kfMenuActive=String(active);
+    if(active)scheduleMenuBounds();
+  }
+  window.addEventListener("resize",scheduleMenuBounds,{passive:true});
+  window.visualViewport?.addEventListener("resize",scheduleMenuBounds,{passive:true});
+  window.visualViewport?.addEventListener("scroll",scheduleMenuBounds,{passive:true});
   function setDrawer(open) {
     const visible = Boolean(open && mobileNavViewport.matches);
     nav.classList.toggle("open", visible);
@@ -435,8 +467,9 @@
     toggle.setAttribute("aria-expanded", String(visible));
     toggle.setAttribute("aria-label", visible ? "Close navigation" : "Open navigation");
     if (!visible) closeGroups();
-    // Do not leave keyboard focus inside a collapsed mobile drawer.
-    if (!visible && nav.contains(document.activeElement)) toggle.focus({preventScroll:true});
+    syncMenuState();
+    // Do not move desktop focus to the hidden mobile toggle.
+    if (!visible && mobileNavViewport.matches && nav.contains(document.activeElement)) toggle.focus({preventScroll:true});
   }
   toggle.addEventListener("click", () => setDrawer(!nav.classList.contains("open")));
   document.addEventListener("keydown", event => {
@@ -444,6 +477,7 @@
     const openGroup = nav.querySelector(".kf-nav-group[open]");
     if (openGroup) {
       openGroup.open = false;
+      syncMenuState();
       openGroup.querySelector("summary").focus();
     } else if (nav.classList.contains("open")) {
       setDrawer(false);
@@ -519,7 +553,9 @@
           const track=document.createElement("div");track.className="kf-ticker-track";
           const span=document.createElement("span");span.textContent=message;track.append(span);viewport.append(track);row.append(tag,viewport);ticker.append(row);
         }
+        ticker.hidden=!ticker.querySelector(".kf-ticker-row:not([hidden])");
         header.append(ticker);
+        scheduleMenuBounds();
         window.dispatchEvent(new Event("kf:ticker-ready"));
       }
       if (siteSettings.maintenance_mode === "true") {
@@ -604,6 +640,8 @@
             }catch(error){window.alert(error.message)}
           });
           ticker.append(editor);
+          ticker.hidden=false;
+          scheduleMenuBounds();
         };
         window.addEventListener("kf:ticker-ready",mountTickerEditor,{once:true});mountTickerEditor();
       }
