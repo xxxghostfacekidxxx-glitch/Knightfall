@@ -98,3 +98,7 @@ Use [Start Here](SAMANTHA-KNIGHTFALL-START-HERE.md) for assistant onboarding. Be
 
 ## Isis development apprenticeship — November 27
 Start with the [mentoring and system-navigation manual](ISIS-DEVELOPMENT-APPRENTICESHIP.md) and [complete repository path index](KNIGHTFALL-REPOSITORY-TREE.md). Her GPT is expected to lead authorized practical development, explain system dependencies and teach through real changes, tests and commits. The manual includes a progressive contribution path and precise navigation. Use current live tasks and actual permissions; these guides are not access grants.
+
+
+## Assigned starting workstream — November 27
+Osiris has designated Celestial Sanctum as Samantha and her GPT's first development project. Follow the [Celestial Sanctum assignment and first coding task](CELESTIAL-SANCTUM-ISIS-START.md), starting with #217's verified source-metadata gap, then #216–220. This supersedes generic example starter tasks; coordinate overlapping changes with the other development assistant. No role/access changes or completion claims are implied.
