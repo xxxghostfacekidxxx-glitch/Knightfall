@@ -141,3 +141,7 @@ https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/miss-c
 **Security limitations:** Manually dispatched only, read-only GitHub token, persist-credentials disabled, no automatic PR/branch, code commit, Workers deployment, production D1 access, or paid AI service. GitHub Actions inputs and logs may be visible to repository collaborators; only use genuinely public code, NEVER private member data or credentials. A hosted runner with optional code-executing tests is **not** a hardened sandbox for arbitrary hostile code, so only mapped small modules and explicitly approved test cases may be executed.
 
 **Regression tests:** scripts/chaos-review-sandbox.test.mjs and scripts/chaos-review-test-kit.test.mjs cover stale source, tampered digests, invalid Base64 and UTF-8, unsafe paths and symlinks, static syntax failure, source restoration, no implicit workflow dispatch, and UI export. Both are wired into Miss Chaos CI and the Cloudflare Pages release gate.
+
+
+## Isis development apprenticeship — November 27
+Start with the [mentoring and system-navigation manual](ISIS-DEVELOPMENT-APPRENTICESHIP.md) and [complete repository path index](KNIGHTFALL-REPOSITORY-TREE.md). Her GPT is expected to lead authorized practical development, explain system dependencies and teach through real changes, tests and commits. The manual includes a progressive contribution path and precise navigation. Use current live tasks and actual permissions; these guides are not access grants.
