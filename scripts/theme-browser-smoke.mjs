@@ -138,6 +138,43 @@ try {
             assert.equal(state.arcadeAccent, "rgb(199, 167, 124)",
               label + " header accent must use antique bronze");
           }
+          if(route === "/"){
+            // Exercise the actual computed cascade, not merely dataset values.
+            const artPresets={
+              egyptian_eclipse:["egyptian-eclipse-throne-hall.png","egyptian-eclipse/svg/header.svg"],
+              dark_lord_ascendant:["dark-lord-ascendant-command-chamber.png","dark-lord-ascendant/svg/header.svg"],
+              korriban_necropolis:["korriban-red-necropolis.png","korriban/svg/header.svg"],
+              mustafar_forge:["mustafar-obsidian-lava-citadel.png","mustafar/svg/header.svg"],
+              jedi_sanctuary:["jedi-sanctuary/environment-preview.webp","jedi-sanctuary/header-ornament.svg"],
+              neon_dystopia:["neon-dystopia/environment-preview.webp","neon-dystopia/header-ornament.svg"],
+              the_asylum:["the-asylum/environment-preview.webp","the-asylum/header-ornament.svg"],
+              arcade_anarchy:["arcade-anarchy/environment-preview.webp","arcade-anarchy/header-ornament.svg"],
+              astral_dominion:["astral-dominion/environment-preview.webp","astral-dominion/header-ornament.svg"]
+            };
+            for(const [preset,[backdrop,headerArt]] of Object.entries(artPresets)){
+              assert.equal(await page.evaluate(key=>window.KnightfallThemeCrew.preview(key,"site"),preset),true);
+              const painted=await page.evaluate(()=>{
+                const body=document.body,header=body.querySelector(".kf-header");
+                return {theme:body.dataset.kfTheme,background:getComputedStyle(body).backgroundImage,
+                 header:getComputedStyle(header,"::before").backgroundImage,
+                 position:getComputedStyle(header).position,
+                 egyptianGallery:getComputedStyle(body.querySelector(".kf-egyptian-pavilion")).display};
+              });
+              assert.equal(painted.theme,preset);
+              assert.ok(painted.background.includes(backdrop),preset+" must own its body art: "+painted.background);
+              assert.ok(painted.header.includes(headerArt),preset+" must own header art: "+painted.header);
+              assert.equal(painted.position,"fixed",preset+" must not alter shared navigation geometry");
+              if(preset!=="egyptian_eclipse")assert.equal(painted.egyptianGallery,"none",preset+" must not inherit Egyptian gallery");
+            }
+            for(const preset of ["blood_moon","verdant_crypt","iron_eclipse","royal_abyss"]){
+              assert.equal(await page.evaluate(key=>window.KnightfallThemeCrew.preview(key,"site"),preset),true);
+              const painted=await page.evaluate(()=>({key:document.body.dataset.kfTheme,art:document.body.dataset.kfArtTheme,
+                ink:getComputedStyle(document.body).getPropertyValue("--kf-crew-ink").trim()}));
+              assert.equal(painted.key,preset);assert.equal(painted.art,"false");assert.ok(painted.ink);
+            }
+            await page.evaluate(()=>window.KnightfallThemeCrew.preview(null,"site"));
+            assert.equal(await page.locator("body").evaluate(body=>body.dataset.kfTheme),"cathedral");
+          }
           if (route === "/" && viewport.isMobile) {
             const toggle = page.locator(".kf-nav-toggle");
             await toggle.click();
