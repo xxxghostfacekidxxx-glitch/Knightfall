@@ -89,7 +89,7 @@ async function api(path,opts={}){
  if(external?.aborted)abort();else external?.addEventListener("abort",abort,{once:true});
  const timer=setTimeout(abort,30000);
  try{
-  const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{...(opts.body instanceof FormData?{}:{"content-type":"application/json"}),...(opts.headers||{})}});
+  const response=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,signal:controller.signal,headers:{...(opts.body==null||opts.body instanceof FormData?{}:{"content-type":"application/json"}),...(opts.headers||{})}});
   const data=await response.json().catch(()=>null);
   if(!response.ok){const error=Error(data?.error||("Messaging API returned HTTP "+response.status));error.status=response.status;throw error;}
   if(!data||typeof data!=="object"||Array.isArray(data))throw Error("Invalid messaging response. Please retry.");
@@ -130,9 +130,7 @@ async function api(path,opts={}){
     dock.classList.toggle("kf-chat-expanded",state.visible&&window.matchMedia("(max-width:700px)").matches);
   }
   syncBubbleViewport();
-  window.addEventListener("resize",syncBubbleViewport,{passive:true});
-  window.visualViewport?.addEventListener("resize",syncBubbleViewport,{passive:true});
-  window.visualViewport?.addEventListener("scroll",syncBubbleViewport,{passive:true});
+
   const $=selector=>dock.querySelector(selector);
   const panel=$("#kf-chat-panel"),recent=$("#kf-chat-list"),thread=$("#kf-chat-thread"),composer=$("#kf-chat-compose"),input=$("#kf-chat-input"),status=$("#kf-chat-status");
   // Progressive enhancement: a failed mascot load must never disable messaging.
@@ -230,9 +228,18 @@ async function api(path,opts={}){
     if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y))
       placeDock(saved.x,saved.y);
   }catch{}
-  window.addEventListener("resize",fitDock,{passive:true});
-  window.visualViewport?.addEventListener("resize",fitDock,{passive:true});
-  window.visualViewport?.addEventListener("scroll",fitDock,{passive:true});
+  let viewportFrame=null;
+  function scheduleViewportFit(){
+    if(viewportFrame!==null)return;
+    viewportFrame=requestAnimationFrame(()=>{
+      viewportFrame=null;
+      syncBubbleViewport();
+      fitDock();
+    });
+  }
+  window.addEventListener("resize",scheduleViewportFit,{passive:true});
+  window.visualViewport?.addEventListener("resize",scheduleViewportFit,{passive:true});
+  window.visualViewport?.addEventListener("scroll",scheduleViewportFit,{passive:true});
   const grip=$("#kf-chat-resize");
   let sizing=null;
   grip.addEventListener("pointerdown",e=>{
@@ -715,18 +722,17 @@ async function api(path,opts={}){
     }
     if(event.target.closest("input,textarea,[contenteditable=true],select,button,a"))event.stopPropagation();
   });
-  document.addEventListener("visibilitychange",()=>{
-    if(!document.hidden)tick().catch(()=>{});
-  });
-  let tickRunning=false;
+  let tickRunning=false,tickQueued=false,lastTickStart=0;
   async function tick(){
-    if(tickRunning||document.hidden)return;
+    if(document.hidden||navigator.onLine===false)return;
+    if(tickRunning){tickQueued=true;return;}
     tickRunning=true;
+    lastTickStart=Date.now();
     try{
       await refreshConversations({force:true});
       if(state.active&&state.visible)await refreshThread();
     }catch(error){if(state.visible)announce("Chat could not refresh. "+error.message);}
-    finally{tickRunning=false;}
+    finally{tickRunning=false;if(tickQueued){tickQueued=false;if(!document.hidden)void tick();}}
   }
   let bubbleLiveDelay=0,liveBound=false,liveUnsubscribe=null;
   function bindLive(){
@@ -742,9 +748,17 @@ async function api(path,opts={}){
     }catch(error){liveBound=false;console.warn("Chat realtime unavailable; polling continues",error);}
   }
   bindLive();
-  window.addEventListener("visibilitychange",()=>{if(!document.hidden){bindLive();void tick();}});
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden){bindLive();void tick();}});
+  window.addEventListener("online",()=>{bindLive();void tick();});
+  window.addEventListener("pageshow",event=>{if(event.persisted){bindLive();void tick();}});
 
   tick();
-  const timer=setInterval(()=>{if(!document.hidden){bindLive();void tick();}},15000);
+  // Realtime events refresh immediately. Polling remains a recovery mechanism.
+  const timer=setInterval(()=>{
+    if(document.hidden||navigator.onLine===false||tickRunning)return;
+    bindLive();
+    const interval=window.KnightfallLive?.connected?(state.visible?30000:60000):15000;
+    if(Date.now()-lastTickStart>=interval)void tick();
+  },15000);
   window.addEventListener("pagehide",event=>{if(!event.persisted){clearInterval(timer);clearTimeout(bubbleLiveDelay);if(typeof liveUnsubscribe==="function")liveUnsubscribe();}});
 })();
