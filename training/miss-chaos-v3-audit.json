@@ -1,0 +1,65 @@
+{
+  "trainingRows": 114,
+  "heldoutRows": 22,
+  "exactDuplicateLeakage": 0,
+  "baseline": {
+    "tokens": 1503,
+    "loss": 2.401196850720435
+  },
+  "noPersona": {
+    "tokens": 1503,
+    "loss": 2.412312376190594
+  },
+  "noTopic": {
+    "tokens": 1503,
+    "loss": 2.408407446525646
+  },
+  "neither": {
+    "tokens": 1503,
+    "loss": 2.4889658443055764
+  },
+  "byPersona": [
+    {
+      "id": 0,
+      "rows": 10,
+      "tokens": 746,
+      "loss": 2.384899988575205
+    },
+    {
+      "id": 1,
+      "rows": 2,
+      "tokens": 111,
+      "loss": 2.5015317580116356
+    },
+    {
+      "id": 2,
+      "rows": 2,
+      "tokens": 137,
+      "loss": 2.216570635908454
+    },
+    {
+      "id": 3,
+      "rows": 2,
+      "tokens": 106,
+      "loss": 2.390804481084102
+    },
+    {
+      "id": 4,
+      "rows": 2,
+      "tokens": 132,
+      "loss": 2.4132604623892817
+    },
+    {
+      "id": 5,
+      "rows": 2,
+      "tokens": 136,
+      "loss": 2.5894493490148602
+    },
+    {
+      "id": 6,
+      "rows": 2,
+      "tokens": 135,
+      "loss": 2.4028333733380585
+    }
+  ]
+}
