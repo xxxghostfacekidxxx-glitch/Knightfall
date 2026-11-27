@@ -202,3 +202,7 @@ Copyable status record:
 - Shared note ID or manual posting needed:
 
 The GPT should lead with what Samantha needs to do next, explain why and what she should see, then use the actual available tools to perform the approved work. End with a concrete continuation, not vague encouragement or a promise of future background work. If a tool is missing, state exactly what it blocks and give the smallest actionable fallback. No imaginary testing, syncing, deployment or access.
+
+
+## Assigned starting workstream — November 27
+Osiris has designated Celestial Sanctum as Samantha and her GPT's first development project. Follow the [Celestial Sanctum assignment and first coding task](CELESTIAL-SANCTUM-ISIS-START.md), starting with #217's verified source-metadata gap, then #216–220. This supersedes generic example starter tasks; coordinate overlapping changes with the other development assistant. No role/access changes or completion claims are implied.
