@@ -1,0 +1,287 @@
+{
+  "rows": [
+    [
+      "arithmetic",
+      "calculate this expression"
+    ],
+    [
+      "arithmetic",
+      "evaluate arithmetic"
+    ],
+    [
+      "arithmetic",
+      "compute the sum"
+    ],
+    [
+      "arithmetic",
+      "multiply these numbers"
+    ],
+    [
+      "arithmetic",
+      "solve this equation"
+    ],
+    [
+      "arithmetic",
+      "trace math bytecode"
+    ],
+    [
+      "arithmetic",
+      "work out division"
+    ],
+    [
+      "arithmetic",
+      "add and subtract numbers"
+    ],
+    [
+      "arithmetic",
+      "calculate parentheses"
+    ],
+    [
+      "arithmetic",
+      "evaluate the product"
+    ],
+    [
+      "json",
+      "format json object"
+    ],
+    [
+      "json",
+      "pretty print json"
+    ],
+    [
+      "json",
+      "parse a json document"
+    ],
+    [
+      "json",
+      "indent json fields"
+    ],
+    [
+      "json",
+      "validate json structure"
+    ],
+    [
+      "json",
+      "format this json array"
+    ],
+    [
+      "json",
+      "read json data"
+    ],
+    [
+      "json",
+      "check json syntax"
+    ],
+    [
+      "json",
+      "organize json keys"
+    ],
+    [
+      "json",
+      "parse structured json"
+    ],
+    [
+      "hex",
+      "decode hexadecimal bytes"
+    ],
+    [
+      "hex",
+      "convert hex to text"
+    ],
+    [
+      "hex",
+      "read hex encoded string"
+    ],
+    [
+      "hex",
+      "interpret hexadecimal data"
+    ],
+    [
+      "hex",
+      "decode hex characters"
+    ],
+    [
+      "hex",
+      "translate hexadecimal to utf eight"
+    ],
+    [
+      "hex",
+      "hex byte decoding"
+    ],
+    [
+      "hex",
+      "convert hexadecimal payload to text"
+    ],
+    [
+      "hex",
+      "read a hex string"
+    ],
+    [
+      "hex",
+      "decode this hex sequence"
+    ],
+    [
+      "base64",
+      "decode base64 text"
+    ],
+    [
+      "base64",
+      "convert base64 to utf eight"
+    ],
+    [
+      "base64",
+      "read base64 encoded data"
+    ],
+    [
+      "base64",
+      "interpret base64 string"
+    ],
+    [
+      "base64",
+      "decode base64 characters"
+    ],
+    [
+      "base64",
+      "base64 to plain text"
+    ],
+    [
+      "base64",
+      "convert a base64 payload"
+    ],
+    [
+      "base64",
+      "base64 byte decoding"
+    ],
+    [
+      "base64",
+      "read a base64 string"
+    ],
+    [
+      "base64",
+      "decode this base64 sequence"
+    ],
+    [
+      "other",
+      "tell me a joke"
+    ],
+    [
+      "other",
+      "write a story"
+    ],
+    [
+      "other",
+      "what is philosophy"
+    ],
+    [
+      "other",
+      "draw a picture"
+    ],
+    [
+      "other",
+      "find a song"
+    ],
+    [
+      "other",
+      "what is your name"
+    ],
+    [
+      "other",
+      "explain history"
+    ],
+    [
+      "other",
+      "talk about the moon"
+    ],
+    [
+      "other",
+      "how are you"
+    ],
+    [
+      "other",
+      "give me a poem"
+    ]
+  ],
+  "held": [
+    [
+      "arithmetic",
+      "please calculate a sum"
+    ],
+    [
+      "arithmetic",
+      "evaluate this math expression"
+    ],
+    [
+      "arithmetic",
+      "multiply and divide"
+    ],
+    [
+      "json",
+      "pretty print this json array"
+    ],
+    [
+      "json",
+      "validate a json object"
+    ],
+    [
+      "json",
+      "indent the json document"
+    ],
+    [
+      "hex",
+      "convert hex bytes to utf eight"
+    ],
+    [
+      "hex",
+      "read this hexadecimal sequence"
+    ],
+    [
+      "hex",
+      "decode the hex data"
+    ],
+    [
+      "base64",
+      "decode this base64 payload"
+    ],
+    [
+      "base64",
+      "interpret a base64 sequence"
+    ],
+    [
+      "base64",
+      "convert base64 bytes"
+    ],
+    [
+      "other",
+      "write a funny poem"
+    ],
+    [
+      "other",
+      "tell me about art"
+    ],
+    [
+      "other",
+      "what is the weather"
+    ]
+  ],
+  "metrics": {
+    "parameters": 1509,
+    "trainingRows": 50,
+    "heldoutRows": 15,
+    "steps": 6000,
+    "before": {
+      "accuracy": 0.2,
+      "loss": 1.6095799372661668,
+      "count": 15
+    },
+    "after": {
+      "accuracy": 0.9333333333333333,
+      "loss": 0.039042509790958684,
+      "count": 15
+    },
+    "train": {
+      "accuracy": 1,
+      "loss": 0.0033035729906071383,
+      "count": 50
+    }
+  }
+}

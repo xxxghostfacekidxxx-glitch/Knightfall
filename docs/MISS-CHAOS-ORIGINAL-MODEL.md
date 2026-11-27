@@ -57,3 +57,27 @@ Reproduce from repo root: `node scripts/train-miss-chaos-native.mjs`. Browser de
 
 ## Experiment 002 — standalone transformer research artifact
 A separate local Python/PyTorch byte-level causal decoder-only transformer was trained from random initialization: 2 attention blocks, 4 heads, width 64, context 128, 141,312 parameters. Original 30-example corpus, 24 training and 6 held out; 400 gradient steps. Training loss 5.7121 → 1.5160; held-out loss 5.7568 → 2.8555. Finite weights, causal attention and seeded inference tests passed. Generated samples remain incoherent. A downloadable package with training/inference script, weights, corpus, metrics and README was produced in the development conversation, not uploaded to GitHub or production. PyTorch supplies tensor operations, not external model weights or an inference API. Next milestone: larger lawful, high-quality corpus; scaling and evaluation; check compute cost before purchasing; integrate only after quality acceptance.
+
+## Original neural tool selector
+{
+  "parameters": 1509,
+  "trainingRows": 50,
+  "heldoutRows": 15,
+  "steps": 6000,
+  "before": {
+    "accuracy": 0.2,
+    "loss": 1.6095799372661668,
+    "count": 15
+  },
+  "after": {
+    "accuracy": 0.9333333333333333,
+    "loss": 0.039042509790958684,
+    "count": 15
+  },
+  "train": {
+    "accuracy": 1,
+    "loss": 0.0033035729906071383,
+    "count": 50
+  }
+}
+Train from random initialization on 50 original task descriptions, evaluate on 15 held-out descriptions. Small bag-of-words MLP, not a language model or general intelligence. The Iron Crucible uses it locally to suggest arithmetic, JSON, hex or Base64 tools; explicit user action selects the tool and runs its existing parser. No arbitrary code execution, network or external inference. Held-out templates overlap vocabulary; scores are uncalibrated and not evidence of real-world understanding. Production Miss Chaos chat unchanged.
