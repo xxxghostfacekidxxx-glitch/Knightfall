@@ -6,3 +6,6 @@ Next: source-specific corpus licenses, factual verification, high-quality origin
 Migration is additive and idempotent. Source implementation not equivalent to a deployed cron or successful fetch. Check actual Worker revision, Cron Trigger config, run rows and candidates. If no rows, do not claim research is running. Existing master pause remains authoritative.
 
 Staff Knowledge Fleet panel added to Eye of Chaos: source review, approval/rejection, GOD-only export, actual counts and run history. `node scripts/train-miss-chaos-reviewed.mjs reviewed.json candidate.json` consumes 20–200 reviewed CC0 entities, creates separate candidate checkpoint and metrics, never overwrites production. Auto-training still requires a deployed runner and corpus acceptance; no new compute purchase. Additional Theme Forge and identity QA workflows remain separate from the requested 32-identity roster.
+
+## Superseded roster
+The original 32 assignments are retired in favor of the [dedicated 66 research corps](MISS-CHAOS-66-RESEARCH-CORPS.md). Original roles preserved; historical claims above refer to first implementation.
