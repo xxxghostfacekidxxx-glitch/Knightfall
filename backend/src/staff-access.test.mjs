@@ -41,6 +41,7 @@ function fixture(role, username = "staff-fixture", target = godTarget) {
             throw Error("Unexpected SQL: " + sql);
           },
           async all() {
+            if (sql.startsWith("SELECT key,value FROM site_settings WHERE key IN (")) return {results:[]};
             if (sql.includes("FROM vault_folders")) return { results: [] };
             if (sql.includes("display_name LIKE")) return { results: [target, { id: 3, role: "member", username: "member-fixture" }] };
             throw Error("Unexpected SQL: " + sql);
