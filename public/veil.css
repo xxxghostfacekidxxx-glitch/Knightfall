@@ -1,0 +1,14 @@
+/* The Veil only. Inherit shared site theme tokens, do not override other realms. */
+.veil-hub{--veil-edge:var(--kf-realm-metal,var(--kf-accent,#c6a675));--veil-panel:var(--kf-panel,#19191c);--veil-muted:var(--kf-muted,#c5b6b1)}
+.veil-hub .veil-hero,.veil-hub .veil-section{padding:clamp(1rem,3vw,2rem);margin:1rem 0;border:1px solid color-mix(in srgb,var(--veil-edge),transparent 45%);border-radius:18px;background:var(--veil-panel)}
+.veil-hub h1{font-size:clamp(2.4rem,7vw,5rem);line-height:1.08;margin:.25em 0}
+.veil-hub .veil-motto{font-size:clamp(1.1rem,3vw,1.55rem);color:var(--veil-edge)}
+.veil-hub .veil-tag,.veil-hub .veil-planned{font-size:.8rem;letter-spacing:.05em;color:var(--veil-muted)}
+.veil-hub .veil-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:1rem}
+.veil-hub .veil-card{display:flex;flex-direction:column;gap:.45rem;min-width:0;overflow-wrap:anywhere;padding:1.1rem;border:1px solid color-mix(in srgb,var(--veil-edge),transparent 65%);border-radius:12px}
+.veil-hub .veil-card h3,.veil-hub .veil-card p{margin:0}
+.veil-hub .veil-card a{margin-top:auto;align-self:flex-start}
+.veil-hub .veil-links{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1rem}
+.veil-hub a{color:var(--veil-edge);text-decoration:underline;text-underline-offset:.2em}
+.veil-hub a:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+.veil-hub [id]{scroll-margin-top:calc(var(--kf-header-height,80px) + 1rem)}

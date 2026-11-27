@@ -1,5 +1,5 @@
 import {loadAstronomy} from "./moon-widget.mjs";
-import {parseDay,lifePath,numberThemes,arcana,drawCards,skySnapshot,skyAspects,studies,deck,signs,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,deities,findDeities,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif,tarotAsset,chamberMap,synastryAspects,studyLessons,planetaryHours} from "./celestial-core.mjs";
+import {parseDay,lifePath,numberThemes,arcana,drawCards,skySnapshot,skyAspects,studies,deck,signs,parseUtcMinute,transitAspects,personalYear,nameNumbers,seasonEvents,wheelPoint,celestialEvents,runeLetters,drawRune,geometryPattern,zodiacCorrespondences,zodiacFor,houseTopics,planetaryMetals,alchemyStages,tarotMotif,tarotAsset,chamberMap,synastryAspects,studyLessons,planetaryHours} from "./celestial-core.mjs";
 const $=id=>document.getElementById(id);
 function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
 const date=$("cs-sky-date"),sky=$("cs-sky-status"),skyBody=$("cs-sky-body"),aspects=$("cs-aspects");
@@ -40,7 +40,7 @@ $("cs-card-search").addEventListener("input",filterCards);filterCards();
 const query=$("cs-study-search"),category=$("cs-study-category"),library=$("cs-study-list");
 function filterStudies(){
  const q=query.value.trim().toLowerCase(),group=category.value;
- const matches=studies.filter(item=>(!group||group===item[0])&&item.join(" ").toLowerCase().includes(q));
+ const matches=studies.filter(item=>item[0]!=="Egyptian traditions"&&(!group||group===item[0])&&item.join(" ").toLowerCase().includes(q));
  library.replaceChildren(...matches.map(([group,title,body,prompt,source])=>{const article=el("article",undefined,"cs-study");article.append(el("span",group,"cs-card-label"),el("h3",title),el("p",body),el("p",prompt,"cs-prompt"));if(source){const link=el("a","Read source");link.href=source;article.append(link);}return article;}));
  $("cs-study-count").textContent=matches.length+" "+(matches.length===1?"entry":"entries");
 }
@@ -107,16 +107,6 @@ $("cs-geometry-select").addEventListener("change",renderGeometry);$("cs-geometry
 
 function emblemImage(file){const img=el("img");img.src="/assets/knightfall/celestial/"+file;img.alt="";img.width=160;img.height=160;img.loading="lazy";img.className="cs-emblem";return img;}
 function tarotArt(c){const m=tarotMotif(c),art=el("div",undefined,"cs-tarot-art");art.append(emblemImage(tarotAsset(c)));return art;}
-function renderGods(){
- const found=findDeities($("cs-god-search").value,$("cs-god-category").value),grid=$("cs-god-grid");grid.replaceChildren();
- for(const [id,name,group,symbol,summary,description,links] of found){
-  const card=el("article",undefined,"cs-study cs-deity");card.append(emblemImage("deity-"+id+".svg"),el("span",group,"cs-card-label"),el("h3",name),el("strong",summary),el("p",description));
-  const related=el("div",undefined,"cs-related");related.append(el("span","Related figures:"));
-  for(const target of links){const d=deities.find(x=>x[0]===target);if(!d)continue;const b=el("button",d[1]);b.type="button";b.addEventListener("click",()=>{$("cs-god-category").value="";$("cs-god-search").value=d[1];renderGods();$("cs-god-search").focus();});related.append(b);}
-  card.append(related);grid.append(card);
- }$("cs-god-count").textContent=found.length+" figures";
-}
-$("cs-god-search").addEventListener("input",renderGods);$("cs-god-category").addEventListener("change",renderGods);renderGods();
 function renderZodiac(){const element=$("cs-element").value,mode=$("cs-modality").value,grid=$("cs-zodiac-grid");grid.replaceChildren();for(const [name,e,m,r,t] of zodiacCorrespondences.filter(x=>(!element||x[1]===element)&&(!mode||x[2]===mode))){const card=el("article",undefined,"cs-study");card.append(el("span",String.fromCodePoint(0x2648+signs.indexOf(name)),"cs-rune-glyph"),el("h3",name),el("p",e+" · "+m),el("p","Classical ruler: "+r),el("p","Reflection theme: "+t));grid.append(card);}}
 $("cs-element").addEventListener("change",renderZodiac);$("cs-modality").addEventListener("change",renderZodiac);renderZodiac();
 for(const [i,topic] of houseTopics.entries()){const card=el("article",undefined,"cs-study");card.append(el("span","HOUSE "+(i+1),"cs-card-label"),el("h3",topic));$("cs-house-grid").append(card);}

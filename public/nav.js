@@ -345,8 +345,7 @@
         <summary>Explore <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
           <a href="/celestial-sanctum.html">☾ Celestial Sanctum</a>
-          <a href="/force-realms.html">✦ Force Realms</a>
-          <a href="/sanctuary-realm.html">♜ Sanctuary</a>
+          <a href="/the-veil.html">𓂀 The Veil · Mythology &amp; Occult</a>
           <a href="/music.html">♫ Music · Serrated Signal</a>
           <a href="/chatbots.html">✳ Chatbots · Chaos Collective</a>
         </div>
@@ -406,6 +405,16 @@
       ["/create-thread", "/community"],
       ["/moonology", "/celestial-sanctum"],
       ["/shadow-work", "/celestial-sanctum"],
+      ["/egyptian-mythology-archive", "/the-veil"],
+      ["/force-realms", "/the-veil"],
+      ["/jedi-temple", "/the-veil"],
+      ["/sith-order", "/the-veil"],
+      ["/force-academy", "/the-veil"],
+      ["/force-library", "/the-veil"],
+      ["/force-council", "/the-veil"],
+      ["/force-advanced-studies", "/the-veil"],
+      ["/sanctuary-realm", "/the-veil"],
+      ["/sanctum-of-inferno", "/the-veil"],
       ["/bots", "/chatbots"],
       ["/personal-bots", "/chatbots"],
       ["/miss-chaos", "/chatbots"]
