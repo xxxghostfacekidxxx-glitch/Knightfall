@@ -6,3 +6,7 @@ test('stack trace matches compiled result',()=>{const r=traceExpression('2+3*4')
 
 test("extended literals and arithmetic precedence",()=>{for(const [x,y] of [["2^3^2",512],["-2^2",-4],["2^-3",.125],[".5+1e2",100.5],["7%4",3],["2*3^2",18]]){assert.equal(runExpression(compileExpression(x)),y);assert.equal(traceExpression(x).trace.at(-1).stack[0],y);}});
 test("precise diagnostics and strict bytecode",()=>{assert.throws(()=>compileExpression("1+@"),/column 3/);assert.throws(()=>runExpression(compileExpression("4%0")));assert.throws(()=>runExpression(compileExpression("2^1024")));assert.throws(()=>runExpression([["const",1],["neg",2]]));});
+
+import {compileWasm,runWasm} from "../public/order66-code-lab.mjs";
+test("native WebAssembly execution agrees with the VM",()=>{for(const [source,value] of [["2+3*4",14],["-(7-2)/2",-2.5],["-0",-0],["1e2+.5",100.5],["8/2/2",2],[Array(31).fill("1").join("+"),31]]){const {bytes,result}=runWasm(source);assert.ok(Object.is(result,value));assert.ok(WebAssembly.validate(bytes));assert.deepEqual(WebAssembly.Module.imports(new WebAssembly.Module(bytes)),[]);}});
+test("native target rejects unsupported and invalid operations",()=>{for(const source of ["1/0","2^3","4%3","fetch('x')"])assert.throws(()=>compileWasm(source));});
