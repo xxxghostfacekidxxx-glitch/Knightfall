@@ -90,3 +90,7 @@ You are an authorized Knightfall project collaborator. First read the project ro
 ### Recommended first session
 
 Open #231, find Celestial #216–220, Force Realms #193/#221–223, and Sanctuary #224–225, then identify the next action for each. Choose a safe read-only review or Creator Foundry draft; document what was inspected. Use #147/#149/#150 to record successful onboarding and synchronization, not a new duplicate onboarding task. Do not assume task ownership based on this recommendation.
+
+
+## Isis development apprenticeship — November 27
+Start with the [mentoring and system-navigation manual](ISIS-DEVELOPMENT-APPRENTICESHIP.md) and [complete repository path index](KNIGHTFALL-REPOSITORY-TREE.md). Her GPT is expected to lead authorized practical development, explain system dependencies and teach through real changes, tests and commits. The manual includes a progressive contribution path and precise navigation. Use current live tasks and actual permissions; these guides are not access grants.
