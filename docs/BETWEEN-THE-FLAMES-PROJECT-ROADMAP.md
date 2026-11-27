@@ -102,3 +102,7 @@ Start with the [mentoring and system-navigation manual](ISIS-DEVELOPMENT-APPRENT
 
 ## Assigned starting workstream — November 27
 Osiris has designated Celestial Sanctum as Samantha and her GPT's first development project. Follow the [Celestial Sanctum assignment and first coding task](CELESTIAL-SANCTUM-ISIS-START.md), starting with #217's verified source-metadata gap, then #216–220. This supersedes generic example starter tasks; coordinate overlapping changes with the other development assistant. No role/access changes or completion claims are implied.
+
+
+### 14. The Veil — Kemet and occult reference collections
+[Dedicated project register](THE-VEIL-PROJECT-REGISTER.md). Kemet: 371 civilization and 264 mythology records, five room pages and Theban studio source-present; new phases for evidence review, chronology, science, language, archaeology and religion. Grimoire: #232–235, 117 searchable records, seven seal previews, with proposed pentacle/Enochian/reader/assistant expansions. World mythologies, world religions, esoteric movements and witchcraft/mysticism are planned collections. Use current live records for IDs and status. Timestamp display uses permanent note IDs, America/Chicago and canonical UTC; original history remains intact.
