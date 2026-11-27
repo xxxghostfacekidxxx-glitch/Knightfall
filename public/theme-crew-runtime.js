@@ -83,7 +83,7 @@ const paint=()=>{
  }));
 };
 const refresh=(force=false)=>{
- if(!isLive||document.visibilityState==="hidden"||navigator.onLine===false)return Promise.resolve();
+ if(!isLive||document.visibilityState==="hidden"||(typeof navigator!=="undefined"&&navigator.onLine===false))return Promise.resolve();
  if(pendingRefresh)return pendingRefresh;
  if(!force&&Date.now()-lastRefreshStart<2000)return Promise.resolve();
  lastRefreshStart=Date.now();
