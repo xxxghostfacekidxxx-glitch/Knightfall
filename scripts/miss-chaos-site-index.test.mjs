@@ -24,3 +24,5 @@ test("site index must remain source-parseable for the deployed Worker",()=>{
  assert.match(raw,/export const PUBLIC_PAGES/);
  assert.doesNotMatch(raw,/\}\s*\n\s*\{title:/,"site catalog objects require commas to avoid Worker syntax failures");
 });
+
+test("new knowledge sections are discoverable through Miss Chaos",()=>{for(const [query,path] of [["nietzsche","/nietzsche.html"],["hieroglyphs","/languages.html"],["kemet","/egyptian-civilization.html"],["goetia","/grimoire-archives.html"],["theban cipher","/theban-translator.html"]])assert.ok(searchPublicPages({query}).some(x=>x.url===path),query);});

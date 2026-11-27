@@ -8,7 +8,7 @@
   <title>Miss Chaos | Knightfall</title>
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/miss-chaos.css?v=20261026-stream1">
-  <link rel="stylesheet" href="/miss-chaos-experience.css?v=20261127-havoc2">
+  <link rel="stylesheet" href="/miss-chaos-experience.css?v=20261127-havoc3">
   <link rel="stylesheet" href="/cosmic-chart.css?v=20261111-handoff4">
   <link rel="stylesheet" href="/miss-chaos-radar.css?v=20261111">
 <link rel="stylesheet" href="/chaos-chat-image-picker.css?v=20261119-attach1">
@@ -100,7 +100,7 @@
 <div id="astro-preview" class="cosmic-preview" hidden aria-label="Calculated natal chart preview"></div>
 <p class="astro-help">Western tropical astrology is a symbolic, reflective tradition, not a scientifically proven predictor of personality or events. Planetary positions use Astronomy Engine; house angles and lunar nodes remain approximate. The reading draft is yours to review before sending. Sending it stores the chart text in your conversation.</p></section>
       <div id="chat-messages" class="chat-messages" aria-live="polite" aria-relevant="additions">
-        <div class="welcome-card"><img class="mc-welcome-portrait" src="/assets/knightfall/miss-chaos/expression-playful.svg" width="84" height="84" alt="" decoding="async"><p class="eyebrow">YOUR LITTLE CORNER OF CHAOS</p><h2>Hey, trouble. 🖤</h2><p>Bring me the messy thoughts, wild ideas and questions nobody else gets. We can talk, create, laugh or figure things out together.</p><div class="mc-welcome-actions" aria-label="Conversation ideas"><button type="button" data-mc-starter="talk">♡ Just talk</button><button type="button" data-mc-starter="create">✦ Make something</button><button type="button" data-mc-starter="laugh">☾ Entertain me</button><button type="button" data-mc-starter="help">⚡ Help me figure it out</button></div><p class="welcome-hint">Your chats stay attached to your account. You choose what to save in memory.</p></div>
+        <div class="welcome-card"><img class="mc-welcome-portrait" src="/assets/knightfall/miss-chaos/expression-playful.svg" width="84" height="84" alt="" decoding="async"><p class="eyebrow">YOUR LITTLE CORNER OF CHAOS</p><h2>Hey, trouble. 🖤</h2><p>Bring me the messy thoughts, wild ideas and questions nobody else gets. We can talk, create, laugh or figure things out together.</p><div class="mc-welcome-actions" aria-label="Conversation ideas"><button type="button" data-mc-starter="talk">♡ Just talk</button><button type="button" data-mc-starter="create">✦ Make something</button><button type="button" data-mc-starter="laugh">☾ Entertain me</button><button type="button" data-mc-starter="help">⚡ Help me figure it out</button><button type="button" data-mc-starter="study">✧ Learn something</button><button type="button" data-mc-starter="explore">☄ Explore Knightfall</button></div><p class="welcome-hint">Your chats stay attached to your account. You choose what to save in memory.</p></div>
       </div>
       <div class="mc-jump-row"><button id="mc-jump-latest" type="button" hidden>↓ Latest reply</button><button id="mc-focus-toggle" type="button" aria-pressed="false">Focus mode</button></div>
       <div id="chat-error" class="chat-error" role="status" hidden></div>
@@ -146,8 +146,8 @@
   <script src="/vendor/tz-lookup.js?v=11.8.0" defer></script>
   <script src="/cosmic-place-timezone.js?v=20261111-geo1" defer></script>
   <script src="/cosmic-timezone.js?v=20261111-cosmic1" defer></script>
-  <script src="/miss-chaos-chat-format.js?v=20261127-havoc2" defer></script>
-  <script src="/miss-chaos.js?v=20261127-havoc2" defer></script>
+  <script src="/miss-chaos-chat-format.js?v=20261127-havoc3" defer></script>
+  <script src="/miss-chaos.js?v=20261127-havoc3" defer></script>
   <script src="/miss-chaos-radar.js?v=20261111" defer></script>
 <script>
 (()=>{const select=document.getElementById("mc-full-theme");const key="kf:miss-chaos-theme";const allowed=new Set(["obsidian","bubblegum-havoc","hellfire","egypt","mustafar","korriban","vader","hex","anarchy","chaos","blood","astral","inferno"]);const apply=value=>{const theme=allowed.has(value)?value:"obsidian";document.body.dataset.mcRealmTheme=theme;select.value=theme;return theme};let saved="obsidian";try{saved=localStorage.getItem(key)||saved}catch{}apply(saved);select.addEventListener("change",()=>{const theme=apply(select.value);try{localStorage.setItem(key,theme)}catch{}});window.addEventListener("storage",event=>{if(event.key===key)apply(event.newValue)})})();

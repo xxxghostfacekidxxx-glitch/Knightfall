@@ -29,6 +29,16 @@ export const PUBLIC_PAGES = Object.freeze([
   {title:"Chaos Visual Lab",url:"/chaos-visual-lab.html",terms:"free local browser image resize pixel art avatar sprite photo png webp export palette extraction swatches css tokens tattoo stencil blackwork transfer mirror threshold outline contour svg vector tracing 100 percent printable calibrated size millimeters mm a4 letter QR share Openverse creator artwork colors"},
   {title:"Chaos Forge",url:"/chaos-forge.html",terms:"clothing sewing pattern drafting craft blueprints 3d model viewer camera photo image analysis poly haven met wikidata free resource maker"},
   {title:"The Crucible",url:"/chaos-crucible.html",terms:"miss chaos creative workbench project builder brief blueprint tattoo character game design craft sewing coding writing markdown export private memo save maker projects"},
+  {title:"Philosophy",url:"/philosophy.html",terms:"philosophy philosophers ethics existentialism stoicism critical thinking thinkers learn study"},
+  {title:"Friedrich Nietzsche",url:"/nietzsche.html",terms:"nietzsche amor fati self overcoming nihilism eternal recurrence zarathustra genealogy morality will to power"},
+  {title:"Languages and Sound Studio",url:"/languages.html",terms:"language languages egyptian hieroglyphs transliteration hieratic demotic coptic pronunciation listening sound studio learn german french spanish"},
+  {title:"Kemet Egyptian Civilization",url:"/egyptian-civilization.html",terms:"ancient egypt kemet civilization pharaoh society history medicine mathematics astronomy egyptian archaeology"},
+  {title:"Egyptian Mythology Archive",url:"/egyptian-mythology-archive.html",terms:"egyptian mythology osiris isis set anubis ancient gods religious cult"},
+  {title:"The Veil",url:"/the-veil.html",terms:"mythology occult religion ancient worlds witchcraft historical traditions"},
+  {title:"Grimoire Archives",url:"/grimoire-archives.html",terms:"grimoire demonology angelology goetia solomon seals sigils ceremonial magic urilia historical manuscripts"},
+  {title:"Celestial Sanctum",url:"/celestial-sanctum.html",terms:"celestial sanctum tarot numerology zodiac astronomy symbolic astrology study"},
+  {title:"Serrated Signal",url:"/music.html",terms:"music rhythm metronome tap tempo serrated signal"},
+  {title:"Theban Alphabet Studio",url:"/theban-translator.html",terms:"theban cipher alphabet glyph encode decode occult script"},
   {title:"Miss Chaos Abilities Guide",url:"/miss-chaos-guide.html",terms:"what can miss chaos do capabilities guide ai tools how to use assistant member osiris isis private modes permissions creator code research demo"}
 ]);
 /** Simple, grounded tool lessons. Each step points to an existing workspace. */

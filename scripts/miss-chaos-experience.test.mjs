@@ -48,3 +48,5 @@ test("second-wave chat controls, expressions and safe formatted replies",()=>{
  assert.deepEqual(blocks.map(b=>b.type),["heading","ul","code"]);
  assert.equal(blocks[2].text,"<script>alert(1)</script>");
 });
+
+test("follow-up and study actions stage drafts without silent submission",()=>{const html=read("public/miss-chaos.html"),js=read("public/miss-chaos.js");for(const id of ["study","explore"])assert.ok(html.includes('data-mc-starter="'+id+'"'));assert.match(js,/function stageDraft/);assert.match(js,/Your newer draft is unchanged/);assert.match(js,/Copy attempted message/);assert.match(js,/mc-follow-up/);});

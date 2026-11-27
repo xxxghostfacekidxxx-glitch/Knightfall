@@ -45,3 +45,5 @@ body.chaos-page .message-content{white-space:normal}body.chaos-page .message.use
 @media(max-width:480px){body.chaos-page .mc-jump-row{margin-inline:.55rem}body.chaos-page .mc-jump-row button{min-height:36px}body.chaos-page .message-content pre{max-width:calc(100vw - 80px)}}
 
 .mc-realm-shell .mc-realm-character{float:right;width:clamp(84px,15vw,132px);height:auto;border-radius:25px;margin:0 0 .75rem 1rem;max-width:40%}
+
+body.chaos-page .message-actions{flex-wrap:wrap;justify-content:flex-start}body.chaos-page .message.user .message-actions{justify-content:flex-end}body.chaos-page .message-copy{padding:.35rem .65rem;min-height:36px}body.chaos-page .mc-follow-up:hover{color:var(--mc-ex-accent,#ff91ce)}body.chaos-page .chat-error button{margin:.35rem;min-height:40px}body.chaos-page .mc-focus-mode .astrology-tools:not([hidden]){max-height:17dvh}

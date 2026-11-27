@@ -98,8 +98,9 @@
   const historyPanel=document.getElementById("mc-history-panel");
   function setHistory(open){if(!historyToggle||!historyPanel)return;historyToggle.setAttribute("aria-expanded",String(open));historyToggle.textContent=open?"× Close chats & settings":"☰ Chats & settings";historyPanel.closest(".chaos-shell").dataset.historyOpen=String(open);}
   historyToggle?.addEventListener("click",()=>{const open=historyToggle.getAttribute("aria-expanded")!=="true";setHistory(open);if(open)historyPanel.scrollIntoView({block:"nearest"});});
-  const welcomePrompts={talk:"Let's just talk. ",create:"Help me make something creative. ",laugh:"Entertain me with something weird and funny. ",help:"Help me work through something. "};
-  messagesEl.addEventListener("click",event=>{const b=event.target.closest("[data-mc-starter]");if(!b||input.disabled||busy||adminViewing)return;const prompt=welcomePrompts[b.dataset.mcStarter];if(!prompt)return;input.value=(prompt+input.value).slice(0,input.maxLength||4000);input.dispatchEvent(new Event("input",{bubbles:true}));input.focus();});
+  const welcomePrompts={talk:"Let's just talk. ",create:"Help me make something creative. ",laugh:"Entertain me with something weird and funny. ",help:"Help me work through something. ",study:"Teach me something interesting, with a small example I can try. ",explore:"Help me find something fun or useful on Knightfall, with actual page links. "};
+  function stageDraft(value){if(input.disabled||busy||adminViewing)return false;const draft=input.value.trim(),next=draft?draft+"\n\n"+value:value;if(next.length>(input.maxLength||4000)){showError("Your current draft is too long to add this. Copy it first or shorten it.");return false;}input.value=next;input.dispatchEvent(new Event("input",{bubbles:true}));input.focus();return true;}
+  messagesEl.addEventListener("click",event=>{const b=event.target.closest("[data-mc-starter]");if(!b||input.disabled||busy||adminViewing)return;const prompt=welcomePrompts[b.dataset.mcStarter];if(!prompt)return;stageDraft(prompt);});
   const referenceButton=$("#chaos-reference-photo"),referenceInput=$("#chaos-reference-input"),referenceStatus=$("#chaos-reference-status");
    let chatPhoto=null;
    import("/chaos-chat-image-picker.mjs?v=20261119-photo-chat1").then(({mountChaosChatImage})=>{
@@ -256,6 +257,7 @@
       } catch { showError("Copy failed. Select the message text to copy it manually."); }
     });
     actions.append(copy);
+    const follow=document.createElement("button");follow.type="button";follow.className="message-copy mc-follow-up";follow.textContent=role==="user"?"Use as draft":"Follow up";follow.setAttribute("aria-label",role==="user"?"Reuse this message in the composer":"Ask a follow-up about this reply");follow.addEventListener("click",()=>{const raw=typeof text.mcRaw==="string"?text.mcRaw:text.textContent;stageDraft(role==="user"?raw:"I have a follow-up about your reply: "+raw.slice(0,360)+"\n\nMy question: ");});actions.append(follow);
     if(role!=="user" && "speechSynthesis" in window){
       const listen=document.createElement("button");
       listen.type="button";listen.className="message-copy message-listen";
@@ -277,7 +279,7 @@
     return article;
   }
   function showWelcome() {
-    messagesEl.innerHTML = "<div class=\"welcome-card\"><img class=\"mc-welcome-portrait\" src=\"/assets/knightfall/miss-chaos/expression-playful.svg\" width=\"84\" height=\"84\" alt=\"\" decoding=\"async\"><p class=\"eyebrow\">YOUR LITTLE CORNER OF CHAOS</p><h2>Hey, trouble. 🖤</h2><p>Bring me the messy thoughts, wild ideas and questions nobody else gets. We can talk, create, laugh or figure things out together.</p><div class=\"mc-welcome-actions\" aria-label=\"Conversation ideas\"><button type=\"button\" data-mc-starter=\"talk\">♡ Just talk</button><button type=\"button\" data-mc-starter=\"create\">✦ Make something</button><button type=\"button\" data-mc-starter=\"laugh\">☾ Entertain me</button><button type=\"button\" data-mc-starter=\"help\">⚡ Help me figure it out</button></div><p class=\"welcome-hint\">Your chats stay attached to your account. You choose what to save in memory.</p></div>";
+    messagesEl.innerHTML = "<div class=\"welcome-card\"><img class=\"mc-welcome-portrait\" src=\"/assets/knightfall/miss-chaos/expression-playful.svg\" width=\"84\" height=\"84\" alt=\"\" decoding=\"async\"><p class=\"eyebrow\">YOUR LITTLE CORNER OF CHAOS</p><h2>Hey, trouble. 🖤</h2><p>Bring me the messy thoughts, wild ideas and questions nobody else gets. We can talk, create, laugh or figure things out together.</p><div class=\"mc-welcome-actions\" aria-label=\"Conversation ideas\"><button type=\"button\" data-mc-starter=\"talk\">♡ Just talk</button><button type=\"button\" data-mc-starter=\"create\">✦ Make something</button><button type=\"button\" data-mc-starter=\"laugh\">☾ Entertain me</button><button type=\"button\" data-mc-starter=\"help\">⚡ Help me figure it out</button><button type=\"button\" data-mc-starter=\"study\">✧ Learn something</button><button type=\"button\" data-mc-starter=\"explore\">☄ Explore Knightfall</button></div><p class=\"welcome-hint\">Your chats stay attached to your account. You choose what to save in memory.</p></div>";
   }
   function renderConversationList(items) {
     listEl.replaceChildren();
@@ -898,8 +900,10 @@
       // Keep the unsent text recoverable without encouraging an accidental duplicate send.
       const optimistic = [...messagesEl.querySelectorAll(".message.user")].at(-1);
       if (optimistic?.querySelector(".message-content")?.textContent === displayed) optimistic.remove();
-      input.value = message; input.dispatchEvent(new Event("input"));
+      const newerDraft=input.value;
+      if(!newerDraft.trim()){input.value=message;input.dispatchEvent(new Event("input"));}
       showError((error.message || "Reply unavailable.") + " Check the conversation history before retrying, since the server may have saved the message.");
+      if(newerDraft.trim()){const recover=document.createElement("button");recover.type="button";recover.className="message-copy";recover.textContent="Copy attempted message";recover.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(message);recover.textContent="Copied";}catch{recover.textContent="Copy unavailable";}});errorEl.append(document.createTextNode(" Your newer draft is unchanged. "),recover);}
     } finally { busy = false;setStreaming(false); sendButton.disabled = adminViewing; chatPhoto?.setBusy(false);syncJump(); }
   });
   try{speakReplies=localStorage.getItem("missChaosSpeakReplies")==="1";}catch{}
