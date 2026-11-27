@@ -47,3 +47,23 @@ test('mobile board can search by area, progress, evidence and priority',()=>{
   assert.ok(js.includes(label),label+' absent');
  assert.match(js,/filters\.limit\+=24/);
 });
+
+test('handoff timestamps use permanent IDs, UTC and Central time across midnight and DST',()=>{
+ const js=read('public/ai-handoff.js');
+ const source=js.match(/const handoffTimestamp=value=>\{[\s\S]*?\n\};/);
+ assert.ok(source);
+ const format=new Function(source[0]+';return handoffTimestamp;')();
+ for(const [input,expected] of [
+ ['2026-11-27 07:04:39','Nov 27, 2026, 1:04:39 AM CST · 2026-11-27 07:04:39 UTC'],
+ ['2026-11-19 01:00:09','Nov 18, 2026, 7:00:09 PM CST · 2026-11-19 01:00:09 UTC'],
+ ['2026-07-01 05:00:00','Jul 1, 2026, 12:00:00 AM CDT · 2026-07-01 05:00:00 UTC'],
+ ['2026-11-01T06:30:00Z','Nov 1, 2026, 1:30:00 AM CDT · 2026-11-01 06:30:00 UTC'],
+ ['2026-11-01T07:30:00Z','Nov 1, 2026, 1:30:00 AM CST · 2026-11-01 07:30:00 UTC']
+ ]) assert.equal(format(input),expected);
+ assert.equal(format(null),'Unknown date');
+ assert.match(format('2026-11-27'),/timezone unspecified/);
+ assert.match(js,/handoffTimestamp\(note.created_at\)/);
+ assert.ok(js.includes("'#'+note.id"));
+ assert.ok(read('backend/src/ai-handoff.js').includes("'#'+n.id"));
+ assert.ok(read('backend/src/ai-handoff-bridge.js').includes('timestamp_convention'));
+});
