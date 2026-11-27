@@ -44,9 +44,26 @@ async function loadRoundtable(){
  try{const d=await request(ROOT+"/roundtable");if(d.kind!=="authored-fiction"||!Array.isArray(d.episodes))throw Error("Editorial unavailable");
  picker.replaceChildren();for(const ep of d.episodes){const option=element("option","",ep.title);option.value=ep.id;picker.append(option);}
  function render(){const ep=d.episodes.find(x=>x.id===picker.value);lines.replaceChildren();if(!ep)return;for(const [name,division,body] of ep.turns){const row=element("article","eye-whisper");row.dataset.speaker=name.toLowerCase();const mark=element("span","eye-whisper-mark",name.slice(0,1));mark.setAttribute("aria-hidden","true");const copy=element("div","eye-whisper-copy");copy.append(element("h3","",name),element("small","",division),element("p","",body));row.append(mark,copy);lines.append(row);}notice.textContent="Authored fictional conversation · "+ep.date;}
- const prev=$("eye-episode-prev"),next=$("eye-episode-next"),copy=$("eye-episode-copy");function select(i){picker.selectedIndex=Math.max(0,Math.min(d.episodes.length-1,i));render();prev.disabled=picker.selectedIndex===0;next.disabled=picker.selectedIndex===d.episodes.length-1;}picker.addEventListener("change",()=>select(picker.selectedIndex));prev.addEventListener("click",()=>select(picker.selectedIndex-1));next.addEventListener("click",()=>select(picker.selectedIndex+1));copy.addEventListener("click",async()=>{const ep=d.episodes[picker.selectedIndex];try{await navigator.clipboard.writeText(ep.title+"\n\n"+ep.turns.map(t=>t[0]+": "+t[2]).join("\n\n"));notice.textContent="Copied authored fictional episode.";}catch{notice.textContent="Clipboard unavailable.";}});select(d.episodes.length-1);void loadProgress();try{const mod=await import("/mad-court.mjs?v=20261127-madcourt2");mod.mountCourt();}catch{$("court-status").textContent="Court engine unavailable.";}
+ const prev=$("eye-episode-prev"),next=$("eye-episode-next"),copy=$("eye-episode-copy");function select(i){picker.selectedIndex=Math.max(0,Math.min(d.episodes.length-1,i));render();prev.disabled=picker.selectedIndex===0;next.disabled=picker.selectedIndex===d.episodes.length-1;}picker.addEventListener("change",()=>select(picker.selectedIndex));prev.addEventListener("click",()=>select(picker.selectedIndex-1));next.addEventListener("click",()=>select(picker.selectedIndex+1));copy.addEventListener("click",async()=>{const ep=d.episodes[picker.selectedIndex];try{await navigator.clipboard.writeText(ep.title+"\n\n"+ep.turns.map(t=>t[0]+": "+t[2]).join("\n\n"));notice.textContent="Copied authored fictional episode.";}catch{notice.textContent="Clipboard unavailable.";}});select(d.episodes.length-1);void loadProgress();try{const mod=await import("/mad-court.mjs?v=20261127-fractured1");mod.mountCourt();}catch{$("court-status").textContent="Fractured Mind engine unavailable.";}
  }catch(e){notice.textContent=e.message;}
 }
+
+let alienReport=null;
+async function loadTools(){
+ const panel=$("eye-tool-review"),list=$("eye-tools-list"),notice=$("eye-tools-status");
+ try{const data=await request(ROOT+"/tools");panel.hidden=false;list.replaceChildren();notice.textContent=data.publication;
+ const tool=data.tools.find(t=>t.id==="alien-eyes");$("eye-alien-panel").hidden=!tool||tool.decision==="scrapped";
+ if(!tool)return;
+ const card=element("article","eye-result"),select=element("select",""),label=element("label","","Distribution decision"),save=element("button","eye-subtle","Save decision");
+ for(const [value,name] of [["pending","Keep in Osiris review"],["public","Approve for future public release"],["isis","Approve for future Isis release"],["scrapped","Scrap candidate"]]){const option=element("option","",name);option.value=value;select.append(option);}
+ select.value=tool.decision;label.append(select);save.type="button";
+ save.addEventListener("click",async()=>{const decision=select.value;if(decision===tool.decision)return;if(!confirm("Save "+decision+" review decision for "+tool.name+"? No release is activated."))return;save.disabled=true;try{await request(ROOT+"/tools/alien-eyes/decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision})});alienReport=null;$("eye-alien-report").textContent="";$("eye-alien-export").disabled=true;await loadTools();}catch(e){notice.textContent=e.message;save.disabled=false;}});
+ card.append(element("h3","",tool.name),element("p","",tool.description),element("p","","Current decision: "+tool.decision+" · execution: "+tool.execution),label,save);list.append(card);
+ }catch(e){panel.hidden=true;notice.textContent=e.message;}
+}
+$("eye-alien-form").addEventListener("submit",async e=>{e.preventDefault();const button=$("eye-alien-run"),status=$("eye-alien-status");if(button.disabled)return;button.disabled=true;alienReport=null;$("eye-alien-export").disabled=true;$("eye-alien-report").textContent="";status.textContent="Inspecting public project metadata…";try{const data=await request(ROOT+"/tools/alien-eyes/inspect?"+new URLSearchParams({repository:$("eye-alien-repo").value}));alienReport=data.report;$("eye-alien-report").textContent=JSON.stringify(alienReport,null,2);$("eye-alien-export").disabled=false;status.textContent="Inspection complete.";}catch(error){status.textContent=error.message;}finally{button.disabled=false;}});
+$("eye-alien-export").addEventListener("click",()=>{if(!alienReport)return;const url=URL.createObjectURL(new Blob([JSON.stringify(alienReport,null,2)],{type:"application/json"}));const link=element("a","");link.href=url;link.download="alien-eyes-project.json";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+
 async function browse(continued=false){
  const category=$("eye-category").value;
  const user=$("eye-user").value.trim();
@@ -116,7 +133,8 @@ $("eye-trash").addEventListener("click",trash);
    $("eye-workspace").hidden=false;
    message("GOD access confirmed.");
    await loadRoundtable();
-   await browse(false);
+   await loadTools();
+   if(location.hash!=="#eye-tool-review") await browse(false);
  }catch(e){$("eye-denied").hidden=false;message(e.message)}
 })();
 })();
