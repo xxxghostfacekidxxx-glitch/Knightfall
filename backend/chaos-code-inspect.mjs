@@ -35,6 +35,10 @@ export function inspectChaosCode(input={}){
      limits:"Syntax inspection only, no code execution or type checking."};
  }
  const findings=[],stack=[ast];let parsed_nodes=0;
+ const structure={functions:0,classes:0,loops:0,branches:0,awaits:0,imports:0,exports:0,declaredFunctions:[],nodeTypes:{}};
+ const functionTypes=new Set(['FunctionDeclaration','FunctionExpression','ArrowFunctionExpression','ObjectMethod','ClassMethod','ClassPrivateMethod','TSDeclareFunction']);
+ const loopTypes=new Set(['ForStatement','ForInStatement','ForOfStatement','WhileStatement','DoWhileStatement']);
+ const branchTypes=new Set(['IfStatement','ConditionalExpression','SwitchCase','CatchClause']);
  const report=(node,rule,severity,message)=>{
    if(findings.length<16)findings.push({rule,severity,message,
       line:node.loc?.start?.line||null,column:Number.isInteger(node.loc?.start?.column)?node.loc.start.column+1:null});
@@ -42,6 +46,15 @@ export function inspectChaosCode(input={}){
  while(stack.length){
    const n=stack.pop();if(!n||typeof n!=="object"||typeof n.type!=="string")continue;
    if(++parsed_nodes>22000)throw Error("Exceeded safe AST node limit.");
+   structure.nodeTypes[n.type]=(structure.nodeTypes[n.type]||0)+1;
+   if(functionTypes.has(n.type)){structure.functions++;const name=n.id?.name||n.key?.name;if(typeof name==="string"&&structure.declaredFunctions.length<30)structure.declaredFunctions.push({name:clip(name,80),line:n.loc?.start?.line||null,async:n.async===true,parameters:Array.isArray(n.params)?n.params.length:0});}
+   if(n.type==="ClassDeclaration"||n.type==="ClassExpression")structure.classes++;
+   if(loopTypes.has(n.type))structure.loops++;
+   if(branchTypes.has(n.type))structure.branches++;
+   if(n.type==="AwaitExpression")structure.awaits++;
+   if(n.type==="ImportDeclaration"||n.type==="ImportExpression")structure.imports++;
+   if(n.type.startsWith("Export"))structure.exports++;
+
    if(n.type==="CallExpression"&&n.callee?.name==="eval")report(n,"eval","high","eval can execute untrusted code.");
    if(n.type==="NewExpression"&&n.callee?.name==="Function")report(n,"new-function","high","Function constructor executes generated code.");
    if(n.type==="CallExpression"&&n.callee?.type==="MemberExpression"&&!n.callee.computed&&n.callee.object?.name==="document"&&n.callee.property?.name==="write")
@@ -60,5 +73,5 @@ export function inspectChaosCode(input={}){
    }
  }
  return {source:language==="javascript"?"Acorn 8.19.0 (MIT)":"Babel parser 7.28.5 (MIT)",language,source_type,syntax_valid:true,line_count,parsed_nodes,
-   findings,errors:[],limits:"Bounded syntax validation and limited heuristic warnings; not a full lint/security or TypeScript type-checking audit. No code execution."};
+   structure,findings,errors:[],limits:"Structural counts are descriptive, not semantic correctness. Bounded syntax validation and limited heuristic warnings; not a full lint/security or TypeScript type-checking audit. No code execution."};
 }
