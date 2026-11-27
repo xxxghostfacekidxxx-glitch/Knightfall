@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { chromium } from "playwright";
+import {staffCapabilities} from "../backend/src/staff-capabilities.js";
 
 const origin = "https://ash-fall.com";
 const publicDir = resolve("public");
@@ -14,6 +15,9 @@ const sessions = [
   { name: "creator", user: { role: "member", public_title: "Digital Creator" } },
   { name: "moderator", user: { role: "moderator" } },
   { name: "admin", user: { role: "admin" } },
+  { name: "Isis", user: { role: "admin", is_isis:1 } },
+  { name: "revoked partner", user:{role:"admin",username:"knightfallsamantha",is_isis:0} },
+  { name: "pending invitation", user:{role:"member",handoff_invited:1} },
   { name: "owner", user: { role: "god", username: "knightfall" } }
 ];
 
@@ -47,7 +51,7 @@ try {
         return route.fulfill({ headers, json: { verified: true, next: "/account.html?from=verified" } });
       }
       if (url.pathname === "/api/auth/me") {
-        if (session.user) return route.fulfill({ headers, json: { user: { username: "fixture", ...session.user } } });
+        if (session.user) {const user={id:1,username:"fixture",status:"active",...session.user};return route.fulfill({headers,json:{user:{...user,staff_access:staffCapabilities(user)}}});}
         if (session.status === 200) return route.fulfill({ headers, contentType: "text/html", body: "<p>Bad gateway</p>" });
         return route.fulfill({ headers, status: session.status, json: {} });
       }
@@ -109,15 +113,18 @@ try {
       assert.equal(await forum.isVisible(), false);
 
       const account = nav.locator("summary").filter({ hasText: "My Account" });
-      const staff = nav.locator("summary").filter({ hasText: "Staff" });
+      const staff = nav.locator(".kf-staff-group > summary");
       if (session.user) {
         await account.waitFor();
         assert.equal(await nav.getByRole("link", { name: /^(?:Messages|Chaosphere)$/ }).count(), 1);
         await account.click();
         await nav.getByRole("link", { name: /Notifications.*3/ }).waitFor();
         const foundry = nav.getByRole("link", { name: "Foundry", exact: true });
-        assert.equal(await foundry.count(), 1, "All roles use the single Foundry entrance");
-        assert.equal(await foundry.getAttribute("href"), "/devil-tools.html");
+        const rights=staffCapabilities({status:"active",...session.user});
+        assert.equal(await foundry.count(),rights.can_create?1:0,"Foundry entrance follows Worker permissions");
+        if(rights.can_create)assert.equal(await foundry.getAttribute("href"),"/devil-tools.html");
+        assert.equal(await page.locator("[data-kf-access=can_create]").first().isVisible(),rights.can_create);
+        assert.equal(await nav.locator(".kf-handoff-link").isVisible(),rights.can_handoff);
         const admin = ["admin", "god"].includes(session.user.role);
         // Digital Creators still have server-authorized workshop access; they no longer need a duplicate Staff menu.
         const isStaff = admin || session.name === "moderator";
@@ -125,14 +132,18 @@ try {
         if (isStaff) {
           await staff.click();
           assert.equal(await nav.getByRole("link", { name: "Moderation" }).isVisible(), admin || session.name === "moderator");
-          assert.equal(await nav.getByRole("link", { name: "Eye of Horus" }).isVisible(), session.name === "owner");
+          assert.equal(await nav.locator(".kf-god-eye-link").isVisible(),rights.can_eye_of_horus);
           await nav.getByRole("link", { name: "Settings & Tools" }).waitFor({ state: "hidden" });
           assert.equal(await nav.getByRole("link", { name: "Admin Dashboard" }).isVisible(), admin);
           if (admin) {
             await page.goto(origin + "/admin.html#master-task-list");
             const taskList = page.locator("#master-task-list[open]");
-            await taskList.waitFor();
+            await page.locator("#staff-controls").waitFor({state:"visible"});
+            if(rights.can_read_handoff)await taskList.waitFor();
+            else assert.equal(await page.locator("#master-task-list").isVisible(),false);
             const search = page.getByRole("textbox", { name: "Find a tool" }).or(page.getByRole("searchbox", { name: "Find a tool" }));
+            await search.fill("Deleted Vault");
+            assert.equal(await page.locator("[data-god-vault-tab]").isVisible(),rights.can_eye_of_horus);
             await search.fill("privacy recovery");
             await search.press("Enter");
             const reports = page.locator('[data-panel="message-reports"].active');
@@ -148,6 +159,7 @@ try {
         assert.equal(await account.isVisible(), false);
         assert.equal(await staff.isVisible(), false);
         assert.equal(await nav.getByRole("link", { name: "Sign In" }).count(), 1);
+        assert.equal(await page.locator("[data-kf-access=can_create]").first().isVisible(),false);
       }
       const size = await page.evaluate(() => [document.documentElement.clientWidth, document.documentElement.scrollWidth]);
       assert.ok(size[1] <= size[0] + 3, "Page overflows viewport: " + size);
