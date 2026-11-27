@@ -183,21 +183,44 @@ body>.kf-header,.kf-header{position:fixed!important;inset:0 0 auto 0!important;w
 .kf-nav .kf-identity-link:hover,.kf-nav .kf-identity-link:focus-visible{background:color-mix(in srgb,var(--kf-accent) 24%,#101017);border-color:var(--kf-accent)}
 
 
-/* Shared header / dropdown repair: menus render above the ticker on every realm. */
+/* Navigation owns the foreground, including on illustrated theme presets
+   that assign z-index:1 to every direct header child. The ticker clips only
+   its own contents. Mobile uses ONE scrolling drawer, not nested scrollboxes. */
 html{overflow-x:clip}
 body>.kf-header,.kf-header{overflow:visible!important;isolation:isolate;align-content:center}
-.kf-header .kf-nav{position:relative;z-index:15;overflow:visible!important}
-.kf-header .kf-nav-group{position:relative;z-index:16}
-.kf-header .kf-nav-group[open]{z-index:110!important}
-.kf-header .kf-nav-group[open]>.kf-nav-menu{z-index:120!important;position:absolute;top:calc(100% + 5px);overflow-y:auto;max-height:min(65vh,560px);box-shadow:0 18px 55px #000e}
-.kf-header .kf-leadership-ticker{position:relative;z-index:0;overflow:hidden;isolation:isolate}
+html body>.kf-header>.kf-nav{position:relative;z-index:150!important;overflow:visible}
+html body>.kf-header>.kf-leadership-ticker{position:relative;z-index:0!important;overflow:hidden;isolation:isolate}
 .kf-header .kf-ticker-row{position:relative;z-index:0}
-@media(max-width:1080px){
- .kf-header .kf-nav.open{position:absolute;z-index:90;top:100%;left:0;right:0;max-height:calc(100dvh - var(--kf-header-height,90px) + 55px);overflow-y:auto;overflow-x:visible}
- .kf-header .kf-nav.open .kf-nav-group[open]>.kf-nav-menu{position:relative;inset:auto;max-height:none;overflow:visible;box-shadow:none}
- .kf-header .kf-nav.open .kf-nav-group{width:100%}
+.kf-header .kf-nav-group{position:relative;z-index:1}
+.kf-header .kf-nav-group[open]{z-index:2!important}
+.kf-header .kf-nav-group[open]>.kf-nav-menu{
+ z-index:3!important;position:absolute;top:calc(100% + 5px);
+ overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+ max-height:min(65vh,560px,var(--kf-dropdown-room,560px));
+ box-shadow:0 18px 55px #000e;
 }
-
+.kf-header[data-kf-menu-active="true"] .kf-ticker-track{animation-play-state:paused}
+@media(max-width:1080px){
+ /* Temporarily remove ticker rows from the header's height budget while
+    navigating. The header observer restores their space when the menu closes. */
+ body.kf-navigation-open>.kf-header>.kf-leadership-ticker{display:none!important}
+ html body>.kf-header>.kf-nav.open{
+  display:flex!important;flex-direction:column;align-items:stretch;justify-content:flex-start;
+  position:absolute!important;z-index:150!important;inset:100% 0 auto 0!important;
+  width:100%;box-sizing:border-box;min-height:0;
+  max-height:calc(100vh - var(--kf-header-height,90px) - 8px);
+  max-height:var(--kf-drawer-room,calc(100dvh - var(--kf-header-height,90px) - 8px));
+  overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;
+  padding-bottom:max(.75rem,env(safe-area-inset-bottom));
+ }
+ html body>.kf-header>.kf-nav.open>.kf-nav-group,
+ html body>.kf-header>.kf-nav.open>.kf-nav-primary{flex:0 0 auto;min-width:0;width:100%;box-sizing:border-box}
+ html body>.kf-header>.kf-nav.open .kf-nav-group[open]>.kf-nav-menu{
+  position:relative!important;inset:auto!important;min-width:0;width:100%;max-width:none;
+  max-height:none!important;overflow:visible!important;box-sizing:border-box;box-shadow:none;
+ }
+ .kf-header .kf-nav.open .kf-nav-menu a{white-space:normal;overflow-wrap:anywhere}
+}
 
 /* Mobile compositor budget: preserve the themed art and colors, but avoid
    repeatedly blurring everything behind fixed chrome while the page scrolls. */
