@@ -52,13 +52,13 @@ let alienReport=null;
 async function loadTools(){
  const panel=$("eye-tool-review"),list=$("eye-tools-list"),notice=$("eye-tools-status");
  try{const data=await request(ROOT+"/tools");panel.hidden=false;list.replaceChildren();notice.textContent=data.publication;
- const tool=data.tools.find(t=>t.id==="alien-eyes");$("eye-alien-panel").hidden=!tool||tool.decision==="scrapped";
- if(!tool)return;
+ const alien=data.tools.find(t=>t.id==="alien-eyes");$("eye-alien-panel").hidden=!alien||alien.decision==="scrapped";
+ for(const tool of data.tools){
  const card=element("article","eye-result"),select=element("select",""),label=element("label","","Distribution decision"),save=element("button","eye-subtle","Save decision");
  for(const [value,name] of [["pending","Keep in Osiris review"],["public","Approve for future public release"],["isis","Approve for future Isis release"],["scrapped","Scrap candidate"]]){const option=element("option","",name);option.value=value;select.append(option);}
  select.value=tool.decision;label.append(select);save.type="button";
- save.addEventListener("click",async()=>{const decision=select.value;if(decision===tool.decision)return;if(!confirm("Save "+decision+" review decision for "+tool.name+"? No release is activated."))return;save.disabled=true;try{await request(ROOT+"/tools/alien-eyes/decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision})});alienReport=null;$("eye-alien-report").textContent="";$("eye-alien-export").disabled=true;await loadTools();}catch(e){notice.textContent=e.message;save.disabled=false;}});
- card.append(element("h3","",tool.name),element("p","",tool.description),element("p","","Current decision: "+tool.decision+" · execution: "+tool.execution),label,save);list.append(card);
+ save.addEventListener("click",async()=>{const decision=select.value;if(decision===tool.decision)return;if(!confirm("Save "+decision+" review decision for "+tool.name+"? No release is activated."))return;save.disabled=true;try{await request(ROOT+"/tools/"+encodeURIComponent(tool.id)+"/decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision})});alienReport=null;$("eye-alien-report").textContent="";$("eye-alien-export").disabled=true;await loadTools();}catch(e){notice.textContent=e.message;save.disabled=false;}});
+ card.append(element("h3","",tool.name),element("p","",tool.description),element("p","","Current decision: "+tool.decision+" · execution: "+tool.execution),label,save);if(tool.source){const source=element("a","","Upstream project");source.href=tool.source;source.rel="noopener noreferrer";source.target="_blank";card.append(element("p","",String(tool.license||"Unverified")+" · "+String(tool.division||"")),source);}list.append(card); }
  }catch(e){panel.hidden=true;notice.textContent=e.message;}
 }
 $("eye-alien-form").addEventListener("submit",async e=>{e.preventDefault();const button=$("eye-alien-run"),status=$("eye-alien-status");if(button.disabled)return;button.disabled=true;alienReport=null;$("eye-alien-export").disabled=true;$("eye-alien-report").textContent="";status.textContent="Inspecting public project metadata…";try{const data=await request(ROOT+"/tools/alien-eyes/inspect?"+new URLSearchParams({repository:$("eye-alien-repo").value}));alienReport=data.report;$("eye-alien-report").textContent=JSON.stringify(alienReport,null,2);$("eye-alien-export").disabled=false;status.textContent="Inspection complete.";}catch(error){status.textContent=error.message;}finally{button.disabled=false;}});
