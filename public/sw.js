@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v105";
+const CACHE_NAME = "knightfall-shell-v106";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -489,20 +489,26 @@ self.addEventListener("fetch", event => {
     return;
   }
   if (APP_SHELL.includes(url.pathname) && !request.headers.has("Authorization")) {
-    event.respondWith((async () => {
-      const cache = await caches.open(CACHE_NAME);
-      try {
-        // Prefer fresh shared assets after deployments, but retain offline fallback.
-        const response = await fetch(request);
-        if (response.ok && response.type === "basic") {
-          await cache.put(request, response.clone()).catch(() => {});
+    // Network-first remains authoritative. Cache maintenance must not delay
+    // first paint, and a broken CacheStorage must not block an online response.
+    const cacheReady=Promise.resolve().then(()=>caches.open(CACHE_NAME)).catch(()=>null);
+    let write=Promise.resolve();
+    const responseReady=(async()=>{
+      try{
+        const response=await fetch(request);
+        if(response.ok&&response.type==="basic"){
+          const copy=response.clone();
+          write=cacheReady.then(cache=>cache?cache.put(request,copy):undefined).catch(()=>{});
         }
         return response;
-      } catch (error) {
-        const cached = await cache.match(request, { ignoreSearch: true });
-        if (cached) return cached;
+      }catch(error){
+        const cache=await cacheReady;
+        const cached=await cache?.match(request,{ignoreSearch:true}).catch(()=>null);
+        if(cached)return cached;
         throw error;
       }
-    })());
+    })();
+    event.respondWith(responseReady);
+    event.waitUntil(responseReady.then(()=>write,()=>{}));
   }
 });
