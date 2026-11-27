@@ -346,6 +346,8 @@
         <div class="kf-nav-menu">
           <a href="/celestial-sanctum.html">☾ Celestial Sanctum</a>
           <a href="/the-veil.html">𓂀 The Veil · Mythology &amp; Occult</a>
+          <a href="/philosophy.html">Philosophy</a>
+          <a href="/languages.html">Languages &amp; Sound Studio</a>
           <a href="/music.html">♫ Music · Serrated Signal</a>
           <a href="/chatbots.html">✳ Chatbots · Chaos Collective</a>
         </div>
@@ -412,7 +414,8 @@
       ["/kemet-temple-archives", "/the-veil"],
       ["/kemet-museum", "/the-veil"],
       ["/kemet-research-library", "/the-veil"],
-      ["/theban-translator", "/the-veil"],
+      ["/theban-translator", "/languages"],
+      ["/nietzsche", "/philosophy"],
       ["/force-realms", "/the-veil"],
       ["/jedi-temple", "/the-veil"],
       ["/sith-order", "/the-veil"],
