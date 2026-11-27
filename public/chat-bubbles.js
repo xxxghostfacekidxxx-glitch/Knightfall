@@ -8,15 +8,25 @@
   const API="https://api.ash-fall.com";
   if(!window.ChaosphereSend)import("/chaosphere-send.js?v=20261125-apotheosis4").catch(()=>{});
   const organization=()=>{try{return window.ChaosphereOrganization?.read(localStorage,userId)||{pinned:[],archived:[]}}catch{return {pinned:[],archived:[]}}};
-  if(!window.ChaosphereOrganization)import("/chaosphere-organization.js?v=20261125-apotheosis3").then(()=>{if(state.visible)renderPanel();}).catch(()=>{});
   window.addEventListener("storage",event=>{if(event.key==="kf-cs-organization-"+userId&&state.visible)renderPanel();});
-  if(!window.ChaosphereFormat)import("/chaosphere-format.js?v=20261125-apotheosis1").then(()=>{state.lastThreadKey="";if(state.visible&&state.active)void refreshThread().catch(()=>{});}).catch(()=>{});
-  let customEmoji=window.KnightfallEmojis||null;
-  if(!customEmoji)import("/knightfall-emojis.mjs?v=20261125-noir1").then(module=>{
-    customEmoji=window.KnightfallEmojis||{render:module.renderKnightfallEmojiText,mount:module.mountKnightfallEmojiPicker};
-    state.lastThreadKey="";if(state.visible&&state.active)void refreshThread().catch(()=>{});
-    module.mountKnightfallEmojiPicker?.(document);
-  }).catch(error=>console.warn("knightfall_emoji_module_unavailable",String(error)));
+  let customEmoji=window.KnightfallEmojis||null,optionalToolsPending=null;
+  function loadOptionalChatTools(){
+    if(optionalToolsPending)return optionalToolsPending;
+    const jobs=[];
+    if(!window.ChaosphereOrganization)jobs.push(import("/chaosphere-organization.js?v=20261125-apotheosis3"));
+    if(!window.ChaosphereFormat)jobs.push(import("/chaosphere-format.js?v=20261125-apotheosis1"));
+    if(!customEmoji)jobs.push(import("/knightfall-emojis.mjs?v=20261125-noir1").then(module=>{
+      customEmoji=window.KnightfallEmojis||{render:module.renderKnightfallEmojiText,mount:module.mountKnightfallEmojiPicker};
+      customEmoji.mount?.(dock);
+    }));
+    if(!jobs.length)return Promise.resolve();
+    optionalToolsPending=Promise.allSettled(jobs).then(results=>{
+      if(results.some(result=>result.status==="rejected"))console.warn("Optional Chaosphere tools unavailable; core chat remains active");
+      state.lastThreadKey="";
+      if(state.visible){renderPanel();if(state.active)void refreshThread().catch(()=>{});}
+    }).finally(()=>{optionalToolsPending=null;});
+    return optionalToolsPending;
+  }
   const storeKey="kf-chat-heads-"+userId;
   const draftKey="kf-chat-drafts-"+userId;
   const drafts=new Map();
@@ -111,7 +121,7 @@ async function api(path,opts={}){
   // Host outside the page body so transformed game/page wrappers cannot clip or resize chat.
   document.documentElement.append(dock);
   dock.querySelector("#kf-chat-emoji-tray").dataset.kfEmojiAccount=String(userId);
-  customEmoji?.mount?.(document);
+  customEmoji?.mount?.(dock);
   function syncBubbleViewport(){
     const viewport=window.visualViewport,layoutHeight=window.innerHeight;
     const visibleHeight=viewport?.height||layoutHeight;
@@ -292,6 +302,7 @@ async function api(path,opts={}){
     $("#kf-chat-launcher").setAttribute("aria-expanded",String(state.visible));
     if(opening){window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"member-chat"}}));impReact("wake");}
     if(state.visible){
+      void loadOptionalChatTools();
       renderPanel();
       if(state.active){const id=state.active;refreshThread().catch(error=>{if(state.active===id&&state.visible){if(!thread.querySelector(".kf-chat-message"))thread.replaceChildren(el("p","kf-chat-empty","Could not load messages. Reopen this conversation to retry."));announce(error.message);}});}
       else refreshConversations({force:true}).catch(error=>announce(error.message));
