@@ -19,3 +19,28 @@ function execute(ops,withTrace=false){if(!Array.isArray(ops)||ops.length>256)thr
 export function runExpression(ops){return execute(ops).result;}
 export function decodeData(format,input){if(typeof input!=="string"||input.length>4096)throw Error("Input too long");if(format==="json")return JSON.stringify(JSON.parse(input),null,2);let bytes;if(format==="hex"){if(!/^(?:[0-9a-fA-F]{2})*$/.test(input))throw Error("Invalid hex");bytes=Uint8Array.from(input.match(/../g)||[],x=>parseInt(x,16));}else if(format==="base64"){if(!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(input))throw Error("Invalid base64");bytes=Uint8Array.from(atob(input),c=>c.charCodeAt(0));}else throw Error("Unknown format");return new TextDecoder("utf-8",{fatal:true}).decode(bytes);}
 export function traceExpression(source){const ops=compileExpression(source);return {ops,...execute(ops,true)};}
+
+ // Real WebAssembly binary emitter, no imports or host privileges.
+ function uleb(n){const bytes=[];do{let b=n&127;n>>>=7;if(n)b|=128;bytes.push(b);}while(n);return bytes;}
+ function section(id,payload){return [id,...uleb(payload.length),...payload];}
+ export function compileWasm(source){
+   const ops=compileExpression(source);runExpression(ops);
+   const code=[],opcodes={add:0xa0,sub:0xa1,mul:0xa2,div:0xa3,neg:0x9a};
+   for(const [op,value] of ops){
+     if(op==="const"){const bytes=new Uint8Array(8);new DataView(bytes.buffer).setFloat64(0,value,true);code.push(0x44,...bytes);}
+     else if(Object.hasOwn(opcodes,op))code.push(opcodes[op]);
+     else throw Error("WebAssembly target does not yet support "+op+"; use the stack VM.");
+   }
+   const body=[0,...code,0x0b];
+   return Uint8Array.from([0,97,115,109,1,0,0,0,...section(1,[1,0x60,0,1,0x7c]),...section(3,[1,0]),...section(7,[1,3,114,117,110,0,0]),...section(10,[1,...uleb(body.length),...body])]);
+ }
+ export function runWasm(source){
+   const bytes=compileWasm(source);
+   if(!WebAssembly.validate(bytes))throw Error("Generated module failed native validation.");
+   const module=new WebAssembly.Module(bytes);
+   if(WebAssembly.Module.imports(module).length!==0)throw Error("Unexpected host imports.");
+   const result=new WebAssembly.Instance(module).exports.run();
+   const expected=runExpression(compileExpression(source));
+   if(!Object.is(result,expected))throw Error("Native result differs from stack VM.");
+   return {bytes,result};
+ }
