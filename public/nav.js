@@ -6,6 +6,16 @@
   const syncPageVisibility=()=>{document.documentElement.dataset.kfPageHidden=String(document.hidden);};
   document.addEventListener("visibilitychange",syncPageVisibility);
   syncPageVisibility();
+  // One fail-closed visibility contract for protected shortcuts. These are
+  // presentation decisions only: every protected API still authorizes itself.
+  let accessUser=null;
+  const accessAllowed=(user,key)=>Boolean(user&&user.status==="active"&&
+    (key==="member"||user.staff_access?.[key]===true));
+  const applyAccess=(root=document)=>{
+    const nodes=[...(root.matches?.("[data-kf-access]")?[root]:[]),...root.querySelectorAll("[data-kf-access]")];
+    for(const el of nodes)el.hidden=!accessAllowed(accessUser,el.dataset.kfAccess);
+  };
+  window.KnightfallAccess=Object.freeze({can:key=>accessAllowed(accessUser,key),apply:applyAccess});
   const mainPwaKey="kf:main-pwa-installed";
   const standalonePwa=()=>Boolean(window.matchMedia?.("(display-mode: standalone)")?.matches||
     window.matchMedia?.("(display-mode: fullscreen)")?.matches||navigator.standalone===true);
@@ -592,7 +602,8 @@
     .then(r => r?.ok ? r.json() : null)
     .then(d => {
       const user = d?.user;
-      if (!user) return;
+      accessUser=user||null;applyAccess();
+      if (!accessAllowed(user,"member")) return;
       memberAuthenticated=true;
       // One shared WebSocket signal for inbox bubbles, with polling fallback.
       if (!["/messages", "/messages.html"].includes(location.pathname)) {
@@ -642,7 +653,7 @@
       const identityLink=nav.querySelector(".kf-sign-in-link");
       if(identityLink){identityLink.hidden=false;identityLink.textContent="@"+String(user.username||"member");identityLink.href="/profile.html";identityLink.classList.add("kf-identity-link");identityLink.setAttribute("aria-label","View your profile, "+String(user.username||"member"));}
       document.querySelector("[data-home-sign-in]")?.setAttribute("hidden", "");
-      const tickerOwner=user.role==="god"?"osiris":Number(user.is_isis)===1||user.staff_access?.rank_code==="isis"?"isis":null;
+      const tickerOwner=accessAllowed(user,"can_eye_of_horus")?"osiris":user.staff_access?.rank_code==="isis"?"isis":null;
       if(tickerOwner){
         const mountTickerEditor=()=>{
           const ticker=document.querySelector("#kf-shared-announcement");
@@ -666,11 +677,11 @@
         window.addEventListener("kf:ticker-ready",mountTickerEditor,{once:true});mountTickerEditor();
       }
       const role = String(user.role || "").trim().toLowerCase();
-      const creatorAccess=["god","admin","moderator"].includes(role)||String(user.public_title||"").trim().toLowerCase()==="digital creator"||user.staff_access?.rank_code==="isis";
+      const creatorAccess=accessAllowed(user,"can_create");
       const foundryLink=nav.querySelector(".kf-foundry-link");
       if(foundryLink)foundryLink.hidden=!creatorAccess;
 
-      const admin = role === "admin" || role === "god";
+      const admin = accessAllowed(user,"can_admin");
       const rights = user.staff_access || {};
       // Only trusted auth/me rank metadata changes these visible ceremonial titles.
       const royalRank=rights.rank_code==="osiris"?"Osiris":rights.rank_code==="isis"?"Isis":null;
@@ -680,21 +691,22 @@
       if(accountHeading?.firstChild)accountHeading.firstChild.textContent=royalRank?"My Account · "+royalRank+" ":"My Account ";
       const quickAdmin=header.querySelector(".kf-admin-quick-link");
       if(quickAdmin)quickAdmin.textContent=royalRank||"Admin";
-      const canModerate = admin || role === "moderator";
+      const canModerate = accessAllowed(user,"can_moderate");
       const staff = canModerate;
       nav.querySelector(".kf-mod-link").hidden = !canModerate;
-      nav.querySelector(".kf-god-eye-link").hidden = role !== "god" || rights.can_eye_of_horus === false;
+      nav.querySelector(".kf-god-eye-link").hidden = !accessAllowed(user,"can_eye_of_horus");
       nav.querySelector(".kf-staff-group").hidden = !staff;
       nav.querySelector(".kf-admin-link").hidden = !admin;
       // Keep private links discoverable to the two confirmed collaborating accounts.
       // Backend sessions and collaboration grants still enforce actual access.
-      const sharedHandoff = role === "god" || String(user.username || "").trim().toLowerCase() === "knightfallsamantha";
+      const sharedHandoff = accessAllowed(user,"can_handoff");
       nav.querySelector(".kf-handoff-link").hidden = !sharedHandoff;
       nav.querySelector(".kf-account-handoff-link").hidden = !sharedHandoff;
-      nav.querySelector(".kf-eye-chaos-link").hidden = !admin;
-      nav.querySelector(".kf-staff-eye-chaos-link").hidden = !admin;
+      nav.querySelector(".kf-eye-chaos-link").hidden = !accessAllowed(user,"can_eye_of_chaos");
+      nav.querySelector(".kf-staff-eye-chaos-link").hidden = !accessAllowed(user,"can_eye_of_chaos");
       header.querySelector(".kf-admin-quick-link").hidden=!admin;
-      nav.querySelector(".kf-my-profile-link").href = "/profile.html?username=" + encodeURIComponent(user.username);
+      const myProfile=nav.querySelector(".kf-my-profile-link");
+      if(myProfile)myProfile.href="/profile.html?username="+encodeURIComponent(user.username);
       refreshNotifications();
       setInterval(refreshNotifications, 45000);
       let activityPending=false, activityLastStart=0;

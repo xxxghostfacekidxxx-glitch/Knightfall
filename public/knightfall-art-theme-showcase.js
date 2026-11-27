@@ -60,6 +60,7 @@ function draw(kit){
  if(links){
   const a=document.createElement("a");a.href="/devil-tools.html#theme-art-collection";
   a.textContent="Explore original art in Creator's Foundry";
+  a.dataset.kfAccess="can_create";a.hidden=true;window.KnightfallAccess?.apply(a);
   const b=document.createElement("a");b.href="/celestial-sanctum.html";
   b.textContent="Visit the Celestial Sanctum";
   links.replaceChildren(a,b);

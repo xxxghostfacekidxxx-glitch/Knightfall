@@ -54,6 +54,7 @@ async function loadQuotaGuardian(){
  }catch(error){status.textContent="Quota Guardian unavailable: "+error.message;}
 }
 function openSection(name){
+ if(name==="quota"&&!state.canGod)return;
  const section=document.querySelector('.chaos-panel[data-panel="'+name+'"]');
  if(!section)return;
  for(const el of document.querySelectorAll(".chaos-panel"))el.hidden=el!==section;

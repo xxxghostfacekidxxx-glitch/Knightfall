@@ -23,6 +23,9 @@ export function staffCapabilities(user) {
     can_moderate:canModerate, can_create:canCreate, can_admin:admin,
     can_eye_of_chaos:admin, can_eye_of_horus:god,
     can_delegate_approval:god||isis,
+    can_theme_forge:admin, can_publish_theme:god||isis,
+    can_private_vault:god,
+    can_handoff:god||Boolean(active&&user&&(Number(user.is_isis)===1||Number(user.handoff_invited)===1)),
     // Private external correspondence is never inherited by admin or Isis.
     can_owner_mailbox:god,
     unlimited_bots:level>0,advanced_bot_builder:canCreate

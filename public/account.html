@@ -50,7 +50,8 @@
 
     function renderUser(user) {
       const role = String(user.role || "").trim().toLowerCase();
-      const ownerVault = role === "god" || (role === "admin" && user.username === "knightfall");
+      const rights=user.staff_access||{};
+      const ownerVault = user.status==="active"&&rights.can_private_vault===true;
       const personalBots = !["banned", "suspended"].includes(user.status);
       const initials = (user.display_name || user.username || "?").slice(0,1).toUpperCase();
       root.innerHTML = `
@@ -94,7 +95,7 @@
               <h3>Notes &amp; Journals</h3>
               <ul>
                 <li><a href="/memo-pad.html">Memo Pad, Mail &amp; Live Chat</a></li>
-                 ${role === "god" || String(user.username||"").toLowerCase()==="knightfallsamantha" ? '<li><a href="/ai-handoff.html">♡ Between the Flames · Shared To-Do &amp; AI Handoff</a></li>' : ""}
+                 ${rights.can_handoff===true ? '<li><a href="/ai-handoff.html">♡ Between the Flames · Shared To-Do &amp; AI Handoff</a></li>' : ""}
                 <li><a href="/die-ary.html">The Die-ary</a></li>
                 <li><a href="/moonology.html#journal">Moon Journal</a></li>
                 <li><a href="/shadow-work.html#journal">Shadow Journal</a></li>
@@ -106,8 +107,8 @@
                 ${personalBots ? '<li><a href="/personal-bots.html">Personal Bots</a></li>' : ""}
                 <li><a href="/my-shop.html">My Shop</a></li>
                 ${ownerVault ? '<li><a href="/vault.html">Private Vault</a></li>' : ""}
-                ${["admin","god"].includes(role) ? '<li><a href="/eye-of-chaos.html">𓂀 Eye of Chaos · Staff Bot Command</a></li>' : ""}
-                 ${role === "god" ? '<li><a href="/eye-of-horus.html">Eye of Horus · Data Oversight</a></li>' : ""}
+                ${rights.can_eye_of_chaos===true ? '<li><a href="/eye-of-chaos.html">𓂀 Eye of Chaos · Staff Bot Command</a></li>' : ""}
+                 ${rights.can_eye_of_horus===true ? '<li><a href="/eye-of-horus.html">Eye of Horus · Data Oversight</a></li>' : ""}
               </ul>
             </section>
           </div>

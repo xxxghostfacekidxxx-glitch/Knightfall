@@ -40,7 +40,7 @@
   <a class="foundry-public-card" href="/chaos-visual-lab.html"><span aria-hidden="true" style="display:grid;place-items:center;min-height:155px;border-radius:12px;background:linear-gradient(135deg,#352036,#522a4b,#25283b);font-size:5rem">🎨</span><span>04 / MAKE</span><h3>Chaos Visual Lab</h3><p>Resize images, make pixel art, trace tattoo stencils, build palettes and share your creations.</p><strong>Open the Visual Lab ›</strong></a>
  </div>
 </section>
-<div id="workshop" class="hidden">
+<div id="workshop" class="hidden" hidden>
 <section class="panel" id="bot-forge" data-workspace hidden aria-labelledby="bot-forge-title">
   <h2 id="bot-forge-title">Professional Bot Forge</h2>
   <p>Create, manage, and test personal bots directly in Creator Foundry with the full studio below.</p>
@@ -811,28 +811,25 @@ async function boot(){
     user = session.user;
     if (!user) throw Error('Sign in to open Creator Foundry.');
     const role = String(user.role || '').trim().toLowerCase();
-    const isGod = role === 'god';
-    const administrator = isGod || role === 'admin';
-    const moderator = role === 'moderator';
-    const isIsis = session.user?.staff_access?.rank_code === 'isis' || Number(session.user?.is_isis) === 1;
-    // Account IDs are stable across profile and username edits. All publish operations remain Worker-authorized.
-    const digitalCreator = role === 'member' && String(user.public_title || '').trim() === 'Digital Creator';
-    if (!administrator && !moderator && !digitalCreator && !isIsis) throw Error('Workshop access required.');
+    const rights=user.staff_access||{};
+    const administrator=rights.can_admin===true;
+    if(user.status!=='active'||rights.can_create!==true)throw Error('Workshop access required.');
     if (administrator) {
       const back = document.querySelector('a.back');
       back.href = '/admin.html';
       back.textContent = '← Admin dashboard';
     }
     if (!administrator) {
-      $('#developer-arsenal-ci').remove();
-      $('#release-simulator').remove();
+      $('#developer-arsenal-ci')?.remove();
+      $('#release-simulator')?.remove();
+      workshop.querySelectorAll('a[href="/theme-crew.html"]').forEach(element=>element.remove());
       workshop.querySelectorAll('[data-admin-only]').forEach(element => element.remove());
       const back = document.querySelector('a.back');
       back.href = '/account.html';
       back.textContent = '← My account';
     }
     workshop.dataset.canPublish = String(administrator);
-    workshop.classList.remove('hidden');
+    workshop.classList.remove('hidden');workshop.hidden=false;
     document.getElementById('foundry-public-preview')?.setAttribute('hidden','');
     document.getElementById('open-source-reference')?.setAttribute('hidden','');
     note('Signed in as @' + user.username + '.', true);
