@@ -1,4 +1,4 @@
-import {knowledgeStatus,reviewKnowledge,exportKnowledge} from "./chaos-knowledge-fleet.mjs";
+import {knowledgeStatus,reviewKnowledge,exportKnowledge,reviewToolCandidate} from "./chaos-knowledge-fleet.mjs";
 import {canAccessEyeOfChaos,canAccessEyeOfHorus} from "./staff-capabilities.js";
 import {readIdentityQA,IDENTITY_QA_WORKERS} from "./identity-qa.js";
 import {acceptedAdminPartner} from "./chaos-companion.mjs";
@@ -184,6 +184,7 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
     /^\/api\/god\/chaos\/drafts\/[0-9a-f-]{36}\/(approve|reject)$/.test(url.pathname))
     return respond({error:"Owner or delegated partner approval required."},403);
  if(url.pathname===API+"/knowledge"&&request.method==="GET"){try{return respond(await knowledgeStatus(env));}catch{return respond({error:"Research archive unavailable; migration required."},503);}}
+ if(url.pathname===API+"/knowledge/tools/review"&&request.method==="POST"){if(!canApprove)return respond({error:"Owner or delegated partner approval required."},403);if(typeof rateLimit!=="function"||!await rateLimit(env,request,"chaos-knowledge-tools-review",30,60))return respond({error:"Review rate limited."},429);try{const raw=await request.text();if(raw.length>500)return respond({error:"Invalid review."},400);const v=JSON.parse(raw);const changed=await reviewToolCandidate(env,v.tool_id,v.decision,user.id);return respond({ok:changed},changed?200:409);}catch{return respond({error:"Invalid review or unavailable archive."},400);}}
  if(url.pathname===API+"/knowledge/export"&&request.method==="GET"){if(!isGod)return respond({error:"Owner access required."},403);try{return respond(await exportKnowledge(env));}catch{return respond({error:"Export unavailable."},503);}}
  if(url.pathname===API+"/knowledge/review"&&request.method==="POST"){if(!canApprove)return respond({error:"Owner or delegated partner approval required."},403);if(!await rateLimit(env,request,"chaos-knowledge-review",30,60,user.id))return respond({error:"Review rate limited."},429);try{const raw=await request.text();if(raw.length>500)return respond({error:"Invalid review."},400);const v=JSON.parse(raw);const changed=await reviewKnowledge(env,v.entity_id,v.decision,user.id);return respond({ok:changed},changed?200:409);}catch{return respond({error:"Invalid review or unavailable archive."},400);}}
  if(url.pathname===API+"/identity-qa"&&request.method==="GET")return respond(await readIdentityQA());

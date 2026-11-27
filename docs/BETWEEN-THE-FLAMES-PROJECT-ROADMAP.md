@@ -117,3 +117,7 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 
 ### Miss Chaos — urgent experience recovery (November 27)
 [Dedicated experience roadmap](MISS-CHAOS-EXPERIENCE-ROADMAP.md). Existing #45/#93/#94/#95/#169: chat-first layout, rounded portrait-led replies, mobile history, disclosure-based tools/privacy, Bubblegum Havoc, warmer adaptive voice, character art/expressions and actual audience acceptance. Source implementation and checks recorded; release and feedback remain open. Philosophy #250–253, Languages #254–258, Kemet #236–242 and The Veil #232–235/#243–248 retain their respective registers and roadmap.
+
+
+### Miss Chaos — The 66 dedicated research corps
+[Project register](MISS-CHAOS-66-RESEARCH-CORPS.md). Six divisions, 66 new research identities, retiring the previous shared-fleet research assignments. Public source discovery, verified evidence retrieval, peer ledger, tool evaluation queue, original model training. Preserve original 32 duties. Candidate training and deployment gates remain independent.

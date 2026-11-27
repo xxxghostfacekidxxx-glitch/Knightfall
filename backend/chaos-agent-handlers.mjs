@@ -1,3 +1,4 @@
+import {searchReviewedKnowledge} from "./src/chaos-knowledge-fleet.mjs";
 import {wikipediaLookup,currentClock} from "./chaos-research.mjs";
 import {findChaosGithubRepos} from "./chaos-github-repos.mjs";
 import {getKnightfallGithubHealth} from "./chaos-github-health.mjs";
@@ -15,7 +16,7 @@ export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,
     "research.wikipedia":async({input})=>wikipediaLookup(input),
     "resource.met":async({input})=>searchChaosResources({source:"met",query:safe(input.query,90)}),
     "resource.polyhaven":async({input})=>searchChaosResources({source:"polyhaven",query:safe(input.query,90),type:input.type}),
-    "resource.wikidata":async({input})=>searchChaosResources({source:"wikidata",query:safe(input.query,90)}),
+    "resource.wikidata":async({input})=>{const query=safe(input.query,90);try{const reviewed=await searchReviewedKnowledge(env,query);if(reviewed.results.length)return reviewed;}catch{}return searchChaosResources({source:"wikidata",query});},
     "research.github_repos":async({input})=>findChaosGithubRepos(input),
     "research.books":async({input})=>findOpenBooks({query:safe(input.query,100)}),
     "research.papers":async({input})=>findCrossrefPapers({query:safe(input.query,100)}),

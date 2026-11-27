@@ -87,3 +87,6 @@ Each successful scheduled assignment may record one previously approved knowledg
 
 ## Tool adoption roadmap
 Discovery → exact version and source pin → license and dependency review → isolated no-secret sandbox test → capability adapter and permissions → regression + resource budget → owner-approved promotion. No indiscriminate installation; open source does not mean safe or unrestricted. Future sources: Codeberg, PyPI metadata, crates.io, OpenAlex, government open datasets, public-domain repositories with per-source permission and rate limits. Keep the user-visible tool inventory separate from model training. New work does not remove existing duties or grant privileges.
+
+## Second implementation pass
+Tool review controls record approval for isolated evaluation, not installation. The existing Miss Chaos Wikidata tool now looks for matching approved archive records before live lookup; it returns canonical source links and no pending material. No private data is added. The original model still requires a suitable trained checkpoint before this knowledge can be used in its independent serving path. Tool candidates must be pinned and sandbox-tested before adoption.
