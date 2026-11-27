@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   capability:
-    name: Gatekeeper / capability matrix
+    name: Null Saint / capability matrix
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -28,7 +28,7 @@ jobs:
           node-version: '22'
       - run: node --test scripts/role-visibility.test.mjs backend/src/identity-qa.test.mjs
   browser:
-    name: Veil Auditor / browser visibility
+    name: Vesper Vile / browser visibility
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -39,7 +39,7 @@ jobs:
       - run: npm install --no-save playwright && npx playwright install --with-deps chromium
       - run: node scripts/identity-qa-browser.mjs
   authenticated:
-    name: Locksmith / live authentication
+    name: Deadbolt.exe / live authentication
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
     runs-on: ubuntu-latest
     timeout-minutes: 8

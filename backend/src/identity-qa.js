@@ -1,8 +1,8 @@
 // Read-only evidence; no account provisioning, secrets or workflow dispatch.
 export const IDENTITY_QA_WORKERS=Object.freeze([
- {name:"Gatekeeper",job:"Gatekeeper / capability matrix",scope:"Role permissions and expired sessions"},
- {name:"Veil Auditor",job:"Veil Auditor / browser visibility",scope:"Mobile and desktop simulated identities"},
- {name:"Locksmith",job:"Locksmith / live authentication",scope:"Dedicated account login, read-only authorization and logout"}
+ {name:"Null Saint",job:"Null Saint / capability matrix",scope:"Role permissions and expired sessions"},
+ {name:"Vesper Vile",job:"Vesper Vile / browser visibility",scope:"Mobile and desktop simulated identities"},
+ {name:"Deadbolt.exe",job:"Deadbolt.exe / live authentication",scope:"Dedicated account login, read-only authorization and logout"}
 ]);
 const repo="https://api.github.com/repos/xxxghostfacekidxxx-glitch/Knightfall";
 const web="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions";
