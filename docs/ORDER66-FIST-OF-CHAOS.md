@@ -88,3 +88,6 @@ Production shows six failed scheduled attempts at 12:07 and 13:07 UTC; all six w
 
 ## Interactive compiler lab
 Original restricted compiler now exposes a per-instruction stack trace. Browser page /order66-code-lab.html links from Miss Chaos realm and displays arithmetic result, bytecode trace and bounded JSON/hex/base64 text decoder. No general code execution, filesystem or network access in tools. Source execution checks verify arithmetic and final stack; real browser/CI pending.
+
+## Iron Crucible compiler expansion
+Original arithmetic language now supports exponentiation (right associative), remainder, leading-decimal and scientific notation, and column-specific syntax errors. Single VM implementation supplies execution and stack tracing; strict instruction arity, finite arithmetic, zero-divisor checks and depth bounds remain. Ten positive arithmetic cases and eight invalid inputs passed direct checks; additional regression tests committed. Not a general-purpose language or native compiler. CI/live verification pending.
