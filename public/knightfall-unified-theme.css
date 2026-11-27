@@ -79,7 +79,7 @@ html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme
 html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-brand:hover::before{filter:drop-shadow(0 0 20px #e6a5bbac)}
 html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header :is(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle,.kf-install-pill){
  text-shadow:0 1px 5px #0009;
- border-radius:9px!important;transition:background-color .23s ease,border-color .23s ease,box-shadow .23s ease!important;
+ border-radius:var(--kf-global-corner,9px);transition:background-color .23s ease,border-color .23s ease,box-shadow .23s ease!important;
 }
 
 html body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header :is(.kf-nav a:hover,.kf-nav-group>summary:hover,.kf-nav-toggle:hover,.kf-nav a[aria-current="page"]){
