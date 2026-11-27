@@ -2,6 +2,10 @@
   // Offline/local previews must not fetch a real member session, production
   // site settings, or notification counts. Live Ash-Fall retains all API behavior.
   const cloudAccountAvailable = ["ash-fall.com", "www.ash-fall.com"].includes(String(location.hostname || "").toLowerCase());
+  // Avoid running decorative ticker animations while the document is hidden.
+  const syncPageVisibility=()=>{document.documentElement.dataset.kfPageHidden=String(document.hidden);};
+  document.addEventListener("visibilitychange",syncPageVisibility);
+  syncPageVisibility();
   const mainPwaKey="kf:main-pwa-installed";
   const standalonePwa=()=>Boolean(window.matchMedia?.("(display-mode: standalone)")?.matches||
     window.matchMedia?.("(display-mode: fullscreen)")?.matches||navigator.standalone===true);
@@ -27,7 +31,8 @@
     if (link.getAttribute("href") !== target) link.href = target;
     // The canonical root imports tokens, shared chrome, presets and Requiem
     // in that order. Appending only this link prevents double application.
-    const lastStyle = [...document.head.querySelectorAll('style,link[rel="stylesheet"]')].at(-1);
+    const orderedStyles = document.head.querySelectorAll('style,link[rel="stylesheet"]');
+    const lastStyle = orderedStyles[orderedStyles.length-1];
     if (lastStyle !== link || !link.isConnected) document.head.appendChild(link);
     for (const duplicate of themes) duplicate.remove();
     // Retire links formerly added by the legacy injector. Existing pages
