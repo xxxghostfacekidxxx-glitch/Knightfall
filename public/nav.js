@@ -467,7 +467,8 @@
 
   let notificationRefreshVersion=0, notificationPending=false, notificationLastStart=0, memberAuthenticated=false;
   function refreshNotifications() {
-    if (!cloudAccountAvailable || !memberAuthenticated || document.hidden || navigator.onLine===false || notificationPending || Date.now()-notificationLastStart<1500) return;
+    if (!cloudAccountAvailable) return;
+    if (!memberAuthenticated || document.hidden || navigator.onLine===false || notificationPending || Date.now()-notificationLastStart<1500) return;
     notificationPending=true;
     notificationLastStart=Date.now();
     const requestVersion=++notificationRefreshVersion;
