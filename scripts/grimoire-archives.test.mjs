@@ -4,10 +4,10 @@ import {readFileSync} from "node:fs";
 import vm from "node:vm";
 const page=readFileSync("public/grimoire-archives.html","utf8");
 const source=readFileSync("public/grimoire-archives.js","utf8");
-test("archive contains 72 unique numbered seals, 21 manuscripts, 9 angelic studies and 14 ceremonial records",()=>{
+test("archive contains 72 unique numbered seals, 22 manuscripts, 9 angelic studies and 14 ceremonial records",()=>{
  const ids=[...page.matchAll(/GOETIA · (\d\d)/g)].map(m=>Number(m[1]));
  assert.deepEqual(ids,Array.from({length:72},(_,i)=>i+1));
- assert.equal((page.match(/class="ga-card" data-ga-item/g)||[]).length,44);
+ assert.equal((page.match(/class="ga-card" data-ga-item/g)||[]).length,45);
  assert.equal((page.match(/View seal and provenance/g)||[]).length,72);
  assert.match(page,/modern copyrighted literature/);
  assert.match(page,/https:\/\/en.wikisource.org\/wiki\/The_Lesser_Key_of_Solomon/);
