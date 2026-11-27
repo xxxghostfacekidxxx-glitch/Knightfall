@@ -85,5 +85,15 @@
     }catch(error){status.textContent=error.message;}
     finally{submit.disabled=false;}
   });
-  load();
+  // The activity wire is below the main entry points. Fetch shortly before
+  // it enters view rather than competing with the first screen and auth.
+  if(typeof IntersectionObserver==="function"){
+    status.textContent="Staff updates load as you approach this section.";
+    const observer=new IntersectionObserver(entries=>{
+      if(!entries.some(entry=>entry.isIntersecting))return;
+      observer.disconnect();
+      void load();
+    },{rootMargin:"400px 0px"});
+    observer.observe(root);
+  }else void load();
 })();
