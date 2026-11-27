@@ -34,3 +34,6 @@ body.chaos-page #mc-history-toggle{display:none}body.chaos-page .chaos-shell :is
 #miss-chaos-presence .mc-footer{font-size:.7rem;color:#c4b7d0;flex:0 0 auto}#miss-chaos-presence #mc-dock{border-color:var(--mc-ex-edge)}
 @media(max-width:480px){#miss-chaos-presence .mc-head{padding:.5rem;gap:.4rem}#miss-chaos-presence .mc-head-actions button{width:32px;height:36px}#miss-chaos-presence .mc-head-copy small{font-size:.65rem}#miss-chaos-presence #mc-messages{padding:.55rem}#miss-chaos-presence .mc-bubble{max-width:94%}}
 @media(prefers-reduced-motion:reduce){body.chaos-page .typing,body.chaos-page .chaos-avatar,#miss-chaos-presence .mc-head img{animation:none!important;transition:none!important}}
+
+/* Shared renderer also runs on the private partner page; retain its layout. */
+body.samantha-chaos-page .mc-reply-avatar{width:26px;height:26px;max-width:26px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-inline-end:.35rem}
