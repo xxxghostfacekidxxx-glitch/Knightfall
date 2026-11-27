@@ -1,3 +1,4 @@
+/* Legacy forced paint is excluded from original-art presets. Layout remains shared. */
 /* KNIGHTFALL / ORIGINAL ILLUSTRATED REALMS. Preserves authored SVG illustrations and accessibility.
  * Imported after Gothic chrome and before the surviving cathedral architecture rules.
  */
@@ -33,15 +34,17 @@ body[data-kf-realm="diary"]{--kf-art-image:url('/assets/knightfall/realm-diary.s
 
 /* Artwork for core section intros, with enough shadow to keep headline legible. */
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) [data-kf-art-hero]{
- position:relative!important;isolation:isolate;overflow:hidden;border:1px solid #ac8e79!important;
+ position:relative!important;isolation:isolate;overflow:hidden;
  border-radius:20px!important;min-height:clamp(210px,23vw,310px);padding:clamp(1.4rem,3vw,2.6rem)!important;
+}
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) [data-kf-art-hero]{border:1px solid #ac8e79!important;
  background-color:#171820!important;
  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#101219f7 0%,#16151bf0 32%,#17151ec4 49%,#16151d47 75%),var(--kf-art-image)!important;
  background-position:center,center,center!important;background-repeat:no-repeat!important;
- box-shadow:0 21px 58px #000a,inset 0 0 0 1px #e0c4a71f!important;
-}
+ box-shadow:0 21px 58px #000a,inset 0 0 0 1px #e0c4a71f!important;}
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] :is(h1,h2,p,a,button,.eyebrow){position:relative;z-index:1;text-shadow:0 2px 12px #050408de}
-body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] h1{font-family:Georgia,'Times New Roman',serif;letter-spacing:-.04em;line-height:1.05;color:#f1e3d2!important}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] h1{font-family:Georgia,'Times New Roman',serif;letter-spacing:-.04em;line-height:1.05}
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] h1{color:#f1e3d2!important;}
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] :is(.lede,p){max-width:70ch;color:#eadccc}
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-backdrop]{position:relative;isolation:isolate}
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-backdrop]::before{
@@ -50,25 +53,31 @@ body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [
  -webkit-mask-image:linear-gradient(90deg,transparent,#000 55%);
  mask-image:linear-gradient(90deg,transparent,#000 55%);
 }
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) .kf-header{
+
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) .kf-header{
  background-color:#14171d!important;
  background-image:linear-gradient(90deg,#17161def,#11151bf2 68%),url('/assets/knightfall/eclipse-cathedral.svg')!important;
  background-size:cover!important;background-position:center 43%!important;
- border-bottom-color:#ad8d756e!important;box-shadow:0 8px 35px #0008!important;
-}
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-header .kf-brand{color:#ece1d3!important;text-shadow:0 3px 20px #000!important}
+ border-bottom-color:#ad8d756e!important;box-shadow:0 8px 35px #0008!important;}
+
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-header .kf-brand{color:#ece1d3!important;text-shadow:0 3px 20px #000!important;}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-card,.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.kf-start-card,.arcade-card,.tool-card,.quick-card,.game-card,.entry-card){
- border-color:#967a7059!important;
- background-image:radial-gradient(circle at 95% 0%,#82617c30,transparent 45%),linear-gradient(140deg,#28232c,#14171b)!important;
  box-shadow:inset 0 1px #e5c9a318,0 14px 31px #0006;
 }
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-card,.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.kf-start-card,.arcade-card,.tool-card,.quick-card,.game-card,.entry-card){
+ border-color:#967a7059!important;
+ background-image:radial-gradient(circle at 95% 0%,#82617c30,transparent 45%),linear-gradient(140deg,#28232c,#14171b)!important;}
+:where(body:where(:is([data-kf-art-theme="true"],[data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-card,.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.kf-start-card,.arcade-card,.tool-card,.quick-card,.game-card,.entry-card)){
+ border-color:#967a7059;
+ background-image:radial-gradient(circle at 95% 0%,#82617c30,transparent 45%),linear-gradient(140deg,#28232c,#14171b);}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-card,.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.kf-start-card,.arcade-card,.tool-card,.quick-card,.game-card,.entry-card):focus-within{outline:2px solid #c7a77c;outline-offset:3px}
 @media(max-width:700px){
  body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero]{
-  min-height:210px;background-position:center,center,68% center!important;
-  background-size:100% 100%,cover,cover!important;
-  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#111319ed,#14161de0 62%,#14161da8),var(--kf-art-image)!important;
+  min-height:210px;
  }
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero]{background-position:center,center,68% center!important;
+  background-size:100% 100%,cover,cover!important;
+  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#111319ed,#14161de0 62%,#14161da8),var(--kf-art-image)!important;}
  body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-backdrop]::before{width:100%;opacity:.18}
 }
 @media(prefers-reduced-motion:reduce){body[data-kf-realm] [data-kf-art-hero]{animation:none!important;transition:none!important}}
@@ -105,13 +114,13 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-car
 
 /* Fix production override: the approved shared theme assigned an !important
    gradient to .home-intro, hiding the actual cathedral illustration. */
-body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro{
+
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])).home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro{
  background-color:#101219!important;
  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),url('/assets/knightfall/winged-skull-crest.svg?v=20261116-alpha2'),linear-gradient(0deg,rgba(9,11,16,.95) 0%,rgba(9,11,16,.66) 27%,rgba(9,11,16,.08) 72%),url('/assets/knightfall/eclipse-cathedral.svg')!important;
  background-position:center,right 5% top 13px,center,center 42%!important;
  background-size:100% 100%,clamp(200px,36vw,440px) auto,cover,cover!important;
- background-repeat:no-repeat!important;
-}
+ background-repeat:no-repeat!important;}
 body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
 
 /* Pet sanctuary stays cartoon-bright, but the primary mint CTA needs dark text.
@@ -126,10 +135,10 @@ body[data-kf-realm="pets"]:not(.profile-custom-theme) .sanctuary-header .sanctua
 
 /* Creator Foundry: the approved crest-and-chrome design language, without
    placing a screenshot of fake interface controls behind real controls. */
-body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero]{
+
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero]{
  border-color:#aa6881!important;
- box-shadow:0 22px 60px #000b,inset 0 0 0 1px #c7a77c4f,0 0 27px #cf3c7d20!important;
-}
+ box-shadow:0 22px 60px #000b,inset 0 0 0 1px #c7a77c4f,0 0 27px #cf3c7d20!important;}
 body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero]::before{
  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
  background:radial-gradient(ellipse at 79% 46%,#db49853b,transparent 37%),
@@ -142,18 +151,20 @@ body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero]::aft
  background:url('/icons/knightfall-crest-512.png') center/contain no-repeat;
  opacity:.51;filter:drop-shadow(0 0 20px #d84f8a8a);
 }
-body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero] h1 span{
- color:#e8b1c2!important;text-shadow:0 0 24px #b84f7866;
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero] h1 span{text-shadow:0 0 24px #b84f7866;
 }
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero] h1 span{
+ color:#e8b1c2!important;}
 body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-card{
- border-color:#92748c!important;
- box-shadow:0 12px 32px #0009,inset 0 1px #d8b6ce1c!important;
  transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease;
 }
-body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-card:is(:hover,:focus-within){
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-card{
+ border-color:#92748c!important;
+ box-shadow:0 12px 32px #0009,inset 0 1px #d8b6ce1c!important;}
+
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-card:is(:hover,:focus-within){
  border-color:#ce819f!important;
- box-shadow:0 16px 40px #000a,0 0 18px #b5477d33,inset 0 1px #d7c0cd38!important;
-}
+ box-shadow:0 16px 40px #000a,0 0 18px #b5477d33,inset 0 1px #d7c0cd38!important;}
 @media(max-width:700px){
  body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero]::after{
   width:120px;right:.5rem;opacity:.27;
@@ -166,11 +177,12 @@ body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-card:is(:hover
 
 /* Shared ornate chrome: accent the existing real controls, never draw fake ones. */
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) :is(.page-hero,.section-hero,.directory-hero,.arcade-hero):not([data-kf-art-hero]){
- position:relative;isolation:isolate;overflow:hidden;border:1px solid #a88a79!important;border-radius:20px!important;
+ position:relative;isolation:isolate;overflow:hidden;border-radius:20px!important;
+}
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) :is(.page-hero,.section-hero,.directory-hero,.arcade-hero):not([data-kf-art-hero]){border:1px solid #a88a79!important;
  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#11131bef,#16151bdf 56%,#16151b77),var(--kf-art-image)!important;
  background-size:100% 100%,cover,cover!important;background-position:center,center,center!important;background-repeat:no-repeat!important;
- box-shadow:0 19px 45px #0009,inset 0 1px #e4bba923!important;
-}
+ box-shadow:0 19px 45px #0009,inset 0 1px #e4bba923!important;}
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.community-directory,.foundry,.members-page,.cartridge-shelf,.admin-shell,.messages-shell,.bots-shell,.sanctuary-shell,.directory-shell) :is(h1,h2){
  font-family:Georgia,'Times New Roman',serif;letter-spacing:-.027em;
 }
@@ -185,18 +197,21 @@ body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):n
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.foundry-card,.tool-card,.quick-card,.kf-start-card){
  transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease;
 }
-body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.foundry-card,.tool-card,.quick-card,.kf-start-card):is(:hover,:focus-within){
+
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.foundry-card,.tool-card,.quick-card,.kf-start-card):is(:hover,:focus-within){
  border-color:#ba8a93!important;
- box-shadow:0 18px 46px #000b,0 0 0 1px #c7a77c35,inset 0 1px #e1c9a52a!important;
-}
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header{
+ box-shadow:0 18px 46px #000b,0 0 0 1px #c7a77c35,inset 0 1px #e1c9a52a!important;}
+:where(body:where(:is([data-kf-art-theme="true"],[data-kf-theme="egyptian_eclipse"]))[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.foundry-card,.tool-card,.quick-card,.kf-start-card):is(:hover,:focus-within)){
+ border-color:#ba8a93;
+ box-shadow:0 18px 46px #000b,0 0 0 1px #c7a77c35,inset 0 1px #e1c9a52a;}
+
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header{
  border-bottom:1px solid #b08d796f!important;
- box-shadow:0 10px 32px #0009,inset 0 -1px #b07a8755!important;
-}
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-nav-primary:focus-visible,
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-nav-group summary:focus-visible{
- outline:2px solid #c7a77c!important;outline-offset:3px!important;
-}
+ box-shadow:0 10px 32px #0009,inset 0 -1px #b07a8755!important;}
+
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-nav-primary:focus-visible,
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-nav-group summary:focus-visible{
+ outline:2px solid #c7a77c!important;outline-offset:3px!important;}
 
 /* Account entry is part of Knightfall too: use actual Gothic artwork around the form. */
 body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout{
@@ -237,18 +252,18 @@ body[data-kf-realm="members"]:not(.profile-custom-theme) :not(:has(#profile[data
 
 /* The approved winged skull is a Creator identity ornament, not a sticker on
    every app. Arcade, Ruinwire, pets and forums retain their own illustrated symbols. */
-body[data-kf-realm="foundry"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) [data-kf-art-hero]{
+
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm="foundry"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) [data-kf-art-hero]{
  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),url('/assets/knightfall/winged-skull-crest.svg?v=20261116-alpha2'),linear-gradient(90deg,#101219f7 0%,#16151bf0 32%,#17151ec4 49%,#16151d47 75%),var(--kf-art-image)!important;
  background-size:100% 100%,clamp(210px,34vw,460px) auto,cover,cover!important;
  background-position:center,right 4% top 10px,center,center!important;
- background-repeat:no-repeat!important;
-}
+ background-repeat:no-repeat!important;}
 @media(max-width:700px){
- body[data-kf-realm="foundry"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) [data-kf-art-hero]{
+ 
+body:where(:not([data-kf-art-theme="true"]):not([data-kf-theme="egyptian_eclipse"]))[data-kf-realm="foundry"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) [data-kf-art-hero]{
   background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#111319ed,#14161de0 62%,#14161da8),url('/assets/knightfall/winged-skull-crest.svg?v=20261116-alpha2'),var(--kf-art-image)!important;
   background-position:center,center,right 12px top 8px,68% center!important;
-  background-size:100% 100%,cover,175px auto,cover!important;
- }
+  background-size:100% 100%,cover,175px auto,cover!important;}
 }
 /* === END ORIGINAL ARTWORK === */
 
