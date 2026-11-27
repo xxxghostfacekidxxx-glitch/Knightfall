@@ -21,7 +21,7 @@ html body[data-kf-art-theme="true"]:not(.profile-custom-theme):not(:has(#profile
  background-attachment:scroll;
 }
 html body[data-kf-realm][data-kf-art-theme="true"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header{
- isolation:isolate;position:sticky;border-bottom:2px solid var(--kf-kit-metal);
+ isolation:isolate;border-bottom:2px solid var(--kf-kit-metal);
  background:linear-gradient(90deg,var(--kf-kit-ink),var(--kf-kit-surface) 55%,var(--kf-kit-ink));
  box-shadow:0 12px 36px #000c,0 0 27px color-mix(in srgb,var(--kf-kit-glow),transparent 87%);
 }
@@ -37,7 +37,7 @@ html body[data-kf-realm][data-kf-art-theme="true"]:not(.profile-custom-theme):no
  background:var(--kf-kit-divider) center/100% 100% no-repeat;
  pointer-events:none;opacity:.81;
 }
-html body[data-kf-realm][data-kf-art-theme="true"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header>*{position:relative;z-index:1}
+html body[data-kf-realm][data-kf-art-theme="true"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header>:is(.kf-brand,.kf-install-pill,.kf-nav-toggle,.kf-admin-quick-link,.kf-lunar-strip){position:relative;z-index:1}
 html body[data-kf-realm][data-kf-art-theme="true"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) .kf-brand{
  color:#f7e9d6;font-family:Georgia,serif;letter-spacing:.13em;
  text-shadow:0 2px 8px #000,0 0 25px color-mix(in srgb,var(--kf-kit-glow),transparent 37%);
