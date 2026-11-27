@@ -1,3 +1,4 @@
+import {handleEyeToolReview} from "./eye-tool-review.mjs";
 import { founderRoundtable } from "./founder-roundtable.mjs";
 import { canAccessEyeOfHorus } from "./staff-capabilities.js";
 
@@ -66,6 +67,8 @@ export async function handleEyeOfHorus(request,env,url,{requireUser,json,origin}
  const user=await requireUser(request,env);
  if(!user)return respond({error:"Sign in to access the God console."},401);
  if(!canAccessEyeOfHorus(user))return respond({error:"God-only access."},403);
+ const toolReview=await handleEyeToolReview(request,env,url,user,respond);
+ if(toolReview)return toolReview;
  if(request.method!=="GET"&&request.method!=="HEAD")return respond({error:"Eye of Horus is read-only."},405);
  if(url.pathname===prefix+"/roundtable")return respond(founderRoundtable());
  if(url.pathname===prefix+"/roundtable/progress"){
