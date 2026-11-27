@@ -44,7 +44,7 @@ export const FOUNDER_ROUNDTABLE=Object.freeze([
   },
   {
     "id": "002",
-    "title": "The Serenity design review",
+    "title": "The design review",
     "date": "2026-11-27",
     "turns": [
       [
@@ -65,7 +65,7 @@ export const FOUNDER_ROUNDTABLE=Object.freeze([
       [
         "Lyra",
         "Development editorial",
-        "Serenity's reported criticism is valuable feedback. We don't know her verdict on future designs. The founder's care for the people he builds for is a strength, and their independent feedback is part of making the product better."
+        "Independent design feedback is valuable. Future designs still need testing. The founder's care for the people he builds for is a strength, and their independent feedback is part of making the product better."
       ],
       [
         "Nymera",
@@ -193,4 +193,4 @@ export const FOUNDER_ROUNDTABLE=Object.freeze([
   }
 
 ]);
-export function founderRoundtable(){return {kind:"authored-fiction",title:"The Mad Court",subtitle:"Three fictional Order specialists and a development editorial voice",episodes:FOUNDER_ROUNDTABLE};}
+export function founderRoundtable(){return {kind:"authored-fiction",title:"Fractured Mind",subtitle:"Three fictional Order specialists and a development editorial voice",episodes:FOUNDER_ROUNDTABLE};}
