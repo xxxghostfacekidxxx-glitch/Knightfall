@@ -1,3 +1,4 @@
+import { founderRoundtable } from "./founder-roundtable.mjs";
 import { canAccessEyeOfHorus } from "./staff-capabilities.js";
 
 // The God console is a privileged, read-only browser. It uses the normal,
@@ -66,6 +67,7 @@ export async function handleEyeOfHorus(request,env,url,{requireUser,json,origin}
  if(!user)return respond({error:"Sign in to access the God console."},401);
  if(!canAccessEyeOfHorus(user))return respond({error:"God-only access."},403);
  if(request.method!=="GET"&&request.method!=="HEAD")return respond({error:"Eye of Horus is read-only."},405);
+ if(url.pathname===prefix+"/roundtable")return respond(founderRoundtable());
  if(url.pathname===prefix+"/status")return respond({god:true,unlocked:true,datasets:Object.entries(EYE_DATASETS).map(([id,d])=>({id,label:d.name}))});
  if(url.pathname===prefix+"/browse"){
    const category=url.searchParams.get("category")||"direct_messages";

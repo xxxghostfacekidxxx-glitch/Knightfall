@@ -31,6 +31,15 @@ function renderRecord(category,item){
  }
  return card;
 }
+async function loadRoundtable(){
+ const panel=$("eye-roundtable"),picker=$("eye-episode"),lines=$("eye-roundtable-lines"),notice=$("eye-roundtable-status");
+ panel.hidden=false;
+ try{const d=await request(ROOT+"/roundtable");if(d.kind!=="authored-fiction"||!Array.isArray(d.episodes))throw Error("Editorial unavailable");
+ picker.replaceChildren();for(const ep of d.episodes){const option=element("option","",ep.title);option.value=ep.id;picker.append(option);}
+ function render(){const ep=d.episodes.find(x=>x.id===picker.value);lines.replaceChildren();if(!ep)return;for(const [name,division,body] of ep.turns){const row=element("article","eye-whisper");row.dataset.speaker=name.toLowerCase();const mark=element("span","eye-whisper-mark",name.slice(0,1));mark.setAttribute("aria-hidden","true");const copy=element("div","eye-whisper-copy");copy.append(element("h3","",name),element("small","",division),element("p","",body));row.append(mark,copy);lines.append(row);}notice.textContent="Authored fictional conversation · "+ep.date;}
+ picker.addEventListener("change",render);render();
+ }catch(e){notice.textContent=e.message;}
+}
 async function browse(continued=false){
  const category=$("eye-category").value;
  const user=$("eye-user").value.trim();
@@ -99,6 +108,7 @@ $("eye-trash").addEventListener("click",trash);
    }
    $("eye-workspace").hidden=false;
    message("GOD access confirmed.");
+   await loadRoundtable();
    await browse(false);
  }catch(e){$("eye-denied").hidden=false;message(e.message)}
 })();
