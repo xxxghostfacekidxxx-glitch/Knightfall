@@ -1,0 +1,56 @@
+# Miss Chaos original model — experiment 001
+November 27, 2026. User requested independently owned weights trained from scratch, not only switching provider models. This is the first reproducible research checkpoint, **not a production-ready general language model**.
+
+A dependency-free JavaScript neural next-token predictor uses a 24-unit tanh hidden layer, learned two-token embeddings, learned topic embeddings and softmax output. Train by stochastic gradient descent from seeded random initialization, on original synthetic examples only. Keyword-based prompt routing chooses a topic; the network generates the response token-by-token. It has no external inference calls, no pre-trained weights, no account data and no private conversation training. No claim of consciousness or unrestricted competence.
+
+Training metrics (calculated on rounded committed checkpoint):
+```json
+{
+  "trainingRows": 40,
+  "heldoutRows": 8,
+  "parameters": 14892,
+  "vocabulary": 300,
+  "steps": 9000,
+  "initialTraining": {
+    "tokens": 578,
+    "loss": 5.702781799470739,
+    "perplexity": 299.69994759689666,
+    "accuracy": 0
+  },
+  "finalTraining": {
+    "tokens": 578,
+    "loss": 2.535606015838425,
+    "perplexity": 12.624078922148158,
+    "accuracy": 0.4100346020761246
+  },
+  "heldout": {
+    "tokens": 121,
+    "loss": 5.346202656020397,
+    "perplexity": 209.8100622615018,
+    "accuracy": 0.17355371900826447
+  },
+  "samples": [
+    {
+      "topic": "chat",
+      "text": "i bring me me me what you you. we we can turn talk into chaos a long built chaos a, character a built long."
+    },
+    {
+      "topic": "create",
+      "text": "start a bold character a character character a that choice surprising and one that character a character bold with a bold character a character bold and a character character a character character a contradiction, a"
+    },
+    {
+      "topic": "code",
+      "text": "i the simplest from the from the from behavior with a time,, a time."
+    },
+    {
+      "topic": "identity",
+      "text": "i i from from a claim of from i chaos from a of training."
+    }
+  ],
+  "seed": 491,
+  "trainingSeed": 712
+}
+```
+Held-out rows excluded from training and vocabulary; unseen words map to unknown for evaluation, so loss is expected to be high. A tiny dataset encourages memorization. Do not treat training loss as broad conversational quality. No live browser test yet. The existing production assistant is unchanged. Next: substantially expand lawful corpus, tokenizer, context length, transformer architecture, held-out evaluation, reproducibility and resource estimates before replacement. Keep privacy and authorization controls separate. No paid compute purchased.
+
+Reproduce from repo root: `node scripts/train-miss-chaos-native.mjs`. Browser demo: /miss-chaos-model-lab.html.

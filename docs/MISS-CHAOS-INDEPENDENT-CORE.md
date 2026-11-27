@@ -13,3 +13,6 @@ https://developers.cloudflare.com/workers-ai/models/llama-3.3-70b-instruct-fp8-f
 https://developers.cloudflare.com/workers-ai/models/qwen2.5-coder-32b-instruct/
 https://developers.cloudflare.com/workers-ai/models/mistral-small-3.1-24b-instruct/
 https://developers.cloudflare.com/workers-ai/platform/pricing/
+
+## Original weights priority (November 27)
+[Experiment 001](MISS-CHAOS-ORIGINAL-MODEL.md) supersedes provider switching as the primary research goal. Actual randomly initialized, trained checkpoint and standalone local browser lab committed. Existing production inference remains until independently trained models meet acceptance thresholds. No provider purchase or permission changes.
