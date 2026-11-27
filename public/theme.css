@@ -190,6 +190,7 @@ html{overflow-x:clip}
 body>.kf-header,.kf-header{overflow:visible!important;isolation:isolate;align-content:center}
 html body>.kf-header>.kf-nav{position:relative;z-index:150!important;overflow:visible}
 html body>.kf-header>.kf-leadership-ticker{position:relative;z-index:0!important;overflow:hidden;isolation:isolate}
+html body>.kf-header>.kf-leadership-ticker[hidden]{display:none!important}
 .kf-header .kf-ticker-row{position:relative;z-index:0}
 .kf-header .kf-nav-group{position:relative;z-index:1}
 .kf-header .kf-nav-group[open]{z-index:2!important}
