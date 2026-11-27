@@ -106,3 +106,10 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 
 ### 14. The Veil — Kemet and occult reference collections
 [Dedicated project register](THE-VEIL-PROJECT-REGISTER.md). Kemet: 371 civilization and 264 mythology records, five room pages and Theban studio source-present; new phases for evidence review, chronology, science, language, archaeology and religion. Grimoire: #232–235, 117 searchable records, seven seal previews, with proposed pentacle/Enochian/reader/assistant expansions. World mythologies, world religions, esoteric movements and witchcraft/mysticism are planned collections. Use current live records for IDs and status. Timestamp display uses permanent note IDs, America/Chicago and canonical UTC; original history remains intact.
+
+
+### 15. Philosophy
+[Project register](PHILOSOPHY-AND-LANGUAGES-REGISTER.md). Independent philosopher archive and Nietzsche-first extended collection: 25 introductions, 18 Nietzsche concepts and 11 works. Expand textual commentary, author dossiers, schools, comparative arguments and acceptance.
+
+### 16. Languages and Sound Studio
+[Project register](PHILOSOPHY-AND-LANGUAGES-REGISTER.md). Independent language hub, 24-sign Egyptian laboratory, keyboard, recognition practice, historical script guides and six modern speech samples. Expand script/grammar, documented pronunciation, audio and language modules. Cross-reference Kemet #238 without duplicating implementation. Production acceptance remains open.
