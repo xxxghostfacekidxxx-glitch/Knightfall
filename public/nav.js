@@ -35,11 +35,31 @@
     const lastStyle = orderedStyles[orderedStyles.length-1];
     if (lastStyle !== link || !link.isConnected) document.head.appendChild(link);
     for (const duplicate of themes) duplicate.remove();
-    // Retire links formerly added by the legacy injector. Existing pages
-    // retaining a manually-authored themed link are not altered here.
-    for (const old of document.querySelectorAll('link[data-visual-refresh],link[data-section-overhaul],link[data-knightfall-unified-theme],link[data-knightfall-artwork],link[data-knightfall-cathedral-v2],link[data-theme-crew]')) {
-      old.remove();
-    }
+    // The root is the sole owner of these layers. Retire old manually linked
+    // copies as well as historical injector tags, but never page-local styles.
+    const canonicalLayers = new Set([
+      "/design-system.css","/visual-refresh.css","/knightfall-section-foundations.css",
+      "/knightfall-gothic-chrome.css","/knightfall-illustrated-realms.css",
+      "/knightfall-unified-theme.css","/theme-crew.css","/theme-crew-dashboard.css",
+      "/knightfall-requiem.css","/realm-theme-engine.css","/global-design-controls.css",
+      "/egyptian-eclipse-theme.css","/knightfall-art-theme-variables.css",
+      "/knightfall-art-theme-template.css","/home-responsive.css"
+    ]);
+    const retireDuplicateLayers=()=>{
+      for(const old of document.querySelectorAll('link[rel="stylesheet"]')){
+        if(old===link)continue;
+        try{
+          const url=new URL(old.href,document.baseURI);
+          if(url.origin===location.origin&&canonicalLayers.has(url.pathname))old.remove();
+        }catch{}
+      }
+      for(const old of document.querySelectorAll('link[data-visual-refresh],link[data-section-overhaul],link[data-knightfall-unified-theme],link[data-knightfall-artwork],link[data-knightfall-cathedral-v2],link[data-theme-crew]')){
+        if(old!==link)old.remove();
+      }
+    };
+    // Do not remove an existing fallback before the canonical CSS is ready.
+    if(link.sheet)retireDuplicateLayers();
+    else link.addEventListener("load",retireDuplicateLayers,{once:true});
   };
   // Loaded separately so both navigation-enabled and navigationless chrome stay isolated.
   const mountCrewRuntime = () => {
