@@ -113,3 +113,7 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 
 ### 16. Languages and Sound Studio
 [Project register](PHILOSOPHY-AND-LANGUAGES-REGISTER.md). Independent language hub, 24-sign Egyptian laboratory, keyboard, recognition practice, historical script guides and six modern speech samples. Expand script/grammar, documented pronunciation, audio and language modules. Cross-reference Kemet #238 without duplicating implementation. Production acceptance remains open.
+
+
+### Miss Chaos — urgent experience recovery (November 27)
+[Dedicated experience roadmap](MISS-CHAOS-EXPERIENCE-ROADMAP.md). Existing #45/#93/#94/#95/#169: chat-first layout, rounded portrait-led replies, mobile history, disclosure-based tools/privacy, Bubblegum Havoc, warmer adaptive voice, character art/expressions and actual audience acceptance. Source implementation and checks recorded; release and feedback remain open. Philosophy #250–253, Languages #254–258, Kemet #236–242 and The Veil #232–235/#243–248 retain their respective registers and roadmap.
