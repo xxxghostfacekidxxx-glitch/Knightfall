@@ -85,3 +85,6 @@ All hourly research queries now target code, compiler, software testing, data an
 
 ## November 27 source recovery
 Production shows six failed scheduled attempts at 12:07 and 13:07 UTC; all six were recorded, no discoveries. Previous release cdf764e Worker deployment and Pages preflight succeeded. Failure diagnostics previously discarded the reason; new bounded status codes, source attribution, isolated peer failure and one distinct npm metadata fallback for temporary Wikidata failure (not for 401/403/429) added. Maximum two requests per assignment when eligible; archive caps rechecked as inserts accumulate. Original six manually curated tool records preserved. No successful autonomous discovery claimed. Verify diagnostics and actual source response after deploy.
+
+## Interactive compiler lab
+Original restricted compiler now exposes a per-instruction stack trace. Browser page /order66-code-lab.html links from Miss Chaos realm and displays arithmetic result, bytecode trace and bounded JSON/hex/base64 text decoder. No general code execution, filesystem or network access in tools. Source execution checks verify arithmetic and final stack; real browser/CI pending.
