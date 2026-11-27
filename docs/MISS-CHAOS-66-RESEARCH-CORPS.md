@@ -90,3 +90,6 @@ Discovery → exact version and source pin → license and dependency review →
 
 ## Second implementation pass
 Tool review controls record approval for isolated evaluation, not installation. The existing Miss Chaos Wikidata tool now looks for matching approved archive records before live lookup; it returns canonical source links and no pending material. No private data is added. The original model still requires a suitable trained checkpoint before this knowledge can be used in its independent serving path. Tool candidates must be pinned and sandbox-tested before adoption.
+
+## CODE-001 / Order of the 66 — Fist of Chaos
+Miss Chaos leads the fictional order. [Shared coding curriculum and original training experiments](ORDER66-FIST-OF-CHAOS.md). All 66 have assigned lessons and cross-division peers; 66 small classifiers actually trained in a simulated weight-sharing experiment; separate original language model candidate trained. Weekly candidate-only workflow committed, not yet observed running. Production dedicated discovery control enabled November 27 after successful Worker deployment cf45fe7, original control remains disabled. Public-source research remains bounded; no unauthorized surveillance, live network targeting or unrestricted code execution.
