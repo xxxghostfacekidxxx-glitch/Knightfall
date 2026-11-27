@@ -27,7 +27,8 @@
     if (link.getAttribute("href") !== target) link.href = target;
     // The canonical root imports tokens, shared chrome, presets and Requiem
     // in that order. Appending only this link prevents double application.
-    document.head.appendChild(link);
+    const lastStyle = [...document.head.querySelectorAll('style,link[rel="stylesheet"]')].at(-1);
+    if (lastStyle !== link || !link.isConnected) document.head.appendChild(link);
     for (const duplicate of themes) duplicate.remove();
     // Retire links formerly added by the legacy injector. Existing pages
     // retaining a manually-authored themed link are not altered here.
@@ -219,8 +220,11 @@
           if (worker.state === "installed") showUpdate(registration);
         });
       });
+      let lastUpdateCheck=Date.now(),updatePending=false;
       document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") registration.update().catch(() => {});
+        if (document.visibilityState !== "visible" || updatePending || Date.now()-lastUpdateCheck<300000) return;
+        updatePending=true;lastUpdateCheck=Date.now();
+        registration.update().catch(() => {}).finally(()=>{updatePending=false;});
       });
     }).catch(() => {});
     let updateActivated = false;
@@ -236,7 +240,7 @@
   const mountMissChaos = () => {
     if (document.getElementById("miss-chaos-presence") || document.querySelector('script[data-miss-chaos-presence]')) return;
     const companion = document.createElement("script");
-    companion.src = "/miss-chaos-presence.js?v=20261125-overlay-recovery2";
+    companion.src = "/miss-chaos-presence.js?v=20261126-perf2";
     companion.dataset.missChaosPresence = "true";
     companion.onerror = () => console.warn("Miss Chaos floating tools could not be loaded.");
     document.body.append(companion);
@@ -272,10 +276,18 @@
   // Keep the shared navigation pinned even on pages with scrolling/overflow wrappers.
   if(!header.dataset.kfFixedObserver){
     header.dataset.kfFixedObserver="true";
-    const syncHeight=()=>document.documentElement.style.setProperty("--kf-header-height",Math.ceil(header.getBoundingClientRect().height)+"px");
-    if(typeof ResizeObserver==="function")new ResizeObserver(syncHeight).observe(header);
-    window.addEventListener("resize",syncHeight,{passive:true});
-    requestAnimationFrame(syncHeight);
+    let headerFrame=null,lastHeight=-1;
+    const syncHeight=()=>{
+      headerFrame=null;
+      const height=Math.ceil(header.getBoundingClientRect().height);
+      if(height===lastHeight)return;
+      lastHeight=height;
+      document.documentElement.style.setProperty("--kf-header-height",height+"px");
+    };
+    const scheduleHeight=()=>{if(headerFrame===null)headerFrame=requestAnimationFrame(syncHeight);};
+    if(typeof ResizeObserver==="function")new ResizeObserver(scheduleHeight).observe(header);
+    window.addEventListener("resize",scheduleHeight,{passive:true});
+    scheduleHeight();
   }
   header.innerHTML = `
     <a class="kf-brand" href="/" aria-label="Knightfall home"><span>KNIGHT</span><b>FALL</b></a>
