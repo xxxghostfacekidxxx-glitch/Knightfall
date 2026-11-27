@@ -121,3 +121,8 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 
 ### Miss Chaos — The 66 dedicated research corps
 [Project register](MISS-CHAOS-66-RESEARCH-CORPS.md). Six divisions, 66 new research identities, retiring the previous shared-fleet research assignments. Public source discovery, verified evidence retrieval, peer ledger, tool evaluation queue, original model training. Preserve original 32 duties. Candidate training and deployment gates remain independent.
+
+## November 27 — Alien Eyes and native model verification
+- Alien Eyes public project inspector: source committed and direct fixture checks passed; browser and deployment verification pending. See [implementation](ALIEN-EYES-PUBLIC-PROJECT-INSPECTOR.md).
+- Miss Chaos experiment 003: conditioning audit reproduced from checkpoint; regression suite and independent CI job committed. Model remains research-only; quality insufficient for production. See [model record](MISS-CHAOS-ORIGINAL-MODEL.md).
+- Six-character collective: current label unchanged pending name selection; prior expanded cast preserved. Live Between the Flames records not synchronized from this source-only session.
