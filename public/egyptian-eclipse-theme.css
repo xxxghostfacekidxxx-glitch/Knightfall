@@ -22,7 +22,7 @@ html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-t
  background-size:cover,cover;background-attachment:scroll;
 }
 html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header{
- position:sticky;isolation:isolate;
+ isolation:isolate;
  border-bottom:2px solid var(--kf-egypt-gold);
  box-shadow:0 12px 37px #000b,0 0 21px #31beb82a,inset 0 -2px #f0cc7d40;
  background:linear-gradient(90deg,#090d16f2,#0c1820f0 51%,#070f16f2);
@@ -32,7 +32,7 @@ html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-t
  background:linear-gradient(90deg,#081219cf,#09152159 48%,#081219cc),url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/header.svg') center/100% 100% no-repeat;
  opacity:.9;
 }
-html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header>*{position:relative;z-index:1}
+html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header>:is(.kf-brand,.kf-install-pill,.kf-nav-toggle,.kf-admin-quick-link,.kf-lunar-strip){position:relative;z-index:1}
 html body[data-kf-realm][data-kf-theme="egyptian_eclipse"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade)>.kf-header::after{
  content:"";position:absolute;left:18%;right:18%;bottom:-14px;height:25px;
  background:url('/assets/knightfall/theme-collections/egyptian-eclipse/svg/divider.svg') center/100% 100% no-repeat;
