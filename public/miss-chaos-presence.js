@@ -5,7 +5,6 @@
   const API = "https://api.ash-fall.com";
   const AVATAR = "/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";
   const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261125-overlay-recovery2"; document.head.append(css);
-  const photoCss=document.createElement("link");photoCss.rel="stylesheet";photoCss.href="/chaos-chat-image-picker.css?v=20261119-attach1";document.head.append(photoCss);
   const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261119-popup2"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
   root.innerHTML=`
@@ -118,11 +117,22 @@
   let userId=null, conversationId=null, busy=false, voiceEnabled=false;
   let assistantMode="standard",verifiedPermissions=null,availableModes=[{id:"standard",label:"Miss Chaos",full_chat:"/miss-chaos.html"}];
   const modeSelect=$("#mc-companion-mode"),modeLabel=$("#mc-companion-label"),fullChat=$("#mc-full-chat"),privateToggle=$("#mc-private-switch");
-  let chatPhoto=null,fieldKit=null;
-  import("/chaos-chat-image-picker.mjs?v=20261119-photo-chat1").then(({mountChaosChatImage})=>{
-    chatPhoto=mountChaosChatImage({form:$("#mc-form"),composer:$("#mc-form"),
-      status:$("#mc-attachment-status")});
-  }).catch(()=>{error.textContent="The picture attachment tool could not load. Text chat remains available.";});
+  let chatPhoto=null,fieldKit=null,photoLoad=null,kitLoad=null;
+  function loadChatTools(){
+    if(!photoLoad){
+      if(!document.querySelector('link[data-mc-photo-css],link[href^="/chaos-chat-image-picker.css"]')){
+        const photoCss=document.createElement("link");photoCss.rel="stylesheet";
+        photoCss.href="/chaos-chat-image-picker.css?v=20261119-attach1";photoCss.dataset.mcPhotoCss="true";document.head.append(photoCss);
+      }
+      photoLoad=import("/chaos-chat-image-picker.mjs?v=20261119-photo-chat1").then(({mountChaosChatImage})=>{
+        chatPhoto=mountChaosChatImage({form:$("#mc-form"),composer:$("#mc-form"),status:$("#mc-attachment-status")});
+        chatPhoto?.setBusy(busy);
+      }).catch(()=>{photoLoad=null;error.textContent="The picture attachment tool could not load. Text chat remains available.";});
+    }
+    if(!kitLoad)kitLoad=import("/miss-chaos-field-kit.mjs?v=20261120-textract1").then(({mountMissChaosFieldKit})=>{
+      fieldKit=mountMissChaosFieldKit({panel,messages,input,api:request,onOpenMemo:openMemo,getMode:()=>assistantMode});
+    }).catch(e=>{kitLoad=null;console.warn("Miss Chaos field kit unavailable:",e.message);});
+  }
   const modeStorage=id=>"missChaosPresenceMode:"+String(id);
   const key=(id,mode="standard")=>"missChaosPresenceConversation:"+String(id)+(mode==="standard"?"":":"+mode);
   const draftKey=()=>assistantMode==="standard"?"missChaosPresenceDraft":"missChaosPresenceDraft:"+String(userId)+":"+assistantMode;
@@ -204,7 +214,7 @@
   function speak(text){if(!voiceEnabled||!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined")return;window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(String(text||""));utterance.rate=1.02;utterance.pitch=1.1;utterance.onstart=()=>setExpression("speaking");utterance.onend=()=>setExpression(mood.value);utterance.onerror=()=>setExpression(mood.value);window.speechSynthesis.speak(utterance);}
 
   try{input.value=sessionStorage.getItem(draftKey())||"";}catch(_){}
-  function open(){closeMemo();panel.hidden=false;panel.setAttribute("aria-hidden","false");launcher.setAttribute("aria-expanded","true");window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"miss-chaos"}}));
+  function open(){closeMemo();loadChatTools();panel.hidden=false;panel.setAttribute("aria-hidden","false");launcher.setAttribute("aria-expanded","true");window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"miss-chaos"}}));
     if(matchMedia("(pointer: fine)").matches)input.focus({preventScroll:true});
     else $("#mc-close").focus({preventScroll:true});}
   function close({restoreFocus=true}={}){saveModeDraft(); panel.hidden=true;panel.setAttribute("aria-hidden","true");launcher.setAttribute("aria-expanded","false");if(restoreFocus)launcher.focus({preventScroll:true});}
@@ -215,9 +225,15 @@
     }
   });
   function add(role,text){const el=document.createElement("div");el.className="mc-bubble "+role;el.textContent=text;messages.append(el);if(role==="assistant")fieldKit?.decorate(el,text);messages.scrollTop=messages.scrollHeight;return el;}
-  async function request(path,options={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok){const err=new Error(d.error||"Request failed ("+r.status+").");err.status=r.status;throw err;}return d;}
-  async function ensureAccount(refresh=false){
-    if(userId&&!refresh)return true;
+  async function request(path,options={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...options,headers:{...(options.body==null||options.body instanceof FormData?{}:{"content-type":"application/json"}),...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok){const err=new Error(d.error||"Request failed ("+r.status+").");err.status=r.status;throw err;}return d;}
+  let accountPending=null;
+  function ensureAccount(refresh=false){
+    if(accountPending)return accountPending;
+    if(userId&&!refresh)return Promise.resolve(true);
+    accountPending=discoverAccount().finally(()=>{accountPending=null;});
+    return accountPending;
+  }
+  async function discoverAccount(){
     let d;
     try{d=await request("/api/auth/me");}
     catch(e){if(e.status!==401&&!/unauth|sign in|401/i.test(e.message))throw e;d={user:null};}
@@ -300,19 +316,10 @@
   // Verify companion modes at startup; requiring an initial chat click hid
   // the Osiris/Isis switch despite an already authenticated session.
   void ensureAccount(true).catch(e=>{console.warn("Miss Chaos account mode discovery failed:",e.message);});
-  // Local, free-first console: reusable draft prompts and explicit reply-to-memo.
-  // Import failures cannot prevent Miss Chaos chat or her floating dock from loading.
-  import("/miss-chaos-field-kit.mjs?v=20261120-textract1")
-    .then(({mountMissChaosFieldKit})=>{
-      fieldKit=mountMissChaosFieldKit({
-        panel,messages,input,api:request,onOpenMemo:openMemo,getMode:()=>assistantMode
-      });
-      fieldKit?.refresh();
-    })
-    .catch(e=>console.warn("Miss Chaos field kit unavailable:",e.message));
+  // Optional chat tools load on first open, not during every page startup.
   // Overlay placement and minimize controls are isolated from chat logic.
   const dockScript=document.createElement("script");
-  dockScript.src="/miss-chaos-dock.js?v=20261125-overlay-recovery2";
+  dockScript.src="/miss-chaos-dock.js?v=20261126-perf2";
   document.head.append(dockScript);
   };
   // This module may also load directly in the <head> on legacy routes.
