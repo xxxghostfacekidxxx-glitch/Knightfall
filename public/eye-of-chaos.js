@@ -64,6 +64,7 @@ function openSection(name){
  if(name==="approvals")loadDrafts();
  if(name==="history")loadEvents();
  if(name==="qa")loadQA();
+ if(name==="identity-qa")loadIdentityQA();
  if(name==="quota"&&state.canGod)loadQuotaGuardian();
 }
 const names={
@@ -237,6 +238,23 @@ async function loadQA(){
   if(!data.jobs.length)results.append(node("p","chaos-empty","No individual worker results returned for this run."));
  }catch(error){status.textContent="GitHub QA status unavailable: "+error.message}
 }
+async function loadIdentityQA(){
+ const status=$("identity-qa-state"),results=$("identity-qa-results"),workers=$("identity-qa-workers");
+ status.textContent="Reading GitHub identity QA evidence…";results.replaceChildren();
+ try{
+  const data=await api("/identity-qa");workers.replaceChildren();
+  for(const worker of data.workers||[]){const card=node("article","chaos-agent");card.append(node("h3","",worker.name),node("p","",worker.scope));workers.append(card)}
+  if(!data.verified){status.textContent=data.message||"Unverified.";return}
+  const run=data.run;status.textContent="Run #"+run.id+" · "+run.status+" · "+(run.conclusion||"not concluded")+" · "+String(run.sha||"").slice(0,8);
+  if(!data.jobs_verified){results.append(node("p","chaos-empty","Individual jobs unavailable; no verification claimed."));return}
+  for(const job of data.jobs){
+   const card=node("article","chaos-mission"),label=job.conclusion==="success"?"Passed":job.conclusion==="skipped"?"Not run / skipped":job.conclusion||job.status||"unknown";
+   card.append(node("h4","",job.name),node("p","",job.scope),node("strong","",label));
+   if(job.url?.startsWith("https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/")){const link=node("a","","View job evidence");link.href=job.url;link.target="_blank";link.rel="noopener noreferrer";card.append(link)}
+   results.append(card);
+  }
+ }catch(error){status.textContent="Identity QA unavailable: "+error.message}
+}
 async function loadEvents(){
  if(!state.ready)return;
  try{
@@ -258,6 +276,7 @@ $("chaos-mission-refresh").addEventListener("click",loadMissions);
 $("chaos-draft-refresh").addEventListener("click",loadDrafts);
 $("chaos-history-refresh").addEventListener("click",loadEvents);
 $("chaos-qa-refresh").addEventListener("click",loadQA);
+$("identity-qa-refresh").addEventListener("click",loadIdentityQA);
 $("chaos-master-toggle").addEventListener("click",async()=>{
  if(!state.ready||!state.canGod)return;
  const target=!state.paused;

@@ -7,7 +7,7 @@
 <meta name="description" content="Eye of Chaos staff fleet and game QA command console.">
 <title>𓂀 Eye of Chaos | Knightfall Staff</title>
 <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/eye-of-chaos.css?v=20261121-quota2">
-<script src="/nav.js" defer></script><script src="/eye-of-chaos.js?v=20261121-quota1" defer></script>
+<script src="/nav.js" defer></script><script src="/eye-of-chaos.js?v=20261126-identityqa1" defer></script>
 <script type="module" src="/chaos-dev-review-ui.mjs?v=20261119-candidate2"></script>
 </head>
 <body class="chaos-console"><header class="kf-header"></header>
@@ -15,7 +15,7 @@
 <div class="chaos-breadcrumb"><a href="/admin.html">Admin Dashboard</a><span aria-hidden="true">/</span><span>Eye of Chaos</span><a href="/chaos-forum-research.html">Assign forum research</a><a href="/eye-of-horus.html" data-chaos-god-only hidden>Eye of Horus</a></div>
 <header class="chaos-hero">
  <div><p class="chaos-eyebrow">KNIGHTFALL / STAFF COMMAND</p><h1><span aria-hidden="true">𓂀</span> EYE OF CHAOS</h1>
- <p>One control room. Three fleets. Osiris and the authorized Isis oversee draft approvals. Nothing auto-publishes.</p></div>
+ <p>One control room. Four divisions. Osiris and the authorized Isis oversee draft approvals. Nothing auto-publishes.</p></div>
  <div class="chaos-shield"><span class="chaos-shield-icon" aria-hidden="true">◆</span> PUBLICATION LOCKED</div>
 </header>
 <p id="chaos-status" class="chaos-status" role="status" aria-live="polite">Verifying staff authorization…</p>
@@ -33,6 +33,7 @@
   <button type="button" data-section="missions">Mission Control</button>
   <button type="button" data-section="approvals">Approval Queue</button>
   <button type="button" data-section="qa">Game QA</button>
+  <button type="button" data-section="identity-qa">Identity QA</button>
   <button type="button" data-section="forums">Madhouse</button>
   <button type="button" data-section="quota" data-chaos-god-only hidden>Quota Guardian</button>
   <button type="button" data-section="history">History</button>
@@ -102,6 +103,15 @@
   <article class="chaos-card"><div class="chaos-section-head"><div><h3>Verified GitHub QA status</h3><p id="chaos-qa-state" role="status">Select Refresh to read the latest test run.</p></div><button class="chaos-quiet" type="button" id="chaos-qa-refresh">Refresh status</button></div><div id="chaos-qa-results" class="chaos-stack" aria-live="polite"></div></article>
   <article class="chaos-card"><h3>Run and inspect the original test fleet</h3><p>Use GitHub Actions workflow dispatch to launch an authorized run. Full results and logs remain in GitHub; no fabricated pass/fail state appears here.</p>
   <a id="chaos-qa-link" href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/arcade-test-fleet.yml" target="_blank" rel="noopener noreferrer">Open test fleet workflow</a></article>
+ </section>
+ <section class="chaos-panel" data-panel="identity-qa" hidden>
+  <div class="chaos-section-head"><div><h2>Identity QA · The Gatekeepers</h2><p>Dedicated CI workers, not autonomous member accounts.</p></div></div>
+  <div class="chaos-registry" id="identity-qa-workers"></div>
+  <article class="chaos-card"><div class="chaos-section-head"><div><h3>Verified identity test evidence</h3><p id="identity-qa-state" role="status">Select Refresh to read the latest run.</p></div><button class="chaos-quiet" type="button" id="identity-qa-refresh">Refresh status</button></div>
+   <div id="identity-qa-results" class="chaos-stack" aria-live="polite"></div>
+   <p class="chaos-note">Simulated accounts do not verify production login. Skipped, missing or failed live checks are not passes.</p>
+   <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/identity-qa.yml" target="_blank" rel="noopener noreferrer">Open Identity QA workflow</a>
+  </article>
  </section>
  <section class="chaos-panel" data-panel="forums" hidden>
   <div class="chaos-section-head"><div><h2>Madhouse Bot Division</h2><p>Preserving existing service identities and editorial controls.</p></div></div>

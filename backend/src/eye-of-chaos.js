@@ -1,4 +1,5 @@
 import {canAccessEyeOfChaos,canAccessEyeOfHorus} from "./staff-capabilities.js";
+import {readIdentityQA,IDENTITY_QA_WORKERS} from "./identity-qa.js";
 import {acceptedAdminPartner} from "./chaos-companion.mjs";
 
 // Fixed identities for the GOD command board. These are profiles, not member accounts.
@@ -70,7 +71,7 @@ async function forumFleet(env){
 }
 async function fleet(env){
  const forums=await forumFleet(env);
- return {agents:CHAOS_AGENTS,arcade:CHAOS_QA_FLEET,forums:forums.bots,forums_loaded:forums.loaded,
+ return {agents:CHAOS_AGENTS,arcade:CHAOS_QA_FLEET,forums:forums.bots,forums_loaded:forums.loaded,identity_qa:IDENTITY_QA_WORKERS,
   qa_workflow:"https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/arcade-test-fleet.yml",
   forum_control:"/god-bot-control.html",publication_locked:true};
 }
@@ -181,6 +182,7 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
   if(!canApprove&&request.method==="POST"&&
     /^\/api\/god\/chaos\/drafts\/[0-9a-f-]{36}\/(approve|reject)$/.test(url.pathname))
     return respond({error:"Owner or delegated partner approval required."},403);
+ if(url.pathname===API+"/identity-qa"&&request.method==="GET")return respond(await readIdentityQA());
  const ready=await schemaReady(env);
  if(url.pathname===API+"/status"&&request.method==="GET"){
   const f=await fleet(env);

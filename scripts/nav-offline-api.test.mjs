@@ -36,7 +36,7 @@ test("navigation keeps intentional shortcuts and grouped links while starting si
  assert.match(nav,/class="kf-nav-group kf-profile-group" hidden/);
  assert.match(nav,/class="kf-nav-group kf-staff-group" hidden/);
  assert.match(nav,/class="kf-sign-in-link"|kf-sign-in-link" href="\/auth.html"/);
- assert.match(source,/if \(!user\) return;/);
+ assert.match(source,/if \(!accessAllowed\(user,"member"\)\) return;/);
 });
 
 test("consolidated navigation destinations exist, including deep links",()=>{

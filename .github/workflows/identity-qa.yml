@@ -1,0 +1,59 @@
+name: Knightfall Identity QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/**'
+      - 'backend/src/**'
+      - 'scripts/identity-qa*'
+      - 'scripts/role-visibility.test.mjs'
+      - '.github/workflows/identity-qa.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '22 8 * * 1'
+permissions:
+  contents: read
+concurrency:
+  group: knightfall-identity-qa
+  cancel-in-progress: true
+jobs:
+  capability:
+    name: Gatekeeper / capability matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: node --test scripts/role-visibility.test.mjs backend/src/identity-qa.test.mjs
+  browser:
+    name: Veil Auditor / browser visibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright && npx playwright install --with-deps chromium
+      - run: node scripts/identity-qa-browser.mjs
+  authenticated:
+    name: Locksmith / live authentication
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Verify dedicated accounts without content writes
+        env:
+          KNIGHTFALL_MEMBER_USERNAME: ${{ secrets.KNIGHTFALL_MEMBER_USERNAME }}
+          KNIGHTFALL_MEMBER_PASSWORD: ${{ secrets.KNIGHTFALL_MEMBER_PASSWORD }}
+          KNIGHTFALL_MODERATOR_USERNAME: ${{ secrets.KNIGHTFALL_MODERATOR_USERNAME }}
+          KNIGHTFALL_MODERATOR_PASSWORD: ${{ secrets.KNIGHTFALL_MODERATOR_PASSWORD }}
+          KNIGHTFALL_ADMIN_USERNAME: ${{ secrets.KNIGHTFALL_ADMIN_USERNAME }}
+          KNIGHTFALL_ADMIN_PASSWORD: ${{ secrets.KNIGHTFALL_ADMIN_PASSWORD }}
+        run: node scripts/identity-qa-live.mjs

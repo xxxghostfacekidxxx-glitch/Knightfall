@@ -51,7 +51,7 @@ test('shared nav discovers the actual public page headers',()=>{
 test('artwork is mounted last, kept in cache, and does not skin private profile themes or gameplay',()=>{
  const source=read('knightfall-section-foundations.css')+'\n'+read('knightfall-gothic-chrome.css')+'\n'+read('knightfall-illustrated-realms.css')+'\n'+read('knightfall-unified-theme.css');
  assert.doesNotMatch(source,/:where\(\.home-intro,\.cartridge-hero\)\s*\{[^}]*\bbackground\s*:/s,'global Gothic palette must not override home artwork');
- assert.ok(art.includes('Account entry is part of Knightfall'),'auth artwork must be integrated');
+ assert.ok(art.includes('body[data-kf-realm="members"]'),'auth artwork must be integrated');
  assert.match(nav,/kfCanonicalTheme/);
  assert.match(theme,/knightfall-unified-theme\.css/);
  assert.match(sw,/knightfall-shell-v\d+/);
