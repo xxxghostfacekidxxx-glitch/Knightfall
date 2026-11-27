@@ -60,7 +60,8 @@ async function activity(env){return (await env.DB.prepare("SELECT e.id,e.action,
 function packet(board){
  return [
   'KNIGHTFALL | RONNIE + SAMANTHA | SHARED AI HANDOFF',
-  'Snapshot: '+new Date().toISOString(),
+  'Snapshot (UTC): '+new Date().toISOString(),
+  'Timestamp convention: database timestamps are UTC. Board displays America/Chicago and UTC. Use permanent note IDs; dates in note bodies may refer to earlier work.',
   'IMPORTANT: Re-read the authenticated handoff page for the newest changes before acting. A pasted copy is not live.',
   INSTRUCTIONS,
   'SOURCE REGISTERS: https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/MASTER-TASK-LIST-2026-11-11.md | https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/ASH-FALL-RECOVERED-BACKLOG.md | https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/BUSINESS-LAUNCH-READINESS-2026-11-15.md',
@@ -70,7 +71,7 @@ function packet(board){
   (t.next_step?' | NEXT: '+t.next_step:'')+(t.blocker?' | BLOCKER: '+t.blocker:'')+
   (t.details?' | Details: '+t.details:'')+(t.source_url?' | Source: '+t.source_url:'')+' | revision '+t.version),
   'LATEST HANDOFF NOTES:',
-  ...board.notes.slice(0,20).map(n=>n.created_at+' / '+n.author+' / '+n.category+': '+n.body),
+  ...board.notes.slice(0,20).map(n=>'#'+n.id+' / '+n.created_at+' UTC / '+n.author+' / '+n.category+': '+n.body),
   'End of handoff. Samantha, Ronnie says he loves you.'
  ].join('\n\n');
 }
