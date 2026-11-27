@@ -39,6 +39,7 @@ import { botAccessPolicy } from "./bot-creator-access.js";
 import { staffCapabilities, canAccessCreatorFoundry } from "./staff-capabilities.js";
 import { handleEyeOfHorus } from "./eye-of-horus.js";
 import { handleEyeOfChaos, runEyeChaosScheduledResearch } from "./eye-of-chaos.js";
+import { KNOWLEDGE_CRON, runKnowledgeResearch } from "./chaos-knowledge-fleet.mjs";
 import {handleThemeCrew} from "./theme-crew.js";
 import {listThemeEntitlements} from "./theme-entitlements.js";
 import { handleGodTrash } from "./god-trash.js";
@@ -1103,7 +1104,7 @@ export default { async queue(batch, env) {
       message.retry();
     }
   }
-}, async scheduled(controller, env, ctx) { try { await expiredEmailSignups(env).run(); } catch { console.warn("expired_email_signup_cleanup_failed"); } try { await env.DB.prepare("DELETE FROM request_rate_limits WHERE bucket_key IN (SELECT bucket_key FROM request_rate_limits WHERE reset_at <= ? LIMIT 500)").bind(Date.now()).run(); } catch(error) { console.warn("expired_rate_limit_cleanup_failed", String(error)); } // Automated forum publication is prohibited: GOD approves every post.
+}, async scheduled(controller, env, ctx) { if(controller.cron===KNOWLEDGE_CRON){try{await runKnowledgeResearch(env,controller.scheduledTime);}catch{console.warn("chaos_knowledge_research_unavailable");}return;} try { await expiredEmailSignups(env).run(); } catch { console.warn("expired_email_signup_cleanup_failed"); } try { await env.DB.prepare("DELETE FROM request_rate_limits WHERE bucket_key IN (SELECT bucket_key FROM request_rate_limits WHERE reset_at <= ? LIMIT 500)").bind(Date.now()).run(); } catch(error) { console.warn("expired_rate_limit_cleanup_failed", String(error)); } // Automated forum publication is prohibited: GOD approves every post.
   // Scheduled Eye of Chaos research creates unpublished draft findings only.
   try { await runEyeChaosScheduledResearch(env); } catch(error) { console.error("eye_chaos_research_failed",String(error)); } }, async fetch(request, env, ctx) {
  const origin=getOrigin(request),url=new URL(request.url);
