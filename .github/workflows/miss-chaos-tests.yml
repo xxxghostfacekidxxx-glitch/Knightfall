@@ -11,6 +11,7 @@ on:
       - 'public/miss-chaos.js'
       - 'public/miss-chaos.html'
       - 'public/miss-chaos-experience.css'
+      - 'public/miss-chaos-chat-format.js'
       - 'public/miss-chaos-realm.html'
       - 'public/realm-theme-engine.css'
       - 'public/profile-edit.html'

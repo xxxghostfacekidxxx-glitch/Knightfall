@@ -128,10 +128,10 @@ test("mobile drawer toggles scroll lock and keeps section context", () => {
   assert.match(nav, /currentPath\.startsWith\("\/arcade\/"/);
 });
 
-test("Foundry is the only public developer hub", () => {
+test("Foundry is the only developer hub and initially role-hidden", () => {
   const foundry = readFileSync(join(publicDir,"devil-tools.html"),"utf8");
   const oldArsenal = readFileSync(join(publicDir,"open-source-arsenal.html"),"utf8");
-  assert.ok(nav.includes('class="kf-nav-primary" href="/devil-tools.html">Foundry</a>'));
+  assert.ok(nav.includes('class="kf-nav-primary kf-foundry-link" href="/devil-tools.html" hidden>Foundry</a>'));
   assert.ok(!nav.includes("kf-admin-foundry-link"));
   assert.ok(foundry.includes('id="open-source-reference"'));
   assert.ok(foundry.includes('href="/chaos-code-studio.html"'));

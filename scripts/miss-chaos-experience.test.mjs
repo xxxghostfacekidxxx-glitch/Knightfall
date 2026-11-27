@@ -32,3 +32,19 @@ test("persona guidance supports casual conversation without compulsory task inta
  assert.match(voice,/do not turn it into a task intake form/);
  assert.match(voice,/Never make someone earn kindness/);
 });
+
+test("second-wave chat controls, expressions and safe formatted replies",()=>{
+ const html=read("public/miss-chaos.html"),js=read("public/miss-chaos.js");
+ assert.match(html,/id="mc-jump-latest"/);assert.match(html,/id="mc-focus-toggle"/);
+ assert.match(js,/const follow=nearBottom\(\)/);assert.match(js,/setStreaming\(false\)/);
+ assert.match(js,/KnightfallChaosFormat\.render/);
+ for(const state of ["ready","thinking","playful"])assert.match(read("public/assets/knightfall/miss-chaos/expression-"+state+".svg"),/<svg/);
+ const ctx={};new Function("globalThis",read("public/miss-chaos-chat-format.js"))(ctx);
+ const api=ctx.KnightfallChaosFormat;
+ assert.equal(api.safeUrl("https://ash-fall.com/miss-chaos.html"),"https://ash-fall.com/miss-chaos.html");
+ for(const url of ["javascript:alert(1)","https://evil.example","https://ash-fall.com.evil.example","https://user@ash-fall.com"])assert.equal(api.safeUrl(url),null);
+ const fence=String.fromCharCode(96).repeat(3);
+ const blocks=api.blocks("# Heading\n\n- One\n- Two\n\n"+fence+"js\n<script>alert(1)</script>\n"+fence);
+ assert.deepEqual(blocks.map(b=>b.type),["heading","ul","code"]);
+ assert.equal(blocks[2].text,"<script>alert(1)</script>");
+});
