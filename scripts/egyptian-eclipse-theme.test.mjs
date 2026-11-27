@@ -40,7 +40,8 @@ test("canonical cascade has exactly one Egyptian module last, isolated from obso
  assert.doesNotMatch(sheet,/\bcanvas\s*\{/);
  assert.doesNotMatch(sheet,/\.message-bubble\s*\{/);
  const historic=read("public/theme-crew.css");
- assert.match(historic,/:not\(\[data-kf-theme="cathedral"\]\):not\(\[data-kf-theme="egyptian_eclipse"\]\)/);
+ assert.ok(!historic.includes('[data-kf-theme="egyptian_eclipse"]'),"Only named color recipes belong to Theme Crew");
+ assert.ok(historic.includes(':is([data-kf-theme="blood_moon"],[data-kf-theme="verdant_crypt"],[data-kf-theme="iron_eclipse"],[data-kf-theme="royal_abyss"])'));
  assert.match(read("public/sw.js"),/"\/egyptian-eclipse-theme.css"/);
  // The 4 full-resolution paintings should NOT be preloaded to every PWA installation.
  assert.doesNotMatch(read("public/sw.js"),/\/theme-collections\/egyptian-eclipse\/.*\.png/);
