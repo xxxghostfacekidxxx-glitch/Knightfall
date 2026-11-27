@@ -23,3 +23,12 @@ Keep distinct security and feature implementation tasks separate where they requ
 | 181 | 204 | Email recovery and account verification |
 
 Live D1 reported seven successful soft-deletes. Active totals: 7 done, 57 in progress, 121 todo. No implementation completion claimed. Independent recovery task 136 remains open.
+
+
+## November 27 consolidation
+| Archived task | Surviving task(s) | Scope preserved |
+|---|---|---|
+| #177 | #57, #58, #59, #82–84 | Imp Inferno, Hex & Whisk, City of Cinders and Cinderwild graphics, gameplay, network and mobile acceptance |
+| #186 | #143, #142 (related #90) | Sanctum manuscripts and symbolism, separate memorial presentation and pet art |
+
+Both original records were soft-archived, not erased. Production D1 read-back: 199 active (7 done, 82 in progress, 110 to do). No newly completed features were claimed. See [current project roadmap](BETWEEN-THE-FLAMES-PROJECT-ROADMAP.md) and shared note #6.
