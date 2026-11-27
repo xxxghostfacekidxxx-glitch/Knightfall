@@ -81,7 +81,17 @@
     advancedBar.style.display = open ? "flex" : "none";
   });
   starterBar.append(moreTools, advancedBar);
-  form.parentNode.insertBefore(starterBar, form);
+  if (document.getElementById("mc-history-panel")) {
+    const drawer=document.createElement("details");drawer.className="mc-tool-drawer";
+    const summary=document.createElement("summary");summary.textContent="Creative & research tools";
+    drawer.append(summary,starterBar);form.parentNode.insertBefore(drawer,form);
+  } else form.parentNode.insertBefore(starterBar, form);
+  const historyToggle=document.getElementById("mc-history-toggle");
+  const historyPanel=document.getElementById("mc-history-panel");
+  function setHistory(open){if(!historyToggle||!historyPanel)return;historyToggle.setAttribute("aria-expanded",String(open));historyToggle.textContent=open?"× Close chats & settings":"☰ Chats & settings";historyPanel.closest(".chaos-shell").dataset.historyOpen=String(open);}
+  historyToggle?.addEventListener("click",()=>{const open=historyToggle.getAttribute("aria-expanded")!=="true";setHistory(open);if(open)historyPanel.scrollIntoView({block:"nearest"});});
+  const welcomePrompts={talk:"Let's just talk. ",create:"Help me make something creative. ",laugh:"Entertain me with something weird and funny. ",help:"Help me work through something. "};
+  messagesEl.addEventListener("click",event=>{const b=event.target.closest("[data-mc-starter]");if(!b||input.disabled||busy||adminViewing)return;const prompt=welcomePrompts[b.dataset.mcStarter];if(!prompt)return;input.value=(prompt+input.value).slice(0,input.maxLength||4000);input.dispatchEvent(new Event("input",{bubbles:true}));input.focus();});
   const referenceButton=$("#chaos-reference-photo"),referenceInput=$("#chaos-reference-input"),referenceStatus=$("#chaos-reference-status");
    let chatPhoto=null;
    import("/chaos-chat-image-picker.mjs?v=20261119-photo-chat1").then(({mountChaosChatImage})=>{
@@ -219,6 +229,7 @@
     const heading = document.createElement("div");
     heading.className = "message-label";
     heading.textContent = label || (role === "user" ? "You" : "Miss Chaos");
+    if(role!=="user"){const portrait=document.createElement("img");portrait.className="mc-reply-avatar";portrait.src="/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";portrait.alt="";portrait.width=26;portrait.height=26;portrait.loading="lazy";heading.prepend(portrait);}
     const text = document.createElement("div");
     text.className = "message-content";
     if (role === "user") text.textContent = content;
@@ -257,7 +268,7 @@
     return article;
   }
   function showWelcome() {
-    messagesEl.innerHTML = '<div class="welcome-card"><div class="welcome-symbol">✦</div><p class="eyebrow">THE STATIC IS CLEARING</p><h2>Well, well. You found me.</h2><p>I\'m Miss Chaos. Bring me a question, a half-formed idea, a problem to untangle, or the weird thought keeping you awake. I can do sincere. I can do sarcastic. Sometimes both, because apparently that\'s useful.</p><p class="welcome-hint">Your first message starts a conversation. Your saved chats stay attached to your account.</p></div>';
+    messagesEl.innerHTML = "<div class=\"welcome-card\"><img class=\"mc-welcome-portrait\" src=\"/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c\" width=\"84\" height=\"84\" alt=\"\" decoding=\"async\"><p class=\"eyebrow\">YOUR LITTLE CORNER OF CHAOS</p><h2>Hey, trouble. 🖤</h2><p>Bring me the messy thoughts, wild ideas and questions nobody else gets. We can talk, create, laugh or figure things out together.</p><div class=\"mc-welcome-actions\" aria-label=\"Conversation ideas\"><button type=\"button\" data-mc-starter=\"talk\">♡ Just talk</button><button type=\"button\" data-mc-starter=\"create\">✦ Make something</button><button type=\"button\" data-mc-starter=\"laugh\">☾ Entertain me</button><button type=\"button\" data-mc-starter=\"help\">⚡ Help me figure it out</button></div><p class=\"welcome-hint\">Your chats stay attached to your account. You choose what to save in memory.</p></div>";
   }
   function renderConversationList(items) {
     listEl.replaceChildren();
@@ -378,6 +389,7 @@
     if (!(data.messages || []).length) showWelcome();
     else for (const message of data.messages) addMessage(message.role, message.content, message.role === "assistant" ? "Miss Chaos · " + (moodNames[message.mood] || "Default") : "You");
     restoreDraft();
+    setHistory(false);
     await refreshConversations();
     scrollToBottom();
   }
@@ -414,6 +426,7 @@
     activeConversation = data.conversation.id;
     showWelcome();
     restoreDraft();
+    setHistory(false);
     await refreshConversations();
     input.focus();
   }
