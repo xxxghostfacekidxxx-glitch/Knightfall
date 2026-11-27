@@ -1,5 +1,6 @@
 (()=>{
 "use strict";
+if(window.KnightfallThemeCrew)return;
 // Realm Theme Engine v3: each realm may inherit the published site theme, or
 // hold its own allowlisted, revision-guarded recipe. Browser state is NEVER auth.
 const API="https://api.ash-fall.com/api/theme";
@@ -52,7 +53,7 @@ const cached=fromStorage();
 let live={preset:cached?.preset||"cathedral",revision:cached?.revision??-1,
  realms:cached?.realms&&typeof cached.realms==="object"?cached.realms:{},
  globalControls:validGlobal(cached?.globalControls)?cached.globalControls:GLOBAL_DEFAULT};
-let pendingRefresh=null,lastRefreshStart=0;
+let pendingRefresh=null,lastRefreshStart=0,lastPaint=null;
 const publishedState=scope=>{
  const site={preset:live.preset,revision:live.revision};
  const scoped=scope!=="site"?live.realms[scope]:null;
@@ -69,6 +70,9 @@ const paint=()=>{
  const state=publishedState(activeScope),privatePreset=preview(activeScope);
  const chosen=privatePreset||state.preset;
  const global=globalPreview()||safeGlobal(live.globalControls);
+ const fingerprint=JSON.stringify([activeScope,chosen,state.preset,state.revision,!!privatePreset,global]);
+ if(lastPaint===fingerprint&&document.body.dataset.kfTheme===chosen&&document.body.dataset.kfThemeScope===activeScope)return;
+ lastPaint=fingerprint;
  document.body.dataset.kfGlobalDensity=global.density;
  document.body.dataset.kfGlobalCorners=global.corners;
  document.body.dataset.kfGlobalTypography=global.typography;
