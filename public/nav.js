@@ -356,7 +356,7 @@
     sheet.dataset.moonStrip = 'true';
     document.head.append(sheet);
   }
-  import('/moon-widget.mjs').then(({mountMoonStrip}) => mountMoonStrip(header.querySelector('.kf-lunar-strip'))).catch(() => {});
+  import('/moon-widget.mjs?v=20261126-perf4').then(({mountMoonStrip}) => mountMoonStrip(header.querySelector('.kf-lunar-strip'))).catch(() => {});
 
   const nav = header.querySelector(".kf-nav");
   // Pages serves both extensionless routes and their original .html links.
@@ -592,7 +592,7 @@
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
             const bubbles=document.createElement("script");
-            bubbles.src="/chat-bubbles.js?v=20261126-perf1";
+            bubbles.src="/chat-bubbles.js?v=20261126-perf4";
             bubbles.dataset.kfChatBubbles="true";
             bubbles.dataset.userId=String(user.id);
             bubbles.onerror=()=>{bubbles.remove();chatLoadFailures++;if(chatLoadFailures<3)setTimeout(startChatHeads,3000*chatLoadFailures);};
