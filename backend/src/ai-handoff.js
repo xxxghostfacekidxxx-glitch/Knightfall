@@ -4,6 +4,7 @@ import {handleAiHandoffBridge} from './ai-handoff-bridge.js';
 const PREFIX='/api/ai-handoff';
 const ORIGINS=new Set(['https://ash-fall.com','https://www.ash-fall.com']);
 const INSTRUCTIONS=[
+ 'START HERE: https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/SAMANTHA-KNIGHTFALL-START-HERE.md | PROJECT PHASES AND STABLE TASK IDS: https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/BETWEEN-THE-FLAMES-PROJECT-ROADMAP.md. Read both before planning; the live snapshot is authoritative. Identify the phase and permanent task ID, inspect current source, work in authorized batches, test and record evidence, update exact version and post a shared note. Do not confuse proposal, commit, CI, deployment and device acceptance.',
  'TO SAMANTHA\u2019S CHATGPT: This is the Knightfall coordination handoff shared by Ronnie and Samantha.',
  'Read the newest handoff note and the current task list before proposing work. Treat the live task list as the source of truth, not earlier copies.',
  'After finishing work, discovering blockers, or changing a decision, keep the shared to-do list current: update task status and details using Samantha\u2019s authenticated Knightfall handoff page, or ask Samantha to make the update when direct access is unavailable.',
@@ -87,7 +88,7 @@ export async function handleAiHandoff(request,env,url,{getUser,json,origin,rateL
  if(path==='/'&&request.method==='GET'){
    if(isPending)return respond({role:'invited',invitation:{by:'Ronnie',status:'pending'},message:'Accept the invitation to see the shared to-do list.'});
    if(!canRead)return respond({role:'unauthorized',error:'This is a private shared space. Ask Ronnie to invite your Knightfall username.'},403);
-   return respond({role:isGod?'owner':'partner',partner:invite,confirmed_access:true,tasks:await tasks(env),notes:await notes(env),activity:await activity(env),instructions:INSTRUCTIONS,guide_links:{field_manual:'https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/MISS-CHAOS-OSIRIS-ISIS-FIELD-GUIDE.md',foundry:'https://ash-fall.com/devil-tools.html',production_lab:'https://ash-fall.com/devil-tools.html#production-workbench',arsenal:'https://ash-fall.com/open-source-arsenal.html',chaos_forge:'https://ash-fall.com/chaos-forge.html'},message:'Ronnie says he loves you.'});
+   return respond({role:isGod?'owner':'partner',partner:invite,confirmed_access:true,tasks:await tasks(env),notes:await notes(env),activity:await activity(env),instructions:INSTRUCTIONS,guide_links:{project_roadmap:'https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/BETWEEN-THE-FLAMES-PROJECT-ROADMAP.md',collaborator_manual:'https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/SAMANTHA-KNIGHTFALL-START-HERE.md',field_manual:'https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/MISS-CHAOS-OSIRIS-ISIS-FIELD-GUIDE.md',foundry:'https://ash-fall.com/devil-tools.html',production_lab:'https://ash-fall.com/devil-tools.html#production-workbench',arsenal:'https://ash-fall.com/open-source-arsenal.html',chaos_forge:'https://ash-fall.com/chaos-forge.html'},message:'Ronnie says he loves you.'});
  }
  if(path==='/packet'&&request.method==='GET'){
    if(!canRead)return respond({error:'Private handoff access required.'},403);
