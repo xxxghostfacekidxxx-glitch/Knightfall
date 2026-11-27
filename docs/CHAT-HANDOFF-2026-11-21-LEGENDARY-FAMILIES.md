@@ -34,3 +34,7 @@ This is a durable continuation record of the user's requests and the implementat
 
 ## New chat continuation request
 The user wants to open a new chat and continue immediately without repeating all instructions. Read this handoff and the **live Between the Flames** register, inspect current repo and deployments, then perform tangible coding in batches and report commits, verified production status and remaining blockers. Keep answers concise and action-focused.
+
+
+## November 27 continuation
+The current consolidated [project roadmap](BETWEEN-THE-FLAMES-PROJECT-ROADMAP.md) and [collaborator operating manual](SAMANTHA-KNIGHTFALL-START-HERE.md) supersede this historical snapshot for work sequencing and current task counts. The live board remains canonical. Preserve all approved legendary details above; consult #206, #210, #211 for separate acceptance criteria. Shared note #6 links the new handoff. Do not assume deployment or acceptance.
