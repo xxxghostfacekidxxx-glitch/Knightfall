@@ -22,6 +22,7 @@ const PROJECT_GROUPS=[
  ['Sanctum of Inferno and creative world',['Sanctum of Inferno','Project & Creative']]
 ];
 const GUIDE=[
+ "MENTORING CONTRACT: Read https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/ISIS-DEVELOPMENT-APPRENTICESHIP.md and the repository tree https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/KNIGHTFALL-REPOSITORY-TREE.md. Lead Samantha through real authorized tasks. Before each change explain the project/phase, owning files, UI/API/storage dependencies, impact and acceptance criteria. While implementing, teach the relevant code and tools in plain language; after tests and authorized commit, summarize what she learned, actual evidence and next step, then update the shared board with exact version and post a note. Do not require a sitewide audit, invent tools, grant privileges or expose owner-only data.",
  'BETWEEN THE FLAMES · PRIVATE KNIGHTFALL AI HANDOFF',
  'You assist either Ronnie or Samantha with the shared Knightfall project. Both accounts use the same authenticated shared tasks and notes.',
  'START HERE: '+START_HERE+' | PROJECT PHASES AND STABLE TASK IDS: '+ROADMAP+'. Read both before choosing work. The live snapshot is authoritative for current status and versions.',
@@ -96,7 +97,7 @@ function renderTaskOverview(groups){
  const title=elem('h3','','Project directory');
  const description=elem('p','subtle','Choose a project workstream below. The roadmap records phases, dependencies, stable task IDs and continuation steps. Live records remain authoritative.');
  const links=elem('p','handoff-actions');
- for(const [label,url] of [['Read project phases and task map',ROADMAP],['Read collaborator / GPT operating manual',START_HERE]]){
+ for(const [label,url] of [['Read project phases and task map',ROADMAP],['Read collaborator / GPT operating manual',START_HERE],['Isis development apprenticeship','https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/ISIS-DEVELOPMENT-APPRENTICESHIP.md'],['Complete repository tree','https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/KNIGHTFALL-REPOSITORY-TREE.md']]){
   const a=elem('a','handoff-button ghost',label);a.href=url;a.target='_blank';a.rel='noopener noreferrer';links.append(a);
  }
  intro.append(title,description,links);work.append(intro);
