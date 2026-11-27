@@ -9,6 +9,14 @@ on:
       - 'backend/src/chaos-chat-image.test.mjs'
       - 'public/chaos-chat-image-picker*'
       - 'public/miss-chaos.js'
+      - 'public/miss-chaos.html'
+      - 'public/miss-chaos-experience.css'
+      - 'public/miss-chaos-realm.html'
+      - 'public/realm-theme-engine.css'
+      - 'public/profile-edit.html'
+      - 'public/assets/knightfall/miss-chaos/**'
+      - 'scripts/miss-chaos-experience.test.mjs'
+      - 'backend/chaos-voice.mjs'
       - 'public/chaos-textract*'
       - 'scripts/chaos-textract.test.mjs'
       - 'scripts/chaos-textract-lab.test.mjs'
@@ -118,7 +126,7 @@ jobs:
           node --check public/miss-chaos-guide-core.mjs
           node --check public/miss-chaos-guide.mjs
           node --check backend/chaos-public-tools.mjs
-          node --test scripts/miss-chaos-guide.test.mjs scripts/miss-chaos-site-index.test.mjs
+          node --test scripts/miss-chaos-guide.test.mjs scripts/miss-chaos-site-index.test.mjs scripts/miss-chaos-experience.test.mjs
       - name: Verify supervised developer reviews, source verification and human approval gates
         run: |
           node --check backend/src/chaos-dev-reviews.js
