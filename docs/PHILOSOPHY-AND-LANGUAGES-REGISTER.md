@@ -1,0 +1,22 @@
+# Philosophy and Languages — independent project registers
+Updated November 27, 2026 (America/Chicago). Live board is canonical: https://ash-fall.com/ai-handoff.html. These are standalone sections linked from homepage and shared navigation, not mythology subcollections.
+
+## Philosophy
+P1 source-present: public/philosophy.html, 25 philosopher introductions across ancient, Asian, Islamic, early modern and contemporary traditions. Searchable cards with scholarly reference links.
+P2 source-present: public/nietzsche.html, 18 concept entries and 11 published-work entries, reading paths and critical prompts. Nietzsche is the first extended author collection. Sources: Stanford Encyclopedia of Philosophy, Nietzsche Source and historical translations. Distinguish published works from posthumous compilations, interpretation from argument, and self-overcoming from domination. No claim that Nietzsche is uncontested.
+P3 proposed: substantially expand Nietzsche into chronology, text-by-text commentary, aphorism/section index, glossary, historical context, competing interpretations, correspondence and reception. Use original analysis and verified public-domain/authorized editions. Source-check each claim, including disputed dates and translations.
+P4 proposed: independent author dossiers for Socrates, Plato, Aristotle, Epicurus, the Stoics, Confucius, Laozi, Nagarjuna, Ibn Sina, Descartes, Spinoza, Hume, Kant, Hegel, Schopenhauer, Kierkegaard, Marx, Mill, Wollstonecraft, Sartre, Beauvoir, Camus, Arendt and Foucault; expand global representation. 
+P5 proposed: compare schools and arguments, ethics, epistemology, metaphysics, political philosophy, logic, aesthetics and existentialism. Build optional reflective notebooks and moderated discussions using existing systems, no compulsory courses. 
+P6 release: verify all cited links, accessibility, search, theme isolation, mobile and production deployment.
+
+## Languages
+L1 source-present: public/languages.html, language-core.mjs and language-studio.mjs. Egyptian laboratory: 24 uniliteral signs with Gardiner IDs, names, approximate readings, sign keyboard, reversible supported-symbol conversion, unsupported input reporting, recognition practice. A static sign table is readable without JS. Limited transliteration, not translation or a full grammar; Unicode glyph rendering depends on device fonts.
+L2 source-present: historical writing-system introductions (hieroglyphic, hieratic, demotic, Coptic), link to Kemet and existing Theban cipher. Ancient vowels and historical pronunciation are uncertain. Theban is a Renaissance cipher, not Egyptian. 
+L3 source-present: Sound Studio with six modern language samples (German, French, Spanish, Italian, modern Greek, Egyptian Arabic text). Browser speech synthesis prefers exact locale and may use another voice of the same language; actual accent is displayed. No voice fallback across languages. Rate controls and stop playback. Availability depends on device voices; ancient recordings not claimed.
+L4 proposed: expand Egyptian sign catalog with biliterals, triliterals, classifiers, words, grammar, original texts and transliteration; hieratic/demotic facsimiles and Coptic letters; specialist citations. Provide licensed self-hosted glyph assets/fallback where appropriate. 
+L5 proposed: standalone language reference and learning modules: Latin, Classical Greek, Coptic, German, French, Spanish, Italian, Arabic and other languages. Grammar, vocabulary, phrases, pronunciation references, script keyboards, practice and optional progress.
+L6 proposed: documented pronunciation audio/IPA, qualified speaker or rights-cleared recordings, dialect labels, accessibility, listening practice, speed controls, comparison tools. Ancient reconstructions explicitly label method/uncertainty. Never claim modern TTS is authentic ancient speech.
+L7 release: verify all source links, keyboard, screen-reader labels, glyph font support, speech voices on Android/iOS/desktop, regression and deployment. Core round trips, unsupported input, NFC, locale matching and structural source checks passed in JS execution; complete Node suite and real device audio not run.
+
+## Shared implementation
+public/independent-study.css and public/study-search.js are scoped to the independent study pages. Existing shared navigation and homepage links updated; Between the Flames groups Philosophy and Languages separately. No database schema migration or member permissions changes. Existing Kemet language task #238 cross-references Languages rather than duplicating code. 
