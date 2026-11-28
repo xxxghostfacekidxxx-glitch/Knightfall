@@ -7,6 +7,10 @@ on:
       - 'training/order66-peer-core.mjs'
       - 'training/miss-chaos-local*'
       - 'training/miss-chaos-specialist*'
+      - 'training/miss-chaos-context*'
+      - 'training/checkpoints/miss-chaos-context*'
+      - 'scripts/train-miss-chaos-context.mjs'
+      - 'scripts/miss-chaos-context.test.mjs'
       - 'training/checkpoints/miss-chaos-specialist*'
       - 'scripts/train-miss-chaos-specialist.mjs'
       - 'scripts/miss-chaos-specialist.test.mjs'
@@ -96,6 +100,27 @@ jobs:
         with:
           path: miss-chaos-specialist-prior.json
           key: miss-chaos-specialist-v2-${{ github.run_id }}
+      - name: Validate eight-token model
+        run: node --test scripts/miss-chaos-context.test.mjs
+      - uses: actions/cache/restore@v4
+        with:
+          path: miss-chaos-context-prior.json
+          key: miss-chaos-context-v1-${{ github.run_id }}
+          restore-keys: miss-chaos-context-v1-
+      - name: Continue eight-token original model
+        run: |
+          if [ ! -f miss-chaos-context-prior.json ]; then cp training/checkpoints/miss-chaos-context-003.json miss-chaos-context-prior.json; fi
+          seed=$(( 70000000 + ${{ github.run_number }} * 100 ))
+          if node scripts/train-miss-chaos-context.mjs candidate/context.json "$seed" miss-chaos-context-prior.json; then
+            cp candidate/context.json miss-chaos-context-prior.json
+          else
+            echo 'Context candidate rejected; retaining previous checkpoint.'
+            cp miss-chaos-context-prior.json candidate/context.json
+          fi
+      - uses: actions/cache/save@v4
+        with:
+          path: miss-chaos-context-prior.json
+          key: miss-chaos-context-v1-${{ github.run_id }}
       - uses: actions/upload-artifact@v4
         with:
           name: order66-research-candidates
