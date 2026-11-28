@@ -1418,7 +1418,7 @@ export async function discoverTools(source,query,fetcher=runtimeFetch){
  return toolCandidates(source,await researchResponse(u.href,{"accept":"application/json","user-agent":"KnightfallKnowledge/2.0 (https://ash-fall.com)"},fetcher));
 }
 // A peer lesson is an approved evidence reference, not a generated fact or neural weight update.
-export const PEER_LESSONS_PER_ASSIGNMENT=8;
+export const PEER_LESSONS_PER_ASSIGNMENT=16;
 export async function sharePeerEvidence(env,a,now){
  // One atomic, bounded insert replaces the read-then-write race and avoids extra D1 round trips.
  const result=await env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_lessons(learner_key,entity_id,teacher_key,received_at) SELECT ?,c.entity_id,c.agent_key,? FROM chaos_knowledge_candidates c WHERE c.review_status='approved' AND (c.agent_key LIKE 'mc-%' OR c.agent_key='manual-curation') AND c.agent_key<>? AND NOT EXISTS(SELECT 1 FROM chaos_knowledge_lessons l WHERE l.learner_key=? AND l.entity_id=c.entity_id) AND EXISTS(SELECT 1 FROM chaos_knowledge_66_control k JOIN eye_chaos_controls e ON e.id=1 WHERE k.id=1 AND k.enabled=1 AND e.paused=0) ORDER BY CASE WHEN c.division=? THEN 0 ELSE 1 END,c.reviewed_at DESC,c.entity_id LIMIT ?").bind(a.key,now,a.key,a.key,a.division,PEER_LESSONS_PER_ASSIGNMENT).run();

@@ -1,5 +1,5 @@
 // Owner-only persisted repository staging; source is evidence, never executed.
-import {generateRepositoryCandidate} from "./chaos-repository-candidate.mjs";
+import {autoRepositoryCandidate,generateRepositoryCandidate} from "./chaos-repository-candidate.mjs";
 import {INTEGRATION_PATHS} from "./chaos-integration-dispatch.mjs";
 import {intakeRepository} from "../chaos-repo-intake.mjs";
 import {parseRepository} from "./alien-eyes-core.mjs";
@@ -12,7 +12,7 @@ export function repositoryRequest(message){
  const bare=text.match(/^https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+\/?$/i);
  const embedded=/\b(?:integrate|implement|import|stage|adopt|inspect|analyze)\b/i.test(text)?text.match(/https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+/i):null;
  if(!explicit&&!bare&&!embedded)return null;
- try{const r=parseRepository(explicit?.[1]||bare?.[0]||embedded?.[0]);return {repository:r.owner+"/"+r.repo,...(explicit?.[2]?{path:explicit[2]}:{})};}catch{return null;}
+ try{const r=parseRepository(explicit?.[1]||bare?.[0]||embedded?.[0]);return {repository:r.owner+"/"+r.repo,...(explicit?.[2]?{path:explicit[2]}:{}),...((bare||/^(?:implement|integrate|import|adopt)\b/i.test(text))?{auto:true}:{})};}catch{return null;}
 }
 export async function stageRepository(env,input,ownerId,{intake=intakeRepository}={}){
  if(!Number.isSafeInteger(Number(ownerId))||Number(ownerId)<1)throw Error("Owner identity required");
@@ -40,5 +40,5 @@ export async function handleRepositoryStages(request,env,url,{requireUser,json,o
  if(request.method!=="POST")return reply({error:"Method not allowed."},405);
  if(!["https://ash-fall.com","https://www.ash-fall.com"].includes(request.headers.get("origin"))||!String(request.headers.get("content-type")||"").startsWith("application/json"))return reply({error:"Knightfall origin required."},403);
  if(!await rateLimit(env,request,"chaos-repository-stage",5,60,user.id))return reply({error:"Repository intake limit reached."},429);
- try{const raw=await request.text();if(raw.length>1500)throw Error("Input too large");const input=JSON.parse(raw);if(url.pathname.endsWith("/generate")){if(!/^[a-f0-9]{64}$/.test(input.stage_id||""))throw Error("Invalid stage ID");const row=await env.DB.prepare("SELECT value FROM site_settings WHERE key=? AND updated_by=?").bind(PREFIX+input.stage_id,user.id).first();if(!row)throw Error("Stage not found");return reply({proposal:await generateRepositoryCandidate(env,{stage:JSON.parse(row.value),target:input.target,goal:input.goal,ownerId:user.id})},201);}return reply({stage:await stageRepository(env,input,user.id)},201);}catch(error){return reply({error:String(error.message).slice(0,180)},400);}
+ try{const raw=await request.text();if(raw.length>1500)throw Error("Input too large");const input=JSON.parse(raw);if(url.pathname.endsWith("/generate")){if(!/^[a-f0-9]{64}$/.test(input.stage_id||""))throw Error("Invalid stage ID");const row=await env.DB.prepare("SELECT value FROM site_settings WHERE key=? AND updated_by=?").bind(PREFIX+input.stage_id,user.id).first();if(!row)throw Error("Stage not found");const stage=JSON.parse(row.value);if(input.target==="auto")return reply(await autoRepositoryCandidate(env,{stage,ownerId:user.id}),201);return reply({proposal:await generateRepositoryCandidate(env,{stage,target:input.target,goal:input.goal,ownerId:user.id})},201);}return reply({stage:await stageRepository(env,input,user.id)},201);}catch(error){return reply({error:String(error.message).slice(0,180)},400);}
 }
