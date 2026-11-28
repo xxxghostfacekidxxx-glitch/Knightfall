@@ -64,7 +64,13 @@ test("Existing games still target canonical conversation fallback and branded ov
  }
 });
 
- test("Trouble uses the detailed static messenger icon and matching Android palette",()=>{
- const icon=read("icons/chaosphere.svg");assert.match(icon,/Trouble, Knightfall's infernal messenger/);assert.match(icon,/id="eyes"/);assert.match(icon,/id="badge"/);assert.doesNotMatch(icon,/<style>|<animate\\b/);assert.match(read("sw.js"),/knightfall-shell-v\\d+/);assert.match(read("chat-bubbles.js"),/src="\\/icons\\/chaosphere\\.svg"/);
- const native=readFileSync(new URL("../android/ruinwire/src/main/res/drawable/ruinwire_icon.xml",import.meta.url),"utf8");assert.match(native,/viewportWidth="320"/);assert.match(native,/#ffcf4c/);
- });
+test("Trouble uses the detailed static messenger icon and matching Android palette",()=>{
+ const icon=read("icons/chaosphere.svg");
+ assert.ok(icon.includes("Trouble, Knightfall's infernal messenger"));
+ assert.ok(icon.includes('id="eyes"')&&icon.includes('id="badge"'));
+ assert.ok(!icon.includes("<style>")&&!icon.includes("<animate"));
+ assert.ok(read("sw.js").includes("knightfall-shell-v"));
+ assert.ok(read("chat-bubbles.js").includes('src="/icons/chaosphere.svg"'));
+ const native=readFileSync(new URL("../android/ruinwire/src/main/res/drawable/ruinwire_icon.xml",import.meta.url),"utf8");
+ assert.ok(native.includes('viewportWidth="320"')&&native.includes("#ffcf4c"));
+});
