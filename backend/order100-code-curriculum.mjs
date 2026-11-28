@@ -24,7 +24,7 @@ const HOLDOUT=[
 export const COURSE_VERSION="order100-code-v1";
 function examples(f,seed,heldout=false){
  let n=(seed+1)*7919;const rand=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n%23-11;};
- const inputs=heldout?[[-11,0,9,-7,4,4],[],[6,-6,-6,0,3],[1,3,5],[-8,-2],Array.from({length:9},rand)]:[[],[-3,2,0,2,5,-4],[1,3,-5,1],[-2,-2,4,6],Array.from({length:7},rand),Array.from({length:8},rand)];
+ const inputs=heldout?[[-11,0,9,-7,4,4],[],[0,0],[6,-6,-6,0,3],[1,3,5],[-8,-2],Array.from({length:9},rand)]:[[],[0,0],[-3,2,0,2,5,-4],[1,3,-5,1],[-2,-2,4,6],Array.from({length:7},rand),Array.from({length:8},rand)];
  return inputs.map(input=>({input,output:f.oracle(input)}));
 }
 const agentKey=i=>"mc-"+String(i+1).padStart(2,"0");
@@ -38,19 +38,21 @@ export function verifiedLesson(index){
  const verified=results.every(r=>r.passed);
  return {agent:e.agent,id:e.id,program:e.program,source:emitProgram(e.program),tests:results.length,passed:results.filter(r=>r.passed).length,verified,externalInference:false};
 }
-export function peerRound(round=0){
+export function practicePeer(index,round=0){
  if(!Number.isSafeInteger(round)||round<0)throw Error("Invalid round");
+ const own=verifiedLesson(index),t=(index+1+round%99)%100,teacher=verifiedLesson(t),exercise=exerciseFor(t);
+ // The learner receives examples rather than the teacher's code. Its own verified lesson initializes its search prior.
+ const localPrior=learnPrograms(own.verified?[own.program]:[],emptyPrior());
+ const found=synthesize(exercise.training,{maxSteps:2,budget:256,prior:localPrior});
+ const checks=found.program?verifyProgram(found.program,exercise.validation):[];
+ return {learner:own.agent,teacher:teacher.agent,lesson:teacher.id,ownProgram:own.program,ownVerified:own.verified,program:found.program,passed:checks.filter(c=>c.passed).length,tests:exercise.validation.length,verified:own.verified&&teacher.verified&&checks.length===exercise.validation.length&&checks.every(c=>c.passed),checked:found.checked,externalInference:false};
+}
+export function peerRound(round=0){
  const lessons=Array.from({length:100},(_,i)=>verifiedLesson(i));
- const receipts=lessons.map((lesson,i)=>{
-  // Each learner checks a different teacher using the teacher's distinct validation set.
-  const t=(i+1+round%99)%100,teacher=lessons[t],exercise=exerciseFor(t);
-  const checks=verifyProgram(teacher.program,exercise.validation);
-  return {learner:lesson.agent,teacher:teacher.agent,lesson:teacher.id,program:teacher.program,passed:checks.filter(c=>c.passed).length,tests:checks.length,verified:teacher.verified&&checks.every(c=>c.passed)};
- });
- const accepted=receipts.filter(r=>r.verified);
- // Central model learns only the verified programs; one contribution per distinct teacher per round.
- const prior=learnPrograms(lessons.filter(l=>l.verified).map(l=>l.program),emptyPrior());
- return {course:COURSE_VERSION,round,lessons,receipts,prior,accepted:accepted.length,externalInference:false,method:"executed local operation interpreter with independent authored oracles; not general model training"};
+ const receipts=lessons.map((_,i)=>practicePeer(i,round)),accepted=receipts.filter(r=>r.verified);
+ // Teach Miss Chaos using verified teacher solutions and independently re-synthesized learner programs.
+ const prior=learnPrograms([...lessons.filter(l=>l.verified).map(l=>l.program),...accepted.map(r=>r.program)],emptyPrior());
+ return {course:COURSE_VERSION,round,lessons,receipts,prior,accepted:accepted.length,externalInference:false,method:"local program synthesis with independently authored oracle checks; not general neural model training"};
 }
 export function codingBenchmark(prior,{budget=512}={}){
  const rows=HOLDOUT.map((f,i)=>{
