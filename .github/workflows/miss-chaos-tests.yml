@@ -5,7 +5,7 @@ on:
     paths:
       - 'backend/src/eye-tool-review.mjs'
       - 'backend/src/alien-eyes-core.mjs'
-      - 'scripts/eye-tool-review.test.mjs'
+      - 'scripts/eye-tool-review.test.mjs scripts/order66-software-sharing.test.mjs'
       - 'public/alien-eyes*'
       - 'scripts/alien-eyes.test.mjs'
       - 'scripts/alien-eyes-workspace.test.mjs'
