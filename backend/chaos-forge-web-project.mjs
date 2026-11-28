@@ -1,3 +1,4 @@
+import {verifyJavaScript} from "./chaos-forge-javascript.mjs";
 // Build an offline, multi-file browser application from a checked program.
 import {verifyData,emitDataModule} from "./chaos-forge-data.mjs";
 import {verifyDataSource} from "./chaos-forge-data-source.mjs";
@@ -7,10 +8,10 @@ import {zipProject} from "./chaos-forge-zip.mjs";
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const themes={inferno:["#181019","#271b29","#ffb76b","#f9ebdf"],neon:["#10101d","#252038","#85f9df","#f8eaff"],obsidian:["#101116","#24252c","#c7cad8","#f3f3f5"],celestial:["#0d1627","#1b2c43","#a9dcff","#e9f5ff"]};
 export function buildWebProject(input){
- if(!input||typeof input.name!=="string"||!/^[a-z][a-z0-9-]{0,39}$/.test(input.name)||!["data","source","library","logic"].includes(input.kind)||!input.spec)throw Error("Provide project name, kind and specification.");
+ if(!input||typeof input.name!=="string"||!/^[a-z][a-z0-9-]{0,39}$/.test(input.name)||!["data","source","library","logic","javascript"].includes(input.kind)||!input.spec)throw Error("Provide project name, kind and specification.");
  const {name,kind,spec}=input,title=input.title??name,theme=input.theme??"inferno";
  if(typeof title!=="string"||!title.trim()||title.length>80||!Object.hasOwn(themes,theme))throw Error("Invalid title or theme.");
- const r=kind==="data"?verifyData(spec):kind==="source"?verifyDataSource(spec):kind==="library"?verifyLibrary(spec):verifyLogic(spec);
+ const r=kind==="data"?verifyData(spec):kind==="source"?verifyDataSource(spec):kind==="library"?verifyLibrary(spec):kind==="javascript"?verifyJavaScript(spec):verifyLogic(spec);
  const module=kind==="logic"?runLogic.toString()+"\nconst program = "+JSON.stringify(r.program,null,2)+";\nexport function solve(...values){return runLogic(program,values);}\n":emitDataModule(r.program);
  const examples=r.tests.map(({values,expected})=>({values,expected})),fields=kind==="logic"?r.program.fields.map(name=>({name,type:"number"})):r.program.fields;
  const labels=input.labels??{};if(!labels||typeof labels!=="object"||Array.isArray(labels)||Object.keys(labels).some(k=>!fields.some(f=>f.name===k)||typeof labels[k]!=="string"||labels[k].length>80))throw Error("Invalid field labels.");
