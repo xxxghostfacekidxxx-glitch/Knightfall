@@ -1,3 +1,4 @@
+import {verifyLogicLibrary} from "./chaos-forge-logic-library.mjs";
 import {verifyPython} from "./chaos-forge-python.mjs";
 import {verifyControlJavaScript} from "./chaos-forge-javascript-control.mjs";
 import {verifyJavaScript} from "./chaos-forge-javascript.mjs";
@@ -8,10 +9,10 @@ import {verifyLibrary} from "./chaos-forge-library.mjs";
 import {verifyLogic,runLogic} from "./chaos-forge-logic.mjs";
 import {zipProject} from "./chaos-forge-zip.mjs";
 export function buildProject(input){
- if(!input||typeof input.name!=="string"||!/^[a-z][a-z0-9-]{0,39}$/.test(input.name)||!["data","source","library","logic","javascript","python","javascript-control"].includes(input.kind)||!input.spec)throw Error("Provide a lowercase project name, kind and program specification.");
+ if(!input||typeof input.name!=="string"||!/^[a-z][a-z0-9-]{0,39}$/.test(input.name)||!["data","source","library","logic","javascript","python","javascript-control","logic-library"].includes(input.kind)||!input.spec)throw Error("Provide a lowercase project name, kind and program specification.");
  const {name,kind,spec}=input;
- const report=kind==="data"?verifyData(spec):kind==="source"?verifyDataSource(spec):kind==="library"?verifyLibrary(spec):kind==="javascript"?verifyJavaScript(spec):kind==="python"?verifyPython(spec):kind==="javascript-control"?verifyControlJavaScript(spec):verifyLogic(spec);
- const module=["logic","python","javascript-control"].includes(kind)?runLogic.toString()+"\nconst program = "+JSON.stringify(report.program,null,2)+";\nexport function solve(...values){return runLogic(program,values);}\n":emitDataModule(report.program);
+ const report=kind==="data"?verifyData(spec):kind==="source"?verifyDataSource(spec):kind==="library"?verifyLibrary(spec):kind==="javascript"?verifyJavaScript(spec):kind==="python"?verifyPython(spec):kind==="javascript-control"?verifyControlJavaScript(spec):kind==="logic-library"?verifyLogicLibrary(spec):verifyLogic(spec);
+ const module=kind==="logic-library"?report.module:["logic","python","javascript-control"].includes(kind)?runLogic.toString()+"\nconst program = "+JSON.stringify(report.program,null,2)+";\nexport function solve(...values){return runLogic(program,values);}\n":emitDataModule(report.program);
  const examples=report.tests.map(({values,expected})=>({values,expected}));
  const files=[
  {path:"package.json",content:JSON.stringify({name,version:"1.0.0",private:true,type:"module",scripts:{start:"node src/cli.mjs",test:"node --test test/program.test.mjs"},engines:{node:">=20"}},null,2)+"\n"},
