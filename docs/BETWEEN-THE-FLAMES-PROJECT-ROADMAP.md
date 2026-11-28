@@ -157,3 +157,5 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 - Direct D1 fallback credentials returned HTTP 403. Replaced with exact-repository/workflow/main-branch GitHub OIDC, fixed current-slot public discovery results, canonical source validation, replay reservation, pause enforcement and one retry per failed claim. No runner database credential or arbitrary SQL access. Production OIDC acceptance pending.
 
 - Restored dedicated Alien Eyes software workspace with owner verification, readable metadata, catalog cards, report export and direct Osiris link. Research fallback first deployed upload returned HTTP 401; added boolean-only runner OIDC diagnostics. Do not claim automatic collection successful before production readback.
+
+- All six native engine acceptance jobs confirmed successful at run 46112183898, including the corrected llama.cpp headless build and fixture inference. This confirms isolated runner execution, not production callable integration.

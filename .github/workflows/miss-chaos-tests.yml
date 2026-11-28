@@ -197,7 +197,8 @@ jobs:
       - name: Check original research tools and model checkpoint
         run: |
           node --check public/alien-eyes.mjs
+          node --check public/alien-eyes-workspace.js
           node --check public/miss-chaos-model-lab.mjs
-          node --test scripts/eye-tool-review.test.mjs scripts/alien-eyes.test.mjs scripts/miss-chaos-native-v3.test.mjs scripts/mad-court.test.mjs scripts/order66-code-lab.test.mjs
+          node --test scripts/eye-tool-review.test.mjs scripts/alien-eyes.test.mjs scripts/alien-eyes-workspace.test.mjs scripts/miss-chaos-native-v3.test.mjs scripts/mad-court.test.mjs scripts/order66-code-lab.test.mjs
           node scripts/audit-miss-chaos-v3.mjs
 
