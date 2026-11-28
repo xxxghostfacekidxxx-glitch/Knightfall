@@ -19,7 +19,7 @@ export function compileLibrary(input){
     // Compile a synthetic bridge to check declared argument types, even for unused parameters.
     const partial=compileData({fields,steps,result:fields[0].name});
     const available=new Map([...partial.fields,...partial.steps].map(x=>[x.name,x.type]));
-    const kind=a=>a&&typeof a==="object"?available.get(a.ref):typeof a==="string"?"text":typeof a==="number"?"number":typeof a==="boolean"?"boolean":null;
+    const kind=a=>a&&typeof a==="object"?available.get(a.ref):typeof a==="string"&&a.length<=8192?"text":typeof a==="number"&&Number.isFinite(a)?"number":typeof a==="boolean"?"boolean":null;
     if(args.some((a,i)=>kind(a)!==called.fields[i].type))throw Error("Function argument type mismatch");
     const map=new Map(called.fields.map((f,i)=>[f.name,args[i]]));
     for(const inner of called.steps){const n=fresh(),mapped=inner.args.map(a=>a&&typeof a==="object"?map.get(a.ref):a);steps.push({name:n,op:inner.op,args:mapped});map.set(inner.name,{ref:n});if(steps.length>48)throw Error("Expanded program exceeds 48 operations");}
