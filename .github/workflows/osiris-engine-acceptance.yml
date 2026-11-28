@@ -58,15 +58,15 @@ jobs:
           persist-credentials: false
       - name: Build pinned CPU runtime
         run: |
-          cmake -S llama -B llama/build -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=OFF -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF
-          cmake --build llama/build --target llama-cli -j 2
+          cmake -S llama -B llama/build -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=OFF -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_SERVER=OFF -DLLAMA_BUILD_APP=OFF -DLLAMA_USE_PREBUILT_UI=OFF
+          cmake --build llama/build --target llama-completion -j 2
       - name: Verify and execute public random-weight fixture
         run: |
           set -eu
           curl --fail --location --max-time 90 --output fixture.gguf https://huggingface.co/amakhov/tiny-random-llama/resolve/fbf68d33cf68a9d1d4b71b3d098ae82c8c14443b/gguf/tiny-random-f16.gguf
           echo '1010fc48b2a1880a01fa5e267eb35bf586e3e3ad5539ff5b0e025e4f63616a82  fixture.gguf' | sha256sum -c -
-          llama/build/bin/llama-cli --version
-          timeout 90 llama/build/bin/llama-cli -m fixture.gguf -p 'A fixed test prompt' -n 4 -c 128 -t 2 --single-turn </dev/null
+          llama/build/bin/llama-completion --version
+          timeout 90 llama/build/bin/llama-completion -m fixture.gguf -p 'A fixed test prompt' -n 4 -c 128 -t 2 --no-conversation </dev/null
   evaluation:
     runs-on: ubuntu-latest
     timeout-minutes: 20
