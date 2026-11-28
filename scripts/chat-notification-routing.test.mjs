@@ -13,10 +13,10 @@ for(const source of [sw,bubbles,navigation])new vm.Script(source);
 const inline=[...messages.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean).pop();
 new vm.Script(inline);
 
-function harness({noTextAction=false,sendOk=true,windows=[],existing=[]}={}){
+function harness({noTextAction=false,sendOk=true,keyed=false,receipt={id:73},retryStatus=0,windows=[],existing=[]}={}){
   const listeners={},shown=[],fetchCalls=[],opened=[];
   const context={self:{
-    location:{origin:"https://ash-fall.com"},
+    location:{origin:"https://ash-fall.com"},crypto:{randomUUID:()=>"11111111-1111-4111-8111-111111111111"},
     addEventListener(name,handler){listeners[name]=handler;},
     registration:{async getNotifications(){return existing;},async showNotification(title,options){
       shown.push({title,options});
@@ -24,7 +24,10 @@ function harness({noTextAction=false,sendOk=true,windows=[],existing=[]}={}){
     }},
     clients:{async matchAll(){return windows;},async openWindow(url){opened.push(url);return {url};}}
   },URL,caches:{},console,fetch:async(url,options)=>{
-    fetchCalls.push({url,options});return {ok:sendOk,status:sendOk?201:403};
+    fetchCalls.push({url,options});if(url.endsWith("/send-capabilities"))return {ok:true,status:200,json:async()=>({keyed_send:keyed})};
+    if(options.method==="PATCH")return {ok:true,status:200,json:async()=>({ok:true})};
+    if(retryStatus&&fetchCalls.filter(x=>x.options.method==="POST").length===1)return {ok:false,status:retryStatus,json:async()=>({error:"temporary"})};
+    return {ok:sendOk,status:sendOk?201:403,json:async()=>receipt};
   }};
   vm.runInNewContext(sw,context);
   async function push(url="/messages.html?conversation=42",notificationId,body="Message received"){
@@ -67,10 +70,11 @@ test("tap reuses an existing inbox and opens the correct conversation",async()=>
 });
 test("inline reply uses the existing authenticated message endpoint",async()=>{
   const h=harness();await h.click({action:"reply",reply:"Hello from the alert"});
-  assert.equal(h.fetchCalls.length,1);
-  assert.equal(h.fetchCalls[0].url,"https://api.ash-fall.com/api/messages/conversations/42");
-  assert.equal(h.fetchCalls[0].options.credentials,"include");
-  assert.equal(JSON.parse(h.fetchCalls[0].options.body).body,"Hello from the alert");
+  assert.equal(h.fetchCalls.length,2);
+  assert.ok(h.fetchCalls[0].url.endsWith("/send-capabilities"));
+  assert.equal(h.fetchCalls[1].url,"https://api.ash-fall.com/api/messages/conversations/42");
+  assert.equal(h.fetchCalls[1].options.credentials,"include");
+  assert.equal(JSON.parse(h.fetchCalls[1].options.body).body,"Hello from the alert");
   assert.equal(h.opened.length,0);
 });
 test("failed reply is not reported as sent, button reply opens composer",async()=>{
@@ -122,7 +126,8 @@ test("notification list refreshes promptly when another tab or message opens an 
   assert.match(notifications,/event\.key==="kf:notifications-changed"/);
   assert.match(notifications,/event\.data\?\.type==="KF_NOTIFICATIONS_CHANGED"/);
   assert.match(notifications,/window\.addEventListener\("kf:notifications-changed",refreshReadState\)/);
-  assert.match(notifications,/if\(document\.visibilityState==="visible"\)void load\(\)/);
+  assert.ok(notifications.includes('if(document.visibilityState!=="visible")return;'));
+  assert.ok(notifications.includes("readRefreshTimer=setTimeout(()=>void load(),250)"));
 });
 test("opening a conversation only clears existing alerts for the signed-in member",()=>{
   assert.match(backend,/UPDATE notifications SET read_at=\? WHERE user_id=\? AND target_type='conversation' AND target_id=\? AND kind IN \('message','mention'\) AND read_at IS NULL AND created_at<=\?/);
@@ -148,3 +153,6 @@ test("acknowledging browser alerts also requests cleanup of Android banners",()=
  assert.match(notifications,/closeHandledPush\(\{all:true\}\)/);
  assert.match(messages,/if\(!beforeMessageId\)closeConversationPushNotices\(id\)/);
 });
+
+test("native keyed reply retries with identical payload then acknowledges exact alert",async()=>{const h=harness({keyed:true,retryStatus:503});await h.click({action:"reply",reply:"Retry me",notificationId:123});const sends=h.fetchCalls.filter(x=>x.options.method==="POST");assert.equal(sends.length,2);assert.equal(sends[0].options.body,sends[1].options.body);assert.ok(JSON.parse(sends[0].options.body).client_message_id);assert.equal(h.fetchCalls.at(-1).options.method,"PATCH");assert.equal(h.opened.length,0);});
+test("HTTP success without a durable message ID does not acknowledge alert",async()=>{const h=harness({receipt:{ok:true}});await h.click({action:"reply",reply:"Lost",notificationId:123});assert.equal(h.shown[0].title,"Reply not sent");assert.equal(h.fetchCalls.filter(x=>x.options.method==="PATCH").length,0);});

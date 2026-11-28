@@ -278,10 +278,10 @@ universal.addEventListener("click",async()=>{
  if(!confirm("Publish "+presets[target].name+" across all five realms? Existing independent presets will be replaced. Individual realm rollback remains available."))return;
  lock(true);const completed=[];let failure=null;
  try{
-  for(const realm of keys){
+  for(const realm of ["madhouse","arcade","chaosphere","admin","site"]){
    const state=states[realm];
    if(!state)throw Error("Missing realm state: "+realm);
-   if(state.preset===target){completed.push(realm);continue}
+   if(state.preset===target||(realm!=="site"&&state.inherited)){completed.push(realm);window.KnightfallThemeCrew?.preview?.(null,realm);continue}
    const result=await req("/activate","POST",{realm,preset:target,expectedRevision:state.revision});
    if(result.current?.preset!==target)throw Error("Publication not confirmed for "+realm);
    states[realm]=result.current;completed.push(realm);
@@ -293,6 +293,7 @@ universal.addEventListener("click",async()=>{
   try{await load();await window.KnightfallThemeCrew?.refresh?.()}catch(error){failure=failure||error}
   lock(false);
   const verified=keys.filter(key=>states[key]?.preset===target);
+  if(!failure&&verified.length!==keys.length)failure=Error("Read-back did not confirm every realm");
   announce(failure?"Universal publication interrupted: "+failure.message+". Matching realms: "+verified.join(", ")+". Refresh before retrying.":"Published "+presets[target].name+" across all five realms. Individual rollback remains available.");
  }
 });
