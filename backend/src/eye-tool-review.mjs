@@ -1,3 +1,4 @@
+import {neuralImage} from "../chaos-forge-neural-image.mjs";
 import {dataCoverage} from "../chaos-forge-data-course.mjs";
 import {logicCoverage} from "../chaos-forge-logic-course.mjs";
 import {forgeCommand,forgeDownload,listForgeArtifacts,deleteForgeArtifact} from "../chaos-independent-forge.mjs";
@@ -24,6 +25,12 @@ export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=
  try{
  const partner=await env.DB.prepare("SELECT invited_by FROM ai_handoff_partner WHERE slot=1").first();
  if(!canReviewTools(user,partner))return respond({error:"Verified Osiris owner access required."},403);
+ if(url.pathname===prefix+"/image-neural"&&request.method==="POST"){
+  if(!["https://ash-fall.com","https://www.ash-fall.com"].includes(request.headers.get("origin"))||!/^application\/json(?:;|$)/i.test(request.headers.get("content-type")||""))return respond({error:"Same-site JSON required."},403);
+  const reader=request.body?.getReader();if(!reader)return respond({error:"Request body required."},400);
+  let raw="",size=0;const decoder=new TextDecoder("utf-8",{fatal:true});
+  try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>4096){await reader.cancel();return respond({error:"Request too large."},413);}raw+=decoder.decode(value,{stream:true});}raw+=decoder.decode();return respond(await neuralImage(env,user.id,JSON.parse(raw)));}catch(error){return respond({error:String(error.message||"Image generation failed.").slice(0,240)},400);}finally{reader.releaseLock();}
+ }
  if(url.pathname===prefix+"/build-insight"||url.pathname.startsWith(prefix+"/build-insight/")){
   const disabled=normalizeDecision(await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(key("alien-eyes")).first()).decision==="scrapped";
   if(disabled)return respond({error:"Alien Eyes is disabled."},403);
