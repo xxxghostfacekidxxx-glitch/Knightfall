@@ -7,7 +7,7 @@ export function compileLogic(input,{earlier=null}={}){
  const fields=[...input.fields],locals=[...input.locals],names=[...fields,...locals];
  if(names.some(n=>typeof n!=="string"||!ident.test(n)||reserved.has(n))||new Set(names).size!==names.length||names.length>12)throw Error("Use up to 12 distinct lowercase field/local names.");
  let count=0;
- const formula=s=>compileFormula(s,names).ops;
+ const formula=s=>compileFormula(s,names,{earlier}).ops;
  function block(rows,depth=0){
   if(!Array.isArray(rows)||depth>6)throw Error("Invalid block or nesting limit");
   return rows.map(row=>{
@@ -39,6 +39,7 @@ export function runLogic(program,values){
   for(const ins of ops){tick();if(!Array.isArray(ins))throw Error("Invalid instruction");const [op,n]=ins;let v;
    if(op==="const"&&ins.length===2&&typeof n==="number")v=n;
    else if(op==="input"&&ins.length===2&&Number.isInteger(n)&&n>=0&&n<memory.length)v=memory[n];
+   else if(op==="invoke"&&ins.length===3&&library&&Number.isInteger(n)&&n>=0&&n<index&&Number.isInteger(ins[2])&&ins[2]>=1&&ins[2]<=12&&stack.length>=ins[2]){const args=stack.splice(stack.length-ins[2],ins[2]);v=execute(library.functions[n].program,args,n,callDepth+1);}
    else if(ins.length===1&&Object.hasOwn(unary,op)&&stack.length>=1)v=unary[op](stack.pop());
    else if(ins.length===1&&Object.hasOwn(binary,op)&&stack.length>=2){const y=stack.pop(),x=stack.pop();v=binary[op](x,y);}
    else throw Error("Invalid expression instruction");
@@ -62,7 +63,7 @@ export function runLogic(program,values){
 export function decompileLogic(program,{earlier=null}={}){
  if(!program||program.schema!=="chaos-logic-v1"||!Array.isArray(program.fields)||!Array.isArray(program.locals))throw Error("Invalid program");
  const fields=program.fields,locals=program.locals,names=[...fields,...locals];let count=0;
- const expr=ops=>decompileFormula({schema:"chaos-formula-v1",fields:names,ops}).expression;
+ const expr=ops=>decompileFormula({schema:"chaos-formula-v1",fields:names,ops},{earlier}).expression;
  function block(rows,depth=0){if(!Array.isArray(rows)||depth>6)throw Error("Invalid block");
   return rows.map(ins=>{if(++count>64||!Array.isArray(ins))throw Error("Invalid instruction");const [op,a,b,c,d,e]=ins;
    if(op==="set"&&ins.length===3&&Number.isInteger(a)&&a>=fields.length&&a<names.length)return {op:"set",name:names[a],expr:expr(b)};
