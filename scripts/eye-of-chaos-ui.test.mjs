@@ -10,11 +10,14 @@ const old=read("../public/god-bot-control.html");
 const backend=read("../backend/src/index.js");
 const api=read("../backend/src/eye-of-chaos.js");
 
-test("Admin and GOD command deck exposes all seven workspaces with navigation",()=>{
+test("Admin and GOD command deck exposes all ten workspaces with navigation",()=>{
  const panels=[...html.matchAll(/class="chaos-panel" data-panel="([^"]+)"/g)].map(a=>a[1]);
  const tabs=[...html.matchAll(/data-section="([^"]+)"/g)].map(a=>a[1]);
- assert.deepEqual(panels,["overview","fleet","missions","approvals","qa","identity-qa","forums","quota","history"]);
+ assert.deepEqual(panels,["overview","fleet","missions","approvals","qa","identity-qa","forums","quota","knowledge","history"]);
  assert.deepEqual(tabs,panels);
+ assert.match(html,/id="knowledge-run" type="button" data-chaos-god-only hidden/);
+ assert.match(html,/id="knowledge-export" type="button" data-chaos-god-only hidden/);
+ assert.match(js,/if\(!state\.canGod\)return;/);
  assert.match(admin,/class="admin-shortcut" href="\/eye-of-chaos\.html"/);
  assert.equal((admin.match(/class="admin-shortcut" href="\/eye-of-chaos\.html"/g)||[]).length,1,"Eye of Chaos needs one dashboard shortcut");
  assert.match(js,/data-chaos-god-only/);
