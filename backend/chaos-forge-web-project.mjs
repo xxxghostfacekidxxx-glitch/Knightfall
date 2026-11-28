@@ -1,3 +1,4 @@
+import {verifySourceLibrary} from "./chaos-forge-source-library.mjs";
 import {verifyLogicLibrary} from "./chaos-forge-logic-library.mjs";
 import {verifyPython} from "./chaos-forge-python.mjs";
 import {verifyControlJavaScript} from "./chaos-forge-javascript-control.mjs";
@@ -11,12 +12,12 @@ import {zipProject} from "./chaos-forge-zip.mjs";
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const themes={inferno:["#181019","#271b29","#ffb76b","#f9ebdf"],neon:["#10101d","#252038","#85f9df","#f8eaff"],obsidian:["#101116","#24252c","#c7cad8","#f3f3f5"],celestial:["#0d1627","#1b2c43","#a9dcff","#e9f5ff"]};
 export function buildWebProject(input){
- if(!input||typeof input.name!=="string"||!/^[a-z][a-z0-9-]{0,39}$/.test(input.name)||!["data","source","library","logic","javascript","python","javascript-control","logic-library"].includes(input.kind)||!input.spec)throw Error("Provide project name, kind and specification.");
+ if(!input||typeof input.name!=="string"||!/^[a-z][a-z0-9-]{0,39}$/.test(input.name)||!["data","source","library","logic","javascript","python","javascript-control","logic-library","source-library"].includes(input.kind)||!input.spec)throw Error("Provide project name, kind and specification.");
  const {name,kind,spec}=input,title=input.title??name,theme=input.theme??"inferno";
  if(typeof title!=="string"||!title.trim()||title.length>80||!Object.hasOwn(themes,theme))throw Error("Invalid title or theme.");
- const r=kind==="data"?verifyData(spec):kind==="source"?verifyDataSource(spec):kind==="library"?verifyLibrary(spec):kind==="javascript"?verifyJavaScript(spec):kind==="python"?verifyPython(spec):kind==="javascript-control"?verifyControlJavaScript(spec):kind==="logic-library"?verifyLogicLibrary(spec):verifyLogic(spec);
- const module=kind==="logic-library"?r.module:["logic","python","javascript-control"].includes(kind)?runLogic.toString()+"\nconst program = "+JSON.stringify(r.program,null,2)+";\nexport function solve(...values){return runLogic(program,values);}\n":emitDataModule(r.program);
- const examples=r.tests.map(({values,expected})=>({values,expected})),fields=kind==="logic-library"?r.program.functions[r.program.entry].program.fields.map(name=>({name,type:"number"})):["logic","python","javascript-control"].includes(kind)?r.program.fields.map(name=>({name,type:"number"})):r.program.fields;
+ const r=kind==="data"?verifyData(spec):kind==="source"?verifyDataSource(spec):kind==="library"?verifyLibrary(spec):kind==="javascript"?verifyJavaScript(spec):kind==="python"?verifyPython(spec):kind==="javascript-control"?verifyControlJavaScript(spec):kind==="source-library"?verifySourceLibrary(spec):["logic-library","source-library"].includes(kind)?verifyLogicLibrary(spec):verifyLogic(spec);
+ const module=["logic-library","source-library"].includes(kind)?r.module:["logic","python","javascript-control"].includes(kind)?runLogic.toString()+"\nconst program = "+JSON.stringify(r.program,null,2)+";\nexport function solve(...values){return runLogic(program,values);}\n":emitDataModule(r.program);
+ const examples=r.tests.map(({values,expected})=>({values,expected})),fields=["logic-library","source-library"].includes(kind)?r.program.functions[r.program.entry].program.fields.map(name=>({name,type:"number"})):["logic","python","javascript-control"].includes(kind)?r.program.fields.map(name=>({name,type:"number"})):r.program.fields;
  const labels=input.labels??{};if(!labels||typeof labels!=="object"||Array.isArray(labels)||Object.keys(labels).some(k=>!fields.some(f=>f.name===k)||typeof labels[k]!=="string"||labels[k].length>80))throw Error("Invalid field labels.");
  const controls=fields.map((f,i)=>{
   const label=esc(Object.hasOwn(labels,f.name)?labels[f.name]:f.name),value=examples[0].values[i],id="field-"+i;
