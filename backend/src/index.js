@@ -1812,13 +1812,13 @@ export default { async queue(batch, env) {
     if((!message&&!hasImage)||message.length>4000)
       return json({error:"Message must be between 1 and 4000 characters, or contain one photo."},400,origin);
     const independentPrefix=/^\s*independent\s*:\s*/i;
-    const independent=body.engine==="independent"||independentPrefix.test(message);
+    const forgeIntent=/^\s*(?:applet|(?:make|create|build) (?:an? )?applet|compile\s+(?:wasm|stack)|(?:decompile|disassemble|reverse engineer)\s+(?:wasm|stack|javascript|typescript|jsx|tsx|json)|analyze source\s+(?:javascript|typescript|jsx|tsx|json))\s*:/i.test(message);\n    const independent=body.engine==="independent"||independentPrefix.test(message)||(companionMode==="owner"&&forgeIntent);
     if(independent){
       if(companionMode!=="owner")return json({error:"Independent Core preview requires verified Osiris mode."},403,origin);
       if(hasImage)return json({error:"Independent Core does not process photos."},400,origin);
       const question=message.replace(independentPrefix,"").trim();
       if(!question||question.length>3000)return json({error:"Independent question must contain 1–3000 characters."},400,origin);
-      let local;try{local=await independentAnswer(env,question);}catch{return json({error:"Independent Core could not read the local evidence."},503,origin);}
+      let local;try{local=await independentAnswer(env,question,user.id);}catch{return json({error:"Independent Core could not read the local evidence."},503,origin);}
       // Same conversation ownership checks and persisted message pair as the normal chat.
       const reply=local.answer,now=new Date().toISOString();
       if(conversationId){const own=await env.DB.prepare("SELECT id FROM chaos_conversations WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(conversationId,user.id).first();if(!own)return json({error:"Conversation not found."},404,origin);}
