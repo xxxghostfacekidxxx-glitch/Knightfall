@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v113";
+const CACHE_NAME = "knightfall-shell-v114";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -413,7 +413,6 @@ self.addEventListener("notificationclick", event => {
   const notificationId=notificationRecordId(event.notification.data?.notificationId);
   const wantsReply=event.action==="reply";
   event.waitUntil((async()=>{
-    await acknowledgeNotification(notificationId);
     if(wantsReply&&conversationId&&typeof event.reply==="string"&&event.reply.trim()){
       const body=event.reply.trim().slice(0,4000);
       try{
@@ -421,7 +420,12 @@ self.addEventListener("notificationclick", event => {
           method:"POST",credentials:"include",cache:"no-store",
           headers:{"content-type":"application/json"},body:JSON.stringify({body})
         });
-        if(sent.ok)return; // The server enforces membership and blocked-message checks.
+        const receipt=await sent.json().catch(()=>null);
+        if(sent.ok&&receipt&&typeof receipt==="object"&&!receipt.error){
+          await acknowledgeNotification(notificationId).catch(()=>{});
+          return;
+        }
+        console.warn("notification_reply_rejected",sent.status);
       }catch(error){console.warn("notification_reply_unavailable",String(error));}
       // Do not claim a failed inline reply was sent.
       try{
@@ -433,6 +437,7 @@ self.addEventListener("notificationclick", event => {
         });
       }catch(error){console.warn("notification_reply_feedback_unavailable",String(error));}
     }
+    if(!(wantsReply&&conversationId&&typeof event.reply==="string"&&event.reply.trim()))await acknowledgeNotification(notificationId).catch(()=>{});
     const destination=new URL(path,self.location.origin);
     if(wantsReply&&conversationId)destination.searchParams.set("reply","1");
     const target=destination.href;
