@@ -32,5 +32,5 @@ export function translateSourceLibrary(input){
 }
 export function verifySourceLibrary(input){
  const translated=translateSourceLibrary(input),r=verifyLogicLibrary({...translated,examples:input.examples});
- return {...r,translated,language:input.language,notice:r.notice+" Assign a helper call directly to a local; nested calls, globals and arbitrary runtime features are unsupported."};
+ return {...r,translated,language:input.language,notice:r.notice+" Nested helper calls are supported in numeric expressions, conditions and return values; globals and arbitrary runtime features are unsupported."};
 }
