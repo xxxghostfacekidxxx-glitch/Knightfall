@@ -40,5 +40,5 @@ export function createChaosInference({ai,mode="economy",message="",mood=""}){
   }
   throw last;
  }};
- return {ai:adapter,model:ENGINES[selected],metadata:()=>({runtime:"miss-chaos-core-v1",mode:mode==="adaptive"?"adaptive":"economy",route:selected,engine:actual,model:actual?ENGINES[actual]:null,fallback})};
+ return {ai:adapter,model:ENGINES[selected],metadata:()=>({runtime:"miss-chaos-core-v1",runtimeTitle:"Miss Chaos Core",inferenceOrigin:"hosted-provider",originalWeights:false,mode:mode==="adaptive"?"adaptive":"economy",route:selected,engine:actual,model:actual?ENGINES[actual]:null,fallback})};
 }

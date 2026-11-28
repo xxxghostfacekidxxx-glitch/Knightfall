@@ -26,3 +26,5 @@ test("stream returned unchanged; no replay after reader handed to caller",async(
  const r=createChaosInference({ai:{run:async()=>stream},mode:"adaptive",message:"write a story"});
  assert.equal(await r.ai.run(r.model,{stream:true}),stream);assert.equal(r.metadata().engine,"creative");
 });
+
+test("hosted inference metadata does not claim original weights",async()=>{const r=createChaosInference({ai:{run:async()=>({response:"ok"})}});await r.ai.run(r.model,{messages:[]});assert.equal(r.metadata().runtimeTitle,"Miss Chaos Core");assert.equal(r.metadata().inferenceOrigin,"hosted-provider");assert.equal(r.metadata().originalWeights,false);assert.equal(r.metadata().model,ENGINES.fast);});
