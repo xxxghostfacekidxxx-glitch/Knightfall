@@ -1,3 +1,4 @@
+import {parseDataSource,verifyDataSource} from "../backend/chaos-forge-data-source.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {createHash} from "node:crypto";
@@ -32,4 +33,14 @@ test("offline applet renders script-like text as data without breaking out of sc
  assert.equal(scripts.length,1);assert.equal(a.report.scriptHash,createHash("sha256").update(scripts[0][1]).digest("base64"));
  const dom={"field-0":{value:" x "},output:{textContent:""},run:{}};new Function("document",scripts[0][1])({getElementById:id=>dom[id]});
  dom.run.onclick();assert.equal(dom.output.textContent,p.examples[1].expected);
+});
+
+test("readable source compiles and decompiles with exact string punctuation handling",()=>{
+ const source='input text: text; let result = concat(")", text); return result;';
+ const examples=[{values:["a"],expected:")a"},{values:[""],expected:")"},{values:["z"],expected:")z"}];
+ const report=verifyDataSource({source,examples});assert.equal(report.tests.length,3);
+ assert.deepEqual(parseDataSource(report.reconstructed),parseDataSource(source));
+ assert.throws(()=>parseDataSource("input x: text; let a = fetch(x); return a;"));
+ assert.throws(()=>parseDataSource("input x: number; let a = lower(x); return a;"));
+ assert.throws(()=>parseDataSource("input x: text; return x; garbage"));
 });
