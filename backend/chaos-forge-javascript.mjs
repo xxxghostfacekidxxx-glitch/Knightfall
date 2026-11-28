@@ -29,11 +29,11 @@ export function translateJavaScript(input){
    const v=n.value,type=typeof v==="number"&&Number.isFinite(v)?"number":typeof v==="string"&&v.length<=8192?"text":typeof v==="boolean"?"boolean":null;
    if(!type||n.regex||n.bigint)fail(n,"Unsupported literal.");return {arg:v,type};
   }
-  if(n.type==="UnaryExpression"&&n.operator==="-"){const a=sub(n.argument);return emit("sub",[{arg:0,type:"number"},a],n);}
+  if(n.type==="UnaryExpression"&&["-","!"].includes(n.operator))return emit(n.operator==="-"?"negNumber":"notBoolean",[sub(n.argument)],n);
   if(n.type==="BinaryExpression"){
    const a=sub(n.left),b=sub(n.right);
-   const op=n.operator==="+"?(a.type==="text"&&b.type==="text"?"concat":"add"):({"-":"sub","*":"mul","/":"div",">":"gt","===":"eq"})[n.operator];
-   if(!op)fail(n,"Unsupported binary operator: "+n.operator);return emit(op,[a,b],n);
+   const op=n.operator==="+"?(a.type==="text"&&b.type==="text"?"concat":"add"):["===","!=="].includes(n.operator)?({text:"eq",number:"eqNumber",boolean:"eqBoolean"})[a.type]:({"-":"sub","*":"mul","/":"div",">":"gt","<":"lt","<=":"le",">=":"ge"})[n.operator];
+   if(!op)fail(n,"Unsupported binary operator: "+n.operator);const result=emit(op,[a,b],n);return n.operator==="!=="?emit("notBoolean",[result],n):result;
   }
   if(n.type==="MemberExpression"&&!n.computed&&!n.optional&&n.property.name==="length"){const a=sub(n.object),op={text:"length",texts:"countTexts",numbers:"countNumbers"}[a.type];return emit(op,[a],n);}
   if(n.type==="CallExpression"&&!n.optional&&n.callee.type==="MemberExpression"&&!n.callee.computed&&!n.callee.optional){
