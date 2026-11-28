@@ -24,7 +24,7 @@ const HOLDOUT=[
 export const COURSE_VERSION="order100-code-v1";
 function examples(f,seed,heldout=false){
  let n=(seed+1)*7919;const rand=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n%23-11;};
- const inputs=heldout?[[-11,0,9,-7,4,4],[],[0,0],[6,-6,-6,0,3],[1,3,5],[-8,-2],Array.from({length:9},rand)]:[[],[0,0],[-3,2,0,2,5,-4],[1,3,-5,1],[-2,-2,4,6],Array.from({length:7},rand),Array.from({length:8},rand)];
+ const inputs=heldout?[[-11,0,9,-7,4,4],[],[0,0],[6,-6,-6,0,3],[1,3,5],[-8,-2],Array.from({length:9},rand)]:[[],[0,0],[-3,2,0,2,5,-4],[1,3,-5,1],[-2,-2,4,6],[-9,-4,-4],Array.from({length:7},rand),Array.from({length:8},rand)];
  return inputs.map(input=>({input,output:f.oracle(input)}));
 }
 const agentKey=i=>"mc-"+String(i+1).padStart(2,"0");
