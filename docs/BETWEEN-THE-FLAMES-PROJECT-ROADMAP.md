@@ -177,3 +177,5 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 - Original curriculum tutor: deterministic BM25-style retrieval over 72 authored lessons with evidence IDs and abstention for unsupported terms. Independent of external AI and third-party libraries. Explicit Osiris-only endpoint and console; no replacement of public chat, no account-scanning functions. Test/deployment pending.
 
 - Context 003 original eight-position language model: 120 authored technical sentences, separate validation and one-time initial evaluation; transfer previous two-position weights, train 66 simulated clients, streaming aggregation. Candidate gate requires lower known-token loss and nondecreasing known-token accuracy. Initial test not used for daily selection. No external model or paid compute. Checkpoint and actual initial metrics in repository; serving remains unchanged.
+
+- Context 003 added as explicit owner console checkpoint option, API default unchanged. Curriculum tutor expanded to 120 authored lessons and now requires every meaningful query term to occur in the same retrieved lesson. No primary chat replacement; tests and deployment pending.
