@@ -21,3 +21,6 @@
 .notice-dismiss{background:transparent;font:inherit;cursor:pointer}
 .notice-dismiss:focus-visible,.notice-link:focus-visible{outline:2px solid var(--kf-accent,#e8a4b7);outline-offset:3px}
 @media(max-width:650px){.notice-actions{width:100%}.notice-actions button{flex:1}}
+
+/* Inline replies inherit the active realm palette. */
+.notice-reply{display:grid;gap:.5rem;margin-top:.75rem;min-width:0;cursor:default}.notice-reply label{display:grid;gap:.3rem;min-width:0}.notice-reply textarea{box-sizing:border-box;width:100%;min-width:0;resize:vertical;font:inherit;font-size:16px;color:inherit;background:transparent;border:1px solid currentColor;border-radius:.6rem;padding:.65rem}.notice-reply button{justify-self:start;min-height:44px;font:inherit;color:inherit;background:transparent;border:1px solid currentColor;border-radius:.6rem;padding:.5rem .85rem}.notice-reply button:disabled{opacity:.55}.notice-reply [role=status]{font-size:.85rem;overflow-wrap:anywhere}
