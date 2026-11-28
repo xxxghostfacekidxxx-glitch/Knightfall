@@ -77,6 +77,10 @@ export function synthesize(examples,{maxSteps=3,budget=512,prior=emptyPrior()}={
  if(!Number.isInteger(budget)||budget<1||budget>4096)throw Error("Search budget must be 1–4096.");
  const space=candidates(maxSteps,kind,prior),matches=[];let checked=0;
  for(const p of space.slice(0,budget)){checked++;try{if(rows.every(e=>equal(runProgram(p,e.input),e.output)))matches.push(p);}catch{}}
- const first=matches[0];return {status:!first?"no-match":matches.length>1?"ambiguous":"example-match",program:first||null,source:first?emitProgram(first):null,alternatives:matches.slice(1,6),matchingPrograms:matches.length,checked,total:space.length,exhaustive:checked===space.length,externalInference:false,note:"Matches provided examples only; unseen inputs require testing. No source was executed or deployed."};
+ const first=matches[0];
+ const probes=[[],[0],[0,0],[-5,-2],[-3,-3,2,0,1],[5,4,3,2,1],[10000,-10000,0],[1,1,2,2,3]];
+ let counterexample=null;
+ if(first&&matches.length>1){outer:for(const input of probes){let baseline;try{baseline=runProgram(first,input);}catch{continue;}for(const alternative of matches.slice(1,32)){try{const output=runProgram(alternative,input);if(!equal(baseline,output)){counterexample={input,first:{program:first,output:baseline},alternative:{program:alternative,output}};break outer;}}catch{}}}}
+ return {counterexample,status:!first?"no-match":matches.length>1?"ambiguous":"example-match",program:first||null,source:first?emitProgram(first):null,alternatives:matches.slice(1,6),matchingPrograms:matches.length,checked,total:space.length,exhaustive:checked===space.length,externalInference:false,note:"Matches provided examples only; a bounded search cannot prove uniqueness or unsatisfiability. A counterexample distinguishes candidate behavior, not the intended answer. No source was executed or deployed."};
 }
 export function verifyProgram(program,examples){const rows=validateExamples(examples);return rows.map(e=>{try{const actual=runProgram(program,e.input);return {expected:e.output,actual,passed:equal(actual,e.output)};}catch{return {expected:e.output,actual:null,passed:false};}});}
