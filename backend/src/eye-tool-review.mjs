@@ -1,3 +1,4 @@
+import {handleBuildInsight} from "./build-insight.mjs";
 import {parseRepository,inspectRepository,inspectProjectDetails,readAlienCatalog} from "./alien-eyes-core.mjs";
 import {RESEARCH_FLEET} from "./chaos-knowledge-fleet.mjs";
 import {order66Format} from "../chaos-order66-format.mjs";
@@ -17,6 +18,11 @@ export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=
  try{
  const partner=await env.DB.prepare("SELECT invited_by FROM ai_handoff_partner WHERE slot=1").first();
  if(!canReviewTools(user,partner))return respond({error:"Verified Osiris owner access required."},403);
+ if(url.pathname===prefix+"/build-insight"||url.pathname.startsWith(prefix+"/build-insight/")){
+  const disabled=normalizeDecision(await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(key("alien-eyes")).first()).decision==="scrapped";
+  if(disabled)return respond({error:"Alien Eyes is disabled."},403);
+  return handleBuildInsight(request,env,url,user,respond,{fetcher});
+ }
  const lessonMatch=url.pathname.match(/^\/api\/god\/eye\/tools\/learning\/(mc-\d{2,3})$/);
  if(lessonMatch&&request.method==="GET"){if(!RESEARCH_FLEET.some(a=>a.key===lessonMatch[1]))return respond({error:"Unknown research agent."},404);return respond({agent:lessonMatch[1],evidence:await agentEvidence(env,lessonMatch[1]),sharedReviewed:await sharedReviewedKnowledge(env),softwareReferences:await agentSoftwareReferences(env,lessonMatch[1])});}
  if(url.pathname===prefix+"/learning"&&request.method==="GET"){
