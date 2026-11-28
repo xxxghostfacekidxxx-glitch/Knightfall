@@ -11,7 +11,8 @@ const grammar={
  boolean:[]
 };
 const probes={text:[" A b A ","Hello WORLD","", "2.5","one two one"],texts:[["b","a","b"],[],["a","b"],["","x"]],numbers:[[3,-2,3,1],[],[-1,-2],[4,1,2]],number:[0,-2,3.5],boolean:[true,false],record:[{b:2,a:"x"},{}]};
-const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const comparable=v=>v&&typeof v==="object"&&!Array.isArray(v)?JSON.stringify(Object.keys(v).sort().map(k=>[k,v[k]])):JSON.stringify(v);
+const eq=(a,b)=>comparable(a)===comparable(b);
 export function synthesizeData(input){
  if(!input||!Object.hasOwn(grammar,input.inputType)||!Object.hasOwn(grammar,input.outputType)||!Array.isArray(input.examples)||input.examples.length<3||input.examples.length>8||!Array.isArray(input.holdout??[])||(input.holdout??[]).length>8)throw Error("Provide input/output types, 3–8 examples and optional independent holdout.");
  const examples=input.examples,holdout=input.holdout??[],all=[...examples,...holdout];
@@ -23,7 +24,8 @@ export function synthesizeData(input){
  const fields=[{name:"value",type:input.inputType}];
  // Validate input types even for a no-match search.
  const identity=compileData({fields,steps:[],result:"value"});
- for(const e of all)runData(identity,e.values);
+ const outputIdentity=compileData({fields:[{name:"value",type:input.outputType}],steps:[],result:"value"});
+ for(const e of all){runData(identity,e.values);runData(outputIdentity,[e.expected]);}
  let checked=0,pruned=0,queue=[{type:input.inputType,steps:[],last:"value"}],matches=[],fitCount=0;
  while(queue.length&&checked<budget){
   const node=queue.shift(),spec={fields,steps:node.steps,result:node.last};
@@ -36,5 +38,5 @@ export function synthesizeData(input){
  const chosen=matches[0],alternate=matches.slice(1,24);let counterexample=null;
  if(chosen)for(const v of probes[input.inputType]){if(all.some(e=>eq(e.values,[v])))continue;let expected;try{expected=runData(chosen.program,[v]);}catch{continue;}for(const a of alternate){try{const other=runData(a.program,[v]);if(!eq(expected,other)){counterexample={values:[v],candidate:expected,alternative:other};break;}}catch{}}if(counterexample)break;}
  const exhausted=queue.length===0;
- return {checked,pruned,fitCount,matching:matches.length,exhausted,holdout:holdout.length,status:!chosen?"no-match":matches.length>1?"ambiguous":exhausted?"single-match-in-grammar":"budget-limited-match",source:chosen?emitDataSource(chosen.program):null,program:chosen?.program??null,counterexample,externalInference:false,notice:"Finite unary grammar only. Matching examples are not a proof of general correctness. Ambiguous or budget-limited candidates are not approved builds."};
+ return {checked,pruned,fitCount,matching:matches.length,exhausted,holdout:holdout.length,status:!chosen?(exhausted?"no-match-in-grammar":"no-match-in-budget"):matches.length>1?"ambiguous":exhausted?"single-match-in-grammar":"budget-limited-match",source:chosen?emitDataSource(chosen.program):null,program:chosen?.program??null,counterexample,externalInference:false,notice:"Finite unary grammar only. Matching examples are not a proof of general correctness. Ambiguous or budget-limited candidates are not approved builds."};
 }
