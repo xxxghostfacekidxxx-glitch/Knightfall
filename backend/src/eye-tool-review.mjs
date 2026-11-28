@@ -28,7 +28,11 @@ export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=
   return handleBuildInsight(request,env,url,user,respond,{fetcher});
  }
  const downloadMatch=url.pathname.match(/^\/api\/god\/eye\/tools\/forge-download\/([a-f0-9-]{36})$/);
- if(downloadMatch&&request.method==="GET")return await forgeDownload(env,user.id,downloadMatch[1])||respond({error:"Artifact expired or not found."},404);
+ if(downloadMatch&&request.method==="GET"){
+  const file=await forgeDownload(env,user.id,downloadMatch[1]);if(!file)return respond({error:"Artifact expired or not found."},404);
+  const origin=request.headers.get("origin");if(["https://ash-fall.com","https://www.ash-fall.com"].includes(origin)){file.headers.set("Access-Control-Allow-Origin",origin);file.headers.set("Access-Control-Allow-Credentials","true");file.headers.set("Vary","Origin");file.headers.set("Access-Control-Expose-Headers","Content-Disposition");}
+  return file;
+ }
  if(url.pathname===prefix+"/forge"&&request.method==="GET")return respond({artifacts:await listForgeArtifacts(env,user.id)});
  if((url.pathname===prefix+"/forge"&&request.method==="POST")||(downloadMatch&&request.method==="DELETE")){
   if(!["https://ash-fall.com","https://www.ash-fall.com"].includes(request.headers.get("origin")))return respond({error:"Same-site request required."},403);
