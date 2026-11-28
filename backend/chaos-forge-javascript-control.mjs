@@ -3,7 +3,7 @@ import {parse} from "acorn";
 import {verifyLogic,runLogic} from "./chaos-forge-logic.mjs";
 const nameOK=n=>typeof n==="string"&&/^[a-z][a-z0-9_]{0,23}$/.test(n)&&!["abs","sqrt","ceil","floor","trunc","min","max"].includes(n);
 const comparisons={"<":"lt","<=":"le","===":"eq","!==":"ne",">=":"ge",">":"gt"};
-export function translateControlJavaScript(input){
+export function translateControlJavaScript(input,{earlier=null}={}){
  if(!input||typeof input.source!=="string"||input.source.length>10000||!Array.isArray(input.fields)||input.fields.length<1||input.fields.length>12)throw Error("Provide numeric fields and up to 10,000 source characters.");
  const ast=parse(input.source,{ecmaVersion:"latest",sourceType:"module",locations:true}),top=ast.body[0],fn=top?.type==="ExportNamedDeclaration"||top?.type==="ExportDefaultDeclaration"?top.declaration:top;
  if(ast.body.length!==1||fn?.type!=="FunctionDeclaration"||fn.async||fn.generator||fn.params.length!==input.fields.length||fn.params.some((p,i)=>p.type!=="Identifier"||p.name!==input.fields[i])||input.fields.some(n=>!nameOK(n))||new Set(input.fields).size!==input.fields.length)throw Error("Exactly one synchronous numeric function with matching parameters is required.");
@@ -19,16 +19,17 @@ export function translateControlJavaScript(input){
   if(n.type==="BinaryExpression"&&["+","-","*","/","%","**"].includes(n.operator))return "("+sub(n.left)+(n.operator==="**"?"^":n.operator)+sub(n.right)+")";
   fail(n,"Unsupported numeric expression: "+n.type);
  }
+ const call=(n,name)=>{if(n?.type!=="CallExpression"||n.optional||n.callee.type!=="Identifier"||!(earlier instanceof Map)||!earlier.has(n.callee.name))return null;const target=earlier.get(n.callee.name);if(n.arguments.length!==target)fail(n,"Wrong function argument count");return {op:"call",name,call:n.callee.name,args:n.arguments.map(a=>expr(a))};};
  const assign=(n,name,value)=>{if(!active.has(name)||!locals.includes(name)||counters.has(name))fail(n,"Only declared non-counter locals may be assigned");return {op:"set",name,expr:value};};
  function block(statements,depth=0,topLevel=false){
   if(depth>5||!Array.isArray(statements)||statements.length>64)throw Error("Block limit");
   const out=[];
   for(const n of statements){
    if(n.type==="VariableDeclaration"&&topLevel&&["let","var"].includes(n.kind)){
-    for(const d of n.declarations){if(d.id.type!=="Identifier"||!d.init)fail(d,"Initialized numeric local required");const value=expr(d.init);declare(d,d.id.name);out.push({op:"set",name:d.id.name,expr:value});}
+    for(const d of n.declarations){if(d.id.type!=="Identifier"||!d.init)fail(d,"Initialized numeric local required");const invocation=call(d.init,d.id.name),value=invocation?null:expr(d.init);declare(d,d.id.name);out.push(invocation||{op:"set",name:d.id.name,expr:value});}
    }else if(n.type==="ExpressionStatement"&&n.expression.type==="AssignmentExpression"){
     const a=n.expression;if(a.left.type!=="Identifier"||!["=","+=","-=","*=","/="].includes(a.operator))fail(a,"Unsupported assignment");
-    const name=a.left.name,value=expr(a.right);out.push(assign(a,name,a.operator==="="?value:"("+name+a.operator[0]+value+")"));
+    const name=a.left.name,invocation=a.operator==="="?call(a.right,name):null;if(invocation){assign(a,name,"0");out.push(invocation);}else{const value=expr(a.right);out.push(assign(a,name,a.operator==="="?value:"("+name+a.operator[0]+value+")"));}
    }else if(n.type==="IfStatement"){
     const t=n.test;if(t.type!=="BinaryExpression"||!Object.hasOwn(comparisons,t.operator)||n.consequent.type!=="BlockStatement"||n.alternate&&n.alternate.type!=="BlockStatement")fail(n,"Use numeric comparison and braced if/else blocks");
     out.push({op:"if",compare:comparisons[t.operator],left:expr(t.left),right:expr(t.right),then:block(n.consequent.body,depth+1),else:n.alternate?block(n.alternate.body,depth+1):[]});
