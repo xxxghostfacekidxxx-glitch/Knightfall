@@ -10,12 +10,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "philosophy",
       "ethics"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-02",
@@ -26,12 +21,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "ancient Egyptian civilization",
       "archaeology"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-03",
@@ -42,12 +32,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "world history",
       "oral history"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-04",
@@ -58,12 +43,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "historical linguistics",
       "writing systems"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-05",
@@ -74,12 +54,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "comparative mythology",
       "religious studies"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-06",
@@ -90,12 +65,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "manuscript studies",
       "book history"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-07",
@@ -106,12 +76,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "geography",
       "cartography"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-08",
@@ -122,12 +87,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "lexicography",
       "translation studies"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-09",
@@ -138,12 +98,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "historical chronology",
       "history of science"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-10",
@@ -154,12 +109,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "digital preservation",
       "library science"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-11",
@@ -170,12 +120,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "public domain literature",
       "bibliography"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-12",
@@ -186,12 +131,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "astronomy",
       "astrophysics"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-13",
@@ -202,12 +142,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "biology",
       "genetics"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-14",
@@ -218,12 +153,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "chemistry",
       "materials science"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-15",
@@ -234,12 +164,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "mathematics",
       "linear algebra"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-16",
@@ -250,12 +175,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "thermodynamics",
       "physics"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-17",
@@ -266,12 +186,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "ecology",
       "climate science"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-18",
@@ -282,12 +197,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "electrical engineering",
       "electronics"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-19",
@@ -298,12 +208,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "mechanical engineering",
       "robotics"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-20",
@@ -314,12 +219,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "cognitive science",
       "neuroscience"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-21",
@@ -330,12 +230,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "optics",
       "computer graphics"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-22",
@@ -346,12 +241,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "statistics",
       "scientific method"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-23",
@@ -890,12 +780,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "source criticism",
       "fact checking"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-57",
@@ -906,12 +791,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "bibliographic database",
       "citation analysis"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-58",
@@ -922,12 +802,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "open source licensing",
       "public domain"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-59",
@@ -938,12 +813,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "data provenance",
       "research integrity"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-60",
@@ -954,12 +824,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "data privacy",
       "privacy engineering"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-61",
@@ -970,12 +835,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "software supply chain security",
       "software verification"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-62",
@@ -986,12 +846,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "benchmarking",
       "reproducible research"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-63",
@@ -1002,12 +857,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "critical thinking",
       "logical fallacy"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-64",
@@ -1018,12 +868,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "knowledge organization",
       "metadata standards"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-65",
@@ -1034,12 +879,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "algorithmic fairness",
       "evaluation methodology"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-66",
@@ -1050,12 +890,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "version control",
       "digital curation"
     ],
-    "sources": [
-      "wikidata",
-      "wikidata",
-      "wikidata",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-67",
@@ -1697,7 +1532,7 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
  let softwareBroadcasts=0;try{softwareBroadcasts=await shareSoftwareReferences(env);}catch{console.warn("order66_software_share_unavailable");}
  return {completed,failed,peerLessons,peerFailures,softwareBroadcasts,uniqueDiscoveries,returnedRecords,duplicates:returnedRecords-uniqueDiscoveries};
 }
-export async function knowledgeStatus(env){const active=await enabled(env);const totals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_candidates GROUP BY review_status").all()).results||[];const latest=(await env.DB.prepare("SELECT r.agent_key,r.division,r.query,r.status,r.found,r.started_at,d.source_requested,d.source_used,d.primary_failure,d.error_code FROM chaos_knowledge_runs r LEFT JOIN chaos_knowledge_run_diagnostics d ON d.hour=r.hour AND d.agent_key=r.agent_key ORDER BY r.hour DESC,r.agent_key LIMIT 32").all()).results||[];const candidates=(await env.DB.prepare("SELECT entity_id,title,description,source_url,license,agent_key,retrieved_at FROM chaos_knowledge_candidates WHERE review_status='pending' ORDER BY retrieved_at DESC,entity_id LIMIT 30").all()).results||[];const tools=(await env.DB.prepare("SELECT tool_id,source,title,source_url,declared_license,version_hint,agent_key,review_status FROM chaos_knowledge_tools ORDER BY retrieved_at DESC,tool_id LIMIT 30").all()).results||[];const toolTotals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_tools GROUP BY review_status").all()).results||[];const lessons=await env.DB.prepare("SELECT count(*) AS count FROM chaos_knowledge_lessons").first();return {active,roster:RESEARCH_FLEET.length,divisions:RESEARCH_FLEET,totals,latest,candidates,tools,toolTotals,lessons:lessons?.count||0,cron:KNOWLEDGE_CRON,slotMinutes:5,batchSize:RESEARCH_BATCH_SIZE,training:"five-minute research; reviewed knowledge available to owner; no automatic weight update"};}
+export async function knowledgeStatus(env){const active=await enabled(env);const totals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_candidates GROUP BY review_status").all()).results||[];const latest=(await env.DB.prepare("SELECT r.agent_key,r.division,r.query,r.status,r.found,r.started_at,d.source_requested,d.source_used,d.primary_failure,d.error_code FROM chaos_knowledge_runs r LEFT JOIN chaos_knowledge_run_diagnostics d ON d.hour=r.hour AND d.agent_key=r.agent_key ORDER BY r.hour DESC,r.agent_key LIMIT 32").all()).results||[];const candidates=(await env.DB.prepare("SELECT entity_id,title,description,source_url,license,agent_key,retrieved_at FROM chaos_knowledge_candidates WHERE review_status='pending' ORDER BY retrieved_at DESC,entity_id LIMIT 30").all()).results||[];const tools=(await env.DB.prepare("SELECT tool_id,source,title,source_url,declared_license,version_hint,agent_key,review_status FROM chaos_knowledge_tools ORDER BY retrieved_at DESC,tool_id LIMIT 30").all()).results||[];const toolTotals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_tools GROUP BY review_status").all()).results||[];const lessons=await env.DB.prepare("SELECT count(*) AS count FROM chaos_knowledge_lessons").first();return {active,roster:RESEARCH_FLEET.length,divisions:RESEARCH_FLEET,totals,latest,candidates,tools,toolTotals,lessons:lessons?.count||0,cron:KNOWLEDGE_CRON,slotMinutes:5,batchSize:RESEARCH_BATCH_SIZE,training:"five-minute coding research; every specialist rotates across public software catalogs; reviewed knowledge available to owner; no automatic weight update"};}
 export async function reviewKnowledge(env,id,decision,actor){if(!/^Q[1-9][0-9]{0,14}$/.test(id)||!["approved","rejected"].includes(decision))throw Error("invalid review");const r=await env.DB.prepare("UPDATE chaos_knowledge_candidates SET review_status=?,reviewed_by=?,reviewed_at=? WHERE entity_id=? AND review_status='pending'").bind(decision,String(actor),new Date().toISOString(),id).run();return r.meta?.changes===1;}
 export async function exportKnowledge(env){const rows=(await env.DB.prepare("SELECT entity_id,title,description,source_url,license,reviewed_at FROM chaos_knowledge_candidates WHERE review_status='approved' ORDER BY entity_id LIMIT 10000").all()).results||[];return {schema:"miss-chaos-reviewed-cc0-v1",rows};}
 
