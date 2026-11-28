@@ -7,6 +7,7 @@ export function normalizeResearchUpload(payload,now=Date.now()){
  const current=Math.floor(now/3600000);if(payload.hour!==current&&!(payload.hour===current-1&&now-current*3600000<600000))throw Error("Stale slot");
  const expected=assignments(payload.hour*3600000);if(!Array.isArray(payload.results)||payload.results.length!==expected.length)throw Error("Invalid assignments");
  const results=new Map();for(const a of expected){const x=payload.results.find(x=>x?.key===a.key);if(!x||!Array.isArray(x.records)||x.records.length>3||!(x.source===a.source||(a.source==="wikidata"&&x.source==="npm")))throw Error("Invalid source");
+ if(x.query!==undefined&&x.query!==a.query)throw Error("Assignment query mismatch");
  const primaryFailure=failureValue(x.primaryFailure),error=failureValue(x.error);let records=[];
  if(x.source==="wikidata")records=normalizeCandidates({search:x.records.map(y=>({id:y?.id,label:y?.title,description:y?.description}))});
  else if(x.source==="github")records=toolCandidates("github",{items:x.records.map(y=>({full_name:y?.title,private:false,license:{spdx_id:y?.license},default_branch:y?.version}))});
