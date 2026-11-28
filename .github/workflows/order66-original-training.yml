@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - 'training/order66-peer-core.mjs'
+      - 'training/miss-chaos-local*'
+      - 'training/checkpoints/miss-chaos-local*'
+      - 'scripts/train-miss-chaos-local.mjs'
       - 'training/checkpoints/order66-peer-002.json'
       - 'scripts/train-order66-continued.mjs'
       - '.github/workflows/order66-original-training.yml'
@@ -45,6 +48,27 @@ jobs:
         with:
           path: order66-prior.json
           key: order66-peer-v2-${{ github.run_id }}
+      - name: Restore previous independent language candidate
+        uses: actions/cache/restore@v4
+        with:
+          path: miss-chaos-local-prior.json
+          key: miss-chaos-local-v1-${{ github.run_id }}
+          restore-keys: miss-chaos-local-v1-
+      - name: Continue original language model training
+        run: |
+          if [ ! -f miss-chaos-local-prior.json ]; then cp training/checkpoints/miss-chaos-local-001.json miss-chaos-local-prior.json; fi
+          seed=$(( 50000000 + ${{ github.run_number }} * 100 ))
+          if node scripts/train-miss-chaos-local.mjs candidate/local-lm.json "$seed" miss-chaos-local-prior.json; then
+            cp candidate/local-lm.json miss-chaos-local-prior.json
+          else
+            echo "Candidate not promoted; previous model retained."
+            cp miss-chaos-local-prior.json candidate/local-lm.json
+          fi
+      - name: Preserve evaluated language candidate
+        uses: actions/cache/save@v4
+        with:
+          path: miss-chaos-local-prior.json
+          key: miss-chaos-local-v1-${{ github.run_id }}
       - uses: actions/upload-artifact@v4
         with:
           name: order66-research-candidates
