@@ -5,7 +5,13 @@ on:
     paths:
       - 'backend/src/eye-tool-review.mjs'
       - 'backend/src/alien-eyes-core.mjs'
-      - 'scripts/eye-tool-review.test.mjs scripts/order66-software-sharing.test.mjs'
+      - 'scripts/eye-tool-review.test.mjs'
+      - 'scripts/order66-software-sharing.test.mjs'
+      - 'training/chaos-core-*'
+      - 'training/checkpoints/chaos-core-*'
+      - 'scripts/chaos-core-attention.test.mjs'
+      - 'scripts/train-chaos-core-004.mjs'
+      - 'scripts/order100-council.test.mjs'
       - 'public/alien-eyes*'
       - 'public/account-recovery*'
       - 'scripts/account-recovery.test.mjs'
@@ -207,4 +213,15 @@ jobs:
           node --check public/miss-chaos-model-lab.mjs
           node --test scripts/eye-tool-review.test.mjs scripts/miss-chaos-local-model.test.mjs scripts/miss-chaos-specialist.test.mjs scripts/miss-chaos-context.test.mjs scripts/miss-chaos-original-tutor.test.mjs scripts/alien-eyes.test.mjs scripts/alien-eyes-workspace.test.mjs scripts/alien-eyes-report.test.mjs scripts/account-recovery.test.mjs scripts/miss-chaos-native-v3.test.mjs scripts/mad-court.test.mjs scripts/order66-code-lab.test.mjs
           node scripts/audit-miss-chaos-v3.mjs
+  chaos-core-attention:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate original attention checkpoint and analytic gradients
+        run: node --test scripts/chaos-core-attention.test.mjs
+
 

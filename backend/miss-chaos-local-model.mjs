@@ -1,3 +1,5 @@
+import attention from "../training/checkpoints/chaos-core-004.json" with {type:"json"};
+import {generate as generateAttention} from "../training/chaos-core-attention.mjs";
 import context from "../training/checkpoints/miss-chaos-context-003.json" with {type:"json"};
 import {generateContext} from "../training/miss-chaos-context-lm.mjs";
 import {generate} from "../training/miss-chaos-local-lm.mjs";
@@ -9,7 +11,8 @@ export const CHAOS_MODEL_CANDIDATE="chaos-core-003";
 const editions=Object.freeze([
  Object.freeze({id:"chaos-core-001",checkpoint:"miss-chaos-local-001",title:"Chaos Core 001",description:"Original two-token neural language model.",parameters:4214}),
  Object.freeze({id:"chaos-core-002",checkpoint:"miss-chaos-specialist-002",title:"Chaos Core 002",description:"Specialist software-learning model.",parameters:16954}),
- Object.freeze({id:CHAOS_MODEL_CANDIDATE,checkpoint:"miss-chaos-context-003",title:"Chaos Core 003",description:"Eight-token original positional model; current independent research candidate.",parameters:72065})
+ Object.freeze({id:CHAOS_MODEL_CANDIDATE,checkpoint:"miss-chaos-context-003",title:"Chaos Core 003",description:"Eight-token original positional model; current independent research candidate.",parameters:72065}),
+ Object.freeze({id:"chaos-core-004",checkpoint:"chaos-core-004",title:"Chaos Core 004",description:"Original 32-token causal attention research checkpoint. Experimental; sampled answers remain unreliable.",parameters:28981})
 ]);
 export function chaosModelCatalog(){return {family:CHAOS_MODEL_FAMILY,recommendedCandidate:CHAOS_MODEL_CANDIDATE,productionReplacement:false,externalInference:false,models:editions.map(e=>({...e,status:"experimental",productionReady:false}))};}
 export function resolveChaosModel(id){const edition=editions.find(e=>e.id===id||e.checkpoint===id);if(!edition)throw Error("Unknown model");return edition;}
@@ -17,6 +20,6 @@ export function localModelReply(prompt,seed=66,model="miss-chaos-local-001"){
  if(typeof prompt!=="string"||prompt.length>200)throw Error("Prompt must be at most 200 characters");
  if(!Number.isSafeInteger(seed)||seed<0||seed>4294967295)throw Error("Invalid seed");
  const edition=resolveChaosModel(model),legacy=edition.checkpoint;
- const selected=legacy==="miss-chaos-context-003"?context:legacy==="miss-chaos-specialist-002"?specialist:checkpoint;
- return {text:legacy==="miss-chaos-context-003"?generateContext(selected,prompt,seed):generate(selected,prompt,seed),model:legacy,modelId:edition.id,modelTitle:edition.title,modelFamily:CHAOS_MODEL_FAMILY,productionReady:false,architecture:selected.architecture,metrics:selected.metrics,experimental:true,externalInference:false};
+ const selected=legacy==="chaos-core-004"?attention:legacy==="miss-chaos-context-003"?context:legacy==="miss-chaos-specialist-002"?specialist:checkpoint;
+ return {text:legacy==="chaos-core-004"?generateAttention(selected,prompt,seed):legacy==="miss-chaos-context-003"?generateContext(selected,prompt,seed):generate(selected,prompt,seed),model:legacy,modelId:edition.id,modelTitle:edition.title,modelFamily:CHAOS_MODEL_FAMILY,productionReady:false,architecture:selected.architecture,metrics:selected.metrics,experimental:true,externalInference:false};
 }
