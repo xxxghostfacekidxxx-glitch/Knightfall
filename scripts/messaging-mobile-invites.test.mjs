@@ -81,7 +81,8 @@ test("floating conversation heads can be moved and chat windows resized",()=>{
  assert.match(bubbles,/grip\.addEventListener\("pointermove"/);
  assert.match(bubbles,/grip\.addEventListener\("keydown"/);
  assert.match(bubbles,/localStorage\.setItem\(layoutKey/);
- assert.match(bubbles,/visualViewport\?\.addEventListener\("resize",fitDock/);
+ assert.match(bubbles,/visualViewport\?\.addEventListener\("resize",scheduleViewportFit/);
+ assert.match(bubbles,/requestAnimationFrame/);
  assert.match(bubbleCss,/#kf-chat-heads\.kf-chat-positioned/);
  assert.match(bubbleCss,/#kf-chat-heads #kf-chat-resize/);
  assert.match(bubbleCss,/touch-action:none/);

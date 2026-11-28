@@ -33,16 +33,20 @@ function noticeDestination(n){
 }
 let showingHistory=false,loadVersion=0,activeReplies=0,refreshPending=false;
 const replyDrafts=new Map();
+const replyConversationLocks=new Set();
+function replyBusy(){return activeReplies>0||Boolean(document.activeElement?.matches?.(".notice-reply textarea"));}
+function flushReplyRefresh(){if(refreshPending&&!replyBusy()){refreshPending=false;void load();}}
 const emptyLabel=()=>showingHistory?"No alert history to display.":"All caught up. The demons have stopped ringing the doorbell.";
 function refreshEmpty(){
  if(!root.querySelector("[data-notice]"))root.innerHTML='<p class="empty">'+esc(emptyLabel())+'</p>';
 }
 async function load(){
- if(activeReplies||root.contains(document.activeElement)&&document.activeElement.matches("textarea")){refreshPending=true;return;}
+ if(replyBusy()){refreshPending=true;return;}
  const version=++loadVersion;
  try{
   const d=await api("/api/notifications?limit=100"+(showingHistory?"":"&unread=true"));
   if(version!==loadVersion)return;
+  if(replyBusy()){refreshPending=true;return;}
   root.innerHTML=(d.notifications||[]).map(n=>{
    const destination=noticeDestination(n),unread=!n.read_at;
    const conversationId=n.kind==="message"&&n.target_type==="conversation"&&Number.isSafeInteger(Number(n.target_id))&&Number(n.target_id)>0?Number(n.target_id):null;
@@ -88,17 +92,20 @@ async function load(){
  }catch(error){if(version===loadVersion)status.textContent=error.message;}
 }
 root.addEventListener("input",event=>{const form=event.target.closest(".notice-reply");if(form)replyDrafts.set(form.dataset.conversation,event.target.value);});
-root.addEventListener("focusout",()=>{if(refreshPending)setTimeout(()=>{if(!activeReplies){refreshPending=false;void load();}},0);});
+root.addEventListener("focusout",()=>{if(refreshPending)setTimeout(flushReplyRefresh,0);});
 root.addEventListener("submit",async event=>{
  const form=event.target.closest(".notice-reply");if(!form)return;
  event.preventDefault();const field=form.querySelector("textarea"),button=form.querySelector("button"),feedback=form.querySelector("[role=status]"),body=field.value.trim();
  if(!body||button.disabled)return;
+ const conversation=form.dataset.conversation;
+ if(replyConversationLocks.has(conversation)){feedback.textContent="A reply to this conversation is already sending.";return;}
+ replyConversationLocks.add(conversation);
  activeReplies++;button.disabled=true;field.readOnly=true;feedback.textContent="Sending…";
  try{
   const path="/api/messages/conversations/"+form.dataset.conversation;
   const receipt=window.ChaosphereSend?await window.ChaosphereSend.send(api,path,{body}):await api(path,{method:"POST",body:JSON.stringify({body})});
   if(!receipt||!Number.isSafeInteger(Number(receipt.id))||Number(receipt.id)<1||receipt.error)throw Error("Server did not confirm delivery.");
-  replyDrafts.delete(form.dataset.conversation);field.value="";feedback.textContent="Reply sent.";
+  replyDrafts.delete(conversation);for(const other of root.querySelectorAll(".notice-reply"))if(other.dataset.conversation===conversation)other.querySelector("textarea").value="";feedback.textContent="Reply sent.";
   const item=form.closest("[data-notice]");
   if(item?.classList.contains("unread")&&!item.dataset.reading){
    item.dataset.reading="true";
@@ -107,7 +114,7 @@ root.addEventListener("submit",async event=>{
    finally{delete item.dataset.reading;}
   }
  }catch(error){feedback.textContent="Reply not confirmed: "+error.message;}
- finally{activeReplies--;button.disabled=false;field.readOnly=false;}
+ finally{activeReplies--;replyConversationLocks.delete(conversation);button.disabled=false;field.readOnly=false;flushReplyRefresh();}
 });
 document.querySelector("#show-history").addEventListener("click",event=>{
  showingHistory=!showingHistory;
