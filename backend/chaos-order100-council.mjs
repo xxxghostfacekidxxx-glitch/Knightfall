@@ -1,3 +1,4 @@
+import {localModelReply} from "./miss-chaos-local-model.mjs";
 // Shared original curriculum and evidence-based specialist assessment. No model API or privileged actions.
 import {curriculum} from "../training/miss-chaos-context-corpus.mjs";
 import {RESEARCH_FLEET,assignments,RESEARCH_SLOT_MS,RESEARCH_BATCH_SIZE} from "./src/chaos-knowledge-fleet.mjs";
@@ -40,6 +41,8 @@ export async function councilResearch(env,goal){
 export async function independentAnswer(env,question){
  if(typeof question!=="string"||!question.trim()||question.length>3000)throw Error("Question up to 3000 characters required");
  const text=question.trim(),reply=(answer,method,extra={})=>({answer,method,externalInference:false,...extra});
+ const generate=text.match(/^generate local\s*:\s*([\s\S]{1,200})$/i);
+ if(generate){const r=localModelReply(generate[1],66,"miss-chaos-context-003");return reply("Experimental original neural output (not a verified answer): "+(r.text||"[end of sequence]"),"miss-chaos-context-003",{architecture:r.architecture,experimental:true});}
  const calc=text.match(/^(?:calculate|solve|compile|what is)\s+([0-9][0-9a-z.()+*/%^,\s-]*)\??$/i);
  if(calc&&calc[1].length<=200){try{const r=traceExpression(calc[1]);return reply(String(r.result),"original-arithmetic-compiler",{evidence:r.ops});}catch{return reply("The local compiler could not validate that expression.","original-arithmetic-compiler");}}
  const format=text.match(/^(?:classify format|identify format)\s*:\s*([\s\S]{1,1000})$/i);if(format){const r=order66Format(format[1]);return reply(JSON.stringify(r,null,2),"original-trained-format-classifier");}
