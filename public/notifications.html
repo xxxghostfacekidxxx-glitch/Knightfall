@@ -31,12 +31,14 @@ function noticeDestination(n){
  if(n.kind==="message"&&n.target_type==="conversation"&&Number.isSafeInteger(id)&&id>0)return "/messages.html?conversation="+id;
  return safeNoticeUrl(n.url);
 }
-let showingHistory=false,loadVersion=0;
+let showingHistory=false,loadVersion=0,activeReplies=0,refreshPending=false;
+const replyDrafts=new Map();
 const emptyLabel=()=>showingHistory?"No alert history to display.":"All caught up. The demons have stopped ringing the doorbell.";
 function refreshEmpty(){
  if(!root.querySelector("[data-notice]"))root.innerHTML='<p class="empty">'+esc(emptyLabel())+'</p>';
 }
 async function load(){
+ if(activeReplies||root.contains(document.activeElement)&&document.activeElement.matches("textarea")){refreshPending=true;return;}
  const version=++loadVersion;
  try{
   const d=await api("/api/notifications?limit=100"+(showingHistory?"":"&unread=true"));
@@ -53,6 +55,7 @@ async function load(){
      '</div><div><strong>'+esc(n.title)+'</strong><p>'+esc(n.body)+'</p><small>'+esc(fmt(n.created_at))+
      (n.actor_username?" · @"+esc(n.actor_username):"")+'</small>'+reply+'</div>'+action+'</article>';
   }).join("");
+  for(const field of root.querySelectorAll(".notice-reply textarea"))field.value=replyDrafts.get(field.closest("form").dataset.conversation)||"";
   refreshEmpty();
   unreadCount=Number(d.unread_count||0);
   root.querySelectorAll("[data-notice]").forEach(item=>{
@@ -84,14 +87,16 @@ async function load(){
   status.textContent=unreadCount+" unread";
  }catch(error){if(version===loadVersion)status.textContent=error.message;}
 }
+root.addEventListener("input",event=>{const form=event.target.closest(".notice-reply");if(form)replyDrafts.set(form.dataset.conversation,event.target.value);});
+root.addEventListener("focusout",()=>{if(refreshPending)setTimeout(()=>{if(!activeReplies){refreshPending=false;void load();}},0);});
 root.addEventListener("submit",async event=>{
  const form=event.target.closest(".notice-reply");if(!form)return;
  event.preventDefault();const field=form.querySelector("textarea"),button=form.querySelector("button"),feedback=form.querySelector("[role=status]"),body=field.value.trim();
  if(!body||button.disabled)return;
- button.disabled=true;field.readOnly=true;feedback.textContent="Sending…";
+ activeReplies++;button.disabled=true;field.readOnly=true;feedback.textContent="Sending…";
  try{
   await api("/api/messages/conversations/"+form.dataset.conversation,{method:"POST",body:JSON.stringify({body})});
-  field.value="";feedback.textContent="Reply sent.";
+  replyDrafts.delete(form.dataset.conversation);field.value="";feedback.textContent="Reply sent.";
   const item=form.closest("[data-notice]");
   if(item?.classList.contains("unread")&&!item.dataset.reading){
    item.dataset.reading="true";
@@ -100,7 +105,7 @@ root.addEventListener("submit",async event=>{
    finally{delete item.dataset.reading;}
   }
  }catch(error){feedback.textContent="Reply not confirmed: "+error.message;}
- finally{button.disabled=false;field.readOnly=false;}
+ finally{activeReplies--;button.disabled=false;field.readOnly=false;}
 });
 document.querySelector("#show-history").addEventListener("click",event=>{
  showingHistory=!showingHistory;
@@ -124,11 +129,12 @@ async function pushRegistration({activateUpdate=false}={}){
   if(!reg||!reg.active)reg=await navigator.serviceWorker.register("/sw.js",{scope:"/"});
   // A user's explicit Enable, Repair or Test tap can activate a waiting worker,
   // rather than testing a months-old SW that cannot send receipt confirmations.
+  if(activateUpdate)await reg.update().catch(()=>{});
   if(activateUpdate&&reg.waiting){
     const change=new Promise(resolve=>{
-      const onChange=()=>resolve();
+      const onChange=()=>{clearTimeout(timer);navigator.serviceWorker.removeEventListener("controllerchange",onChange);resolve();};
+      const timer=setTimeout(onChange,4500);
       navigator.serviceWorker.addEventListener("controllerchange",onChange,{once:true});
-      setTimeout(resolve,4500);
     });
     reg.waiting.postMessage({type:"SKIP_WAITING"});
     await change;
