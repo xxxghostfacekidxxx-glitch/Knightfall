@@ -12,6 +12,7 @@ on:
       - 'scripts/chaos-forge-data.test.mjs'
       - 'scripts/chaos-forge-composition.test.mjs'
       - 'scripts/chaos-forge-image.test.mjs'
+      - 'scripts/chaos-forge-artwork-archive.test.mjs'
       - 'backend/src/order100-coding-practice.mjs'
       - 'backend/chaos-order100-council.mjs'
       - 'scripts/order100-code-*.mjs'
@@ -38,7 +39,7 @@ jobs:
       - name: Install pinned parser dependencies
         run: npm install --prefix backend --ignore-scripts --no-package-lock --no-audit --no-fund
       - name: Verify independent applet, native compiler and reverse engineering
-        run: node --test scripts/chaos-independent-forge.test.mjs scripts/chaos-forge-logic.test.mjs scripts/chaos-forge-data.test.mjs scripts/chaos-forge-composition.test.mjs scripts/chaos-forge-image.test.mjs
+        run: node --test scripts/chaos-independent-forge.test.mjs scripts/chaos-forge-logic.test.mjs scripts/chaos-forge-data.test.mjs scripts/chaos-forge-composition.test.mjs scripts/chaos-forge-image.test.mjs scripts/chaos-forge-artwork-archive.test.mjs
       - name: Produce independent coding competence report
         run: node scripts/run-order100-coding-benchmark.mjs coding-report.json 0
       - name: Produce typed synthesis holdout report
