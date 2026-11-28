@@ -1,0 +1,38 @@
+name: Order 100 coding competence
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/order100-code-*.mjs'
+      - 'backend/src/order100-coding-practice.mjs'
+      - 'backend/chaos-order100-council.mjs'
+      - 'scripts/order100-code-*.mjs'
+      - 'scripts/run-order100-coding-benchmark.mjs'
+      - '.github/workflows/order100-coding-competence.yml'
+  schedule:
+    - cron: '43 9 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: order100-coding-competence
+  cancel-in-progress: false
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Execute generated source and peer practice regression tests
+        run: node --test scripts/order100-code-synthesis.test.mjs
+      - name: Produce independent coding competence report
+        run: node scripts/run-order100-coding-benchmark.mjs coding-report.json 0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: order100-coding-evidence
+          path: coding-report.json
+          retention-days: 14
