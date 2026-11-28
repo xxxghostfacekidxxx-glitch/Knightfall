@@ -89,8 +89,9 @@ test('internal Android APK finder links only to a successful exact GitHub workfl
  const code=readFileSync(new URL('../public/android-test-apk-links.js',import.meta.url),'utf8');
  const html=readFileSync(new URL('../public/install.html',import.meta.url),'utf8');
  const ruinwire=readFileSync(new URL('../public/chaosphere.html',import.meta.url),'utf8');
- assert.match(html,/data-android-debug-find="knightfall-android-debug-apk"/);
- assert.match(ruinwire,/data-android-debug-find="ruinwire-android-debug-apk"/);
+ // Public install pages intentionally do not offer debug APK downloads. Test the internal finder separately.
+ assert.doesNotMatch(html,/data-android-debug-find=/);
+ assert.doesNotMatch(ruinwire,/data-android-debug-find=/);
  assert.match(code,/credentials:"omit"/);
  assert.doesNotMatch(code,/archive_download_url|release create|signedReleaseVerified=true/);
  let click;

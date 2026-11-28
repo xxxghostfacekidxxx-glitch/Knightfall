@@ -401,7 +401,7 @@ async function api(path,opts={}){
   function renderMessages(messages,conversationId){
     if(!state.visible||state.active!==conversationId)return;
     const fingerprint=conversationId+"|"+messages.map(m=>
-      [m.id,m.deleted_at||"",m.edited_at||"",m.body||""].join(":")
+      JSON.stringify([m.id,m.deleted_at||"",m.edited_at||"",m.body||"",m.sender_id,m.display_name,m.created_at])
     ).join(";");
     if(state.lastThreadKey===fingerprint){markLocalRead(conversationId);return;}
     state.lastThreadKey=fingerprint;
@@ -512,6 +512,7 @@ async function api(path,opts={}){
     await Promise.allSettled([refreshThreadAttachments(id,token),refreshThreadReactions(id,token)]);
   }
   let lastListRefresh=0;
+  let lastConversationSnapshot="";
   async function refreshConversations({force=false}={}){
     if(state.loading||document.hidden)return;
     if(!force&&!state.visible&&Date.now()-lastListRefresh<60000)return;
@@ -537,9 +538,14 @@ async function api(path,opts={}){
         state.conversations.push(selected);
       lastListRefresh=Date.now();
       updateUnreadBadge();
-      const valid=new Set(state.conversations.map(c=>Number(c.id)));
-      state.heads=state.heads.filter(id=>valid.has(id));saveHeads();renderHeads();
-      if(state.visible)renderPanel();
+      const snapshot=JSON.stringify(state.conversations);
+      if(snapshot!==lastConversationSnapshot){
+        lastConversationSnapshot=snapshot;
+        const valid=new Set(state.conversations.map(c=>Number(c.id)));
+        const nextHeads=state.heads.filter(id=>valid.has(id));
+        if(nextHeads.length!==state.heads.length){state.heads=nextHeads;saveHeads();}
+        renderHeads();if(state.visible)renderPanel();
+      }
     }finally{state.loading=false;}
   }
   $("#kf-chat-launcher").addEventListener("click",()=>state.visible?setVisible(false):showList());
