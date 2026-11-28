@@ -1,3 +1,5 @@
+import {buildWebProject} from "./chaos-forge-web-project.mjs";
+import {inspectProjectArchive} from "./chaos-forge-project-inspect.mjs";
 import {buildProject} from "./chaos-forge-project.mjs";
 import {generateVector,imageCatalog} from "./chaos-forge-image.mjs";
 import {verifyLibrary} from "./chaos-forge-library.mjs";
@@ -38,6 +40,10 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const web=question.match(/^build web project\s*:\s*([\s\S]+)$/i);
+ if(web){const a=buildWebProject(JSON.parse(web[1])),file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline browser project "+a.report.name+" with "+a.report.files.length+" files. Download: "+file.downloadUrl+"\n"+a.report.notice,method:"independent-web-project-builder",artifact:file,report:a.report,externalInference:false};}
+ const projectInspect=question.match(/^inspect project\s*:\s*([\s\S]+)$/i);
+ if(projectInspect){const report=inspectProjectArchive(hexBytes(projectInspect[1]));return {answer:JSON.stringify(report,null,2).slice(0,20000),method:"independent-project-inspection",report,externalInference:false};}
  const project=question.match(/^(?:build|create) project\s*:\s*([\s\S]+)$/i);
  if(project){const a=buildProject(JSON.parse(project[1])),file=await saveForgeArtifact(env,owner,a);return {answer:"Created "+a.report.name+" with "+a.report.files.length+" project files and "+a.report.examples+" verified examples. Download: "+file.downloadUrl+"\n"+a.report.notice,method:"independent-project-builder",artifact:file,report:a.report,externalInference:false};}
  const image=question.match(/^image (?:vector|generate)\s*:\s*([\s\S]+)$/i);
