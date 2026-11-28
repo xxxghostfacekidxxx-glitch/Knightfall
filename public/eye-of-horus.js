@@ -197,6 +197,14 @@ $("eye-forge-form").addEventListener("submit",async e=>{
  if(r.artifact?.filename?.endsWith(".svg"))await previewVector(r.artifact);
  await refreshForgeFiles();}catch(error){out.textContent=error.message;}finally{btn.disabled=false;}
 });
+$("eye-vector-width").value="768";$("eye-vector-height").value="768";
+$("eye-vector-random").addEventListener("click",()=>{$("eye-vector-seed").value=String(crypto.getRandomValues(new Uint32Array(1))[0]);});
+$("eye-vector-form").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=$("eye-vector-run"),status=$("eye-vector-status");btn.disabled=true;status.textContent="Composing artwork…";
+ try{const spec={motif:$("eye-vector-motif").value,palette:$("eye-vector-palette").value,width:Number($("eye-vector-width").value),height:Number($("eye-vector-height").value),seed:Number($("eye-vector-seed").value),title:$("eye-vector-label").value};
+ const r=await request(ROOT+"/tools/forge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:"Image vector: "+JSON.stringify(spec)})});if(!r.artifact)throw Error("Image artifact missing.");await previewVector(r.artifact);status.textContent="Created "+spec.width+" × "+spec.height+" artwork · seed "+spec.seed+" · saved privately for seven days.";await refreshForgeFiles();
+ }catch(error){status.textContent=error.message;}finally{btn.disabled=false;}
+});
 $("eye-neural-form").addEventListener("submit",async e=>{
  e.preventDefault();const btn=$("eye-neural-run"),status=$("eye-neural-status"),confirmBox=$("eye-neural-confirm");if(!confirmBox.checked)return;
  btn.disabled=true;status.textContent="Generating with hosted model…";confirmBox.checked=false;
