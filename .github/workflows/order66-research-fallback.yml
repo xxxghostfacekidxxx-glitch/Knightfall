@@ -1,11 +1,6 @@
 name: Order 66 scheduled research fallback
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/order66-remote-research.mjs'
-      - '.github/workflows/order66-research-fallback.yml'
   schedule:
     - cron: '37 * * * *'
   workflow_run:

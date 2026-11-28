@@ -26,3 +26,16 @@ export async function ingestResearch({env,body,token,now=Date.now(),verify=verif
  const result=await runKnowledgeResearch(env,payload.hour*3600000,{retryFailed:true,collector:async a=>payload.results.get(a.key)});
  return {status:200,result};
 }
+
+// The runner checks the shared budget BEFORE making upstream requests. No writes or data disclosure.
+export async function researchPreflight({env,token,hour,runId,sha,now=Date.now(),verify=verifyGitHubAuditToken}){
+ const current=Math.floor(now/3600000);
+ if(!Number.isSafeInteger(hour)||hour!==current||!Number.isSafeInteger(runId)||runId<1||! /^[a-f0-9]{40}$/.test(sha||""))return {status:400};
+ if(!await verify({token,runId,sha,now,purpose:"order66"}))return {status:401};
+ const state=await env.DB.prepare("SELECT k.enabled,e.paused,EXISTS(SELECT 1 FROM site_settings WHERE key=?) AS accepted FROM chaos_knowledge_66_control k JOIN eye_chaos_controls e ON e.id=1 WHERE k.id=1").bind("order66_ingest:"+hour).first();
+ if(!state||Number(state.enabled)!==1||Number(state.paused)!==0)return {status:200,result:{collect:false,reason:"paused"}};
+ if(Number(state.accepted)===1)return {status:200,result:{collect:false,reason:"already-accepted"}};
+ const rows=(await env.DB.prepare("SELECT status,count(*) AS n FROM chaos_knowledge_runs WHERE hour=? GROUP BY status").bind(hour).all()).results||[];
+ if(rows.some(x=>x.status==="complete"&&Number(x.n)>=3))return {status:200,result:{collect:false,reason:"worker-complete"}};
+ return {status:200,result:{collect:true,reason:"slot-open"}};
+}
