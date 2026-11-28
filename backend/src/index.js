@@ -19,6 +19,7 @@ import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { createChaosInference } from "../chaos-independent-runtime.mjs";
 import { createChaosAgentHandlers } from "../chaos-agent-handlers.mjs";
 import {handleChaosCompanion,companionScope,acceptedAdminPartner} from "./chaos-companion.mjs";
+import {handleRepositoryStages} from "./chaos-repository-stages.mjs";
 import {handleChaosDevReviews} from "./chaos-dev-reviews.js";
 import { getKnightfallGithubHealth } from "../chaos-github-health.mjs";
 import { makeChaosPatternDraft } from "../chaos-forge-tool.mjs";
@@ -1141,6 +1142,8 @@ export default { async queue(batch, env) {
    if(companionResponse)return companionResponse;
 
   // Scoped developer-review queue: immutable source, human approval, NO GitHub writes.
+  const repositoryStageResponse=await handleRepositoryStages(request,env,url,{requireUser,json,origin,rateLimit});
+  if(repositoryStageResponse)return repositoryStageResponse;
   const reviewResponse=await handleChaosDevReviews(request,env,url,{requireUser,json,origin,rateLimit});
   if(reviewResponse)return reviewResponse;
 
@@ -1859,7 +1862,7 @@ export default { async queue(batch, env) {
     const siteLookupContext=navigationContext(message)+radarContext(message);
     let utilityContext="";
     // The private owner companion is verified above; use only local reviewed public evidence.
-    if(companionMode==="owner"){try{utilityContext+=await ownerLearningContext(env,message);}catch{console.warn("order66_owner_context_unavailable");}}
+    if(companionMode==="owner"){try{utilityContext+=await ownerLearningContext(env,message,user.id);}catch{console.warn("order66_owner_context_unavailable");}}
     const arithmetic=message.match(/^\s*(?:calculate|what is|what's|solve)\s+([0-9+*/().%\s-]{1,100})\??\s*$/i);
     if(arithmetic){
       try{

@@ -161,6 +161,7 @@ if(panel){
      const response=await call("?status=all");
      root.replaceChildren();
      if(response.can_apply===true){
+       void loadRepositoryStages();
        const settings=make("details"),summary=make("summary","Developer access · Osiris only by default");settings.append(summary);
        const controls=make("div");settings.append(controls);root.append(settings);
        try{const policy=await call("/policy");const options=["isis","admin"].map(role=>{const label=make("label"),check=make("input");check.type="checkbox";check.checked=policy.roles.includes(role);label.append(check,document.createTextNode(" Allow "+role+" to review code (not push)"));controls.append(label);return [role,check];});
@@ -198,6 +199,10 @@ if(panel){
      note(String(error.message||"Developer review docket unavailable."),true);
    }finally{fetching=false;refresh.disabled=false;}
  }
+ const stagePanel=document.getElementById("chaos-repo-stage-panel"),stageUrl=document.getElementById("chaos-repo-stage-url"),stageCreate=document.getElementById("chaos-repo-stage-create"),stageStatus=document.getElementById("chaos-repo-stage-status"),stageList=document.getElementById("chaos-repo-stage-list");
+ async function stageCall(method="GET",body){const response=await fetch("https://api.ash-fall.com/api/chaos/repository-stages",{method,credentials:"include",cache:"no-store",...(body?{headers:{"content-type":"application/json"},body:JSON.stringify(body)}:{})});const data=await response.json();if(!response.ok)throw Error(data.error||"Repository intake unavailable");return data;}
+ async function loadRepositoryStages(){if(!stagePanel)return;try{const data=await stageCall();stagePanel.hidden=false;stageList.replaceChildren();for(const stage of data.stages||[]){const card=make("article",undefined,"chaos-card");card.append(make("h4",stage.project),make("p",stage.status+" · "+stage.license+" · "+stage.commit_sha.slice(0,12)));const link=make("a","Inspect pinned repository");link.href=stage.source_url;link.target="_blank";link.rel="noopener noreferrer";card.append(link);const detail=make("details");detail.append(make("summary","Source inventory and dependencies"),make("pre",JSON.stringify({files:stage.files,manifest:stage.manifest,source:stage.selected_source},null,2),"chaos-dev-review-code"));card.append(detail);const studio=make("a","Adapt in Code Studio");studio.href="/chaos-code-studio.html?repository="+encodeURIComponent(stage.project);card.append(studio);stageList.append(card);}}catch(error){stagePanel.hidden=true;}}
+ stageCreate?.addEventListener("click",async()=>{stageCreate.disabled=true;stageStatus.textContent="Inspecting immutable source and license…";try{await stageCall("POST",{repository:stageUrl.value.trim()});stageStatus.textContent="Repository staged for adaptation.";await loadRepositoryStages();}catch(error){stageStatus.textContent=error.message;}finally{stageCreate.disabled=false;}});
  refresh.addEventListener("click",()=>void loadReviews());
  const approvalsTab=document.querySelector('.chaos-tabs button[data-section="approvals"]');
  approvalsTab?.addEventListener("click",()=>void loadReviews());
