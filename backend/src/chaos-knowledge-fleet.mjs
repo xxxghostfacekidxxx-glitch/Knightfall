@@ -1,3 +1,4 @@
+import {recordLogicPractice} from "../chaos-forge-logic-course.mjs";
 import {recordCodingPractice} from "./order100-coding-practice.mjs";
 import {recordPeerAssessment} from "./order100-peer-assessments.mjs";
 import {shareSoftwareReferences} from "./order66-software-sharing.mjs";
@@ -1450,6 +1451,7 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
  const pending=[];
  for(const a of assignments(time)){
   if(!await enabled(env))break;
+  try{await recordLogicPractice(env,a);}catch{console.warn("order100_logic_practice_unavailable");}
   // Local coding practice continues even when public source requests fail or the archive is full.
   try{const practice=await recordCodingPractice(env,a);codingPractices+=practice.recorded;codingPracticeFailures+=Number(!practice.verified);}catch{codingPracticeFailures++;console.warn("order100_coding_practice_unavailable");}
   // Learning from existing reviewed evidence does not depend on successful network discovery or archive capacity.
