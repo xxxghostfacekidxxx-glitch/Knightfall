@@ -117,3 +117,6 @@ Actual training run: 16,000 SGD updates from random seed 28006, width 32, 64-tok
 
 ## Original numeric composition
 Owner command `build composed script:` accepts explicit acyclic steps (add/sub/mul/min/max, references to inputs or earlier results), three training examples and disjoint validation. Up to 12 steps; bounded integers and overflow checks; JS/Python output. Direct interpreter checks passed for both languages and three rejection cases. Native execution regression added; CI/live pending. No neural training or autonomous composition claimed.
+
+## Automatic composition discovery
+`discover composed script:` searches up to three arithmetic operations from examples and separate validation. Reports shortest matching programs, ambiguity probes and no-match. Explicit `build composed script:` remains the download path. Four direct search fixtures passed 12 held-out interpreter checks. Search is bounded and probe agreement is not proof; no neural training. Native CI/live pending.

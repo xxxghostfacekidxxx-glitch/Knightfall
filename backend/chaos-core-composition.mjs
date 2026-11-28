@@ -10,4 +10,14 @@ function compose(spec){
  steps.forEach((s,i)=>{const a="v"+s.a,b="v"+s.b,n="v"+(i+2),expr=["min","max"].includes(s.op)?(js?"Math.":"")+s.op+"("+a+","+b+")":a+({add:"+",sub:"-",mul:"*"})[s.op]+b;lines.push(js?"  const "+n+"="+expr+";":"    "+n+"="+expr,js?"  if (!Number.isSafeInteger("+n+")) throw Error('Overflow');":"    if abs("+n+")>9007199254740991: raise ValueError('Overflow')");});lines.push(js?"  return v"+(steps.length+1)+" || 0;":"    return v"+(steps.length+1));if(js)lines.push("}");
  return {source:lines.join("\n")+"\n",language,steps,training,validation,externalInference:false,notice:"Explicit acyclic numeric composition, interpreter checked; emitted source not executed."};
 }
-export {compose};
+function discover(spec){
+ const ops={add:(a,b)=>a+b,sub:(a,b)=>a-b,mul:(a,b)=>a*b,min:Math.min,max:Math.max};
+ const depth=spec.maxDepth??2;if(!Number.isInteger(depth)||depth<1||depth>3)throw Error("Depth 1–3 required");
+ const check=(rs,min)=>{if(!Array.isArray(rs)||rs.length<min||rs.length>16||rs.some(r=>!r||!Array.isArray(r.input)||r.input.length!==2||!r.input.every(x=>Number.isSafeInteger(x)&&Math.abs(x)<=1000)||!Number.isSafeInteger(r.output))||new Set(rs.map(r=>JSON.stringify(r.input))).size!==rs.length)throw Error("Invalid examples");};check(spec.examples,3);check(spec.validation,1);if(spec.validation.some(r=>spec.examples.some(t=>JSON.stringify(t.input)===JSON.stringify(r.input))))throw Error("Overlapping validation");
+ const rows=[...spec.examples,...spec.validation],hits=[];let checked=0;
+ function visit(steps,values){if(steps.length){checked++;if(values.every((v,i)=>v.at(-1)===rows[i].output))hits.push(steps);}
+ if(steps.length===depth)return;const n=steps.length+2;for(const op of Object.keys(ops))for(let a=0;a<n;a++)for(let b=0;b<n;b++){if(op!=="sub"&&a>b)continue;const next=values.map(v=>ops[op](v[a],v[b]));if(!next.every(Number.isSafeInteger))continue;visit([...steps,{op,a,b}],values.map((v,i)=>[...v,next[i]||0]));}}
+ visit([],rows.map(r=>r.input));hits.sort((a,b)=>a.length-b.length);const shortest=hits.filter(s=>s.length===hits[0]?.length);const run=(steps,input)=>{const v=input.slice();for(const s of steps){const n=ops[s.op](v[s.a],v[s.b]);if(!Number.isSafeInteger(n))return "overflow";v.push(n||0);}return v.at(-1);};let counterexample=null;const probes=[-1000,-17,-3,-1,0,1,2,7,19,1000];if(shortest.length>1)outer:for(const x of probes)for(const y of probes){const input=[x,y],a=run(shortest[0],input);for(const s of shortest.slice(1)){const b=run(s,input);if(a!==b){counterexample={input,first:a,alternative:b,steps:s};break outer;}}}
+ const status=!hits.length?"no-match":shortest.length===1?"unique-shortest":counterexample?"ambiguous-shortest":"probe-agreement-shortest";return {status,checked,matches:hits.length,shortestMatches:shortest.length,steps:shortest[0]??null,counterexample,externalInference:false,notice:"Bounded search; shortest candidates only compared on probes, not proof of correctness."};
+}
+export {compose,discover};

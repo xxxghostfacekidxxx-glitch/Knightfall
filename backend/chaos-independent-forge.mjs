@@ -1,4 +1,4 @@
-import {compose} from "./chaos-core-composition.mjs";
+import {compose,discover} from "./chaos-core-composition.mjs";
 import {synthesizeControl} from "./chaos-core-control-synthesis.mjs";
 import {selectTextPipeline} from "./chaos-core-text-synthesis.mjs";
 import {synthesizeScalar} from "./chaos-core-scalar-synthesis.mjs";
@@ -50,6 +50,8 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const discovery=question.match(/^discover composed script\s*:\s*([\s\S]+)$/i);
+ if(discovery){const spec=JSON.parse(discovery[1]),search=discover(spec);return {answer:JSON.stringify(search),method:"independent-composition-discovery",report:search,externalInference:false};}
  const composition=question.match(/^build composed script\s*:\s*([\s\S]+)$/i);
  if(composition){const report=compose(JSON.parse(composition[1]));const file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-composed."+(report.language==="python"?"py":"mjs"),content:report.source});return {answer:"Composed script: "+file.downloadUrl+"\n"+report.notice,method:"independent-composition",artifact:file,report,externalInference:false};}
  const controlScript=question.match(/^build control script\s*:\s*([\s\S]+)$/i);
