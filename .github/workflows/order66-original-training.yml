@@ -2,7 +2,7 @@ name: Order 66 original research training
 on:
   workflow_dispatch:
   schedule:
-    - cron: '31 8 * * 0'
+    - cron: '31 8 * * *'
 permissions:
   contents: read
 concurrency:

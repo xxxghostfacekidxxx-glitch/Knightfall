@@ -1089,10 +1089,10 @@ export async function discoverTools(source,query,fetcher=fetch){
  return toolCandidates(source,await readLimited(response));
 }
 // A peer lesson is an approved evidence reference, not a generated fact or neural weight update.
-async function sharePeerEvidence(env,a,now){
+export async function sharePeerEvidence(env,a,now){
  const row=await env.DB.prepare("SELECT entity_id,agent_key FROM chaos_knowledge_candidates c WHERE review_status='approved' AND agent_key LIKE 'mc-%' AND agent_key<>? AND NOT EXISTS(SELECT 1 FROM chaos_knowledge_lessons l WHERE l.learner_key=? AND l.entity_id=c.entity_id) ORDER BY CASE WHEN division=? THEN 0 ELSE 1 END,reviewed_at DESC,entity_id LIMIT 1").bind(a.key,a.key,a.division).first();
- if(!row)return;
- await env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_lessons(learner_key,entity_id,teacher_key,received_at) VALUES(?,?,?,?)").bind(a.key,row.entity_id,row.agent_key,now).run();
+ if(!row)return 0;
+ const result=await env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_lessons(learner_key,entity_id,teacher_key,received_at) VALUES(?,?,?,?)").bind(a.key,row.entity_id,row.agent_key,now).run();return Number(result.meta?.changes||0);
 }
 export function failureCode(error){
  const code=Number(error?.sourceStatus);
@@ -1113,9 +1113,11 @@ export async function runKnowledgeResearch(env,time,{fetcher=fetch}={}){
  if(!await enabled(env))return {reason:"paused",completed:0};
  let count=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_candidates").first())?.n||0);
  let toolCount=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_tools").first())?.n||0);
- let completed=0,failed=0;
+ let completed=0,failed=0,peerLessons=0,peerFailures=0;
  for(const a of assignments(time)){
   if(!await enabled(env))break;
+  // Learning from existing reviewed evidence does not depend on successful network discovery or archive capacity.
+  try{peerLessons+=await sharePeerEvidence(env,a,new Date().toISOString());}catch{peerFailures++;}
   if(a.source==="wikidata"?count>=LIMIT-3:toolCount>=TOOL_LIMIT-3)continue;
   const now=new Date().toISOString();
   const claim=await env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_runs(hour,agent_key,division,query,status,started_at) VALUES(?,?,?,?,'running',?)").bind(a.hour,a.key,a.division,a.query,now).run();
@@ -1129,14 +1131,14 @@ export async function runKnowledgeResearch(env,time,{fetcher=fetch}={}){
     if(writes.length){const out=await env.DB.batch(writes);found=out.reduce((n,x)=>n+Number(x.meta?.changes||0),0);}
     if(source==="wikidata")count+=found;else toolCount+=found;
     status="complete";completed++;
-    try{await sharePeerEvidence(env,a,now);}catch{errorCode="peer_exchange_error";}
+
    }
   }catch(error){errorCode=failureCode(error);}
   if(status==="failed")failed++;
   await env.DB.prepare("UPDATE chaos_knowledge_runs SET status=?,found=?,finished_at=? WHERE hour=? AND agent_key=?").bind(status,found,new Date().toISOString(),a.hour,a.key).run();
   try{await env.DB.prepare("INSERT OR REPLACE INTO chaos_knowledge_run_diagnostics(hour,agent_key,source_requested,source_used,primary_failure,error_code) VALUES(?,?,?,?,?,?)").bind(a.hour,a.key,a.source,source,primaryFailure,errorCode).run();}catch{console.warn("chaos_knowledge_diagnostics_unavailable");}
  }
- return {completed,failed};
+ return {completed,failed,peerLessons,peerFailures};
 }
 export async function knowledgeStatus(env){const active=await enabled(env);const totals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_candidates GROUP BY review_status").all()).results||[];const latest=(await env.DB.prepare("SELECT r.agent_key,r.division,r.query,r.status,r.found,r.started_at,d.source_requested,d.source_used,d.primary_failure,d.error_code FROM chaos_knowledge_runs r LEFT JOIN chaos_knowledge_run_diagnostics d ON d.hour=r.hour AND d.agent_key=r.agent_key ORDER BY r.hour DESC,r.agent_key LIMIT 32").all()).results||[];const candidates=(await env.DB.prepare("SELECT entity_id,title,description,source_url,license,agent_key,retrieved_at FROM chaos_knowledge_candidates WHERE review_status='pending' ORDER BY retrieved_at DESC,entity_id LIMIT 30").all()).results||[];const tools=(await env.DB.prepare("SELECT tool_id,source,title,source_url,declared_license,version_hint,agent_key,review_status FROM chaos_knowledge_tools ORDER BY retrieved_at DESC,tool_id LIMIT 30").all()).results||[];const toolTotals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_tools GROUP BY review_status").all()).results||[];const lessons=await env.DB.prepare("SELECT count(*) AS count FROM chaos_knowledge_lessons").first();return {active,roster:RESEARCH_FLEET.length,divisions:RESEARCH_FLEET,totals,latest,candidates,tools,toolTotals,lessons:lessons?.count||0,cron:KNOWLEDGE_CRON,training:"manual review before export; no automatic weight update"};}
 export async function reviewKnowledge(env,id,decision,actor){if(!/^Q[1-9][0-9]{0,14}$/.test(id)||!["approved","rejected"].includes(decision))throw Error("invalid review");const r=await env.DB.prepare("UPDATE chaos_knowledge_candidates SET review_status=?,reviewed_by=?,reviewed_at=? WHERE entity_id=? AND review_status='pending'").bind(decision,String(actor),new Date().toISOString(),id).run();return r.meta?.changes===1;}
