@@ -1,3 +1,4 @@
+import {selectTextPipeline} from "./chaos-core-text-synthesis.mjs";
 import {synthesizeScalar} from "./chaos-core-scalar-synthesis.mjs";
 import {verifySourceLibrary} from "./chaos-forge-source-library.mjs";
 import {verifyLogicLibrary,decompileLogicLibrary} from "./chaos-forge-logic-library.mjs";
@@ -47,6 +48,8 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const textScript=question.match(/^build text script\s*:\s*([\s\S]+)$/i);
+ if(textScript){const report=selectTextPipeline(JSON.parse(textScript[1])),file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-text-script."+(report.language==="python"?"py":"mjs"),content:report.source});return {answer:"Generated a bounded "+report.language+" text script; "+report.validationPassed+" validation cases matched in the typed interpreter. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-text-script",artifact:file,report,externalInference:false};}
  const scalar=question.match(/^build scalar script\s*:\s*([\s\S]+)$/i);
  if(scalar){const report=synthesizeScalar(JSON.parse(scalar[1]));if(report.status!=="example-match"||!report.source||report.validationCases<1)return {answer:"No unique candidate with independent validation examples. Supply more distinct examples; no artifact created.",method:"independent-scalar-script",report,externalInference:false};const file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-scalar-script."+(report.language==="python"?"py":"mjs"),content:report.source});return {answer:"Generated a bounded "+report.language+" script; "+report.validationPassed+" validation examples matched in the typed interpreter. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-scalar-script",artifact:file,report,externalInference:false};}
  const sourceLibrary=question.match(/^compile source library(?: (module))?\s*:\s*([\s\S]+)$/i);

@@ -1,3 +1,4 @@
+import {synthesizeText,benchmark as textBenchmark} from "./chaos-core-text-synthesis.mjs";
 import {synthesizeScalar,peerBenchmark} from "./chaos-core-scalar-synthesis.mjs";
 import {coreEvidence} from "./chaos-core-evidence.mjs";
 import {recallAnswer} from "./chaos-core-recall.mjs";
@@ -54,6 +55,9 @@ export async function independentAnswer(env,question,owner=null){
  const text=question.trim(),reply=(answer,method,extra={})=>({answer,method,externalInference:false,...extra});
  if(owner!==null){try{const forged=await forgeCommand(env,owner,text);if(forged)return forged;}catch(error){return reply("Forge: "+String(error.message||"Request failed.").slice(0,240),"independent-forge-error");}}
  const fence=String.fromCharCode(96).repeat(3);
+ const textScript=text.match(/^synthesize text\s*:\s*([\s\S]+)$/i);
+ if(textScript){try{const r=synthesizeText(JSON.parse(textScript[1]));return reply((r.source?fence+r.language+"\n"+r.source+fence+"\n":"No matching text pipeline.\n")+"Status: "+r.status+". "+r.notice+(r.counterexample?"\nDisambiguating input: "+JSON.stringify(r.counterexample):""),"chaos-core-text-synthesis",{evidence:r});}catch(error){return reply("Text input invalid: "+String(error.message).slice(0,180),"chaos-core-text-synthesis");}}
+ if(/^text training status$/i.test(text)){const {receipts,...r}=textBenchmark(0);return reply("Simulated text peer benchmark: "+r.verified+"/100 learners; "+r.passed+"/"+r.cases+" oracle cases passed. Not live agent activity.","chaos-core-text-benchmark",{evidence:r});}
  const scalar=text.match(/^synthesize scalar\s*:\s*([\s\S]+)$/i);
  if(scalar){try{const r=synthesizeScalar(JSON.parse(scalar[1]));return reply((r.source?fence+r.language+"\n"+r.source+fence+"\n":"No matching scalar script.\n")+"Status: "+r.status+". "+r.notice+(r.counterexample?"\nDisambiguating input: "+JSON.stringify(r.counterexample):""),"chaos-core-scalar-synthesis",{evidence:r});}catch(error){return reply("Scalar input invalid: "+String(error.message).slice(0,180),"chaos-core-scalar-synthesis");}}
  if(/^scalar training status$/i.test(text)){const {reports,...r}=peerBenchmark(0);return reply("Simulated scalar peer benchmark: "+r.verified+"/100 learners; "+r.passed+"/"+r.cases+" oracle cases passed. "+r.ambiguous+" ambiguous candidate sets. Not live agent activity.","chaos-core-scalar-benchmark",{evidence:r});}

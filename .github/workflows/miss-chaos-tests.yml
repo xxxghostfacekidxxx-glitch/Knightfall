@@ -14,6 +14,7 @@ on:
       - 'scripts/chaos-core-evidence.test.mjs'
       - 'scripts/chaos-core-bpe-model.test.mjs'
       - 'scripts/chaos-core-scalar-synthesis.test.mjs'
+      - 'scripts/chaos-core-text-synthesis.test.mjs'
       - 'scripts/train-chaos-core-005.mjs'
       - 'scripts/train-chaos-core-byte-bpe.mjs'
       - 'scripts/train-chaos-core-recall.mjs'
@@ -229,6 +230,6 @@ jobs:
         with:
           node-version: '22'
       - name: Validate original attention checkpoint and analytic gradients
-        run: node --test scripts/chaos-core-attention.test.mjs scripts/chaos-core-recall.test.mjs scripts/chaos-core-evidence.test.mjs scripts/chaos-core-bpe-model.test.mjs scripts/chaos-core-scalar-synthesis.test.mjs
+        run: node --test scripts/chaos-core-attention.test.mjs scripts/chaos-core-recall.test.mjs scripts/chaos-core-evidence.test.mjs scripts/chaos-core-bpe-model.test.mjs scripts/chaos-core-scalar-synthesis.test.mjs scripts/chaos-core-text-synthesis.test.mjs
 
 

@@ -1,0 +1,2749 @@
+{
+  "round0": {
+    "round": 0,
+    "learners": 100,
+    "verified": 100,
+    "cases": 500,
+    "passed": 500,
+    "ambiguous": 5,
+    "probeAgreement": 79,
+    "receipts": [
+      {
+        "learner": "mc-01",
+        "teacher": "mc-02",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-02",
+        "teacher": "mc-03",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-03",
+        "teacher": "mc-04",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-04",
+        "teacher": "mc-05",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-05",
+        "teacher": "mc-06",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-06",
+        "teacher": "mc-07",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-07",
+        "teacher": "mc-08",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-08",
+        "teacher": "mc-09",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-09",
+        "teacher": "mc-10",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-10",
+        "teacher": "mc-11",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-11",
+        "teacher": "mc-12",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-12",
+        "teacher": "mc-13",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-13",
+        "teacher": "mc-14",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-14",
+        "teacher": "mc-15",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-15",
+        "teacher": "mc-16",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-16",
+        "teacher": "mc-17",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-17",
+        "teacher": "mc-18",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-18",
+        "teacher": "mc-19",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-19",
+        "teacher": "mc-20",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-20",
+        "teacher": "mc-21",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-21",
+        "teacher": "mc-22",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-22",
+        "teacher": "mc-23",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-23",
+        "teacher": "mc-24",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-24",
+        "teacher": "mc-25",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-25",
+        "teacher": "mc-26",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-26",
+        "teacher": "mc-27",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-27",
+        "teacher": "mc-28",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-28",
+        "teacher": "mc-29",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-29",
+        "teacher": "mc-30",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-30",
+        "teacher": "mc-31",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-31",
+        "teacher": "mc-32",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-32",
+        "teacher": "mc-33",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-33",
+        "teacher": "mc-34",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-34",
+        "teacher": "mc-35",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-35",
+        "teacher": "mc-36",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-36",
+        "teacher": "mc-37",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-37",
+        "teacher": "mc-38",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-38",
+        "teacher": "mc-39",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-39",
+        "teacher": "mc-40",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-40",
+        "teacher": "mc-41",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-41",
+        "teacher": "mc-42",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-42",
+        "teacher": "mc-43",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-43",
+        "teacher": "mc-44",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-44",
+        "teacher": "mc-45",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-45",
+        "teacher": "mc-46",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-46",
+        "teacher": "mc-47",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-47",
+        "teacher": "mc-48",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-48",
+        "teacher": "mc-49",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-49",
+        "teacher": "mc-50",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-50",
+        "teacher": "mc-51",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-51",
+        "teacher": "mc-52",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-52",
+        "teacher": "mc-53",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-53",
+        "teacher": "mc-54",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-54",
+        "teacher": "mc-55",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-55",
+        "teacher": "mc-56",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-56",
+        "teacher": "mc-57",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-57",
+        "teacher": "mc-58",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-58",
+        "teacher": "mc-59",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-59",
+        "teacher": "mc-60",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-60",
+        "teacher": "mc-61",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-61",
+        "teacher": "mc-62",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-62",
+        "teacher": "mc-63",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-63",
+        "teacher": "mc-64",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-64",
+        "teacher": "mc-65",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-65",
+        "teacher": "mc-66",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-66",
+        "teacher": "mc-67",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-67",
+        "teacher": "mc-68",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-68",
+        "teacher": "mc-69",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-69",
+        "teacher": "mc-70",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-70",
+        "teacher": "mc-71",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-71",
+        "teacher": "mc-72",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-72",
+        "teacher": "mc-73",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-73",
+        "teacher": "mc-74",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-74",
+        "teacher": "mc-75",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-75",
+        "teacher": "mc-76",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-76",
+        "teacher": "mc-77",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-77",
+        "teacher": "mc-78",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-78",
+        "teacher": "mc-79",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-79",
+        "teacher": "mc-80",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-80",
+        "teacher": "mc-81",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-81",
+        "teacher": "mc-82",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-82",
+        "teacher": "mc-83",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-83",
+        "teacher": "mc-84",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-84",
+        "teacher": "mc-85",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-85",
+        "teacher": "mc-86",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-86",
+        "teacher": "mc-87",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-87",
+        "teacher": "mc-88",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-88",
+        "teacher": "mc-89",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-89",
+        "teacher": "mc-90",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-90",
+        "teacher": "mc-91",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-91",
+        "teacher": "mc-92",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-92",
+        "teacher": "mc-93",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-93",
+        "teacher": "mc-94",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-94",
+        "teacher": "mc-95",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-95",
+        "teacher": "mc-96",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-96",
+        "teacher": "mc-97",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-97",
+        "teacher": "mc-98",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-98",
+        "teacher": "mc-99",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-99",
+        "teacher": "mc-100",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-100",
+        "teacher": "mc-01",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      }
+    ],
+    "method": "simulated peer exercises; no live agent or neural weight update",
+    "externalInference": false
+  },
+  "round52": {
+    "round": 52,
+    "learners": 100,
+    "verified": 100,
+    "cases": 500,
+    "passed": 500,
+    "ambiguous": 5,
+    "probeAgreement": 79,
+    "receipts": [
+      {
+        "learner": "mc-01",
+        "teacher": "mc-54",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-02",
+        "teacher": "mc-55",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-03",
+        "teacher": "mc-56",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-04",
+        "teacher": "mc-57",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-05",
+        "teacher": "mc-58",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-06",
+        "teacher": "mc-59",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-07",
+        "teacher": "mc-60",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-08",
+        "teacher": "mc-61",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-09",
+        "teacher": "mc-62",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-10",
+        "teacher": "mc-63",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-11",
+        "teacher": "mc-64",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-12",
+        "teacher": "mc-65",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-13",
+        "teacher": "mc-66",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-14",
+        "teacher": "mc-67",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-15",
+        "teacher": "mc-68",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-16",
+        "teacher": "mc-69",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-17",
+        "teacher": "mc-70",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-18",
+        "teacher": "mc-71",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-19",
+        "teacher": "mc-72",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-20",
+        "teacher": "mc-73",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-21",
+        "teacher": "mc-74",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-22",
+        "teacher": "mc-75",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-23",
+        "teacher": "mc-76",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-24",
+        "teacher": "mc-77",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-25",
+        "teacher": "mc-78",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-26",
+        "teacher": "mc-79",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-27",
+        "teacher": "mc-80",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-28",
+        "teacher": "mc-81",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-29",
+        "teacher": "mc-82",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-30",
+        "teacher": "mc-83",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-31",
+        "teacher": "mc-84",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-32",
+        "teacher": "mc-85",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-33",
+        "teacher": "mc-86",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-34",
+        "teacher": "mc-87",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-35",
+        "teacher": "mc-88",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-36",
+        "teacher": "mc-89",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-37",
+        "teacher": "mc-90",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-38",
+        "teacher": "mc-91",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-39",
+        "teacher": "mc-92",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-40",
+        "teacher": "mc-93",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-41",
+        "teacher": "mc-94",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-42",
+        "teacher": "mc-95",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-43",
+        "teacher": "mc-96",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-44",
+        "teacher": "mc-97",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-45",
+        "teacher": "mc-98",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-46",
+        "teacher": "mc-99",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-47",
+        "teacher": "mc-100",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-48",
+        "teacher": "mc-01",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-49",
+        "teacher": "mc-02",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-50",
+        "teacher": "mc-03",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-51",
+        "teacher": "mc-04",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-52",
+        "teacher": "mc-05",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-53",
+        "teacher": "mc-06",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-54",
+        "teacher": "mc-07",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-55",
+        "teacher": "mc-08",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-56",
+        "teacher": "mc-09",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-57",
+        "teacher": "mc-10",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-58",
+        "teacher": "mc-11",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-59",
+        "teacher": "mc-12",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-60",
+        "teacher": "mc-13",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-61",
+        "teacher": "mc-14",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-62",
+        "teacher": "mc-15",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-63",
+        "teacher": "mc-16",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-64",
+        "teacher": "mc-17",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-65",
+        "teacher": "mc-18",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-66",
+        "teacher": "mc-19",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-67",
+        "teacher": "mc-20",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-68",
+        "teacher": "mc-21",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-69",
+        "teacher": "mc-22",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-70",
+        "teacher": "mc-23",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-71",
+        "teacher": "mc-24",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-72",
+        "teacher": "mc-25",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-73",
+        "teacher": "mc-26",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-74",
+        "teacher": "mc-27",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-75",
+        "teacher": "mc-28",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-76",
+        "teacher": "mc-29",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-77",
+        "teacher": "mc-30",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-78",
+        "teacher": "mc-31",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-79",
+        "teacher": "mc-32",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-80",
+        "teacher": "mc-33",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-81",
+        "teacher": "mc-34",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-82",
+        "teacher": "mc-35",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-83",
+        "teacher": "mc-36",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-84",
+        "teacher": "mc-37",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-85",
+        "teacher": "mc-38",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-86",
+        "teacher": "mc-39",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-87",
+        "teacher": "mc-40",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-88",
+        "teacher": "mc-41",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-89",
+        "teacher": "mc-42",
+        "family": 5,
+        "operations": [
+          "digits"
+        ],
+        "language": "javascript",
+        "status": "ambiguous",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-90",
+        "teacher": "mc-43",
+        "family": 6,
+        "operations": [
+          "lower",
+          "letters"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-91",
+        "teacher": "mc-44",
+        "family": 7,
+        "operations": [
+          "reverse"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-92",
+        "teacher": "mc-45",
+        "family": 8,
+        "operations": [
+          "remove whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-93",
+        "teacher": "mc-46",
+        "family": 9,
+        "operations": [
+          "first word"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-94",
+        "teacher": "mc-47",
+        "family": 10,
+        "operations": [
+          "last word"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-95",
+        "teacher": "mc-48",
+        "family": 11,
+        "operations": [
+          "unique characters"
+        ],
+        "language": "javascript",
+        "status": "unique-in-grammar",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-96",
+        "teacher": "mc-49",
+        "family": 0,
+        "operations": [
+          "trim",
+          "lower"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-97",
+        "teacher": "mc-50",
+        "family": 1,
+        "operations": [
+          "trim",
+          "upper"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-98",
+        "teacher": "mc-51",
+        "family": 2,
+        "operations": [
+          "trim",
+          "collapse whitespace"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-99",
+        "teacher": "mc-52",
+        "family": 3,
+        "operations": [
+          "lower",
+          "hyphenate"
+        ],
+        "language": "javascript",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      },
+      {
+        "learner": "mc-100",
+        "teacher": "mc-53",
+        "family": 4,
+        "operations": [
+          "upper",
+          "underscore"
+        ],
+        "language": "python",
+        "status": "probe-agreement",
+        "passed": 5,
+        "tests": 5,
+        "verified": true
+      }
+    ],
+    "method": "simulated peer exercises; no live agent or neural weight update",
+    "externalInference": false
+  },
+  "sample": {
+    "status": "no-match",
+    "language": "javascript",
+    "operations": null,
+    "source": null,
+    "checked": 3166,
+    "trainingMatches": 0,
+    "validationMatches": 0,
+    "shortestMatches": 0,
+    "trainingCases": 3,
+    "validationCases": 1,
+    "validationPassed": 0,
+    "probeCount": 15,
+    "counterexample": null,
+    "externalInference": false,
+    "notice": "Finite ASCII text grammar; interpreter checks examples, not proof of equivalence. Probe agreement does not establish uniqueness. Emitted source is not executed in this request."
+  }
+}
