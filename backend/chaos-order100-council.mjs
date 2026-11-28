@@ -1,3 +1,4 @@
+import {dataCoverage} from "./chaos-forge-data-course.mjs";
 import {logicCoverage} from "./chaos-forge-logic-course.mjs";
 import {forgeCommand} from "./chaos-independent-forge.mjs";
 import {parseProgram,emitProgram,synthesize,emptyPrior} from "./order100-code-synthesis.mjs";
@@ -47,6 +48,7 @@ export async function independentAnswer(env,question,owner=null){
  const text=question.trim(),reply=(answer,method,extra={})=>({answer,method,externalInference:false,...extra});
  if(owner!==null){try{const forged=await forgeCommand(env,owner,text);if(forged)return forged;}catch(error){return reply("Forge: "+String(error.message||"Request failed.").slice(0,240),"independent-forge-error");}}
  const fence=String.fromCharCode(96).repeat(3);
+ if(/^data status$/i.test(text)){const r=await dataCoverage(env);return reply("Typed data learners: "+r.learners+"/100. Teachers: "+r.teachers+". Verified exchanges: "+r.exchanges+". Passed cases: "+r.passed+".","order100-data-course",{evidence:r});}
  if(/^logic status$/i.test(text)){const r=await logicCoverage(env);return reply("Structured coding learners: "+r.learners+"/100. Teachers: "+r.teachers+". Verified exchanges: "+r.exchanges+". Passed oracle cases: "+r.passed+".","order100-logic-course",{evidence:r});}
  if(/^coding status$/i.test(text)){const knowledge=await codingKnowledge(env);return reply("Verified coding learners: "+knowledge.verifiedLearners+"/100. Distinct teachers: "+knowledge.distinctTeachers+". Verified peer exchanges: "+knowledge.verifiedExchanges+". Distinct learner programs: "+knowledge.distinctLearnerPrograms+". Learned program samples: "+knowledge.prior.samples+".","order100-coding-knowledge",{evidence:knowledge});}
  const code=text.match(/^code\s*:\s*(.{1,180})$/i);
