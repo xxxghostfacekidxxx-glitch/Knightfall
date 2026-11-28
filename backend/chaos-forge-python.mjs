@@ -30,7 +30,7 @@ export function translatePython(input){
   while(pos<lines.length&&lines[pos].indent===indent){
    const line=lines[pos],t=line.text;if(t.startsWith("return ")||t==="else:")break;
    pos++;
-   const condition=/^if (.+):$/.exec(t),loop=/^for ([a-z][a-z0-9_]*) in range\(([^()]*)\):$/.exec(t),assignment=/^([a-z][a-z0-9_]*)\s*(\+=|-=|\*=|\/=|=)\s*(.+)$/.exec(t);
+   const condition=/^if (.+):$/.exec(t),whileLoop=/^while (.+):$/.exec(t),loop=/^for ([a-z][a-z0-9_]*) in range\(([^()]*)\):$/.exec(t),assignment=/^([a-z][a-z0-9_]*)\s*(\+=|-=|\*=|\/=|=)\s*(.+)$/.exec(t);
    if(condition){
     const parts=condition[1].split(/(<=|>=|==|!=|<|>)/);if(parts.length!==3)fail(line,"Use a single numeric comparison");
     const left=expression(parts[0],line),right=expression(parts[2],line);
@@ -38,6 +38,8 @@ export function translatePython(input){
     const yes=block(indent+4,depth+1);if(!yes.length)fail(line,"Empty if body");
     let no=[];if(lines[pos]?.indent===indent&&lines[pos].text==="else:"){pos++;if(lines[pos]?.indent!==indent+4)fail(line,"Expected indented else body");no=block(indent+4,depth+1);if(!no.length)fail(line,"Empty else body");}
     out.push({op:"if",compare:compare[parts[1]],left,right,then:yes,else:no});
+   }else if(whileLoop){
+    const parts=whileLoop[1].split(/(<=|>=|==|!=|<|>)/);if(parts.length!==3)fail(line,"Use a single numeric comparison");const left=expression(parts[0],line),right=expression(parts[2],line);if(lines[pos]?.indent!==indent+4)fail(line,"Expected indented while body");const body=block(indent+4,depth+1);if(!body.length)fail(line,"Empty while body");out.push({op:"while",compare:compare[parts[1]],left,right,body});
    }else if(loop){
     const name=loop[1],bound=loop[2].trim();if(!(fields.includes(bound)||/^(?:0|[1-9]\d{0,3})$/.test(bound)&&Number(bound)<=1000))fail(line,"range requires an immutable numeric parameter or 0–1000 integer");
     declare(line,name);counters.add(name);if(lines[pos]?.indent!==indent+4)fail(line,"Expected indented loop body");const body=block(indent+4,depth+1);if(!body.length)fail(line,"Empty loop body");counters.delete(name);active.delete(name);
@@ -59,5 +61,5 @@ export function translatePython(input){
 }
 export function verifyPython(input){
  const translated=translatePython(input),r=verifyLogic({...translated,examples:input.examples});
- return {...r,translated,module:runLogic.toString()+"\nconst program="+JSON.stringify(r.program)+";\nexport function solve(...values){return runLogic(program,values);}\n",notice:"Restricted numeric Python syntax compiled to finite JavaScript-number semantics. No arbitrary precision integers, imports, Python runtime, floor division, or submitted-source execution. range bounds 0–1000."};
+ return {...r,translated,module:runLogic.toString()+"\nconst program="+JSON.stringify(r.program)+";\nexport function solve(...values){return runLogic(program,values);}\n",notice:"Restricted numeric Python syntax compiled to finite JavaScript-number semantics. No arbitrary precision integers, imports, Python runtime, floor division, or submitted-source execution. range bounds 0–1000; while loops capped at 1000 iterations and shared VM fuel."};
 }
