@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="t d"><title id="t">Chaosphere little demon</title><desc id="d">Deranged but adorable scarlet demon with mismatched googly eyes, broken horns, a toothy grin and a tiny message envelope.</desc><defs><radialGradient id="bg"><stop stop-color="#33253e"/><stop offset="1" stop-color="#0b0b13"/></radialGradient><linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e99176"/><stop offset=".55" stop-color="#b4475c"/><stop offset="1" stop-color="#66334a"/></linearGradient><linearGradient id="horn" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe6b9"/><stop offset="1" stop-color="#a98b9c"/></linearGradient></defs>
+<rect width="512" height="512" rx="108" fill="url(#bg)"/><circle cx="255" cy="245" r="209" fill="none" stroke="#b8a37f" stroke-width="9" stroke-dasharray="25 19" opacity=".6"/>
+<path d="M111 183Q61 134 83 72q53 7 104 94M321 164Q360 63 435 75q-12 94-71 119" fill="url(#horn)" stroke="#473047" stroke-width="12" stroke-linejoin="round"/>
+<path d="M154 321q-47 41-31 84 31-22 68-38m155-39q63 27 65 73-52-4-83-32" fill="#8c3651" stroke="#482a40" stroke-width="12"/>
+<path d="M99 224q9-84 90-114 84-31 155 12 73 46 76 126 6 101-76 153-69 42-166 5-87-32-79-182Z" fill="url(#body)" stroke="#48263b" stroke-width="13"/>
+<path d="M150 190q42-26 78-12m72 4q34-28 64-7" fill="none" stroke="#592438" stroke-width="13" stroke-linecap="round"/>
+<ellipse cx="190" cy="249" rx="59" ry="70" transform="rotate(-12 190 249)" fill="#fff2db" stroke="#51263b" stroke-width="9"/>
+<ellipse cx="328" cy="246" rx="48" ry="58" transform="rotate(12 328 246)" fill="#fff2db" stroke="#51263b" stroke-width="9"/>
+<ellipse cx="212" cy="262" rx="20" ry="37" fill="#211e2e"/><ellipse cx="316" cy="239" rx="16" ry="28" fill="#211e2e"/><circle cx="222" cy="244" r="10" fill="#fff"/><circle cx="322" cy="226" r="8" fill="#fff"/>
+<path d="M164 329Q248 405 358 315q-16 84-96 87-82 4-98-73Z" fill="#291522" stroke="#622b45" stroke-width="7"/><path d="m193 341 19 30 15-19m53 20 16-23 19 19m19-36-8 31" fill="#fff5d6" stroke="#fff5d6" stroke-width="5" stroke-linejoin="round"/>
+<path d="M141 303q16-8 28-2m201-15q14-4 23 0" fill="none" stroke="#ffbb9c" stroke-width="9" stroke-linecap="round"/>
+<path d="M173 389q10 37 37 33m153-32q-17 33-39 35" stroke="#8d3853" stroke-width="25" stroke-linecap="round" fill="none"/>
+<g transform="translate(254 369) rotate(-12)"><rect x="-61" y="-18" width="122" height="76" rx="10" fill="#edd2a8" stroke="#47303e" stroke-width="8"/><path d="m-53-8 53 35 53-35" fill="none" stroke="#876a6b" stroke-width="8" stroke-linejoin="round"/><path d="m-50 48 35-31m65 31-35-31" fill="none" stroke="#9f8080" stroke-width="5"/><path d="m37-23 7-15 7 15 16 5-16 5-7 14-7-14-15-5Z" fill="#ffe6ae"/></g>
+<path d="m82 115-18-9-13 15m373 243 22 5 8-16" fill="none" stroke="#d0a47f" stroke-width="7" stroke-linecap="round"/></svg>

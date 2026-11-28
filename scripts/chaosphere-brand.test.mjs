@@ -63,3 +63,8 @@ test("Existing games still target canonical conversation fallback and branded ov
   assert.match(read(p),/\/messages\.html/);
  }
 });
+
+ test("Trouble uses the detailed static messenger icon and matching Android palette",()=>{
+ const icon=read("icons/chaosphere.svg");assert.match(icon,/Trouble, Knightfall's infernal messenger/);assert.match(icon,/id="eyes"/);assert.match(icon,/id="badge"/);assert.doesNotMatch(icon,/<style>|<animate\\b/);assert.match(read("sw.js"),/knightfall-shell-v\\d+/);assert.match(read("chat-bubbles.js"),/src="\\/icons\\/chaosphere\\.svg"/);
+ const native=readFileSync(new URL("../android/ruinwire/src/main/res/drawable/ruinwire_icon.xml",import.meta.url),"utf8");assert.match(native,/viewportWidth="320"/);assert.match(native,/#ffcf4c/);
+ });

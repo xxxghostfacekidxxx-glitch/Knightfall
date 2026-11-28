@@ -1,14 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="t d"><title id="t">Chaosphere little demon</title><desc id="d">Deranged but adorable scarlet demon with mismatched googly eyes, broken horns, a toothy grin and a tiny message envelope.</desc><defs><radialGradient id="bg"><stop stop-color="#33253e"/><stop offset="1" stop-color="#0b0b13"/></radialGradient><linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e99176"/><stop offset=".55" stop-color="#b4475c"/><stop offset="1" stop-color="#66334a"/></linearGradient><linearGradient id="horn" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe6b9"/><stop offset="1" stop-color="#a98b9c"/></linearGradient></defs>
-<rect width="512" height="512" rx="108" fill="url(#bg)"/><circle cx="255" cy="245" r="209" fill="none" stroke="#b8a37f" stroke-width="9" stroke-dasharray="25 19" opacity=".6"/>
-<path d="M111 183Q61 134 83 72q53 7 104 94M321 164Q360 63 435 75q-12 94-71 119" fill="url(#horn)" stroke="#473047" stroke-width="12" stroke-linejoin="round"/>
-<path d="M154 321q-47 41-31 84 31-22 68-38m155-39q63 27 65 73-52-4-83-32" fill="#8c3651" stroke="#482a40" stroke-width="12"/>
-<path d="M99 224q9-84 90-114 84-31 155 12 73 46 76 126 6 101-76 153-69 42-166 5-87-32-79-182Z" fill="url(#body)" stroke="#48263b" stroke-width="13"/>
-<path d="M150 190q42-26 78-12m72 4q34-28 64-7" fill="none" stroke="#592438" stroke-width="13" stroke-linecap="round"/>
-<ellipse cx="190" cy="249" rx="59" ry="70" transform="rotate(-12 190 249)" fill="#fff2db" stroke="#51263b" stroke-width="9"/>
-<ellipse cx="328" cy="246" rx="48" ry="58" transform="rotate(12 328 246)" fill="#fff2db" stroke="#51263b" stroke-width="9"/>
-<ellipse cx="212" cy="262" rx="20" ry="37" fill="#211e2e"/><ellipse cx="316" cy="239" rx="16" ry="28" fill="#211e2e"/><circle cx="222" cy="244" r="10" fill="#fff"/><circle cx="322" cy="226" r="8" fill="#fff"/>
-<path d="M164 329Q248 405 358 315q-16 84-96 87-82 4-98-73Z" fill="#291522" stroke="#622b45" stroke-width="7"/><path d="m193 341 19 30 15-19m53 20 16-23 19 19m19-36-8 31" fill="#fff5d6" stroke="#fff5d6" stroke-width="5" stroke-linejoin="round"/>
-<path d="M141 303q16-8 28-2m201-15q14-4 23 0" fill="none" stroke="#ffbb9c" stroke-width="9" stroke-linecap="round"/>
-<path d="M173 389q10 37 37 33m153-32q-17 33-39 35" stroke="#8d3853" stroke-width="25" stroke-linecap="round" fill="none"/>
-<g transform="translate(254 369) rotate(-12)"><rect x="-61" y="-18" width="122" height="76" rx="10" fill="#edd2a8" stroke="#47303e" stroke-width="8"/><path d="m-53-8 53 35 53-35" fill="none" stroke="#876a6b" stroke-width="8" stroke-linejoin="round"/><path d="m-50 48 35-31m65 31-35-31" fill="none" stroke="#9f8080" stroke-width="5"/><path d="m37-23 7-15 7 15 16 5-16 5-7 14-7-14-15-5Z" fill="#ffe6ae"/></g>
-<path d="m82 115-18-9-13 15m373 243 22 5 8-16" fill="none" stroke="#d0a47f" stroke-width="7" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc"><title id="title">Trouble, Knightfall's infernal messenger</title><desc id="desc">A richly ornamented crimson imp with curling engraved horns, glowing amber eyes, gold jewelry, leather armor, scorched wings and a barbed tail.</desc><defs><radialGradient id="badge" cx=".5" cy=".38" r=".72"><stop stop-color="#482539"/><stop offset=".65" stop-color="#18121f"/><stop offset="1" stop-color="#08090e"/></radialGradient>
+<radialGradient id="skin" cx=".34" cy=".24" r=".9"><stop stop-color="#ffae74"/><stop offset=".25" stop-color="#fa5046"/><stop offset=".67" stop-color="#b7152c"/><stop offset="1" stop-color="#420b24"/></radialGradient>
+<linearGradient id="horn" x2=".9" y2="1"><stop stop-color="#dfaa57"/><stop offset=".18" stop-color="#201c27"/><stop offset=".52" stop-color="#51414b"/><stop offset="1" stop-color="#090c14"/></linearGradient>
+<linearGradient id="gold" x2="1" y2="1"><stop stop-color="#fff0a4"/><stop offset=".25" stop-color="#ba702c"/><stop offset=".5" stop-color="#f9c55b"/><stop offset=".75" stop-color="#76401f"/><stop offset="1" stop-color="#ffdd8b"/></linearGradient>
+<linearGradient id="wing" x2=".2" y2="1"><stop stop-color="#fa641e"/><stop offset=".35" stop-color="#a71a23"/><stop offset=".8" stop-color="#340d20"/><stop offset="1" stop-color="#0b0b17"/></linearGradient>
+<radialGradient id="eye"><stop stop-color="#fff9b8"/><stop offset=".45" stop-color="#ffbf23"/><stop offset="1" stop-color="#f35313"/></radialGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<rect width="320" height="320" rx="65" fill="url(#badge)"/><circle cx="160" cy="160" r="146" fill="none" stroke="#89634a" stroke-width="3"/><g id="trouble" transform="translate(16 12) scale(.82) translate(15 -2)" stroke-linejoin="round" stroke-linecap="round">
+
+<g id="wings" stroke="#170b17" stroke-width="5"><path d="M108 170Q61 89 8 116L29 150L5 193L50 182L62 237L103 203M213 169Q259 86 310 116L289 151L315 192L267 184L257 237L216 203" fill="url(#wing)"/><path d="M101 193L11 119M96 201L30 150M91 208L54 185M218 192L308 119M224 202L288 152M230 210L265 185" fill="none" stroke="#f76e27" stroke-width="3"/><path d="M41 156l10 11 10-9M265 157l10 12 9-12" fill="none" stroke="#ffc26c" stroke-width="2"/></g>
+<path d="M205 283Q297 282 273 214Q256 177 280 164" fill="none" stroke="#5c1026" stroke-width="17"/><path d="M205 283Q297 282 273 214Q256 177 280 164" fill="none" stroke="#ef5142" stroke-width="7"/><path d="M279 148l20 24-32-3 11-9Z" fill="url(#gold)" stroke="#34171a" stroke-width="3"/>
+<path d="M111 277l-22 55 48 0 15-41M189 277l20 55-50 0-12-40" fill="#18151f" stroke="#08080e" stroke-width="8"/>
+<path d="M83 321l54-2 1 21-61 0ZM174 319l54 2 8 19-63 0Z" fill="#14131b" stroke="url(#gold)" stroke-width="4"/>
+<path d="M102 200Q76 242 91 298Q154 320 223 299Q235 245 206 198" fill="#1b1922" stroke="#080b12" stroke-width="9"/>
+<path d="M112 207Q159 229 198 207L211 278Q159 294 100 278Z" fill="#30202a" stroke="url(#gold)" stroke-width="3"/>
+<path d="M114 211l22 15-17 54m72-68-23 14 16 54" stroke="#ad642e" stroke-width="5" fill="none"/>
+<path d="M100 250l117 0M104 263l112 0" stroke="#a46a34" stroke-width="2" stroke-dasharray="4 7"/>
+<path d="M101 225Q67 252 56 282" stroke="#c62a31" stroke-width="24" fill="none"/><path d="M212 224Q246 250 265 281" stroke="#c62a31" stroke-width="24" fill="none"/>
+<path d="M53 274l-17 13 19 5 8-12M267 274l17 13-19 5-8-12" fill="#ed4538" stroke="#220e19" stroke-width="4"/>
+<path d="M109 75Q48 44 66 14Q87 3 99 43L122 75M195 75Q271 43 250 12Q225 3 210 45L189 75" fill="url(#horn)" stroke="#090b12" stroke-width="7"/>
+<path d="M72 34l30 24M68 49l39 22M246 32l-31 25M250 48l-39 24" stroke="url(#gold)" stroke-width="5"/>
+<path d="M93 70Q41 67 42 126Q43 184 92 204Q161 233 231 194Q281 155 264 107Q249 70 218 76" fill="url(#skin)" stroke="#280e1d" stroke-width="8"/>
+<path d="M77 94Q67 33 160 40Q242 37 248 92Q221 70 204 67Q189 86 169 80Q134 95 121 71Q103 93 77 94Z" fill="#17141e" stroke="#0a0b10" stroke-width="5"/>
+<path d="M89 69l32-35-2 38 28-48 8 49 27-46-3 43 35-33-11 47" fill="#95192c" stroke="#130d18" stroke-width="4"/>
+<path d="M74 141Q46 129 34 151Q43 183 87 170M241 143Q278 123 293 151Q282 182 235 171" fill="url(#skin)" stroke="#2e0c1a" stroke-width="5"/>
+<path d="M52 150l24 6M265 155l17-5" stroke="#7b1829" stroke-width="3"/>
+<g id="eyes"><path d="M89 132Q119 108 144 131Q119 159 91 144ZM177 131Q204 106 235 130Q215 156 181 143Z" fill="url(#eye)" stroke="#180c19" stroke-width="7"/><path d="M122 128v22M201 127v23" stroke="#171019" stroke-width="8"/></g>
+<path d="M148 84l20 20m0-20l-20 20" fill="none" stroke="#1b101b" stroke-width="7" stroke-linecap="round"/><path d="M149 84l19 20" fill="none" stroke="#ffd58b" stroke-width="1.6" opacity=".8"/><path d="M89 119l48-13M183 106l49 11" stroke="#180d19" stroke-width="11"/>
+<path d="M112 166Q160 197 219 164Q201 217 162 216Q123 214 112 166Z" fill="#1a0912" stroke="#6b1c22" stroke-width="4"/>
+<path d="M122 177l13 14 13-11 13 13 14-11 14 11 14-15" fill="#fff0d5" stroke="#e7c8a6" stroke-width="2"/>
+<path d="M156 197Q162 220 171 202" fill="#ef5968"/>
+<path d="M91 166l17 8M219 174l16-10" stroke="#8a1827" stroke-width="4"/>
+<path d="M93 94q-9 13-2 24M232 96q9 13 3 22" stroke="#fda06b" stroke-width="3" fill="none" opacity=".7"/>
+<g fill="none" stroke="url(#gold)" stroke-width="4"><circle cx="53" cy="170" r="7"/><circle cx="66" cy="175" r="6"/><circle cx="273" cy="172" r="7"/><circle cx="259" cy="177" r="6"/></g>
+<path d="M127 215l32 17 31-17" stroke="url(#gold)" stroke-width="5" fill="none"/>
+<path d="M159 229l11 13-11 14-11-14Z" fill="url(#gold)" stroke="#271116" stroke-width="3"/>
+<path d="M152 237h14M159 234v17" stroke="#38161a" stroke-width="2"/>
+<g fill="#ffb845"><circle cx="75" cy="211" r="3"/><circle cx="243" cy="209" r="3"/><circle cx="51" cy="111" r="2"/><circle cx="268" cy="108" r="2"/></g>
+</g></svg>
