@@ -23,8 +23,9 @@ export function parseDataSource(source){
  function arg(){const t=peek();if(t?.kind==="literal")return take().value;if(is("true")||is("false"))return take().value==="true";return {ref:identifier()};}
  const fields=[],steps=[];
  while(is("input")){take();const name=identifier();expect(":","punct");const type=identifier();expect(";","punct");fields.push({name,type});}
- while(is("let")){take();const name=identifier();expect("=","punct");const op=identifier();expect("(","punct");const args=[];if(peek()?.value!==")"){args.push(arg());while(peek()?.value===","&&peek().kind==="punct"){take();args.push(arg());}}expect(")","punct");expect(";","punct");steps.push({name,op,args});}
+ while(is("let")){take();const name=identifier();expect("=","punct");const op=identifier();expect("(","punct");const args=[];if(!(peek()?.value===")"&&peek()?.kind==="punct")){args.push(arg());while(peek()?.value===","&&peek().kind==="punct"){take();args.push(arg());}}expect(")","punct");expect(";","punct");steps.push({name,op,args});}
  expect("return","id");const result=identifier();expect(";","punct");if(pos!==tokens.length)fail("Unexpected trailing source");
+ if([...fields,...steps].some(x=>["true","false"].includes(x.name)))throw Error("Boolean keywords are reserved.");
  const spec={fields,steps,result};compileData(spec);return spec;
 }
 export function emitDataSource(program){
