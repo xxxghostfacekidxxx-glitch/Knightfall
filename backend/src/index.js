@@ -40,6 +40,7 @@ import { staffCapabilities, canAccessCreatorFoundry } from "./staff-capabilities
 import { handleEyeOfHorus } from "./eye-of-horus.js";
 import { handleEyeOfChaos, runEyeChaosScheduledResearch } from "./eye-of-chaos.js";
 import { KNOWLEDGE_CRON, runKnowledgeResearch } from "./chaos-knowledge-fleet.mjs";
+import { ownerLearningContext } from "../chaos-order66-context.mjs";
 import {handleThemeCrew} from "./theme-crew.js";
 import {listThemeEntitlements} from "./theme-entitlements.js";
 import { handleGodTrash } from "./god-trash.js";
@@ -1842,11 +1843,13 @@ export default { async queue(batch, env) {
     // Read-only site lookup: results are curated links, not unrestricted model tools.
     const siteLookupContext=navigationContext(message)+radarContext(message);
     let utilityContext="";
+    // The private owner companion is verified above; use only local reviewed public evidence.
+    if(companionMode==="owner"){try{utilityContext+=await ownerLearningContext(env,message);}catch{console.warn("order66_owner_context_unavailable");}}
     const arithmetic=message.match(/^\s*(?:calculate|what is|what's|solve)\s+([0-9+*/().%\s-]{1,100})\??\s*$/i);
     if(arithmetic){
       try{
         const result=await dispatchChaosTool({name:"utility.calculate",input:{expression:arithmetic[1]},principal:{id:user.id,role:user.role}});
-        utilityContext="\n\nVERIFIED CALCULATOR RESULT: "+result.expression+" = "+result.result+"\n";
+        utilityContext+="\n\nVERIFIED CALCULATOR RESULT: "+result.expression+" = "+result.result+"\n";
       }catch{}
     }
 
