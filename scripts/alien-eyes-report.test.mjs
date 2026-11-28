@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import {exportSoftwareReport} from "../public/alien-eyes-report.mjs";
+const report={project:"owner/project",description:"<script>alert(1)</script>",license:"MIT"};
+test("four exports preserve report fields",()=>{for(const format of ["json","csv","md","html"]){const r=exportSoftwareReport(report,format);assert.match(r.content,/owner\/project/);assert.match(r.content,/MIT/);assert.match(r.filename,/alien-eyes-owner-project\./);}assert.deepEqual(JSON.parse(exportSoftwareReport(report).content),report);});
+test("escape HTML and neutralize CSV formulas",()=>{assert.doesNotMatch(exportSoftwareReport(report,"html").content,/<script>/);assert.match(exportSoftwareReport({...report,description:"=1+1"},"csv").content,/"'=1\+1"/);assert.throws(()=>exportSoftwareReport(null));assert.throws(()=>exportSoftwareReport(report,"exe"));});

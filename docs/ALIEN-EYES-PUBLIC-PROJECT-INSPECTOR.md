@@ -6,3 +6,6 @@ Standalone inspector retired. Project inspection now executes in Worker route /a
 
 ## Dedicated Osiris workspace
 The standalone URL now hosts the owner-only software inspector interface, using the exact same server authorization and existing detailed-report/catalog routes. It loads no report before authorization, renders upstream strings as text, supports cached report selection, and exports JSON. No new identity-correlation functions. The old public interface is not restored as public access.
+
+## Reporting
+The owner software workspace exports JSON, CSV, Markdown and HTML reports, with HTML escaping and spreadsheet formula neutralization. No personal-account scanning is included.
