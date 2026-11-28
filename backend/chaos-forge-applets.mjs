@@ -1,3 +1,4 @@
+import {verifyData,runData} from "./chaos-forge-data.mjs";
 import {verifyLogic,runLogic} from "./chaos-forge-logic.mjs";
 import {formulaSpec,evaluateFormula} from "./chaos-forge-formula.mjs";
 // Offline single-file applets generated from bounded, original templates.
@@ -21,7 +22,12 @@ export function appletSpec(request){
  return {kind,title};
 }
 export async function buildApplet(request){
- let logic=null;
+ let logic=null,data=null;
+ if(typeof request==="string"&&/^data\s*:/i.test(request)){
+  const input=JSON.parse(request.replace(/^data\s*:\s*/i,""));
+  if(typeof input.title!=="string"||!input.title.trim()||input.title.length>80)throw Error("Provide a title up to 80 characters.");
+  data=verifyData(input);request={kind:"data",title:input.title,program:data.program,result:data.tests[0].actual,defaults:data.tests[0].values};
+ }
  if(typeof request==="string"&&/^logic\s*:/i.test(request)){
   const input=JSON.parse(request.replace(/^logic\s*:\s*/i,""));
   if(typeof input.title!=="string"||!input.title.trim()||input.title.length>80)throw Error("Provide a title up to 80 characters.");
@@ -31,7 +37,12 @@ export async function buildApplet(request){
  const spec=typeof request==="string"&&/^formula\s*:/i.test(request)?formulaSpec(JSON.parse(request.replace(/^formula\s*:\s*/i,""))):typeof request==="string"?appletSpec(request):request;
  if(!spec||typeof spec.title!=="string"||spec.title.length>80)throw Error("Invalid applet title.");
  let body,script;
- if(spec.kind==="logic"){
+ if(spec.kind==="data"){
+  if(!data)throw Error("Data applet requires verified examples.");
+  body=spec.program.fields.map((field,i)=>'<label for="field-'+i+'">'+esc(field.name)+' ('+esc(field.type)+')</label><textarea id="field-'+i+'" rows="3" maxlength="16384">'+esc(field.type==="text"?spec.defaults[i]:JSON.stringify(spec.defaults[i]))+'</textarea>').join("")+'<button id="run">Run data program</button><pre id="output" aria-live="polite">'+esc(JSON.stringify(spec.result,null,2))+'</pre>';
+  script=runData.toString()+'\nconst program='+JSON.stringify(spec.program).replace(/</g,"\\u003c")+';\ndocument.getElementById("run").onclick=()=>{const out=document.getElementById("output");try{const values=program.fields.map((f,i)=>{const v=document.getElementById("field-"+i).value;return f.type==="text"?v:JSON.parse(v);});const result=runData(program,values);out.textContent=typeof result==="string"?result:JSON.stringify(result,null,2);}catch(e){out.textContent=e.message;}};';
+ }
+ else if(spec.kind==="logic"){
   if(!logic)throw Error("Logic applet requires verified examples.");
   body=spec.program.fields.map((name,i)=>'<label for="field-'+i+'">'+esc(name)+'</label><input id="field-'+i+'" type="number" step="any" value="'+esc(spec.defaults[i])+'">').join("")+'<button id="run">Run program</button><pre id="output" aria-live="polite">'+esc(spec.result)+'</pre>';
   script=runLogic.toString()+'\nconst program='+JSON.stringify(spec.program)+';\ndocument.getElementById("run").onclick=()=>{const out=document.getElementById("output");try{const values=program.fields.map((_,i)=>{const field=document.getElementById("field-"+i);if(!field.value.trim())throw Error("Every field is required");return Number(field.value);});out.textContent=String(runLogic(program,values));}catch(e){out.textContent=e.message;}};';
@@ -43,5 +54,5 @@ export async function buildApplet(request){
  const hash=btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.digest("SHA-256",encoder.encode(script)))));
  const title=esc(spec.title);
  const html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'sha256-'+hash+'\'; style-src \'unsafe-inline\'; base-uri \'none\'; form-action \'none\'; connect-src \'none\'"><title>'+title+'</title><style>body{font:16px system-ui,sans-serif;background:#141019;color:#f4edf8;max-width:42rem;margin:2rem auto;padding:1rem}main{background:#231c2c;border:1px solid #54435e;border-radius:1rem;padding:1.5rem}label{display:block;margin:1rem 0 .4rem}input,textarea,select,button{font:inherit;color:inherit;background:#31263c;border:1px solid #755986;border-radius:.5rem;padding:.6rem;max-width:100%;box-sizing:border-box}textarea{width:100%}button{margin:.7rem .5rem .2rem 0;cursor:pointer;background:#613a77}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #f0c0ff}li{margin:.4rem 0}li label{display:inline}pre{white-space:pre-wrap;overflow-wrap:anywhere}#output{margin:1rem 0;font-size:1.2rem}small{color:#c2b5c9}</style></head><body><main><small>MISS CHAOS · INDEPENDENT FORGE</small><h1>'+title+'</h1>'+body+'<p><small>Offline applet. No external services or account access.</small></p></main><script>'+script+'</script></body></html>';
- return {filename:"miss-chaos-"+spec.kind+".html",mime:"text/html; charset=utf-8",content:html,report:{kind:spec.kind,title:spec.title,offline:true,scriptHash:hash,program:spec.program||null,result:spec.result??null,externalInference:false,tests:logic?.tests||null}};
+ return {filename:"miss-chaos-"+spec.kind+".html",mime:"text/html; charset=utf-8",content:html,report:{kind:spec.kind,title:spec.title,offline:true,scriptHash:hash,program:spec.program||null,result:spec.result??null,externalInference:false,tests:logic?.tests||data?.tests||null}};
 }
