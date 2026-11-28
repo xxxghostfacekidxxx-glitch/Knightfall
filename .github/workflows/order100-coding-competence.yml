@@ -10,6 +10,7 @@ on:
       - 'scripts/chaos-independent-forge.test.mjs'
       - 'scripts/chaos-forge-logic.test.mjs'
       - 'scripts/chaos-forge-data.test.mjs'
+      - 'scripts/chaos-forge-composition.test.mjs'
       - 'backend/src/order100-coding-practice.mjs'
       - 'backend/chaos-order100-council.mjs'
       - 'scripts/order100-code-*.mjs'
@@ -36,12 +37,16 @@ jobs:
       - name: Install pinned parser dependencies
         run: npm install --prefix backend --ignore-scripts --no-package-lock --no-audit --no-fund
       - name: Verify independent applet, native compiler and reverse engineering
-        run: node --test scripts/chaos-independent-forge.test.mjs scripts/chaos-forge-logic.test.mjs scripts/chaos-forge-data.test.mjs
+        run: node --test scripts/chaos-independent-forge.test.mjs scripts/chaos-forge-logic.test.mjs scripts/chaos-forge-data.test.mjs scripts/chaos-forge-composition.test.mjs
       - name: Produce independent coding competence report
         run: node scripts/run-order100-coding-benchmark.mjs coding-report.json 0
+      - name: Produce typed synthesis holdout report
+        run: node --input-type=module -e 'import {synthesisBenchmark} from "./backend/chaos-forge-synthesis-benchmark.mjs"; import {writeFileSync} from "node:fs"; writeFileSync("typed-synthesis-report.json", JSON.stringify(synthesisBenchmark(), null, 2));'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: order100-coding-evidence
-          path: coding-report.json
+          path: |
+            coding-report.json
+            typed-synthesis-report.json
           retention-days: 14
