@@ -1,3 +1,4 @@
+import {verifySourceLibrary} from "./chaos-forge-source-library.mjs";
 import {verifyLogicLibrary,decompileLogicLibrary} from "./chaos-forge-logic-library.mjs";
 import {verifyPython} from "./chaos-forge-python.mjs";
 import {verifyControlJavaScript} from "./chaos-forge-javascript-control.mjs";
@@ -45,6 +46,8 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const sourceLibrary=question.match(/^compile source library(?: (module))?\s*:\s*([\s\S]+)$/i);
+ if(sourceLibrary){const report=verifySourceLibrary(JSON.parse(sourceLibrary[2])),module=!!sourceLibrary[1],file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-source-library"+(module?".mjs":".json"),content:module?report.module:JSON.stringify(report.program,null,2)});return {answer:"Compiled "+report.program.functions.length+" "+report.language+" functions; "+report.tests.length+" examples passed. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-source-library",artifact:file,report:{...report,module:undefined},externalInference:false};}
  const logicLibrary=question.match(/^compile logic library(?: (module))?\s*:\s*([\s\S]+)$/i);
  if(logicLibrary){const report=verifyLogicLibrary(JSON.parse(logicLibrary[2])),module=!!logicLibrary[1],file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-logic-library"+(module?".mjs":".json"),content:module?report.module:JSON.stringify(report.program,null,2)});return {answer:"Compiled numeric function library; "+report.tests.length+" examples passed. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-logic-library",artifact:file,report:{...report,module:undefined},externalInference:false};}
  const decodeLogicLibrary=question.match(/^decompile logic library\s*:\s*([\s\S]+)$/i);
