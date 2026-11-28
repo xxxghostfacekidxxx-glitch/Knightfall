@@ -6,18 +6,18 @@
 const REPO="xxxghostfacekidxxx-glitch/Knightfall";
 const PATH=/^(?:(?:backend|public|scripts|tests|docs)\/|\.github\/workflows\/)[a-zA-Z0-9_./-]+\.(?:js|mjs|cjs|ts|tsx|jsx|html|css|json|jsonc|md|yml|yaml)$/;
 const FORBIDDEN=/(?:^|\/)\.(?!github\/)|(?:^|\/)\.\.|(?:^|\/)(?:node_modules|dist|coverage|secret|secrets|credentials|private-keys|keys)(?:\/|$)|(?:^|[-_.\/])(?:passwords?|api[-_]?keys?|access[-_]?tokens?|credentials?|secrets?)(?:[-_.\/]|$)/i;
-export function validateKnightfallFileArgs(input={}){
+export function validateKnightfallFileArgs(input={}, {fullReview=false}={}){
  const path=String(input?.path||"");
  if(path.length<5||path.length>190||!PATH.test(path)||FORBIDDEN.test(path)||path.includes("//")||path.includes("\\")||/[\u0000-\u001f]/.test(path))
   throw Error("Choose a public Knightfall source file under backend/, public/, scripts/, tests/, docs/ or .github/workflows/.");
  const start=input.start_line===undefined?1:Number(input.start_line);
  const count=input.line_count===undefined?55:Number(input.line_count);
- if(!Number.isSafeInteger(start)||start<1||start>10000||!Number.isSafeInteger(count)||count<1||count>80)
+ if(!Number.isSafeInteger(start)||start<1||start>10000||!Number.isSafeInteger(count)||count<1||count>(fullReview?200:80))
   throw Error("Start line must be 1–10,000 and line count 1–80.");
  return {path,start,count};
 }
-export async function readKnightfallFile(input={}, {fetcher=fetch}={}){
- const {path,start,count}=validateKnightfallFileArgs(input);
+export async function readKnightfallFile(input={}, {fetcher=fetch,fullReview=false}={}){
+ const {path,start,count}=validateKnightfallFileArgs(input,{fullReview});
  // Resolve the trusted current main ref first. Fetch the raw file by immutable SHA,
  // not by the moving /main/ URL: a proposal must identify exactly what was read.
  const refUrl="https://api.github.com/repos/"+REPO+"/git/ref/heads/main";
@@ -63,8 +63,8 @@ export async function readKnightfallFile(input={}, {fetcher=fetch}={}){
  const all=text.split(/\r\n|\n|\r/),slice=all.slice(start-1,start-1+count);
  return {available:true,repository:REPO,branch:"main",commit_sha:head,path,source_url:url,
    total_lines:all.length,start_line:start,returned_lines:slice.length,
-   lines:slice.map((line,i)=>({number:start+i,text:line.slice(0,300)})),
-   long_lines_omitted:slice.some(line=>line.length>300),
+   lines:slice.map((line,i)=>({number:start+i,text:line.slice(0,fullReview?600:300)})),
+   long_lines_omitted:slice.some(line=>line.length>(fullReview?600:300)),
    truncated:slice.length>0&&start-1+slice.length<all.length,
    notice:"Immutable main-commit read-only excerpt. A line longer than 300 characters is visibly flagged and must NOT be used for a proposal. This is not an execution, test, or repository write."};
 }

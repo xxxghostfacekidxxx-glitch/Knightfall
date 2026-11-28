@@ -30,19 +30,20 @@ export const SANDBOX_TEST_RECIPES=Object.freeze({
  "public/chaos-crucible-shelf.mjs":Object.freeze(["scripts/chaos-crucible-shelf.test.mjs"]),
  "public/chaos-flow-core.mjs":Object.freeze(["scripts/chaos-flow-core.test.mjs"])
 });
-export function decodeSandboxCandidate(base64){
- if(typeof base64!=="string"||base64.length<4||base64.length>7000||
+export function decodeSandboxCandidate(base64,{fullReview=false}={}){
+ const maxBytes=fullReview?16000:MAX_CODE_BYTES,maxLines=fullReview?200:MAX_CODE_LINES,maxLine=fullReview?600:MAX_LINE_LENGTH;
+ if(typeof base64!=="string"||base64.length<4||base64.length>(fullReview?22000:7000)||
     !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(base64))
    throw Error("Provide canonical Base64 candidate text, no whitespace, at most 5 KB decoded.");
  const data=Buffer.from(base64,"base64");
- if(data.toString("base64")!==base64||data.length<1||data.length>MAX_CODE_BYTES)
+ if(data.toString("base64")!==base64||data.length<1||data.length>maxBytes)
    throw Error("Candidate is malformed or larger than 5 KB.");
  let text;
  try{text=new TextDecoder("utf-8",{fatal:true}).decode(data);}
  catch{throw Error("Candidate must be valid UTF-8 source text.");}
  if(!text.trim()||text.includes("\r")||text.includes("\0")||
-    text.split("\n").length>MAX_CODE_LINES||
-    text.split("\n").some(line=>line.length>MAX_LINE_LENGTH))
+    text.split("\n").length>maxLines||
+    text.split("\n").some(line=>line.length>maxLine))
    throw Error("Candidate must have 1–80 LF-only text lines, none longer than 300 characters.");
  return {bytes:data,text,sha256:hex(data)};
 }
@@ -55,7 +56,8 @@ export function validateSandboxRequest(input,{checkoutSha,root}={}){
     path.includes("..")||path.includes("//")||path.includes("\\"))
    throw Error("Only allowlisted public/ or backend/ source paths are accepted.");
  if(!SHA256.test(input.candidate_sha256||""))throw Error("A 64-character candidate SHA-256 is required.");
- const decoded=decodeSandboxCandidate(input.candidate_base64);
+ const fullReview=Object.hasOwn(SANDBOX_TEST_RECIPES,path);
+ const decoded=decodeSandboxCandidate(input.candidate_base64,{fullReview});
  if(decoded.sha256!==input.candidate_sha256)
    throw Error("Candidate SHA-256 mismatch. Do not run an altered review file.");
  if(input.run_targeted_tests!==true&&input.run_targeted_tests!==false)
@@ -64,12 +66,12 @@ export function validateSandboxRequest(input,{checkoutSha,root}={}){
  if(!file.startsWith(baseDir+sep)||!lstatSync(file).isFile()||realpathSync(file)!==file)
    throw Error("Source path must be a regular checked-out repository file, never a symlink.");
  const original=readFileSync(file);
- if(original.length<1||original.length>MAX_CODE_BYTES)
+ if(original.length<1||original.length>(fullReview?16000:MAX_CODE_BYTES))
    throw Error("Original complete source must be 1–5 KB for the supervised review path.");
  const originalText=new TextDecoder("utf-8",{fatal:true}).decode(original);
  if(!originalText.trim()||originalText.includes("\r")||
-    originalText.split("\n").length>MAX_CODE_LINES||
-    originalText.split("\n").some(line=>line.length>MAX_LINE_LENGTH))
+    originalText.split("\n").length>(fullReview?200:MAX_CODE_LINES)||
+    originalText.split("\n").some(line=>line.length>(fullReview?600:MAX_LINE_LENGTH)))
    throw Error("Original file does not meet the complete-source review constraints.");
  if(original.equals(decoded.bytes))throw Error("No changes to test.");
  const tests=SANDBOX_TEST_RECIPES[path]||[];

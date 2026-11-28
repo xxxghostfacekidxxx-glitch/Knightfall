@@ -20,19 +20,20 @@ const formats={js:"javascript",mjs:"javascript",cjs:"javascript",ts:"typescript"
 export function validateDevReviewInput(payload){
  if(!payload||typeof payload!=="object"||Array.isArray(payload))throw Error("Expected a review proposal object.");
  if(typeof payload.source_sha!=="string"||!VALID_SHA.test(payload.source_sha))throw Error("A valid immutable 40-character main SHA is required.");
+ const fullReview=validIntegrationPath(payload.path),maxBytes=fullReview?16000:5000,maxLines=fullReview?200:80,maxLine=fullReview?600:300;
  const {path,start,count}=validateKnightfallFileArgs({path:payload.path,start_line:1,line_count:80});
  if(start!==1||count!==80)throw Error("Invalid source range.");
  if(typeof payload.original!=="string"||typeof payload.candidate!=="string"||
     !payload.original.trim()||!payload.candidate.trim()||
-    bytes(payload.original)>5000||bytes(payload.candidate)>5000)
-   throw Error("Complete original and proposed source must be 1–5,000 bytes each.");
+    bytes(payload.original)>maxBytes||bytes(payload.candidate)>maxBytes)
+   throw Error("Complete original and proposed source must be 1–"+maxBytes.toLocaleString("en-US")+" bytes each.");
  if(payload.original===payload.candidate)throw Error("No actual change was proposed.");
  if(payload.original.includes("\r")||payload.candidate.includes("\r"))
    throw Error("Normalize line endings to LF before review.");
- if(payload.original.split("\n").length>80||payload.candidate.split("\n").length>80)
-   throw Error("The complete file and proposed replacement must each be 80 lines or fewer.");
- if(payload.candidate.split("\n").some(line=>line.length>300))
-   throw Error("A proposed line is longer than the safe 300-character source reader limit.");
+ if(payload.original.split("\n").length>maxLines||payload.candidate.split("\n").length>maxLines)
+   throw Error("The complete file and proposed replacement must each be "+maxLines+" lines or fewer.");
+ if(payload.candidate.split("\n").some(line=>line.length>maxLine))
+   throw Error("A proposed line is longer than the safe "+maxLine+"-character source reader limit.");
  const summary=String(payload.summary||"").trim();
  if(summary.length<12||summary.length>360)throw Error("Include a specific 12–360 character summary of the change.");
  return {path,source_sha:payload.source_sha,original:payload.original,candidate:payload.candidate,summary};
@@ -41,22 +42,23 @@ export async function inspectDevReviewCandidate(payload,{readSource=readKnightfa
  const p=validateDevReviewInput(payload);
  // The Worker repeats an authenticated GitHub HEAD lookup and pulls the
  // immutable file, never trusting the client-supplied SHA, excerpt or preflight.
- const verified=await readSource({path:p.path,start_line:1,line_count:80});
+ const fullReview=validIntegrationPath(p.path),maxLines=fullReview?200:80;
+ const verified=await readSource({path:p.path,start_line:1,line_count:maxLines},{fullReview});
  if(!verified?.available||verified.branch!=="main"||verified.commit_sha!==p.source_sha||
     verified.long_lines_omitted||verified.start_line!==1||
     !Number.isInteger(verified.total_lines)||verified.total_lines<1||
-    verified.total_lines>80||verified.lines?.length!==verified.total_lines||
+    verified.total_lines>maxLines||verified.lines?.length!==verified.total_lines||
     verified.lines.some((line,index)=>line.number!==index+1))
    throw Error("Current main revision is stale, inaccessible, incomplete or exceeds the full-file limit. Re-read source.");
  const actual=verified.lines.map(line=>line.text).join("\n");
  if(actual!==p.original)throw Error("Current immutable source differs from the supplied original. Re-read source.");
- const diff=compareChaosCode({before:actual,after:p.candidate});
+ const diff=compareChaosCode({before:actual,after:p.candidate},{fullReview});
  if(diff.identical||!diff.unified_diff)throw Error("No verified changes to review.");
  const ext=p.path.split(".").pop()?.toLowerCase();
  let syntax_status="not_supported",findings=[];
  if(Object.hasOwn(formats,ext)){
    const result=inspectChaosCode({code:p.candidate,language:formats[ext],
-     source_type:ext==="cjs"?"script":"module"});
+     source_type:ext==="cjs"?"script":"module"},{fullReview});
    if(!result.syntax_valid)throw Error("Proposed full-file syntax failed: "+String(result.errors?.[0]?.message||"Invalid syntax.").slice(0,120));
    syntax_status="passed";
    findings=(result.findings||[]).slice(0,8);
@@ -112,9 +114,9 @@ export async function handleChaosDevReviews(request,env,url,{requireUser,json,or
  if(!ready)return reply({error:"Review docket schema is awaiting approved migration 0151. No code is being integrated.",schema_ready:false},503);
  async function body(){
    const size=Number(request.headers.get("content-length")||0);
-   if(size>12000)throw Error("Review body exceeds 12 KB.");
+   if(size>40000)throw Error("Review body exceeds 40 KB.");
    const raw=await request.text();
-   if(bytes(raw)>12000)throw Error("Review body exceeds 12 KB.");
+   if(bytes(raw)>40000)throw Error("Review body exceeds 40 KB.");
    const data=JSON.parse(raw);
    if(!data||typeof data!=="object"||Array.isArray(data))throw Error("Invalid review JSON.");
    return data;
@@ -132,7 +134,7 @@ export async function handleChaosDevReviews(request,env,url,{requireUser,json,or
  if(detail&&request.method==="GET"&&!detail[2]){
    const row=await env.DB.prepare("SELECT * FROM chaos_dev_reviews WHERE id=?").bind(detail[1]).first();
    if(!row)return reply({error:"Review not found."},404);
-   const diff=compareChaosCode({before:row.original,after:row.candidate});
+   const diff=compareChaosCode({before:row.original,after:row.candidate},{fullReview:validIntegrationPath(row.path)});
    const job=await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind("chaos_integration:"+row.id).first();let integration=null;try{integration=JSON.parse(job?.value||"null");}catch{}
    return reply({...devReviewSummary(row),can_apply:owner&&validIntegrationPath(row.path),integration_ready:owner&&true,integration,original:row.original,candidate:row.candidate,
      diff:diff.unified_diff,source_url:"https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/"+row.source_sha+"/"+row.path,

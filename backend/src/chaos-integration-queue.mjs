@@ -11,7 +11,7 @@ export async function claimIntegration(env,{runId,sha}){
   if(!ID.test(row.id)||!validIntegrationPath(row.path)||!SHA.test(row.source_sha)||typeof row.candidate!=="string")continue;
   const prior=JSON.parse(row.value);
   const bytes=new TextEncoder().encode(row.candidate);
-  if(!bytes.length||bytes.length>5000)continue;
+  if(!bytes.length||bytes.length>16000)continue;
   const next={...prior,status:row.source_sha===sha?"claimed":"stale_base",run_id:runId,claimed_at:stamp()};
   const changed=await env.DB.prepare("UPDATE site_settings SET value=?,updated_at=? WHERE key=? AND value=?").bind(JSON.stringify(next),stamp(),PREFIX+row.id,row.value).run();
   if(changed.meta?.changes!==1||next.status!=="claimed")continue;

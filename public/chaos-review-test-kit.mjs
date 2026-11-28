@@ -7,6 +7,7 @@ export const CHAOS_CANDIDATE_KIT_SCHEMA="knightfall.miss-chaos.manual-candidate-
 const SHA=/^[a-f0-9]{40}$/,PATH=/^(?:public|backend)\/[A-Za-z0-9_./-]+\.(?:js|mjs|cjs|ts|tsx|jsx|json)$/;
 const UNSAFE=/(?:^|\/)(?:\.{1,2}|node_modules|dist|coverage|secrets?|private-keys|credentials)(?:\/|$)|(?:^|[-_.\/])(?:passwords?|credentials?|api[-_]?keys?|access[-_]?tokens?)(?:[-_.\/]|$)/i;
 const MAX_BYTES=5000;
+const REVIEW_TARGETS=new Set(["public/miss-chaos-guide-core.mjs","public/chaos-visual-effects.mjs","public/chaos-review-test-kit.mjs","backend/chaos-public-tools.mjs","public/chaos-crucible-core.mjs","public/chaos-crucible-progress.mjs","public/chaos-crucible-shelf.mjs"]);
 function encodeBytesAsBase64(bytes){
  let raw="";
  for(const n of bytes)raw+=String.fromCharCode(n);
@@ -23,8 +24,9 @@ export async function makeChaosCandidateTestKit(proposal,{digest}={}){
  if(typeof candidate!=="string"||!candidate.trim()||candidate.includes("\r")||candidate.includes("\0"))
    throw Error("A complete LF-only candidate text is required.");
  const bytes=new TextEncoder().encode(candidate);
- if(bytes.length>MAX_BYTES||candidate.split("\n").length>80||
-    candidate.split("\n").some(line=>line.length>300))
+ const fullReview=REVIEW_TARGETS.has(path);
+ if(bytes.length>(fullReview?16000:MAX_BYTES)||candidate.split("\n").length>(fullReview?200:80)||
+    candidate.split("\n").some(line=>line.length>(fullReview?600:300)))
    throw Error("The complete source must be 1–5,000 UTF-8 bytes and 80 lines or fewer.");
  const hash=digest||(typeof crypto!=="undefined"?crypto.subtle?.digest?.bind(crypto.subtle):null);
  if(typeof hash!=="function")throw Error("Secure browser hashing is unavailable.");

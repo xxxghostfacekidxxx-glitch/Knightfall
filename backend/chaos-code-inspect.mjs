@@ -2,10 +2,10 @@ import {parse} from "acorn";
 import {parse as parseBabel} from "@babel/parser";
 /** Acorn-backed, read-only syntax inspector. Never executes or persists submitted code. */
 const clip=(s,n=160)=>String(s||"").slice(0,n);
-export function inspectChaosCode(input={}){
+export function inspectChaosCode(input={}, {fullReview=false}={}){
  if(!input||typeof input!=="object"||Array.isArray(input))throw Error("Invalid code input.");
  const code=input.code;
- if(typeof code!=="string"||!code.trim()||new TextEncoder().encode(code).length>10000)
+ if(typeof code!=="string"||!code.trim()||new TextEncoder().encode(code).length>(fullReview?16000:10000))
    throw Error("Provide up to 10,000 bytes of code.");
  const language=String(input.language||"javascript").toLowerCase();
  if(!["javascript","json","typescript","jsx","tsx"].includes(language))throw Error("Only JavaScript, TypeScript, JSX, TSX and JSON are supported.");

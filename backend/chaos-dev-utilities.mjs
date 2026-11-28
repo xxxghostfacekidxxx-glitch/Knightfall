@@ -1,10 +1,10 @@
 import {diffLines,createTwoFilesPatch} from "diff";
 /** Bounded code comparison. This never executes either input or changes repository files. */
-export function compareChaosCode(input={}){
+export function compareChaosCode(input={}, {fullReview=false}={}){
  if(!input||typeof input!=="object"||Array.isArray(input))throw Error("Expected two text versions.");
  const before=input.before,after=input.after;
  const bytes=value=>new TextEncoder().encode(value).length;
- if(typeof before!=="string"||typeof after!=="string"||bytes(before)>5000||bytes(after)>5000)
+ if(typeof before!=="string"||typeof after!=="string"||bytes(before)>(fullReview?16000:5000)||bytes(after)>(fullReview?16000:5000))
   throw Error("Each version must be text of at most 5,000 bytes.");
  if(before.split(/\r?\n/).length>250||after.split(/\r?\n/).length>250)throw Error("Maximum 250 lines per version.");
  const options={timeout:850,maxEditLength:1100};
@@ -20,7 +20,7 @@ export function compareChaosCode(input={}){
  let patch=before===after?"":createTwoFilesPatch("before.txt","after.txt",before,after,"","",{
    context:3,timeout:850,maxEditLength:1100
  });
- if(typeof patch!=="string"||bytes(patch)>16500)throw Error("The diff is too large to return safely.");
+ if(typeof patch!=="string"||bytes(patch)>(fullReview?40000:16500))throw Error("The diff is too large to return safely.");
  return {source:"jsdiff 8.0.2 (BSD-3-Clause)",identical:before===after,
    added_lines:added,removed_lines:removed,hunks,unified_diff:patch,
    notice:"Comparison only. No execution, source persistence, patch application, GitHub writes, or deployment."};
