@@ -533,14 +533,17 @@ $("#attachment-input").addEventListener("change",async event=>{
  attachmentUploads++;
  $("#attach-file").disabled=true;
  status("Preparing "+files.length+" attachment(s)…");
+ let processed=0;
  try {
   for(const file of files){
+   if(sameComposer())status("Preparing attachment "+(processed+1)+" of "+files.length+"…");
    try{
     const prepared=await KnightfallPhotoUpload.prepareAttachment(file);
      const data=await uploadAttachment(prepared,conversationId);
     if(sameComposer()){pendingAttachments.push(data);drawPendingAttachments();}
     else{const saved=attachmentDrafts.get(conversationId)||[];attachmentDrafts.set(conversationId,[...saved,data]);persistInboxAttachmentDrafts();}
    }catch(error){failures.push(file.name+": "+error.message);}
+   finally{processed++;}
   }
   if(sameComposer())status(failures.join(" · ")||"Attachments ready to send.",!failures.length);
  }finally{
@@ -549,7 +552,7 @@ $("#attachment-input").addEventListener("change",async event=>{
  }
 });
 $("#pending-attachments").addEventListener("click",async e=>{const btn=e.target.closest("[data-pending-remove]");if(!btn)return;const id=Number(btn.dataset.pendingRemove),item=pendingAttachments.find(x=>Number(x.id)===id);pendingAttachments=pendingAttachments.filter(x=>Number(x.id)!==id);drawPendingAttachments();await deletePendingAttachment(id);if(item)status("Removed "+item.filename+" from this message.",true)});
-async function refreshAttachments(){const id=Number(currentId);if(!id)return;const articles=[...$("#messages").querySelectorAll("[data-message]")].slice(-100);if(!articles.length)return;const ids=articles.map(x=>Number(x.dataset.message)).filter(Number.isSafeInteger).slice(-100);try{const d=await api("/api/messages/conversations/"+id+"/attachments?message_ids="+ids.join(","));if(Number(currentId)!==id)return;const grouped={};for(const a of d.attachments||[])(grouped[a.message_id]??=[]).push(a);for(const article of articles){const box=article.querySelector("[data-attachments-for]");if(!box)continue;box.innerHTML=(grouped[article.dataset.message]||[]).map(a=>{
+async function refreshAttachments(){const id=Number(currentId);if(!id)return;const articles=[...$("#messages").querySelectorAll("[data-message]")].slice(-100);if(!articles.length)return;const ids=articles.map(x=>Number(x.dataset.message)).filter(Number.isSafeInteger).slice(-100);try{const d=await api("/api/messages/conversations/"+id+"/attachments?message_ids="+ids.join(","));if(Number(currentId)!==id)return;const grouped={};for(const a of d.attachments||[])(grouped[a.message_id]??=[]).push(a);for(const article of articles){const box=article.querySelector("[data-attachments-for]");if(!box)continue;const markup=(grouped[article.dataset.message]||[]).map(a=>{
  const url=API+'/api/messages/attachments/'+Number(a.id);
  const name=esc(a.original_filename||"Attachment");
  const image=/^image\/(jpeg|png|gif|webp)$/.test(String(a.content_type||""));
@@ -557,11 +560,11 @@ async function refreshAttachments(){const id=Number(currentId);if(!id)return;con
  (image?'<img class="message-image-thumb" src="'+url+'" loading="lazy" decoding="async" alt="'+name+'" referrerpolicy="no-referrer">':
  '<span class="attachment-icon">📎</span>')+
  '<span class="attachment-info"><strong>'+name+'</strong><small>'+(Number(a.byte_size)/1048576).toFixed(2)+' MB</small></span></a>';
-}).join("")}}catch(e){console.warn("Could not load message attachments",e.message)}}
+}).join("");if(box._kfAttachmentMarkup!==markup){if(box.innerHTML!==markup)box.innerHTML=markup;box._kfAttachmentMarkup=markup;}}}catch(e){console.warn("Could not load message attachments",e.message)}}
 $("#body").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();$("#composer").requestSubmit()}});
 async function sendTypingState(typing,conversationId=currentId){const id=Number(conversationId);if(!id)return;try{await api("/api/messages/conversations/"+id+"/typing",{method:"POST",body:JSON.stringify({typing})})}catch{}}
 async function refreshTyping(){const id=Number(currentId),token=conversationLoadToken;if(!id||document.hidden)return;try{const d=await api("/api/messages/conversations/"+id+"/typing");if(id!==Number(currentId)||token!==conversationLoadToken)return;const names=(d.typing||[]).map(x=>x.display_name||x.username).filter(Boolean),indicator=$("#typing-indicator");indicator.textContent=names.length?(names.length===1?names[0]+" is typing…":names.slice(0,2).join(", ")+(names.length>2?" and others":"")+" are typing…"):"";indicator.hidden=!names.length}catch{}}
-$("#body").addEventListener("input",()=>{const f=$("#body");f.style.height="auto";f.style.height=Math.min(f.scrollHeight,180)+"px";$("#character-count").textContent=f.value.length.toLocaleString()+" / 4,000";if(currentId){rememberConversationDraft(currentId,f.value);drawConversations();}if(!f.value.trim()){clearTimeout(typingHandle);sendTypingState(false);return}if(Date.now()-lastTypingSentAt>1800){lastTypingSentAt=Date.now();sendTypingState(true)}clearTimeout(typingHandle);typingHandle=setTimeout(()=>sendTypingState(false),6500);});
+$("#body").addEventListener("input",()=>{const f=$("#body");f.style.height="auto";f.style.height=Math.min(f.scrollHeight,180)+"px";$("#character-count").textContent=f.value.length.toLocaleString()+" / 4,000";if(currentId){const hadDraft=Boolean(conversationDrafts.get(Number(currentId))?.trim());rememberConversationDraft(currentId,f.value);if(hadDraft!==Boolean(f.value.trim()))drawConversations();}if(!f.value.trim()){clearTimeout(typingHandle);sendTypingState(false);return}if(Date.now()-lastTypingSentAt>1800){lastTypingSentAt=Date.now();sendTypingState(true)}clearTimeout(typingHandle);typingHandle=setTimeout(()=>sendTypingState(false),6500);});
 document.querySelectorAll("[data-inbox-filter]").forEach(b=>b.addEventListener("click",()=>{inboxFilter=b.dataset.inboxFilter;document.querySelectorAll("[data-inbox-filter]").forEach(x=>{const active=x===b;x.classList.toggle("active",active);x.setAttribute("aria-pressed",String(active))});drawConversations()}));
 const composeDialog=$("#compose-dialog"),memberSearch=$("#member-search"),memberResults=$("#member-results");
  const directRecipient=$("#direct-recipient"),directStart=$("#direct-start"),composeFeedback=$("#compose-feedback");
