@@ -1,0 +1,11 @@
+import {writeFileSync} from "node:fs";
+import {emptyPrior} from "../backend/order100-code-synthesis.mjs";
+import {peerRound,codingBenchmark} from "../backend/order100-code-curriculum.mjs";
+import {freshCodingBenchmark} from "./order100-code-fresh-benchmark.mjs";
+const dest=process.argv[2],round=Number(process.argv[3]||0);
+if(!dest||!Number.isSafeInteger(round)||round<0)throw Error("Specify report path and nonnegative round");
+const taught=peerRound(round),prior=taught.prior;
+const report={course:taught.course,round,teachers:taught.lessons.length,verifiedLearners:taught.accepted,samples:prior.samples,development:{baseline:codingBenchmark(emptyPrior()),learned:codingBenchmark(prior),expanded:codingBenchmark(prior,{budget:4096})},transfer:{baseline:freshCodingBenchmark(emptyPrior()),learned:freshCodingBenchmark(prior),expanded:freshCodingBenchmark(prior,4096)},mainCoderReady:false,limitations:["Restricted numeric array language","No repository-scale code reasoning","No arbitrary implementation or automatic production promotion","Small authored evaluation sets"]};
+writeFileSync(dest,JSON.stringify(report,null,2),{flag:"wx"});
+console.log(JSON.stringify({teachers:report.teachers,verifiedLearners:report.verifiedLearners,development:report.development.learned.solved,transfer:report.transfer.learned.solved,mainCoderReady:false}));
+if(taught.accepted!==100)process.exitCode=1;
