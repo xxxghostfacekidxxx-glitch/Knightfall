@@ -1812,7 +1812,7 @@ export default { async queue(batch, env) {
     if((!message&&!hasImage)||message.length>4000)
       return json({error:"Message must be between 1 and 4000 characters, or contain one photo."},400,origin);
     const independentPrefix=/^\s*independent\s*:\s*/i;
-    const forgeIntent=/^\s*(?:applet|(?:make|create|build) (?:an? )?applet|compile\s+(?:wasm|stack|formula|function|logic|library|(?:data|source)(?: module)?)|synthesize\s+data|run\s+(?:logic|data)|(?:decompile|disassemble|reverse engineer)\s+(?:wasm|stack|formula|function|logic|data|source|javascript|typescript|jsx|tsx|json)|analyze source\s+(?:javascript|typescript|jsx|tsx|json))\s*:/i.test(message);\n    const independent=body.engine==="independent"||independentPrefix.test(message)||(companionMode==="owner"&&forgeIntent);
+    const forgeIntent=/^\s*(?:applet|(?:make|create|build) (?:an? )?applet|compile\s+(?:wasm|stack|formula|function|logic|library|(?:data|source)(?: module)?)|image\s+(?:vector|generate|options)|synthesize\s+data|run\s+(?:logic|data)|(?:decompile|disassemble|reverse engineer)\s+(?:wasm|stack|formula|function|logic|data|source|javascript|typescript|jsx|tsx|json)|analyze source\s+(?:javascript|typescript|jsx|tsx|json))\s*:/i.test(message);\n    const independent=body.engine==="independent"||independentPrefix.test(message)||(companionMode==="owner"&&forgeIntent);
     if(independent){
       if(companionMode!=="owner")return json({error:"Independent Core preview requires verified Osiris mode."},403,origin);
       if(hasImage)return json({error:"Independent Core does not process photos."},400,origin);
