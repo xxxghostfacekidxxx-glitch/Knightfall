@@ -1,3 +1,4 @@
+import {compileFormula,decompileFormula,evaluateFormula} from "./chaos-forge-formula.mjs";
 import {compileArtifact,decompileStack,hexBytes,inspectWasm} from "./chaos-forge-binary.mjs";
 import {buildApplet} from "./chaos-forge-applets.mjs";
 import {reverseSource} from "./chaos-forge-reverse.mjs";
@@ -31,6 +32,10 @@ export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
  const app=question.match(/^(?:applet|(?:make|create|build) (?:an? )?applet)\s*:\s*(.+)$/i);
  if(app){const a=await buildApplet(app[1]);const file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline "+a.report.title+" applet. Download: "+file.downloadUrl+"\nSHA-256: "+file.sha256+"\nExpires in seven days. No external inference or dependencies.",method:"independent-applet-forge",artifact:file,report:a.report,externalInference:false};}
+ const formula=question.match(/^compile formula\s*:\s*([\s\S]+)$/i);
+ if(formula){const input=JSON.parse(formula[1]),program=compileFormula(input.expression,input.fields),report={program,reconstructed:decompileFormula(program),exampleResult:input.values===undefined?null:evaluateFormula(program,input.values)},file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-formula.json",content:JSON.stringify(program,null,2)});return {answer:"Compiled parameterized formula bytecode. Download: "+file.downloadUrl+"\n"+JSON.stringify(report,null,2),method:"independent-formula-compiler",artifact:file,report,externalInference:false};}
+ const formulaDecode=question.match(/^(?:decompile|disassemble|reverse engineer) formula\s*:\s*([\s\S]+)$/i);
+ if(formulaDecode){const report=decompileFormula(JSON.parse(formulaDecode[1]));return {answer:JSON.stringify(report,null,2),method:"independent-formula-decompiler",report,externalInference:false};}
  const compile=question.match(/^compile\s+(wasm|stack)\s*:\s*(.+)$/i);
  if(compile){const a=compileArtifact(compile[2],compile[1].toLowerCase());const file=await saveForgeArtifact(env,owner,a);return {answer:"Compiled "+a.report.target+" artifact; result "+a.report.result+". Download: "+file.downloadUrl+"\nSHA-256: "+file.sha256,method:"independent-binary-compiler",artifact:file,report:a.report,externalInference:false};}
  const decompile=question.match(/^(?:decompile|disassemble|reverse engineer)\s+(wasm|stack)\s*:\s*([\s\S]+)$/i);
