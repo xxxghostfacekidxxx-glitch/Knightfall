@@ -1,3 +1,4 @@
+import {forgeCommand,forgeDownload,listForgeArtifacts,deleteForgeArtifact} from "../chaos-independent-forge.mjs";
 import {readCodingPractice,codingKnowledge} from "./order100-coding-practice.mjs";
 import {readPeerAssessment} from "./order100-peer-assessments.mjs";
 import {peerCurriculum,councilResearch,independentAnswer} from "../chaos-order100-council.mjs";
@@ -26,12 +27,23 @@ export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=
   if(disabled)return respond({error:"Alien Eyes is disabled."},403);
   return handleBuildInsight(request,env,url,user,respond,{fetcher});
  }
+ const downloadMatch=url.pathname.match(/^\/api\/god\/eye\/tools\/forge-download\/([a-f0-9-]{36})$/);
+ if(downloadMatch&&request.method==="GET")return await forgeDownload(env,user.id,downloadMatch[1])||respond({error:"Artifact expired or not found."},404);
+ if(url.pathname===prefix+"/forge"&&request.method==="GET")return respond({artifacts:await listForgeArtifacts(env,user.id)});
+ if((url.pathname===prefix+"/forge"&&request.method==="POST")||(downloadMatch&&request.method==="DELETE")){
+  if(!["https://ash-fall.com","https://www.ash-fall.com"].includes(request.headers.get("origin")))return respond({error:"Same-site request required."},403);
+  if(downloadMatch)return respond({deleted:await deleteForgeArtifact(env,user.id,downloadMatch[1])});
+  if(!/^application\/json(?:;|$)/i.test(request.headers.get("content-type")||""))return respond({error:"JSON required."},415);
+  const reader=request.body?.getReader();if(!reader)return respond({error:"Request body required."},400);
+  const decoder=new TextDecoder("utf-8",{fatal:true});let raw="",size=0;
+  try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>70000){await reader.cancel();return respond({error:"Input too large."},413);}raw+=decoder.decode(value,{stream:true});}raw+=decoder.decode();const input=JSON.parse(raw);const result=await forgeCommand(env,user.id,input.question);return result?respond(result):respond({error:"Unknown Forge command."},400);}catch(error){return respond({error:String(error.message||"Forge failed.").slice(0,240)},400);}finally{reader.releaseLock();}
+ }
  if(url.pathname===prefix+"/council"&&request.method==="POST"){
   if(!["https://ash-fall.com","https://www.ash-fall.com"].includes(request.headers.get("origin"))||!/^application\/json(?:;|$)/i.test(request.headers.get("content-type")||""))return respond({error:"Same-site JSON required."},403);
   const raw=await request.text();if(raw.length>3500)return respond({error:"Input too large."},413);
   let input;try{input=JSON.parse(raw);}catch{return respond({error:"Invalid JSON."},400);}
   if(typeof input?.question!=="string"||!input.question.trim()||input.question.length>3000)return respond({error:"Provide a question of 1–3000 characters."},400);
-  return respond(await independentAnswer(env,input.question));
+  return respond(await independentAnswer(env,input.question,user.id));
  }
  if(url.pathname===prefix+"/coding-knowledge"&&request.method==="GET")return respond(await codingKnowledge(env));
  const lessonMatch=url.pathname.match(/^\/api\/god\/eye\/tools\/learning\/(mc-\d{2,3})$/);
