@@ -733,10 +733,11 @@ async function api(path,opts={}){
     }
     if(event.target.closest("input,textarea,[contenteditable=true],select,button,a"))event.stopPropagation();
   });
-  let tickRunning=false,tickQueued=false,lastTickStart=0;
+  let tickRunning=false,tickQueued=false,lastTickStart=0,tickRetry=0;
   async function tick(){
     if(document.hidden||navigator.onLine===false)return;
     if(tickRunning){tickQueued=true;return;}
+    if(Date.now()-lastTickStart<1000){clearTimeout(tickRetry);tickRetry=setTimeout(()=>void tick(),1000);return;}
     tickRunning=true;
     lastTickStart=Date.now();
     try{
@@ -768,8 +769,8 @@ async function api(path,opts={}){
   const timer=setInterval(()=>{
     if(document.hidden||navigator.onLine===false||tickRunning)return;
     bindLive();
-    const interval=window.KnightfallLive?.connected?(state.visible?30000:60000):15000;
+    const interval=window.KnightfallLive?.connected?(state.visible?30000:90000):(state.visible?15000:45000);
     if(Date.now()-lastTickStart>=interval)void tick();
   },15000);
-  window.addEventListener("pagehide",event=>{if(!event.persisted){clearInterval(timer);clearTimeout(bubbleLiveDelay);if(typeof liveUnsubscribe==="function")liveUnsubscribe();}});
+  window.addEventListener("pagehide",event=>{if(!event.persisted){clearInterval(timer);clearTimeout(bubbleLiveDelay);clearTimeout(tickRetry);if(typeof liveUnsubscribe==="function")liveUnsubscribe();}});
 })();
