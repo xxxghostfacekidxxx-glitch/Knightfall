@@ -17,7 +17,7 @@ export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=
  try{
  const partner=await env.DB.prepare("SELECT invited_by FROM ai_handoff_partner WHERE slot=1").first();
  if(!canReviewTools(user,partner))return respond({error:"Verified Osiris owner access required."},403);
- const lessonMatch=url.pathname.match(/^\/api\/god\/eye\/tools\/learning\/(mc-\d\d)$/);
+ const lessonMatch=url.pathname.match(/^\/api\/god\/eye\/tools\/learning\/(mc-\d{2,3})$/);
  if(lessonMatch&&request.method==="GET"){if(!RESEARCH_FLEET.some(a=>a.key===lessonMatch[1]))return respond({error:"Unknown research agent."},404);return respond({agent:lessonMatch[1],evidence:await agentEvidence(env,lessonMatch[1]),sharedReviewed:await sharedReviewedKnowledge(env),softwareReferences:await agentSoftwareReferences(env,lessonMatch[1])});}
  if(url.pathname===prefix+"/learning"&&request.method==="GET"){
   const [runs,lessons,control]=await Promise.all([
