@@ -5,7 +5,7 @@ const owner={id:7,role:"god",status:"active"};
 function fixture(user=owner,partner={invited_by:7}){
  const saved=new Map();let requests=0,writes=0;
  const env={DB:{prepare(sql){return {bind(...args){this.args=args;return this;},async first(){return sql.includes("ai_handoff_partner")?partner:saved.has(this.args?.[0])?{value:saved.get(this.args[0])}:null;},async run(){writes++;saved.set(this.args[0],this.args[1]);}};}}};
- const fetcher=async(url,opts)=>{requests++;assert.ok(["https://api.github.com/repos/example/project","https://api.github.com/repos/tree-sitter/tree-sitter"].includes(url));assert.equal(opts.credentials,"omit");return {ok:true,json:async()=>({full_name:"example/project",private:false,license:{spdx_id:"MIT"}})};};
+ const fetcher=async(url,opts)=>{requests++;assert.ok(["https://api.github.com/repos/example/project","https://api.github.com/repos/tree-sitter/tree-sitter"].includes(url));assert.equal(opts.credentials,"omit");return {ok:true,json:async()=>({full_name:url.endsWith("/tree-sitter/tree-sitter")?"tree-sitter/tree-sitter":"example/project",private:false,license:{spdx_id:"MIT"}})};};
  const respond=(data,status=200)=>({status,data});
  const call=(suffix="",opts={})=>{const url=new URL("https://api.ash-fall.com/api/god/eye/tools"+suffix);return handleEyeToolReview(new Request(url,opts),env,url,user,respond,{fetcher});};
  const decision=(value,origin="https://ash-fall.com")=>call("/alien-eyes/decision",{method:"POST",headers:{origin,"content-type":"application/json"},body:JSON.stringify({decision:value})});
