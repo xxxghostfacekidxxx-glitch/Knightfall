@@ -1,0 +1,79 @@
+name: Miss Chaos · Owner-approved integration
+on:
+  workflow_dispatch:
+    inputs:
+      base_sha:
+        description: Exact main commit from candidate kit
+        required: true
+        type: string
+      path:
+        description: Existing source file with an approved test recipe
+        required: true
+        type: string
+      candidate_base64:
+        description: Complete reviewed candidate, canonical Base64
+        required: true
+        type: string
+      candidate_sha256:
+        description: Exact candidate SHA-256
+        required: true
+        type: string
+      confirmation:
+        description: Type APPLY TO MAIN to authorize this exact candidate
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: miss-chaos-approved-integration
+  cancel-in-progress: false
+jobs:
+  test:
+    if: ${{ github.ref == 'refs/heads/main' && github.actor == github.repository_owner && inputs.confirmation == 'APPLY TO MAIN' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --prefix backend --ignore-scripts --no-audit --no-fund
+      - name: Check and test exact candidate in read-only job
+        env:
+          KF_REVIEW_BASE_SHA: ${{ inputs.base_sha }}
+          KF_REVIEW_PATH: ${{ inputs.path }}
+          KF_REVIEW_CANDIDATE_BASE64: ${{ inputs.candidate_base64 }}
+          KF_REVIEW_CANDIDATE_SHA256: ${{ inputs.candidate_sha256 }}
+          KF_REVIEW_RUN_TESTS: 'true'
+        run: node scripts/chaos-review-sandbox.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: approved-integration-test-evidence
+          path: artifacts/chaos-review-sandbox.json
+          retention-days: 7
+  integrate:
+    needs: test
+    if: ${{ needs.test.result == 'success' && github.ref == 'refs/heads/main' && github.actor == github.repository_owner && inputs.confirmation == 'APPLY TO MAIN' }}
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply exact tested source without executing it in the write-capable job
+        env:
+          KF_REVIEW_BASE_SHA: ${{ inputs.base_sha }}
+          KF_REVIEW_PATH: ${{ inputs.path }}
+          KF_REVIEW_CANDIDATE_BASE64: ${{ inputs.candidate_base64 }}
+          KF_REVIEW_CANDIDATE_SHA256: ${{ inputs.candidate_sha256 }}
+          KF_APPLY_CONFIRMATION: ${{ inputs.confirmation }}
+        run: node scripts/chaos-approved-apply.mjs
