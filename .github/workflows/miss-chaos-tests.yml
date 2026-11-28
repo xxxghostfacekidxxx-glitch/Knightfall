@@ -15,6 +15,8 @@ on:
       - 'training/miss-chaos-original-v3.json'
       - 'backend/chaos-*'
       - 'backend/src/chaos-knowledge-fleet*'
+      - 'backend/src/order66-ingest*'
+      - 'backend/src/developer-audit-oidc*'
       - 'backend/src/eye-of-horus*'
       - 'backend/src/founder-roundtable.mjs'
       - 'public/mad-court*'
@@ -181,7 +183,7 @@ jobs:
         run: |
           node --check public/mad-court.mjs
           node --check public/order66-neural-router-ui.mjs
-          node --test scripts/mad-court.test.mjs scripts/order66-code-lab.test.mjs scripts/order66-neural-router.test.mjs backend/src/chaos-knowledge-fleet.test.mjs backend/src/eye-of-horus.test.mjs
+          node --test scripts/mad-court.test.mjs scripts/order66-code-lab.test.mjs scripts/order66-neural-router.test.mjs backend/src/chaos-knowledge-fleet.test.mjs backend/src/eye-of-horus.test.mjs backend/src/order66-ingest.test.mjs backend/src/developer-audit-oidc.test.mjs
 
   independent-native-tools:
     runs-on: ubuntu-latest

@@ -45,7 +45,7 @@ export async function verifyGitHubAuditToken({token, runId, sha, now = Date.now(
     if (claims.iss !== ISSUER || claims.aud !== audience || !SUBJECTS.has(claims.sub)) return false;
     if (claims.repository !== REPO || String(claims.repository_id) !== REPO_ID ||
         claims.workflow_ref !== workflow || claims.ref !== "refs/heads/main") return false;
-    if (!(purpose==="order66"?["push","workflow_dispatch","schedule"]:["push","workflow_dispatch"]).includes(claims.event_name)) return false;
+    if (!(purpose==="order66"?["push","workflow_dispatch","schedule","workflow_run"]:["push","workflow_dispatch"]).includes(claims.event_name)) return false;
     if (String(claims.run_id) !== String(runId) || claims.sha !== sha) return false;
     if (typeof claims.jti !== "string" || claims.jti.length < 8) return false;
     if (!Number.isInteger(claims.exp) || !Number.isInteger(claims.iat) || !Number.isInteger(claims.nbf) ||

@@ -3,11 +3,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '37 * * * *'
-  push:
+  workflow_run:
+    workflows: ['Deploy Knightfall API']
+    types: [completed]
     branches: [main]
-    paths:
-      - 'scripts/order66-remote-research.mjs'
-      - '.github/workflows/order66-research-fallback.yml'
 permissions:
   contents: read
   id-token: write
@@ -16,6 +15,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   research:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
