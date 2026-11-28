@@ -143,6 +143,22 @@ $("eye-trash").addEventListener("click",trash);
    if(location.hash!=="#eye-tool-review") await browse(false);
  }catch(e){$("eye-denied").hidden=false;message(e.message)}
 })();
+async function verifiedForgeBytes(file){
+ const r=await fetch(API+ROOT+"/tools/forge-download/"+encodeURIComponent(file.id),{credentials:"include",cache:"no-store"});
+ if(!r.ok)throw Error("Download failed ("+r.status+").");
+ const bytes=await r.arrayBuffer();
+ if(file.sha256){const hash=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",bytes)),x=>x.toString(16).padStart(2,"0")).join("");if(hash!==file.sha256)throw Error("Download checksum mismatch.");}
+ return bytes;
+}
+function downloadImageBlob(blob,name){const url=URL.createObjectURL(blob),a=element("a");a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+function imagePreview(target,blob,name,{png=false}={}){
+ const previous=target.dataset.previewUrl;if(previous)URL.revokeObjectURL(previous);
+ target.replaceChildren();const url=URL.createObjectURL(blob);target.dataset.previewUrl=url;
+ const img=element("img");img.alt="Generated Miss Chaos artwork";img.style.maxWidth="100%";img.style.maxHeight="560px";img.src=url;target.append(img);
+ const save=element("button","eye-subtle","Download "+name);save.type="button";save.addEventListener("click",()=>downloadImageBlob(blob,name));target.append(save);
+ if(png){const button=element("button","eye-subtle","Export PNG");button.type="button";button.addEventListener("click",()=>{try{if(!img.complete||!img.naturalWidth)throw Error("Preview is not ready.");const canvas=document.createElement("canvas");canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;canvas.getContext("2d").drawImage(img,0,0);canvas.toBlob(b=>{if(b)downloadImageBlob(b,name.replace(/\.svg$/,".png"));else $("eye-forge-result").textContent="PNG encoding failed.";},"image/png");}catch(e){$("eye-forge-result").textContent=e.message;}});target.append(button);}
+}
+async function previewVector(file){const bytes=await verifiedForgeBytes(file);imagePreview($("eye-vector-preview"),new Blob([bytes],{type:"image/svg+xml"}),file.filename,{png:true});}
 async function downloadForgeFile(file){
  const r=await fetch(API+ROOT+"/tools/forge-download/"+encodeURIComponent(file.id),{credentials:"include",cache:"no-store"});
  if(!r.ok)throw Error("Download failed ("+r.status+").");
@@ -155,11 +171,11 @@ async function refreshForgeFiles(){
  try{const r=await request(ROOT+"/tools/forge");for(const file of r.artifacts||[]){
  if(!/^[a-f0-9-]{36}$/.test(file.id))continue;
  const row=element("article","eye-result"),download=element("button","eye-subtle","Download"),del=element("button","eye-subtle","Delete");
- const type=file.filename.endsWith(".html")?"Offline browser applet":file.filename.endsWith(".wasm")?"WebAssembly executable module":file.filename.endsWith(".mjs")?"Reusable JavaScript ES module":"Portable bytecode / report";
+ const type=file.filename.endsWith(".html")?"Offline browser applet":file.filename.endsWith(".wasm")?"WebAssembly executable module":file.filename.endsWith(".mjs")?"Reusable JavaScript ES module":file.filename.endsWith(".svg")?"Independent vector artwork":"Portable bytecode / report";
  row.append(element("strong","",file.filename),element("p","",type+" · "+file.byte_count+" bytes · Expires "+time(file.expires_at)),element("small","","SHA-256: "+file.sha256));
  download.type=del.type="button";download.addEventListener("click",async()=>{download.disabled=true;try{await downloadForgeFile(file);}catch(e){$("eye-forge-result").textContent=e.message;}finally{download.disabled=false;}});
  del.addEventListener("click",async()=>{if(!confirm("Delete this download?"))return;try{await request(ROOT+"/tools/forge-download/"+file.id,{method:"DELETE"});await refreshForgeFiles();}catch(e){$("eye-forge-result").textContent=e.message;}});
- row.append(download,del);out.append(row);
+ row.append(download,del);if(file.filename.endsWith(".svg")){const preview=element("button","eye-subtle","Preview / PNG");preview.type="button";preview.addEventListener("click",()=>previewVector(file).catch(e=>{$("eye-forge-result").textContent=e.message;}));row.append(preview);}out.append(row);
  }if(!out.children.length)out.textContent="No active artifacts.";}catch(e){out.textContent=e.message;}
 }
 const forgePicker=$("eye-forge-tool"),forgeInput=$("eye-forge-input"),forgeFile=$("eye-forge-file");
@@ -178,7 +194,16 @@ $("eye-forge-form").addEventListener("submit",async e=>{
  e.preventDefault();const btn=$("eye-forge-run"),out=$("eye-forge-result");btn.disabled=true;out.textContent="Running independent Forge…";$("eye-forge-latest").replaceChildren();
  try{const r=await request(ROOT+"/tools/forge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:forgeInput.value})});out.textContent=r.answer;
  if(r.artifact){const btn=element("button","eye-subtle","Download "+r.artifact.filename);btn.type="button";btn.addEventListener("click",async()=>{btn.disabled=true;try{await downloadForgeFile(r.artifact);}catch(error){out.textContent=error.message;}finally{btn.disabled=false;}});$("eye-forge-latest").append(btn);}
+ if(r.artifact?.filename?.endsWith(".svg"))await previewVector(r.artifact);
  await refreshForgeFiles();}catch(error){out.textContent=error.message;}finally{btn.disabled=false;}
+});
+$("eye-neural-form").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=$("eye-neural-run"),status=$("eye-neural-status"),confirmBox=$("eye-neural-confirm");if(!confirmBox.checked)return;
+ btn.disabled=true;status.textContent="Generating with hosted model…";confirmBox.checked=false;
+ try{const r=await request(ROOT+"/tools/image-neural",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:$("eye-neural-prompt").value,confirmProvider:true})});
+ if(r.mime!=="image/jpeg"||typeof r.image!=="string"||r.image.length>5600000)throw Error("Invalid image response.");
+ const bytes=Uint8Array.from(atob(r.image),c=>c.charCodeAt(0));imagePreview($("eye-neural-preview"),new Blob([bytes],{type:"image/jpeg"}),"miss-chaos-neural.jpg");status.textContent="Generated by "+r.engine+" · "+r.attemptsToday+"/"+r.dailyLimit+" attempts today. Download to keep.";
+ }catch(error){status.textContent=error.message;}finally{btn.disabled=false;}
 });
 showForgeTool();
 })();
