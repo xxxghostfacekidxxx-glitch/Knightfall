@@ -9,9 +9,9 @@
 <div class="push-actions"><button id="save-prefs" type="button">Save preferences</button><button id="test-push" type="button" class="secondary-action">Test this device</button><button id="repair-push" type="button" class="secondary-action">Repair push on this device</button></div>
 <p class="push-footnote">On Android: allow notifications for Chrome (or your installed Ash-Fall app) in Settings → Apps → Notifications, and for ash-fall.com in Chrome → Site settings → Notifications. Disable browser/app battery restrictions if background delivery stops. Browser permission alone does not override Android notification settings.</p></section>
 <div id="status" role="status" aria-live="polite"></div><section id="notifications"></section></main>
-<script src="/nav.js"></script><script>
+<script src="/nav.js"></script><script src="/chaosphere-send.js"></script><script>
 const API="https://api.ash-fall.com",root=document.querySelector("#notifications"),status=document.querySelector("#status"),pushStatus=document.querySelector("#push-status"),pushToggle=document.querySelector("#push-toggle"),esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),fmt=v=>new Date(v).toLocaleString([], {dateStyle:"medium",timeStyle:"short"});
-async function api(p,o={}){const r=await fetch(API+p,{credentials:"include",cache:"no-store",...o,headers:{"content-type":"application/json",...(o.headers||{})}}),d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed.");return d}
+async function api(p,o={}){const r=await fetch(API+p,{credentials:"include",cache:"no-store",...o,headers:{"content-type":"application/json",...(o.headers||{})}}),d=await r.json().catch(()=>({}));if(!r.ok){const error=Error(d.error||"Request failed.");error.status=r.status;throw error;}return d}
 function setPushStatus(message){pushStatus.textContent=message}
 function safeNoticeUrl(value){if(typeof value!=="string"||!value.startsWith("/")||value.startsWith("//")||/[\\\\\x00-\x1f]/.test(value))return null;try{const url=new URL(value,location.origin);return url.origin===location.origin?url.pathname+url.search+url.hash:null}catch{return null}}
 
@@ -95,7 +95,9 @@ root.addEventListener("submit",async event=>{
  if(!body||button.disabled)return;
  activeReplies++;button.disabled=true;field.readOnly=true;feedback.textContent="Sending…";
  try{
-  await api("/api/messages/conversations/"+form.dataset.conversation,{method:"POST",body:JSON.stringify({body})});
+  const path="/api/messages/conversations/"+form.dataset.conversation;
+  const receipt=window.ChaosphereSend?await window.ChaosphereSend.send(api,path,{body}):await api(path,{method:"POST",body:JSON.stringify({body})});
+  if(!receipt||typeof receipt!=="object"||receipt.error)throw Error("Server did not confirm delivery.");
   replyDrafts.delete(form.dataset.conversation);field.value="";feedback.textContent="Reply sent.";
   const item=form.closest("[data-notice]");
   if(item?.classList.contains("unread")&&!item.dataset.reading){
@@ -340,13 +342,15 @@ document.querySelector("#read-all").onclick=async()=>{
   announceReadChange();closeHandledPush({all:true});await load();
  }catch(e){status.textContent=e.message}
 };
-let lastRefresh=0;
+let lastRefresh=Date.now();
 function refreshVisibleNotifications(){if(document.visibilityState!=="visible"||Date.now()-lastRefresh<15000)return;lastRefresh=Date.now();load().catch(()=>{});loadPrefs().catch(()=>{});}
 document.addEventListener("visibilitychange",refreshVisibleNotifications);
 window.addEventListener("focus",refreshVisibleNotifications);
 // Messages opened elsewhere, another tab clearing alerts, and push-click receipts
 // should immediately remove handled rows from the live notifications screen.
-const refreshReadState=()=>{if(document.visibilityState==="visible")void load();};
+let readRefreshTimer=0;
+const refreshReadState=()=>{if(document.visibilityState!=="visible")return;clearTimeout(readRefreshTimer);readRefreshTimer=setTimeout(()=>void load(),250);};
+window.addEventListener("pagehide",()=>clearTimeout(readRefreshTimer));
 window.addEventListener("kf:notifications-changed",refreshReadState);
 window.addEventListener("storage",event=>{
  if(event.key==="kf:notifications-changed")refreshReadState();
