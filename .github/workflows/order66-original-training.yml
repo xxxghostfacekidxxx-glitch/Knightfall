@@ -6,6 +6,10 @@ on:
     paths:
       - 'training/order66-peer-core.mjs'
       - 'training/miss-chaos-local*'
+      - 'training/miss-chaos-specialist*'
+      - 'training/checkpoints/miss-chaos-specialist*'
+      - 'scripts/train-miss-chaos-specialist.mjs'
+      - 'scripts/miss-chaos-specialist.test.mjs'
       - 'training/checkpoints/miss-chaos-local*'
       - 'scripts/train-miss-chaos-local.mjs'
       - 'training/checkpoints/order66-peer-002.json'
@@ -69,6 +73,29 @@ jobs:
         with:
           path: miss-chaos-local-prior.json
           key: miss-chaos-local-v1-${{ github.run_id }}
+      - name: Test specialist curriculum and checkpoint
+        run: node --test scripts/miss-chaos-specialist.test.mjs
+      - name: Restore specialist continuation
+        uses: actions/cache/restore@v4
+        with:
+          path: miss-chaos-specialist-prior.json
+          key: miss-chaos-specialist-v2-${{ github.run_id }}
+          restore-keys: miss-chaos-specialist-v2-
+      - name: Continue six-division specialist training
+        run: |
+          if [ ! -f miss-chaos-specialist-prior.json ]; then cp training/checkpoints/miss-chaos-specialist-002.json miss-chaos-specialist-prior.json; fi
+          seed=$(( 60000000 + ${{ github.run_number }} * 100 ))
+          if node scripts/train-miss-chaos-specialist.mjs candidate/specialist.json "$seed" miss-chaos-specialist-prior.json; then
+            cp candidate/specialist.json miss-chaos-specialist-prior.json
+          else
+            echo 'Specialist candidate did not pass gates; retaining prior.'
+            cp miss-chaos-specialist-prior.json candidate/specialist.json
+          fi
+      - name: Save specialist continuation
+        uses: actions/cache/save@v4
+        with:
+          path: miss-chaos-specialist-prior.json
+          key: miss-chaos-specialist-v2-${{ github.run_id }}
       - uses: actions/upload-artifact@v4
         with:
           name: order66-research-candidates
