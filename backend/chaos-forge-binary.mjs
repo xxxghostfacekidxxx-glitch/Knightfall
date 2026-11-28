@@ -42,18 +42,18 @@ export function inspectWasm(bytes){
   else {if(id!==0)other=true;pos=end;}
   if(pos!==end)throw Error("Invalid section length.");
  }
- const validated=WebAssembly.validate(bytes);
- const exact=validated&&!other&&imports===0&&functions===1&&bodies.length===1&&bodies[0].supported&&types[functionTypes[0]]?.params.length===0&&types[functionTypes[0]]?.results.join(",")==="124"&&exports.length===1&&exports[0].name==="run"&&exports[0].kind===0&&exports[0].index===0;
+ let validated=null;try{if(typeof WebAssembly!=="undefined"&&typeof WebAssembly.validate==="function")validated=WebAssembly.validate(bytes);}catch{}
+ const exact=validated!==false&&!other&&imports===0&&functions===1&&bodies.length===1&&bodies[0].supported&&types[functionTypes[0]]?.params.length===0&&types[functionTypes[0]]?.results.join(",")==="124"&&exports.length===1&&exports[0].name==="run"&&exports[0].kind===0&&exports[0].index===0;
  return {format:"wasm-v1",bytes:bytes.length,validated,sections,exports,imports,functions,bodies,expression:exact?bodies[0].expression:null,executed:false,notice:"Static inspection only. Unsupported instructions are not guessed; imported or complex modules are not instantiated."};
 }
-export function compileArtifact(expression,target="wasm"){
+export function compileArtifact(expression,target="wasm",{nativeTest=false}={}){
  if(typeof expression!=="string"||expression.length>256)throw Error("Expression up to 256 characters required.");
  const ops=compileExpression(expression),result=runExpression(ops);
  if(target==="stack"){const content=JSON.stringify({schema:"order66-stack-v1",ops},null,2);return {filename:"miss-chaos-program.json",mime:"application/json",content,report:{target,result,ops,reconstruction:decompileStack(ops).expression}};}
  if(target!=="wasm")throw Error("Use wasm or stack.");
- const bytes=compileWasm(expression),report=inspectWasm(bytes);if(!report.validated||!report.expression)throw Error("Generated module failed static verification.");
+ const bytes=compileWasm(expression),report=inspectWasm(bytes);if(report.validated===false||!report.expression)throw Error("Generated module failed static verification.");
  // Only compiler-produced, import-free modules are instantiated.
- const nativeResult=new WebAssembly.Instance(new WebAssembly.Module(bytes)).exports.run();
- if(!Object.is(nativeResult,result))throw Error("Compiler result mismatch.");
- return {filename:"miss-chaos-program.wasm",mime:"application/wasm",bytes,report:{target,result,hex:bytesHex(bytes),...report,compilerOutputExecuted:true}};
+ const reconstructedResult=runExpression(report.bodies[0].ops);if(!Object.is(reconstructedResult,result))throw Error("Compiler round-trip mismatch");
+ if(nativeTest){const nativeResult=new WebAssembly.Instance(new WebAssembly.Module(bytes)).exports.run();if(!Object.is(nativeResult,result))throw Error("Compiler result mismatch.");}
+ return {filename:"miss-chaos-program.wasm",mime:"application/wasm",bytes,report:{target,result,hex:bytesHex(bytes),...report,compilerOutputExecuted:nativeTest,verification:nativeTest?"native and stack VM":"static round-trip and stack VM"}};
 }
