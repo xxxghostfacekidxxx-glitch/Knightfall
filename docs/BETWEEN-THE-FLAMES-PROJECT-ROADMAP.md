@@ -185,3 +185,5 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 - Shared reviewed corpus immediately accessible to all 100 identities and owner tutor (exact-title lookup, canonical attribution). Original curriculum preferred; unreviewed discoveries not treated as factual training data. Context trainer now supports 100 simulated clients with balanced six-division assignment and 48,000 steps per four-round continuation. Previous checkpoint untouched. Updated roster/API regression fixtures.
 
 - Completed 100th-agent route compatibility and invalid identity regression fixtures; result metrics distinguish shared broadcast rows from historical physical receipts.
+
+- First 100-client continuation actually executed 48,000 steps (run 46116189858). Last round known accuracy regressed 33.62%→32.76% despite loss improvement; prior retained. Trainer now retains best eligible intermediate round, preserving strict accuracy/loss requirements while avoiding discarded earlier improvements.
