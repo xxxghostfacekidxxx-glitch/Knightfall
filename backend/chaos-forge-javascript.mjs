@@ -37,8 +37,18 @@ export function translateJavaScript(input){
   }
   if(n.type==="MemberExpression"&&!n.computed&&!n.optional&&n.property.name==="length"){const a=sub(n.object),op={text:"length",texts:"countTexts",numbers:"countNumbers"}[a.type];return emit(op,[a],n);}
   if(n.type==="CallExpression"&&!n.optional&&n.callee.type==="MemberExpression"&&!n.callee.computed&&!n.callee.optional){
-   const a=sub(n.callee.object),args=n.arguments.map(sub),method=n.callee.property.name;
-   const methods={text:{trim:"trim",toLowerCase:"lower",toUpperCase:"upper",includes:"contains",split:"split",replaceAll:"replace"},texts:{join:"join"},number:{toString:"toText"}};
+   const method=n.callee.property.name;
+   if(["reduce","filter","toSorted"].includes(method)){
+    const a=sub(n.callee.object),callback=n.arguments[0];
+    if(a.type!=="numbers"||callback?.type!=="ArrowFunctionExpression"||callback.async||callback.params.some(p=>p.type!=="Identifier")||new Set(callback.params.map(p=>p.name)).size!==callback.params.length)fail(n,"Unsupported numeric array callback.");
+    const [x,y]=callback.params.map(p=>p.name),b=callback.body,is=(node,name)=>node?.type==="Identifier"&&node.name===name;
+    if(method==="reduce"&&callback.params.length===2&&n.arguments.length===2&&n.arguments[1].type==="Literal"&&n.arguments[1].value===0&&b.type==="BinaryExpression"&&b.operator==="+"&&is(b.left,x)&&is(b.right,y))return emit("sum",[a],n);
+    if(method==="filter"&&callback.params.length===1&&n.arguments.length===1&&b.type==="BinaryExpression"&&b.operator===">"&&is(b.left,x)&&b.right.type==="Literal"&&b.right.value===0)return emit("filterPositive",[a],n);
+    if(method==="toSorted"&&callback.params.length===2&&n.arguments.length===1&&b.type==="BinaryExpression"&&b.operator==="-"&&is(b.left,x)&&is(b.right,y))return emit("sort",[a],n);
+    fail(n,"Only sum reduction, positive filter and numeric ascending sort callbacks are supported.");
+   }
+   const a=sub(n.callee.object),args=n.arguments.map(sub);
+   const methods={text:{trim:"trim",toLowerCase:"lower",toUpperCase:"upper",includes:"contains",split:"split"},texts:{join:"join",toReversed:"reverseTexts"},number:{toString:"toText"}};
    const op=methods[a.type]?.[method];if(!op||!Object.hasOwn(methods[a.type],method))fail(n,"Unsupported method: "+method);
    return emit(op,[a,...args],n);
   }
@@ -56,5 +66,5 @@ export function translateJavaScript(input){
 }
 export function verifyJavaScript(input){
  const translated=translateJavaScript(input),report=verifyData({...translated,examples:input.examples});
- return {...report,translated,source:emitDataSource(report.program),module:emitDataModule(report.program),notice:"Pure typed JavaScript subset compiled to bounded Forge semantics. Original JavaScript was not executed. Unsupported constructs and coercion are rejected."};
+ return {...report,translated,source:emitDataSource(report.program),module:emitDataModule(report.program),notice:"Pure typed JavaScript subset compiled to bounded Forge semantics (finite numeric values, bounded arrays and strings). Original JavaScript was not executed. Unsupported constructs and coercion are rejected."};
 }
