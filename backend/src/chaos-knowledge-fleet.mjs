@@ -1,3 +1,4 @@
+import {recordTablePractice} from "../chaos-forge-table-course.mjs";
 import {recordControlSourcePractice} from "../chaos-forge-control-source-course.mjs";
 import {recordJavaScriptPractice} from "../chaos-forge-javascript-course.mjs";
 import {recordDataPractice} from "../chaos-forge-data-course.mjs";
@@ -1456,7 +1457,7 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
   if(!await enabled(env))break;
   try{await recordLogicPractice(env,a);}catch{console.warn("order100_logic_practice_unavailable");}
   try{await recordDataPractice(env,a);}catch{console.warn("order100_data_practice_unavailable");}
-  try{if(Math.floor(a.hour/20)%2===0)await recordJavaScriptPractice(env,a);else await recordControlSourcePractice(env,a);}catch{console.warn("order100_source_practice_unavailable");}
+  try{const course=Math.floor(a.hour/20)%3;if(course===0)await recordJavaScriptPractice(env,a);else if(course===1)await recordControlSourcePractice(env,a);else await recordTablePractice(env,a);}catch{console.warn("order100_source_practice_unavailable");}
   // Local coding practice continues even when public source requests fail or the archive is full.
   try{const practice=await recordCodingPractice(env,a);codingPractices+=practice.recorded;codingPracticeFailures+=Number(!practice.verified);}catch{codingPracticeFailures++;console.warn("order100_coding_practice_unavailable");}
   // Learning from existing reviewed evidence does not depend on successful network discovery or archive capacity.
