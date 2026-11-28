@@ -1,3 +1,4 @@
+import {compose} from "./chaos-core-composition.mjs";
 import {synthesizeControl} from "./chaos-core-control-synthesis.mjs";
 import {selectTextPipeline} from "./chaos-core-text-synthesis.mjs";
 import {synthesizeScalar} from "./chaos-core-scalar-synthesis.mjs";
@@ -49,6 +50,8 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const composition=question.match(/^build composed script\s*:\s*([\s\S]+)$/i);
+ if(composition){const report=compose(JSON.parse(composition[1]));const file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-composed."+(report.language==="python"?"py":"mjs"),content:report.source});return {answer:"Composed script: "+file.downloadUrl+"\n"+report.notice,method:"independent-composition",artifact:file,report,externalInference:false};}
  const controlScript=question.match(/^build control script\s*:\s*([\s\S]+)$/i);
  if(controlScript){const report=synthesizeControl(JSON.parse(controlScript[1]));if(!report.source||!report.validationCases||report.status==="ambiguous"&&report.selection!=="explicit")throw Error("Provide validation and select an ambiguous candidate explicitly");const file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-control-script."+(report.language==="python"?"py":"mjs"),content:report.source});return {answer:"Generated bounded control-flow script; "+report.validationPassed+" validation cases matched. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-control-script",artifact:file,report,externalInference:false};}
  const textScript=question.match(/^build text script\s*:\s*([\s\S]+)$/i);

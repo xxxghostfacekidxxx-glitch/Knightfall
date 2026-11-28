@@ -218,3 +218,6 @@ Actual training run: 16,000 SGD updates from random seed 28006, width 32, 64-tok
 
 ## Chaos Core control synthesis — November 28
 - 438 original branch/loop candidates; two integer inputs -32..32, bounded loops, safe-integer overflow rejection, independent validation. 1200/1200 interpreter oracle checks passed across two simulated 100-specialist rounds. Multiple matching programs compared across the complete 4,225-point bounded domain when no disagreement is found; distinct counterexamples otherwise. Native runtime regression tests authored, not executed in this session. Commands: `synthesize control:`, `build control script:`, `control training status`. Owner artifact requires validation and explicit selection if ambiguous. No neural weight updates or live bot activity; existing compiler tools unchanged. CI and live deployment pending.
+
+## Original numeric composition
+Owner command `build composed script:` accepts explicit acyclic steps (add/sub/mul/min/max, references to inputs or earlier results), three training examples and disjoint validation. Up to 12 steps; bounded integers and overflow checks; JS/Python output. Direct interpreter checks passed for both languages and three rejection cases. Native execution regression added; CI/live pending. No neural training or autonomous composition claimed.
