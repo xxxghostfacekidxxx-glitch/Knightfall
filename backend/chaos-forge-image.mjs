@@ -9,7 +9,7 @@ export function imageSpec(input){
  const motif=input.motif??"eclipse",palette=input.palette??"eclipse",width=input.width??768,height=input.height??768,seed=input.seed??66,title=input.title??"Miss Chaos";
  if(!motifs.includes(motif)||!Object.hasOwn(palettes,palette))throw Error("Unknown motif or palette.");
  if(![256,512,768,1024].includes(width)||![256,512,768,1024].includes(height))throw Error("Dimensions must be 256, 512, 768 or 1024.");
- if(!Number.isInteger(seed)||seed<0||seed>4294967295||typeof title!=="string"||title.length>80)throw Error("Invalid seed or title.");
+ if(!Number.isInteger(seed)||seed<0||seed>4294967295||typeof title!=="string"||title.length>80||/[\u0000-\u001f\u007f]/.test(title)||Array.from(title).some(c=>c.length===1&&c.charCodeAt(0)>=0xd800&&c.charCodeAt(0)<=0xdfff))throw Error("Invalid seed or title.");
  return {motif,palette,width,height,seed,title};
 }
 export function generateVector(input){
@@ -19,7 +19,7 @@ export function generateVector(input){
  let body='<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="'+bg+'"/><stop offset="1" stop-color="'+shade+'"/></linearGradient><radialGradient id="halo"><stop stop-color="'+light+'" stop-opacity=".65"/><stop offset="1" stop-color="'+accent+'" stop-opacity="0"/></radialGradient></defs><rect width="'+w+'" height="'+h+'" fill="url(#sky)"/>';
  for(let i=0;i<85;i++)body+=circle(r(0,w),r(0,h),r(.4,2.2)*m/768,i%5?white:light,r(.18,.8));
  if(motif==="eclipse"||motif==="mountains"){
-  body+=circle(cx,cy,m*.38,"url(#halo)")+circle(cx,cy,m*.19,light)+circle(cx+m*.012,cy-m*.009,m*.174,bg);
+  body+=circle(cx,cy,m*.38,"url(#halo)")+circle(cx,cy,m*.19,light);if(motif==="eclipse")body+=circle(cx+m*.012,cy-m*.009,m*.174,bg);else for(let i=0;i<5;i++)body+=path("M "+n(w*.12)+" "+n(cy+i*m*.021)+" H "+n(w*.88),"none",shade,m*.007,.24);
   for(let layer=0;layer<4;layer++){const base=h*(.65+layer*.095);let d="M 0 "+h+" L 0 "+n(base);
    for(let j=0;j<=12;j++)d+=" L "+n(j*w/12)+" "+n(base-r(0,m*(.08+layer*.028)));
    body+=path(d+" L "+w+" "+h+" Z",[shade,accent,shade,bg][layer],"none",1,layer===1?.37:1);
