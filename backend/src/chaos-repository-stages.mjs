@@ -12,12 +12,12 @@ export function repositoryRequest(message){
 }
 export async function stageRepository(env,input,ownerId,{intake=intakeRepository}={}){
  if(!Number.isSafeInteger(Number(ownerId))||Number(ownerId)<1)throw Error("Owner identity required");
- const report=await intake(input);
+ const report=await intake({...input,auto_select:input.path===undefined});
  if(!/^[a-f0-9]{40}$/i.test(report.commit_sha||""))throw Error("Missing pinned revision");
  const id=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(report.project.toLowerCase()+":"+report.commit_sha+":"+(input.path||"")));
  const key=Array.from(new Uint8Array(id),x=>x.toString(16).padStart(2,"0")).join("");
  const stamp=new Date().toISOString();
- const record={id:key,owner_id:Number(ownerId),project:report.project,commit_sha:report.commit_sha,source_url:report.source_url,license:report.license,license_eligible:report.license_eligible,manifest:report.manifest,files:report.files,inventory_complete:report.inventory_complete,selected_source:report.source||null,status:report.license_eligible?"staged_for_adaptation":"license_review_required",created_at:stamp};
+ const record={id:key,owner_id:Number(ownerId),project:report.project,commit_sha:report.commit_sha,source_url:report.source_url,license:report.license,license_eligible:report.license_eligible,manifest:report.manifest,files:report.files,inventory_complete:report.inventory_complete,license_file:report.license_file||null,selected_source:report.source||null,status:report.license_eligible?(report.source?"source_staged_for_adaptation":"inventory_staged_for_adaptation"):"license_review_required",created_at:stamp};
  // Keep the intake evidence bounded and private. No source is copied to production.
  const raw=JSON.stringify(record);if(new TextEncoder().encode(raw).length>75000)throw Error("Staged report too large");
  await env.DB.prepare("INSERT INTO site_settings(key,value,updated_by,updated_at) VALUES(?,?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_by=excluded.updated_by,updated_at=excluded.updated_at").bind(PREFIX+key,raw,ownerId,stamp).run();
