@@ -1,4 +1,4 @@
-import {parseRepository,inspectRepository} from "./alien-eyes-core.mjs";
+import {parseRepository,inspectRepository,inspectProjectDetails,readAlienCatalog} from "./alien-eyes-core.mjs";
 import {RESEARCH_FLEET} from "./chaos-knowledge-fleet.mjs";
 import {order66Format} from "../chaos-order66-format.mjs";
 import {agentEvidence} from "../chaos-order66-context.mjs";
@@ -8,7 +8,7 @@ const key=id=>"eye_tool_review:"+id;
 const allowed=new Set(["osiris","scrapped"]);
 // Legacy distribution intents never granted access. Existing seven tools are authorized for Osiris only.
 function normalizeDecision(row){let x;try{x=JSON.parse(row?.value||"null");}catch{}return {decision:x?.decision==="scrapped"?"scrapped":"osiris",updatedAt:typeof x?.updatedAt==="string"?x.updatedAt:null};}
-export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=fetch}={}){
+export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=(...args)=>globalThis.fetch(...args)}={}){
  const prefix="/api/god/eye/tools";
  if(url.pathname!==prefix&&!url.pathname.startsWith(prefix+"/"))return null;
  try{
@@ -28,11 +28,12 @@ export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=
  if(url.pathname===prefix+"/format-classify"&&request.method==="POST"){const source=request.headers.get("origin");if(source!=="https://ash-fall.com"&&source!=="https://www.ash-fall.com")return respond({error:"Invalid request origin."},403);if(!/^application\/json(?:;|$)/i.test(request.headers.get("content-type")||""))return respond({error:"JSON required."},415);const raw=await request.text();if(raw.length>6500)return respond({error:"Input too large."},413);try{return respond(order66Format(JSON.parse(raw).text));}catch{return respond({error:"Provide 1–1000 characters of text."},400);}}
  const read=async id=>normalizeDecision(await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(key(id)).first());
  if(url.pathname===prefix&&request.method==="GET"){const tools=await Promise.all(registry.map(async t=>({...t,...await read(t.id)})));return respond({tools,publication:"Osiris-only implementation authorized. Installation and execution status are tracked separately; no public or Isis access."});}
+ if(url.pathname===prefix+"/alien-eyes/catalog"&&request.method==="GET"){if((await read("alien-eyes")).decision==="scrapped")return respond({error:"Tool disabled."},403);return respond({reports:await readAlienCatalog(env)});}
  if(url.pathname===prefix+"/alien-eyes/inspect"&&request.method==="GET"){
  if((await read("alien-eyes")).decision==="scrapped")return respond({error:"This candidate has been scrapped."},403);
  let reference;try{reference=parseRepository(url.searchParams.get("repository"));}catch{return respond({error:"Enter an exact public GitHub project reference."},400);}
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);
- try{return respond({report:await inspectRepository(reference.owner+"/"+reference.repo,{fetcher,signal:controller.signal})});}catch{return respond({error:"Public project metadata unavailable or rate limited."},502);}finally{clearTimeout(timer);}
+ try{return respond({report:await (url.searchParams.get("detail")==="full"?inspectProjectDetails:inspectRepository)(reference.owner+"/"+reference.repo,{fetcher,signal:controller.signal})});}catch{return respond({error:"Public project metadata unavailable or rate limited."},502);}finally{clearTimeout(timer);}
  }
  const readinessMatch=url.pathname.match(/^\/api\/god\/eye\/tools\/([a-z0-9-]+)\/inspect$/);
  if(readinessMatch&&request.method==="GET"){
