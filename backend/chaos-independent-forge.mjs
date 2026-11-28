@@ -1,3 +1,5 @@
+import {verifyPython} from "./chaos-forge-python.mjs";
+import {verifyControlJavaScript} from "./chaos-forge-javascript-control.mjs";
 import {verifyJavaScript} from "./chaos-forge-javascript.mjs";
 import {buildPresetTool,toolPresets} from "./chaos-forge-tool-presets.mjs";
 import {buildWebProject} from "./chaos-forge-web-project.mjs";
@@ -42,6 +44,8 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const control=question.match(/^compile (python|javascript control)(?: (module))?\s*:\s*([\s\S]+)$/i);
+ if(control){const python=control[1].toLowerCase()==="python",report=(python?verifyPython:verifyControlJavaScript)(JSON.parse(control[3])),module=!!control[2],file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-"+(python?"python":"javascript-control")+(module?".mjs":".json"),content:module?report.module:JSON.stringify(report.program,null,2)});return {answer:"Compiled numeric control flow; "+report.tests.length+" examples passed. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-control-compiler",artifact:file,report:{...report,module:undefined},externalInference:false};}
  const javascript=question.match(/^compile javascript(?: (module))?\s*:\s*([\s\S]+)$/i);
  if(javascript){const report=verifyJavaScript(JSON.parse(javascript[2])),module=!!javascript[1],file=await saveForgeArtifact(env,owner,{filename:module?"miss-chaos-javascript.mjs":"miss-chaos-javascript.json",content:module?report.module:JSON.stringify(report.program,null,2)});return {answer:"Compiled JavaScript subset and verified "+report.tests.length+" examples. Download: "+file.downloadUrl+"\nReconstructed typed source:\n"+report.source+"\n"+report.notice,method:"independent-javascript-compiler",artifact:file,report:{...report,module:undefined},externalInference:false};}
  const preset=question.match(/^build tool\s*:\s*([\s\S]+)$/i);
