@@ -1056,13 +1056,559 @@ export const RESEARCH_FLEET=Object.freeze([
       "wikidata",
       "wikidata"
     ]
+  },
+  {
+    "key": "mc-67",
+    "name": "Lexicon",
+    "division": "archive",
+    "divisionName": "The Obsidian Archive",
+    "topics": [
+      "lexical database",
+      "terminology management"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-68",
+    "name": "Quill",
+    "division": "archive",
+    "divisionName": "The Obsidian Archive",
+    "topics": [
+      "documentation testing",
+      "literate programming"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-69",
+    "name": "Semantica",
+    "division": "archive",
+    "divisionName": "The Obsidian Archive",
+    "topics": [
+      "formal semantics",
+      "denotational semantics"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-70",
+    "name": "Glyph",
+    "division": "archive",
+    "divisionName": "The Obsidian Archive",
+    "topics": [
+      "text normalization",
+      "character encoding"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-71",
+    "name": "Scriptor",
+    "division": "archive",
+    "divisionName": "The Obsidian Archive",
+    "topics": [
+      "language tooling",
+      "documentation search"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-72",
+    "name": "Concord",
+    "division": "archive",
+    "divisionName": "The Obsidian Archive",
+    "topics": [
+      "corpus linguistics",
+      "concordance index"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-73",
+    "name": "Eigen",
+    "division": "science",
+    "divisionName": "The Null Observatory",
+    "topics": [
+      "eigenvalue algorithm",
+      "spectral decomposition"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-74",
+    "name": "Vector",
+    "division": "science",
+    "divisionName": "The Null Observatory",
+    "topics": [
+      "vector arithmetic",
+      "linear transformation"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-75",
+    "name": "Delta",
+    "division": "science",
+    "divisionName": "The Null Observatory",
+    "topics": [
+      "finite difference",
+      "numerical differentiation"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-76",
+    "name": "Sigma",
+    "division": "science",
+    "divisionName": "The Null Observatory",
+    "topics": [
+      "variance estimation",
+      "descriptive statistics"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-77",
+    "name": "Orbit",
+    "division": "science",
+    "divisionName": "The Null Observatory",
+    "topics": [
+      "Monte Carlo method",
+      "sampling algorithm"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-78",
+    "name": "Tensor",
+    "division": "science",
+    "divisionName": "The Null Observatory",
+    "topics": [
+      "tensor contraction",
+      "multidimensional array"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-79",
+    "name": "Emberforge",
+    "division": "engineering",
+    "divisionName": "The Iron Crucible",
+    "topics": [
+      "incremental compilation",
+      "build cache"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-80",
+    "name": "Relay",
+    "division": "engineering",
+    "divisionName": "The Iron Crucible",
+    "topics": [
+      "event driven architecture",
+      "message queue"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-81",
+    "name": "Atlas",
+    "division": "engineering",
+    "divisionName": "The Iron Crucible",
+    "topics": [
+      "database indexing",
+      "query planning"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-82",
+    "name": "Sable",
+    "division": "engineering",
+    "divisionName": "The Iron Crucible",
+    "topics": [
+      "memory allocator",
+      "garbage collection"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-83",
+    "name": "Cinder",
+    "division": "engineering",
+    "divisionName": "The Iron Crucible",
+    "topics": [
+      "code coverage",
+      "test harness"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-84",
+    "name": "Mender",
+    "division": "engineering",
+    "divisionName": "The Iron Crucible",
+    "topics": [
+      "error handling",
+      "exception propagation"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-85",
+    "name": "Prism",
+    "division": "creation",
+    "divisionName": "The Neon Foundry",
+    "topics": [
+      "layout engine",
+      "responsive typography"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-86",
+    "name": "Sonata",
+    "division": "creation",
+    "divisionName": "The Neon Foundry",
+    "topics": [
+      "digital audio",
+      "audio resampling"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-87",
+    "name": "Frame",
+    "division": "creation",
+    "divisionName": "The Neon Foundry",
+    "topics": [
+      "sprite animation",
+      "frame interpolation"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-88",
+    "name": "Mosaic",
+    "division": "creation",
+    "divisionName": "The Neon Foundry",
+    "topics": [
+      "image compression",
+      "lossless encoding"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-89",
+    "name": "Canvas",
+    "division": "creation",
+    "divisionName": "The Neon Foundry",
+    "topics": [
+      "canvas rendering",
+      "graphics pipeline"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-90",
+    "name": "Focus",
+    "division": "creation",
+    "divisionName": "The Neon Foundry",
+    "topics": [
+      "keyboard navigation",
+      "accessibility audit"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-91",
+    "name": "Neuron",
+    "division": "intelligence",
+    "divisionName": "The Black Cortex",
+    "topics": [
+      "model architecture",
+      "neural layer"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-92",
+    "name": "Gradient",
+    "division": "intelligence",
+    "divisionName": "The Black Cortex",
+    "topics": [
+      "learning rate schedule",
+      "optimizer state"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-93",
+    "name": "Cache",
+    "division": "intelligence",
+    "divisionName": "The Black Cortex",
+    "topics": [
+      "inference cache",
+      "key value cache"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-94",
+    "name": "Distill",
+    "division": "intelligence",
+    "divisionName": "The Black Cortex",
+    "topics": [
+      "small language model",
+      "language model evaluation"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-95",
+    "name": "Context",
+    "division": "intelligence",
+    "divisionName": "The Black Cortex",
+    "topics": [
+      "context window",
+      "positional encoding"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-96",
+    "name": "Audit",
+    "division": "verification",
+    "divisionName": "The Council of Ash",
+    "topics": [
+      "software reproducibility",
+      "deterministic build"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-97",
+    "name": "Metric",
+    "division": "verification",
+    "divisionName": "The Council of Ash",
+    "topics": [
+      "calibration metric",
+      "prediction uncertainty"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-98",
+    "name": "Ledger",
+    "division": "verification",
+    "divisionName": "The Council of Ash",
+    "topics": [
+      "dataset provenance",
+      "metadata validation"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-99",
+    "name": "Proof",
+    "division": "verification",
+    "divisionName": "The Council of Ash",
+    "topics": [
+      "formal verification",
+      "invariant testing"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
+  },
+  {
+    "key": "mc-100",
+    "name": "Sentinel",
+    "division": "verification",
+    "divisionName": "The Council of Ash",
+    "topics": [
+      "test isolation",
+      "regression analysis"
+    ],
+    "sources": [
+      "wikidata",
+      "github",
+      "npm",
+      "gitlab"
+    ]
   }
 ].map(x=>Object.freeze({...x,topics:Object.freeze(x.topics),sources:Object.freeze(x.sources)})));
-export const KNOWLEDGE_CRON="7 * * * *";
+export const KNOWLEDGE_CRON="*/5 * * * *";
+export const RESEARCH_SLOT_MS=300000, RESEARCH_BATCH_SIZE=2;
 const LIMIT=10000, TOOL_LIMIT=3000;
 // Each specialist has an independent mission, not a division-wide duplicate search.
-const CODE_MISSION_QUERIES=[["lexical analysis","lexical analyzer"],["grammar formalism","context free grammar"],["syntax tree","abstract syntax tree"],["Unicode normalization","Unicode segmentation"],["regular expression","pattern matching"],["documentation generator","API documentation"],["source mapping","debug symbols"],["symbol table","scope resolution"],["language specification","programming language semantics"],["software documentation","technical writing"],["code formatting","source code formatter"],["numerical methods","numerical integration"],["linear algebra library","sparse matrix"],["floating point arithmetic","rounding error"],["matrix multiplication","matrix factorization"],["probability distribution","Bayesian inference"],["statistical computing","statistical estimation"],["signal processing","digital filter"],["algorithm complexity","algorithm analysis"],["numerical optimization","convex optimization"],["computer graphics","rasterization"],["random number generator","pseudorandom generator"],["compiler construction","compiler optimization"],["parser generator","recursive descent parser"],["operating system kernel","systems programming"],["tensor library","automatic differentiation"],["local model inference","model serving"],["cryptographic library","secure storage"],["unit testing framework","integration testing"],["performance profiling","application tracing"],["database migration","data integrity"],["job queue","distributed computing"],["dependency auditing","static analysis"],["accessibility testing","screen reader testing"],["color contrast","color space"],["speech synthesis","text to speech"],["audio processing","audio synthesis"],["interactive fiction","narrative engine"],["font rendering","text shaping"],["animation engine","skeletal animation"],["vector graphics","SVG rendering"],["image processing","image transformation"],["game engine","collision detection"],["procedural generation","procedural noise"],["neural network","deep learning"],["language modeling","sequence modeling"],["gradient descent","stochastic optimization"],["dataset curation","dataset validation"],["information retrieval","search indexing"],["model evaluation","evaluation metrics"],["byte pair encoding","subword tokenization"],["vector embedding","semantic search"],["transformer architecture","attention mechanism"],["model quantization","model compression"],["continual learning","catastrophic forgetting"],["source verification","fact checking"],["bibliographic metadata","citation analysis"],["software licensing","license compliance"],["data provenance","research integrity"],["privacy engineering","data minimization"],["software supply chain security","dependency verification"],["benchmark reproducibility","performance benchmark"],["property based testing","test generation"],["metadata standards","knowledge organization"],["algorithmic fairness","evaluation methodology"],["version control","digital preservation"]];
-export function assignments(time){const hour=Math.floor(Number(time)/3600000);if(!Number.isSafeInteger(hour)||hour<0)throw Error("invalid schedule");const cycle=Math.floor(hour/22);return [0,1,2].map(i=>{const index=(hour*3+i)%RESEARCH_FLEET.length,row=RESEARCH_FLEET[index];return {hour,key:row.key,name:row.name,division:row.division,query:CODE_MISSION_QUERIES[index][Math.floor(cycle/4)%2],source:row.sources[cycle%4]};});}
+const CODE_MISSION_QUERIES=[["lexical analysis","lexical analyzer"],["grammar formalism","context free grammar"],["syntax tree","abstract syntax tree"],["Unicode normalization","Unicode segmentation"],["regular expression","pattern matching"],["documentation generator","API documentation"],["source mapping","debug symbols"],["symbol table","scope resolution"],["language specification","programming language semantics"],["software documentation","technical writing"],["code formatting","source code formatter"],["numerical methods","numerical integration"],["linear algebra library","sparse matrix"],["floating point arithmetic","rounding error"],["matrix multiplication","matrix factorization"],["probability distribution","Bayesian inference"],["statistical computing","statistical estimation"],["signal processing","digital filter"],["algorithm complexity","algorithm analysis"],["numerical optimization","convex optimization"],["computer graphics","rasterization"],["random number generator","pseudorandom generator"],["compiler construction","compiler optimization"],["parser generator","recursive descent parser"],["operating system kernel","systems programming"],["tensor library","automatic differentiation"],["local model inference","model serving"],["cryptographic library","secure storage"],["unit testing framework","integration testing"],["performance profiling","application tracing"],["database migration","data integrity"],["job queue","distributed computing"],["dependency auditing","static analysis"],["accessibility testing","screen reader testing"],["color contrast","color space"],["speech synthesis","text to speech"],["audio processing","audio synthesis"],["interactive fiction","narrative engine"],["font rendering","text shaping"],["animation engine","skeletal animation"],["vector graphics","SVG rendering"],["image processing","image transformation"],["game engine","collision detection"],["procedural generation","procedural noise"],["neural network","deep learning"],["language modeling","sequence modeling"],["gradient descent","stochastic optimization"],["dataset curation","dataset validation"],["information retrieval","search indexing"],["model evaluation","evaluation metrics"],["byte pair encoding","subword tokenization"],["vector embedding","semantic search"],["transformer architecture","attention mechanism"],["model quantization","model compression"],["continual learning","catastrophic forgetting"],["source verification","fact checking"],["bibliographic metadata","citation analysis"],["software licensing","license compliance"],["data provenance","research integrity"],["privacy engineering","data minimization"],["software supply chain security","dependency verification"],["benchmark reproducibility","performance benchmark"],["property based testing","test generation"],["metadata standards","knowledge organization"],["algorithmic fairness","evaluation methodology"],["version control","digital preservation"],["lexical database","terminology management"],["documentation testing","literate programming"],["formal semantics","denotational semantics"],["text normalization","character encoding"],["language tooling","documentation search"],["corpus linguistics","concordance index"],["eigenvalue algorithm","spectral decomposition"],["vector arithmetic","linear transformation"],["finite difference","numerical differentiation"],["variance estimation","descriptive statistics"],["Monte Carlo method","sampling algorithm"],["tensor contraction","multidimensional array"],["incremental compilation","build cache"],["event driven architecture","message queue"],["database indexing","query planning"],["memory allocator","garbage collection"],["code coverage","test harness"],["error handling","exception propagation"],["layout engine","responsive typography"],["digital audio","audio resampling"],["sprite animation","frame interpolation"],["image compression","lossless encoding"],["canvas rendering","graphics pipeline"],["keyboard navigation","accessibility audit"],["model architecture","neural layer"],["learning rate schedule","optimizer state"],["inference cache","key value cache"],["small language model","language model evaluation"],["context window","positional encoding"],["software reproducibility","deterministic build"],["calibration metric","prediction uncertainty"],["dataset provenance","metadata validation"],["formal verification","invariant testing"],["test isolation","regression analysis"]];
+// Historical database column "hour" now contains a five-minute slot ID for new runs; old hourly IDs remain intact.
+export function assignments(time){const hour=Math.floor(Number(time)/RESEARCH_SLOT_MS);if(!Number.isSafeInteger(hour)||hour<0)throw Error("invalid schedule");const cycle=Math.floor(hour/(RESEARCH_FLEET.length/RESEARCH_BATCH_SIZE));return Array.from({length:RESEARCH_BATCH_SIZE},(_,i)=>{const index=(hour*RESEARCH_BATCH_SIZE+i)%RESEARCH_FLEET.length,row=RESEARCH_FLEET[index];return {hour,key:row.key,name:row.name,division:row.division,query:CODE_MISSION_QUERIES[index][Math.floor(cycle/4)%2],source:row.sources[(cycle+index)%4]};});}
 export function normalizeCandidates(payload){if(payload?.error)throw Error("source error");const results=Array.isArray(payload?.search)?payload.search:[];return results.slice(0,3).flatMap(x=>{const id=String(x.id||""),title=String(x.label||"").trim().slice(0,150),description=String(x.description||"").trim().slice(0,300);return /^Q[1-9][0-9]{0,14}$/.test(id)&&title&&description?[{id,title,description,url:"https://www.wikidata.org/wiki/"+id,license:"CC0-1.0"}]:[];});}
 async function enabled(env){const row=await env.DB.prepare("SELECT k.enabled AS enabled,e.paused AS paused FROM chaos_knowledge_66_control k JOIN eye_chaos_controls e ON e.id=1 WHERE k.id=1").first();return row!=null&&Number(row.enabled)===1&&Number(row.paused)===0;}
 async function readLimited(response){if(!response.ok)throw Object.assign(Error("source unavailable"),{sourceStatus:response.status});if(!response.body)throw Error("source empty");const r=response.body.getReader();let n=0,s="";const d=new TextDecoder();try{while(true){const {done,value}=await r.read();if(done)break;n+=value.byteLength;if(n>32000){await r.cancel();throw Error("source too large");}s+=d.decode(value,{stream:true});}try{return JSON.parse(s+d.decode());}catch{throw Error("invalid source JSON");}}finally{r.releaseLock();}}
@@ -1151,7 +1697,7 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
  let softwareReceipts=0;try{softwareReceipts=await shareSoftwareReferences(env);}catch{console.warn("order66_software_share_unavailable");}
  return {completed,failed,peerLessons,peerFailures,softwareReceipts,uniqueDiscoveries,returnedRecords,duplicates:returnedRecords-uniqueDiscoveries};
 }
-export async function knowledgeStatus(env){const active=await enabled(env);const totals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_candidates GROUP BY review_status").all()).results||[];const latest=(await env.DB.prepare("SELECT r.agent_key,r.division,r.query,r.status,r.found,r.started_at,d.source_requested,d.source_used,d.primary_failure,d.error_code FROM chaos_knowledge_runs r LEFT JOIN chaos_knowledge_run_diagnostics d ON d.hour=r.hour AND d.agent_key=r.agent_key ORDER BY r.hour DESC,r.agent_key LIMIT 32").all()).results||[];const candidates=(await env.DB.prepare("SELECT entity_id,title,description,source_url,license,agent_key,retrieved_at FROM chaos_knowledge_candidates WHERE review_status='pending' ORDER BY retrieved_at DESC,entity_id LIMIT 30").all()).results||[];const tools=(await env.DB.prepare("SELECT tool_id,source,title,source_url,declared_license,version_hint,agent_key,review_status FROM chaos_knowledge_tools ORDER BY retrieved_at DESC,tool_id LIMIT 30").all()).results||[];const toolTotals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_tools GROUP BY review_status").all()).results||[];const lessons=await env.DB.prepare("SELECT count(*) AS count FROM chaos_knowledge_lessons").first();return {active,roster:RESEARCH_FLEET.length,divisions:RESEARCH_FLEET,totals,latest,candidates,tools,toolTotals,lessons:lessons?.count||0,cron:KNOWLEDGE_CRON,training:"manual review before export; no automatic weight update"};}
+export async function knowledgeStatus(env){const active=await enabled(env);const totals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_candidates GROUP BY review_status").all()).results||[];const latest=(await env.DB.prepare("SELECT r.agent_key,r.division,r.query,r.status,r.found,r.started_at,d.source_requested,d.source_used,d.primary_failure,d.error_code FROM chaos_knowledge_runs r LEFT JOIN chaos_knowledge_run_diagnostics d ON d.hour=r.hour AND d.agent_key=r.agent_key ORDER BY r.hour DESC,r.agent_key LIMIT 32").all()).results||[];const candidates=(await env.DB.prepare("SELECT entity_id,title,description,source_url,license,agent_key,retrieved_at FROM chaos_knowledge_candidates WHERE review_status='pending' ORDER BY retrieved_at DESC,entity_id LIMIT 30").all()).results||[];const tools=(await env.DB.prepare("SELECT tool_id,source,title,source_url,declared_license,version_hint,agent_key,review_status FROM chaos_knowledge_tools ORDER BY retrieved_at DESC,tool_id LIMIT 30").all()).results||[];const toolTotals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_tools GROUP BY review_status").all()).results||[];const lessons=await env.DB.prepare("SELECT count(*) AS count FROM chaos_knowledge_lessons").first();return {active,roster:RESEARCH_FLEET.length,divisions:RESEARCH_FLEET,totals,latest,candidates,tools,toolTotals,lessons:lessons?.count||0,cron:KNOWLEDGE_CRON,slotMinutes:5,batchSize:RESEARCH_BATCH_SIZE,training:"five-minute research; reviewed knowledge available to owner; no automatic weight update"};}
 export async function reviewKnowledge(env,id,decision,actor){if(!/^Q[1-9][0-9]{0,14}$/.test(id)||!["approved","rejected"].includes(decision))throw Error("invalid review");const r=await env.DB.prepare("UPDATE chaos_knowledge_candidates SET review_status=?,reviewed_by=?,reviewed_at=? WHERE entity_id=? AND review_status='pending'").bind(decision,String(actor),new Date().toISOString(),id).run();return r.meta?.changes===1;}
 export async function exportKnowledge(env){const rows=(await env.DB.prepare("SELECT entity_id,title,description,source_url,license,reviewed_at FROM chaos_knowledge_candidates WHERE review_status='approved' ORDER BY entity_id LIMIT 10000").all()).results||[];return {schema:"miss-chaos-reviewed-cc0-v1",rows};}
 

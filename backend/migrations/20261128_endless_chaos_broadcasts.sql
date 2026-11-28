@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS chaos_knowledge_software_broadcasts(tool_id TEXT PRIMARY KEY REFERENCES chaos_knowledge_tools(tool_id) ON DELETE CASCADE,teacher_key TEXT NOT NULL,received_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_chaos_software_broadcast_date ON chaos_knowledge_software_broadcasts(received_at DESC);
+INSERT OR IGNORE INTO chaos_knowledge_software_broadcasts(tool_id,teacher_key,received_at) SELECT t.tool_id,t.agent_key,MIN(s.received_at) FROM chaos_knowledge_software_receipts s JOIN chaos_knowledge_tools t ON t.tool_id=s.tool_id WHERE t.review_status<>'rejected' GROUP BY t.tool_id,t.agent_key;

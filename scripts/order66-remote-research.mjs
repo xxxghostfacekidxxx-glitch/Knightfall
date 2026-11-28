@@ -1,7 +1,7 @@
 // Only predetermined public software research; no Cloudflare credentials or SQL access.
-import {assignments,collectAssignment} from "../backend/src/chaos-knowledge-fleet.mjs";
+import {assignments,collectAssignment,RESEARCH_SLOT_MS} from "../backend/src/chaos-knowledge-fleet.mjs";
 import {verifyGitHubAuditToken} from "../backend/src/developer-audit-oidc.js";
-const endpoint="https://api.ash-fall.com/api/internal/order66-research",hour=Math.floor(Date.now()/3600000),runId=Number(process.env.GITHUB_RUN_ID),sha=process.env.GITHUB_SHA;
+const endpoint="https://api.ash-fall.com/api/internal/order66-research",hour=Math.floor(Date.now()/RESEARCH_SLOT_MS),runId=Number(process.env.GITHUB_RUN_ID),sha=process.env.GITHUB_SHA;
 if(process.env.GITHUB_REF!=="refs/heads/main"||!Number.isSafeInteger(runId)||runId<1||! /^[a-f0-9]{40}$/.test(sha||""))throw Error("Invalid CI identity");
 const issue=new URL(process.env.ACTIONS_ID_TOKEN_REQUEST_URL);issue.searchParams.set("audience",endpoint);
 const response=await fetch(issue,{headers:{authorization:"Bearer "+process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN},redirect:"error",signal:AbortSignal.timeout(10000)});if(!response.ok)throw Error("OIDC issue failed: "+response.status);
@@ -10,7 +10,7 @@ const claims=JSON.parse(Buffer.from(token.split(".")[1],"base64url").toString("u
 const preflight=await fetch(endpoint+"?"+new URLSearchParams({hour:String(hour),runId:String(runId),sha}),{headers:{authorization:"Bearer "+token},redirect:"error",signal:AbortSignal.timeout(15000)});
 if(!preflight.ok)throw Error("Research preflight rejected: HTTP "+preflight.status);
 const plan=await preflight.json();if(plan.collect!==true){console.log("No source requests needed: "+String(plan.reason));process.exit(0);}
-const results=await Promise.all(assignments(hour*3600000).map(async a=>({key:a.key,query:a.query,...await collectAssignment(a)})));
+const results=await Promise.all(assignments(hour*RESEARCH_SLOT_MS).map(async a=>({key:a.key,query:a.query,...await collectAssignment(a)})));
 const body=JSON.stringify({hour,runId,sha,results});if(Buffer.byteLength(body)>16384)throw Error("Upload too large");
 const upload=await fetch(endpoint,{method:"POST",headers:{authorization:"Bearer "+token,"content-type":"application/json"},body,redirect:"error",signal:AbortSignal.timeout(25000)});
 if(upload.status===409){console.log("Research paused or already accepted for this slot.");process.exit(0);}

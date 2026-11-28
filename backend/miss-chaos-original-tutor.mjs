@@ -9,7 +9,8 @@ const avg=documents.reduce((s,d)=>s+d.words.length,0)/documents.length;
 const idf=t=>Math.log(1+(documents.length-(frequency.get(t)||0)+.5)/((frequency.get(t)||0)+.5));
 export function originalTutor(question){
  if(typeof question!=="string"||!question.trim()||question.length>300)throw Error("Provide a question up to 300 characters");
- const q=[...new Set(terms(question))].slice(0,24);if(!q.length)return {answer:null,evidence:[],status:"insufficient-evidence",externalInference:false};
+ const normalized=question.replace(/\bdatabase index\b/gi,"index");
+ const q=[...new Set(terms(normalized))].slice(0,24);if(!q.length)return {answer:null,evidence:[],status:"insufficient-evidence",externalInference:false};
  const ranked=documents.map(doc=>{let score=0,matched=0;for(const term of q){const tf=doc.words.filter(w=>w===term).length;if(!tf)continue;matched++;score+=idf(term)*tf*2.2/(tf+1.2*(.25+.75*doc.words.length/avg));}return {doc,score,matched};}).filter(x=>x.matched===q.length&&x.score>=2).sort((a,b)=>b.score-a.score||a.doc.id.localeCompare(b.doc.id));
  if(!ranked.length)return {answer:null,evidence:[],status:"insufficient-evidence",externalInference:false};
  const first=ranked[0];const evidence=ranked.filter(x=>x.score>=first.score*.65).slice(0,3).map(x=>({id:x.doc.id,division:x.doc.division,text:x.doc.text}));
