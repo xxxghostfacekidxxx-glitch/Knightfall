@@ -1,3 +1,4 @@
+import {javascriptPractice} from "../backend/chaos-forge-javascript-course.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {verifyJavaScript,translateJavaScript} from "../backend/chaos-forge-javascript.mjs";
@@ -34,3 +35,5 @@ test("compiler rejects arbitrary code, coercion and unsupported syntax",()=>{
 test("JavaScript source builds Node and offline browser projects",()=>{
  for(const builder of [buildProject,buildWebProject]){const a=builder({name:"js-normalizer",kind:"javascript",spec:cases[1]});const files=new Map(readProjectZip(a.bytes).map(f=>[f.path,f.content]));assert.ok(files.has("src/program.mjs"));assert.ok(files.has("test/program.test.mjs"));assert.equal(a.report.examples,3);}
 });
+
+test("all 100 specialists compile a peer lesson and pass four independent holdout cases",()=>{const rows=Array.from({length:100},(_,i)=>javascriptPractice(i,0));assert.equal(new Set(rows.map(r=>r.learner)).size,100);assert.equal(new Set(rows.map(r=>r.teacher)).size,100);assert.ok(rows.every(r=>r.learner!==r.teacher&&r.verified));assert.equal(rows.reduce((n,r)=>n+r.passed,0),700);assert.equal(rows.reduce((n,r)=>n+r.holdout,0),400);});
