@@ -10,7 +10,7 @@ export function javascriptPractice(index,round=0){
  if(kind===0){source="function solve(value){return value*"+k+"+3;}";type="number";inputs=[-9,-1,0,1,2,7,100];oracle=x=>x*k+3;}
  else if(kind===1){source='function solve(value){return value.trim().toLowerCase()+":'+k+'";}';type="text";inputs=[""," A ","HELLO","  Z","123","A B","xyz"];oracle=x=>x.trim().toLowerCase()+":"+k;}
  else if(kind===2){source="function solve(value){const positive=value.filter(x=>x>0);return positive.reduce((a,b)=>a+b,0)*"+k+";}";type="numbers";inputs=[[],[1,2,-1],[0],[-2,-1],[4,5],[1,1,1],[10,-10,20]];oracle=x=>x.filter(v=>v>0).reduce((a,b)=>a+b,0)*k;}
- else if(kind===3){source="function solve(value){return value>="+k+";}";type="number";inputs=[-1,0,k-1,k,k+1,k+2,100];oracle=x=>x>=k;}
+ else if(kind===3){source="function solve(value){return value>="+k+";}";type="number";inputs=[-2,-1,0,k,k+1,k+2,100];oracle=x=>x>=k;}
  else{source='function solve(value){return value.toReversed().join(":'+k+':");}';type="texts";inputs=[[],["a"],["b","a","b"],["a","A"],["",""],["x","y"],["one","two","one"]];oracle=x=>x.slice().reverse().join(":"+k+":");}
  const fields=[{name:"value",type}],examples=inputs.slice(0,3).map(x=>({values:[x],expected:oracle(x)})),r=verifyJavaScript({source,fields,examples});
  const tests=inputs.map(x=>({actual:runData(r.program,[x]),expected:oracle(x)})),passed=tests.filter(t=>JSON.stringify(t.actual)===JSON.stringify(t.expected)).length;
