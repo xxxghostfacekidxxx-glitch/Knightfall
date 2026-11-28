@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v115";
+const CACHE_NAME = "knightfall-shell-v116";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -424,11 +424,11 @@ self.addEventListener("notificationclick", event => {
           method:"POST",credentials:"include",cache:"no-store",
           headers:{"content-type":"application/json"},body:payload
         });
-        let sent;
-        try{sent=await send()}catch(error){if(!key)throw error;sent=await send()}
-        if(key&&sent.status>=500)sent=await send();
+        let sent, retried=false;
+        try{sent=await send()}catch(error){if(!key)throw error;retried=true;sent=await send()}
+        if(key&&!retried&&sent.status>=500)sent=await send();
         const receipt=await sent.json().catch(()=>null);
-        if(sent.ok&&receipt&&typeof receipt==="object"&&!receipt.error){
+        if(sent.ok&&receipt&&Number.isSafeInteger(Number(receipt.id))&&Number(receipt.id)>0&&!receipt.error){
           await acknowledgeNotification(notificationId).catch(()=>{});
           return;
         }

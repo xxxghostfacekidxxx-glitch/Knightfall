@@ -10,7 +10,7 @@ const navigation=readFileSync(new URL("../public/nav.js",import.meta.url),"utf8"
 new vm.Script(code);
 
 function harness(){
- const sockets=[],listeners={},pageListeners={},events=[];
+ const sockets=[],listeners={},pageListeners={},events=[],timers=new Map();let timerId=0;
  class Socket {
   static CONNECTING=0;static OPEN=1;static CLOSING=2;static CLOSED=3;
   constructor(url){this.url=url;this.readyState=0;sockets.push(this);}
@@ -23,10 +23,10 @@ function harness(){
    document:{hidden:false,addEventListener:(name,fn)=>{pageListeners[name]=fn}},
    navigator:{onLine:true},WebSocket:Socket,
    console,JSON,Number,Math,
-   setTimeout:()=>42,clearTimeout:()=>{}
+   setTimeout:(fn,ms)=>{timers.set(++timerId,{fn,ms});return timerId;},clearTimeout:id=>timers.delete(id)
  });
  vm.runInContext(code,context);
- return {api:context.window.KnightfallLive,sockets,events,context,listeners,pageListeners};
+ return {api:context.window.KnightfallLive,sockets,events,context,listeners,pageListeners,timers};
 }
 test("one shared WebSocket serves multiple subscribers",()=>{
  const h=harness();
@@ -69,3 +69,6 @@ test("floating heads use the same signal and retain polling as a fallback when l
  assert.match(heads,/if\(!document\.hidden\)\{bindLive\(\);void tick\(\)/);
  assert.match(navigation,/message-live\.js\?v=/);
 });
+
+test("stalled handshake closes socket and schedules a reconnect",()=>{const h=harness();h.api.subscribe(()=>{});const watchdog=[...h.timers.values()].find(x=>x.ms===12000);assert.ok(watchdog);watchdog.fn();assert.equal(h.sockets[0].readyState,3);const retry=[...h.timers.values()].find(x=>x.ms<12000);assert.ok(retry);retry.fn();assert.equal(h.sockets.length,2);});
+test("socket error recovers without waiting for close event",()=>{const h=harness();h.api.subscribe(()=>{});h.sockets[0].open();h.sockets[0].onerror();assert.equal(h.api.connected,false);assert.equal(h.sockets[0].readyState,3);assert.ok(h.timers.size);});

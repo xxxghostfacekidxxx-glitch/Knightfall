@@ -5,15 +5,16 @@
   if(window.KnightfallLive)return;
   const URL="wss://api.ash-fall.com/api/messages/live";
   const listeners=new Set();
-  let socket=null,retry=null,attempt=0;
+  let socket=null,retry=null,handshake=null,attempt=0;
   let connected=false;
   const emit=event=>{for(const fn of listeners){try{fn(event);}catch(error){console.warn("message_live_listener_failed",String(error));}}};
   const status=value=>{if(connected===value)return;connected=value;emit({type:"status",connected:value});};
   const clearRetry=()=>{if(retry!==null){clearTimeout(retry);retry=null;}};
+  const clearHandshake=()=>{if(handshake!==null){clearTimeout(handshake);handshake=null;}};
   function scheduleRetry(){
     if(document.hidden||!listeners.size||navigator.onLine===false)return;
     clearRetry();
-    const delay=Math.min(30000,1000*Math.pow(2,Math.min(5,attempt++)));
+    const delay=Math.min(30000,1000*Math.pow(2,Math.min(5,attempt++)))*(0.8+Math.random()*0.4);
     retry=setTimeout(()=>{retry=null;connect();},delay);
   }
   function connect(){
@@ -23,9 +24,10 @@
     let next;
     try{next=new WebSocket(URL);}catch(error){status(false);scheduleRetry();return;}
     socket=next;
+    handshake=setTimeout(()=>{if(socket!==next)return;disconnect();scheduleRetry();},12000);
     next.onopen=()=>{
       if(socket!==next)return;
-      attempt=0;
+      clearHandshake();attempt=0;
       status(true);
     };
     next.onmessage=event=>{
@@ -38,16 +40,16 @@
       emit({type:"message-event",kind:data.kind,action:String(data.action||"changed"),
         conversationId:Number(data.conversationId),messageId:Number(data.messageId)||0});
     };
-    next.onerror=()=>{if(socket===next)status(false);};
+    next.onerror=()=>{if(socket===next){disconnect();scheduleRetry();}};
     next.onclose=()=>{
       if(socket!==next)return;
-      socket=null;
+      clearHandshake();socket=null;
       status(false);
       scheduleRetry();
     };
   }
   function disconnect(){
-    clearRetry();
+    clearRetry();clearHandshake();
     if(socket){const old=socket;socket=null;try{old.close(1000,"Inactive");}catch{}}
     status(false);
   }
