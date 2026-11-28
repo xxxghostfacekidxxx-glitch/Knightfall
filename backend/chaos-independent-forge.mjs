@@ -1,3 +1,4 @@
+import {verifyLogicLibrary,decompileLogicLibrary} from "./chaos-forge-logic-library.mjs";
 import {verifyPython} from "./chaos-forge-python.mjs";
 import {verifyControlJavaScript} from "./chaos-forge-javascript-control.mjs";
 import {verifyJavaScript} from "./chaos-forge-javascript.mjs";
@@ -44,6 +45,10 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const logicLibrary=question.match(/^compile logic library(?: (module))?\s*:\s*([\s\S]+)$/i);
+ if(logicLibrary){const report=verifyLogicLibrary(JSON.parse(logicLibrary[2])),module=!!logicLibrary[1],file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-logic-library"+(module?".mjs":".json"),content:module?report.module:JSON.stringify(report.program,null,2)});return {answer:"Compiled numeric function library; "+report.tests.length+" examples passed. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-logic-library",artifact:file,report:{...report,module:undefined},externalInference:false};}
+ const decodeLogicLibrary=question.match(/^decompile logic library\s*:\s*([\s\S]+)$/i);
+ if(decodeLogicLibrary){const report=decompileLogicLibrary(JSON.parse(decodeLogicLibrary[1]));return {answer:JSON.stringify(report.source,null,2),method:"independent-logic-library-decompiler",report,externalInference:false};}
  const control=question.match(/^compile (python|javascript control)(?: (module))?\s*:\s*([\s\S]+)$/i);
  if(control){const python=control[1].toLowerCase()==="python",report=(python?verifyPython:verifyControlJavaScript)(JSON.parse(control[3])),module=!!control[2],file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-"+(python?"python":"javascript-control")+(module?".mjs":".json"),content:module?report.module:JSON.stringify(report.program,null,2)});return {answer:"Compiled numeric control flow; "+report.tests.length+" examples passed. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-control-compiler",artifact:file,report:{...report,module:undefined},externalInference:false};}
  const javascript=question.match(/^compile javascript(?: (module))?\s*:\s*([\s\S]+)$/i);
