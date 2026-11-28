@@ -1,0 +1,105 @@
+name: Miss Chaos · Approved integration queue
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+permissions: {}
+concurrency:
+  group: miss-chaos-approved-queue
+  cancel-in-progress: false
+jobs:
+  claim:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      id: ${{ steps.claim.outputs.id }}
+      base_sha: ${{ steps.claim.outputs.base_sha }}
+      path: ${{ steps.claim.outputs.path }}
+      candidate_base64: ${{ steps.claim.outputs.candidate_base64 }}
+      candidate_sha256: ${{ steps.claim.outputs.candidate_sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - id: claim
+        run: node scripts/chaos-integration-queue.mjs claim
+  test:
+    needs: claim
+    if: needs.claim.outputs.id != ''
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --prefix backend --ignore-scripts --no-audit --no-fund
+      - name: Test exact candidate in isolated read-only job
+        env:
+          KF_REVIEW_BASE_SHA: ${{ needs.claim.outputs.base_sha }}
+          KF_REVIEW_PATH: ${{ needs.claim.outputs.path }}
+          KF_REVIEW_CANDIDATE_BASE64: ${{ needs.claim.outputs.candidate_base64 }}
+          KF_REVIEW_CANDIDATE_SHA256: ${{ needs.claim.outputs.candidate_sha256 }}
+          KF_REVIEW_RUN_TESTS: 'true'
+        run: node scripts/chaos-review-sandbox.mjs
+  integrate:
+    needs: [claim, test]
+    if: needs.test.result == 'success' && needs.claim.outputs.id != ''
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    outputs:
+      commit: ${{ steps.apply.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - id: apply
+        env:
+          KF_REVIEW_BASE_SHA: ${{ needs.claim.outputs.base_sha }}
+          KF_REVIEW_PATH: ${{ needs.claim.outputs.path }}
+          KF_REVIEW_CANDIDATE_BASE64: ${{ needs.claim.outputs.candidate_base64 }}
+          KF_REVIEW_CANDIDATE_SHA256: ${{ needs.claim.outputs.candidate_sha256 }}
+          KF_APPLY_CONFIRMATION: APPLY TO MAIN
+          KF_QUEUE_AUTHORIZED: 'true'
+        run: |
+          node scripts/chaos-approved-apply.mjs
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  report:
+    needs: [claim, test, integrate]
+    if: always() && needs.claim.outputs.id != ''
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - env:
+          KF_JOB_ID: ${{ needs.claim.outputs.id }}
+          KF_JOB_RESULT: ${{ needs.integrate.result == 'success' && 'passed' || 'failed' }}
+          KF_JOB_COMMIT: ${{ needs.integrate.outputs.commit }}
+        run: node scripts/chaos-integration-queue.mjs report

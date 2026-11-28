@@ -4,8 +4,8 @@ import {resolve} from "node:path";
 import {execFileSync} from "node:child_process";
 import {fileURLToPath} from "node:url";
 import {validateSandboxRequest} from "./chaos-review-sandbox.mjs";
-export function prepareApprovedApply(input,{root,checkoutSha,actor,owner,confirmation}={}){
- if(!actor||actor!==owner||confirmation!=="APPLY TO MAIN")throw Error("Explicit repository-owner authorization required.");
+export function prepareApprovedApply(input,{root,checkoutSha,actor,owner,confirmation,queueAuthorized=false}={}){
+ if((queueAuthorized!==true&&(!actor||actor!==owner))||confirmation!=="APPLY TO MAIN")throw Error("Explicit repository-owner authorization required.");
  const checked=validateSandboxRequest({...input,run_targeted_tests:true},{root,checkoutSha});
  // Validate all inputs before writing. The allowlisted test recipe is mandatory.
  if(!checked.tests.length)throw Error("No integration test recipe.");
@@ -15,7 +15,7 @@ function main(){
  const root=resolve(fileURLToPath(new URL("..",import.meta.url)));
  const checkoutSha=execFileSync("git",["rev-parse","HEAD"],{cwd:root,encoding:"utf8"}).trim();
  const input={base_sha:process.env.KF_REVIEW_BASE_SHA,path:process.env.KF_REVIEW_PATH,candidate_base64:process.env.KF_REVIEW_CANDIDATE_BASE64,candidate_sha256:process.env.KF_REVIEW_CANDIDATE_SHA256};
- const checked=prepareApprovedApply(input,{root,checkoutSha,actor:process.env.GITHUB_ACTOR,owner:process.env.GITHUB_REPOSITORY_OWNER,confirmation:process.env.KF_APPLY_CONFIRMATION});
+ const checked=prepareApprovedApply(input,{root,checkoutSha,actor:process.env.GITHUB_ACTOR,owner:process.env.GITHUB_REPOSITORY_OWNER,confirmation:process.env.KF_APPLY_CONFIRMATION,queueAuthorized:process.env.KF_QUEUE_AUTHORIZED==="true"&&process.env.GITHUB_WORKFLOW_REF===process.env.GITHUB_REPOSITORY+"/.github/workflows/miss-chaos-integration-queue.yml@refs/heads/main"});
  const clean=execFileSync("git",["status","--porcelain"],{cwd:root,encoding:"utf8"});if(clean.trim())throw Error("Integration checkout must be clean.");
  writeFileSync(resolve(root,checked.path),checked.candidate);
  execFileSync("git",["diff","--check","--",checked.path],{cwd:root,stdio:"inherit"});

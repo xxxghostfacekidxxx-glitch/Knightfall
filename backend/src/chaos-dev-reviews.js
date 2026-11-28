@@ -3,7 +3,7 @@
  * automatic commit, deploy, or credential exposure. Human review != integration.
  */
 import {canAccessEyeOfChaos,canAccessEyeOfHorus} from "./staff-capabilities.js";
-import {dispatchApprovedCandidate,validIntegrationPath} from "./chaos-integration-dispatch.mjs";
+import {validIntegrationPath} from "./chaos-integration-dispatch.mjs";
 import {acceptedAdminPartner} from "./chaos-companion.mjs";
 import {readKnightfallFile,validateKnightfallFileArgs} from "../chaos-repo-reader.mjs";
 import {compareChaosCode} from "../chaos-dev-utilities.mjs";
@@ -94,9 +94,9 @@ export async function handleChaosDevReviews(request,env,url,{requireUser,json,or
    return reply({error:"Submit JSON from the signed-in Knightfall origin."},403);
  if(url.pathname===BASE+"/policy"){
    if(!owner)return reply({error:"Osiris only."},403);
-   if(request.method==="GET")return reply({roles:delegation,integration_ready:Boolean(env.CHAOS_INTEGRATION_TOKEN)});
+   if(request.method==="GET")return reply({roles:delegation,integration_ready:true});
    if(!await rateLimit(env,request,"chaos-dev-review-policy",5,60,user.id))return reply({error:"Policy rate limit."},429);
-   try{const raw=await request.text();if(raw.length>512)throw Error("Too large");const roles=JSON.parse(raw).roles;if(!Array.isArray(roles)||roles.some(x=>!["isis","admin"].includes(x)))throw Error("Invalid roles");const unique=[...new Set(roles)];await env.DB.prepare("INSERT INTO site_settings(key,value,updated_by,updated_at) VALUES(?,?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_by=excluded.updated_by,updated_at=excluded.updated_at").bind(policyKey,JSON.stringify(unique),user.id,new Date().toISOString()).run();return reply({roles:unique,integration_ready:Boolean(env.CHAOS_INTEGRATION_TOKEN)});}catch{return reply({error:"Delegation update not confirmed."},400);}
+   try{const raw=await request.text();if(raw.length>512)throw Error("Too large");const roles=JSON.parse(raw).roles;if(!Array.isArray(roles)||roles.some(x=>!["isis","admin"].includes(x)))throw Error("Invalid roles");const unique=[...new Set(roles)];await env.DB.prepare("INSERT INTO site_settings(key,value,updated_by,updated_at) VALUES(?,?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_by=excluded.updated_by,updated_at=excluded.updated_at").bind(policyKey,JSON.stringify(unique),user.id,new Date().toISOString()).run();return reply({roles:unique,integration_ready:true});}catch{return reply({error:"Delegation update not confirmed."},400);}
  }
  if(!canApprove)return reply({error:"Osiris-only developer access; delegation must be enabled explicitly."},403);
  const detail=url.pathname.match(/^\/api\/chaos\/dev-reviews\/([a-f0-9-]{36})(?:\/(approve|reject|apply))?$/);
@@ -126,7 +126,7 @@ export async function handleChaosDevReviews(request,env,url,{requireUser,json,or
      "SELECT id,author_id,source_sha,path,change_summary,syntax_status,status,revision,reviewer_id,review_note,reviewed_at,created_at,updated_at FROM chaos_dev_reviews ORDER BY created_at DESC LIMIT 40":
      "SELECT id,author_id,source_sha,path,change_summary,syntax_status,status,revision,reviewer_id,review_note,reviewed_at,created_at,updated_at FROM chaos_dev_reviews WHERE status=? ORDER BY created_at DESC LIMIT 40")
     .bind(...(status==="all"?[]:[status])).all();
-   return reply({reviews:(rows.results||[]).map(devReviewSummary),can_approve:canApprove,can_apply:owner,integration_ready:owner&&Boolean(env.CHAOS_INTEGRATION_TOKEN),schema_ready:true,
+   return reply({reviews:(rows.results||[]).map(devReviewSummary),can_approve:canApprove,can_apply:owner,integration_ready:owner&&true,schema_ready:true,
      notice:"Review approval does not apply code, run CI, commit, merge or deploy."});
  }
  if(detail&&request.method==="GET"&&!detail[2]){
@@ -134,7 +134,7 @@ export async function handleChaosDevReviews(request,env,url,{requireUser,json,or
    if(!row)return reply({error:"Review not found."},404);
    const diff=compareChaosCode({before:row.original,after:row.candidate});
    const job=await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind("chaos_integration:"+row.id).first();let integration=null;try{integration=JSON.parse(job?.value||"null");}catch{}
-   return reply({...devReviewSummary(row),can_apply:owner&&validIntegrationPath(row.path),integration_ready:owner&&Boolean(env.CHAOS_INTEGRATION_TOKEN),integration,original:row.original,candidate:row.candidate,
+   return reply({...devReviewSummary(row),can_apply:owner&&validIntegrationPath(row.path),integration_ready:owner&&true,integration,original:row.original,candidate:row.candidate,
      diff:diff.unified_diff,source_url:"https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/"+row.source_sha+"/"+row.path,
      events:(await env.DB.prepare("SELECT actor_id,action,source_sha,occurred_at FROM chaos_dev_review_events WHERE proposal_id=? ORDER BY id DESC LIMIT 20").bind(row.id).all()).results||[]});
  }
@@ -155,7 +155,7 @@ export async function handleChaosDevReviews(request,env,url,{requireUser,json,or
      message:"Stored for exact-source human review only. No GitHub write or deployment."},201);
  }
  if(detail?.[2]==="apply"&&request.method==="POST"){
-   if(!env.CHAOS_INTEGRATION_TOKEN)return reply({error:"One-click integration requires the owner-configured Worker dispatch credential."},503);
+   // The scoped GitHub Actions queue does not need a static dispatch credential.
    let data;try{data=await body();}catch{return reply({error:"Invalid JSON."},400);}
    if(data.confirmation!=="APPLY TO MAIN"||data.revision!==1)return reply({error:"Exact revision and explicit approval required."},400);
    const stored=await env.DB.prepare("SELECT * FROM chaos_dev_reviews WHERE id=?").bind(detail[1]).first();
@@ -168,16 +168,9 @@ export async function handleChaosDevReviews(request,env,url,{requireUser,json,or
      const result=await env.DB.batch([update,audit]);if(result[0]?.meta?.changes!==1)return reply({error:"Concurrent approval; refresh."},409);
    }
    const key="chaos_integration:"+stored.id,stamp=new Date().toISOString();
-   const claim=await env.DB.prepare("INSERT OR IGNORE INTO site_settings(key,value,updated_by,updated_at) VALUES(?,?,?,?)").bind(key,JSON.stringify({status:"dispatch_pending",requested_at:stamp}),user.id,stamp).run();
+   const claim=await env.DB.prepare("INSERT OR IGNORE INTO site_settings(key,value,updated_by,updated_at) VALUES(?,?,?,?)").bind(key,JSON.stringify({status:"queued",requested_at:stamp}),user.id,stamp).run();
    if(claim.meta?.changes!==1)return reply({error:"Integration already requested. Inspect GitHub Actions before retrying."},409);
-   try{
-     const receipt=await dispatchApprovedCandidate(env,{...stored,status:"approved"});
-     await env.DB.prepare("UPDATE site_settings SET value=?,updated_at=? WHERE key=?").bind(JSON.stringify({...receipt,requested_at:stamp}),new Date().toISOString(),key).run();
-     return reply({ok:true,status:"approved",integration:receipt},202);
-   }catch(error){
-     await env.DB.prepare("UPDATE site_settings SET value=?,updated_at=? WHERE key=?").bind(JSON.stringify({status:"dispatch_unconfirmed",requested_at:stamp}),new Date().toISOString(),key).run();
-     return reply({error:"Dispatch not confirmed; inspect GitHub Actions before any retry. "+String(error.message).slice(0,120)},502);
-   }
+   return reply({ok:true,status:"approved",integration:{status:"queued",requested_at:stamp,workflow_url:"https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/miss-chaos-integration-queue.yml"}},202);
  }
  if(detail?.[2]&&request.method==="POST"){
    let data;

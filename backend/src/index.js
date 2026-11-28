@@ -19,6 +19,7 @@ import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { createChaosInference } from "../chaos-independent-runtime.mjs";
 import { createChaosAgentHandlers } from "../chaos-agent-handlers.mjs";
 import {handleChaosCompanion,companionScope,acceptedAdminPartner} from "./chaos-companion.mjs";
+import {handleIntegrationQueue} from "./chaos-integration-queue.mjs";
 import {handleRepositoryStages} from "./chaos-repository-stages.mjs";
 import {handleChaosDevReviews} from "./chaos-dev-reviews.js";
 import { getKnightfallGithubHealth } from "../chaos-github-health.mjs";
@@ -1681,6 +1682,7 @@ export default { async queue(batch, env) {
     if(kind==="shadow")return json(shadowBrief(query),200,origin);
     return json({error:"Choose Arcade, Moon or Shadow Work."},400,origin);
   }
+  if(url.pathname==="/api/internal/chaos-integration")return handleIntegrationQueue(request,env,{json,origin});
   if(url.pathname==="/api/internal/order66-research"&&request.method==="GET"){
     if(request.headers.get("origin"))return json({error:"Browser requests not permitted."},403,origin);
     const token=request.headers.get("authorization")?.match(/^Bearer ([A-Za-z0-9._-]+)$/)?.[1];if(!token)return json({error:"CI identity required."},401,origin);

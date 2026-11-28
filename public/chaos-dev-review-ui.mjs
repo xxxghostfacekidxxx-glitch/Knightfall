@@ -131,8 +131,8 @@ if(panel){
      if(["pending","approved"].includes(detail.status)&&detail.can_apply){
        const apply=make("button","Approve & push through");apply.type="button";
        apply.disabled=!detail.integration_ready||Boolean(detail.integration);
-       slot.append(apply,make("p",detail.integration?("Integration: "+detail.integration.status):detail.integration_ready?"One click authorizes this exact candidate; isolated tests must pass before main changes.":"Integration credential not configured. Manual GitHub workflow remains available.","chaos-note"));
-       apply.addEventListener("click",async()=>{if(!window.confirm("Approve and submit this exact source revision to isolated tests and integration on main?"))return;apply.disabled=true;try{const result=await call("/"+detail.id+"/apply","POST",{revision:detail.revision,confirmation:"APPLY TO MAIN"});note("GitHub accepted integration dispatch. Check workflow for tests and commit.");await loadReviews(true);}catch(error){note(error.message,true);await loadReviews(true);}});
+       slot.append(apply,make("p",detail.integration?("Integration: "+detail.integration.status):detail.integration_ready?"One click queues this exact candidate; isolated tests must pass before main changes.":"Integration is unavailable.","chaos-note"));
+       apply.addEventListener("click",async()=>{if(!window.confirm("Approve and submit this exact source revision to isolated tests and integration on main?"))return;apply.disabled=true;try{const result=await call("/"+detail.id+"/apply","POST",{revision:detail.revision,confirmation:"APPLY TO MAIN"});note("Approved and queued. The GitHub runner will pick up this exact candidate; check Actions for tests and commit.");await loadReviews(true);}catch(error){note(error.message,true);await loadReviews(true);}});
      }
      if(detail.status==="pending"&&canApprove){
        const area=make("div",undefined,"chaos-dev-review-decision");

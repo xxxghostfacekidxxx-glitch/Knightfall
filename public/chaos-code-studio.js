@@ -579,3 +579,7 @@ intakeCopy.addEventListener("click",()=>{
  const ext=intakeSource.path.split(".").at(-1);language.value=({json:"json",ts:"typescript",tsx:"tsx",jsx:"jsx"})[ext]||"javascript";code.focus();
 });
 intakeExport.addEventListener("click",()=>{if(intakeReport)download("knightfall-repo-intake-"+intakeReport.commit_sha.slice(0,12)+".json",JSON.stringify(intakeReport,null,2),"application/json");});
+
+// Open the staged project from Eye of Chaos without retyping its URL.
+const stagedRepository=new URLSearchParams(location.search).get("repository");
+if(stagedRepository&&stagedRepository.length<=220){intakeRepo.value=stagedRepository;note(intakeStatus,"Staged repository selected. Inspect its pinned source.");}
