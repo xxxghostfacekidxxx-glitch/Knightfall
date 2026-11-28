@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v114";
+const CACHE_NAME = "knightfall-shell-v115";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -416,10 +416,17 @@ self.addEventListener("notificationclick", event => {
     if(wantsReply&&conversationId&&typeof event.reply==="string"&&event.reply.trim()){
       const body=event.reply.trim().slice(0,4000);
       try{
-        const sent=await fetch("https://api.ash-fall.com/api/messages/conversations/"+conversationId,{
+        const api="https://api.ash-fall.com/api/messages";
+        const capabilities=await fetch(api+"/send-capabilities",{credentials:"include",cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null);
+        const key=capabilities?.keyed_send===true&&self.crypto?.randomUUID?self.crypto.randomUUID():null;
+        const payload=JSON.stringify(key?{body,client_message_id:key}:{body});
+        const send=()=>fetch(api+"/conversations/"+conversationId,{
           method:"POST",credentials:"include",cache:"no-store",
-          headers:{"content-type":"application/json"},body:JSON.stringify({body})
+          headers:{"content-type":"application/json"},body:payload
         });
+        let sent;
+        try{sent=await send()}catch(error){if(!key)throw error;sent=await send()}
+        if(key&&sent.status>=500)sent=await send();
         const receipt=await sent.json().catch(()=>null);
         if(sent.ok&&receipt&&typeof receipt==="object"&&!receipt.error){
           await acknowledgeNotification(notificationId).catch(()=>{});
@@ -430,7 +437,7 @@ self.addEventListener("notificationclick", event => {
       // Do not claim a failed inline reply was sent.
       try{
         await self.registration.showNotification("Reply not sent",{
-          body:"Open your conversation to try again.",
+          body:"Delivery could not be confirmed. Open the conversation and check before retrying.",
           tag:"knightfall-reply-failed-"+conversationId,
           data:{url:"/messages.html?conversation="+conversationId,conversationId},
           actions:[{action:"reply",title:"Open chat"}]
