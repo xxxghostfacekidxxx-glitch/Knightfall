@@ -13,7 +13,7 @@ const js={source:"function solve(n){let total=0;for(let i=0;i<n;i++){total+=i;}r
 test("Python and JS compile counted loops and independently match triangular oracle",async()=>{
  for(const [verify,spec] of [[verifyPython,python],[verifyControlJavaScript,js]]){
   const r=verify(spec),m=await import("data:text/javascript;base64,"+Buffer.from(r.module).toString("base64"));
-  for(let i=0;i<100;i++){assert.equal(runLogic(r.program,[i]),i*(i-1)/2);assert.equal(m.solve(i),i*(i-1)/2);}
+  for(let i=0;i<100;i++){assert.equal(runLogic(r.program,[i]),(i===0?0:i*(i-1)/2));assert.equal(m.solve(i),(i===0?0:i*(i-1)/2));}
   for(const n of [-1,1.5,1001])assert.throws(()=>m.solve(n));
  }
 });
