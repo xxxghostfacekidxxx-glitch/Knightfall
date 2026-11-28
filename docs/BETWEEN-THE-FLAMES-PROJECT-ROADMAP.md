@@ -187,3 +187,10 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 - Completed 100th-agent route compatibility and invalid identity regression fixtures; result metrics distinguish shared broadcast rows from historical physical receipts.
 
 - First 100-client continuation actually executed 48,000 steps (run 46116189858). Last round known accuracy regressed 33.62%→32.76% despite loss improvement; prior retained. Trainer now retains best eligible intermediate round, preserving strict accuracy/loss requirements while avoiding discarded earlier improvements.
+
+
+## November 28 — Messaging recovery and Order 66 continuation
+- Main commits 0bc4aa1, 97b2b2b, 9c770f0, 92303b4, e141f08, 570b893, 7b8d3a4 and 1045eee: global theme publishing UI (sequential, not atomic), notification reply draft retention, keyed native reply retries, message-ID confirmation, socket handshake recovery, reduced background polling, attachment preview retention and incremental draft display. Source changes committed; physical Android shade reply, signed-in attachment and production acceptance still required.
+- Main commits 20dc042, d632a47, e0b2d95 and af673af: 100 coding specialists, all four provider rotations verified over 200 slots; four approved peer evidence references per assignment with a single bounded, pause-guarded D1 insert. Research remains two assignments per five-minute slot; no claim of 100 concurrent bots or neural-weight updates.
+- Main commit 2a9fd1e: seven additional native math instructions, pi/e constants, arity and finite-domain checks. Six VM execution and seven rejection fixtures passed in direct checks; native WebAssembly regression suite awaits CI.
+- Deployment run 46119002899 failed on incomplete provider rotations; corrected in af673af. Authorization/ownership audit runs 46119002816 and 46119002890 could not run without authenticated audit credentials. Do not mark production verification complete until fresh deployment and account checks succeed. Trouble artwork remains open.
