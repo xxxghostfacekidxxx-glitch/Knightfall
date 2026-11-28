@@ -185,7 +185,7 @@ $("eye-forge-example").addEventListener("click",showForgeTool);
 forgeFile.addEventListener("change",async()=>{try{
  const file=forgeFile.files[0];if(!file)return;if(file.size>32768)throw Error("File exceeds 32 KiB.");
  const opt=forgePicker.selectedOptions[0],prefix=opt.dataset.prefix;if(!prefix)throw Error("Select a decompiler or source analyzer first.");
- const data=prefix.includes("wasm")||prefix.includes("function")?Array.from(new Uint8Array(await file.arrayBuffer()),b=>b.toString(16).padStart(2,"0")).join(""):await file.text();
+ const data=prefix.includes("wasm")||prefix.includes("function")||prefix.includes("Inspect project")?Array.from(new Uint8Array(await file.arrayBuffer()),b=>b.toString(16).padStart(2,"0")).join(""):await file.text();
  if(prefix.length+data.length>65536)throw Error("Encoded command exceeds size limit.");
  forgeInput.value=prefix+data;$("eye-forge-result").textContent="Loaded file locally. Run Forge to analyze it.";
  }catch(e){$("eye-forge-result").textContent=e.message;}});
