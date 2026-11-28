@@ -1,3 +1,4 @@
+import {independentAnswer} from "../chaos-order100-council.mjs";
 import forceEncyclopedia from "../../public/assets/force-encyclopedia.json";
 import forceHistory from "../../public/assets/force-history.json";
 import { selectStudies, selectReferences } from "../../public/force-study-retrieval.mjs";
@@ -1770,7 +1771,7 @@ export default { async queue(batch, env) {
   if(url.pathname==="/api/chaos/chat"&&request.method==="POST"){
     if(!(await rateLimit(env,request,"chaos-chat",20,60)))return json({error:"Miss Chaos needs a breather. Try again in a minute."},429,origin);
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
-    if(!env.AI||typeof env.AI.run!=="function")return json({error:"The AI engine is not enabled yet. The interface is ready, but the model binding needs to be activated."},503,origin);
+
     // Images arrive only on explicit send, with a hard bound before JSON parsing.
     if(Number(request.headers.get("content-length")||0)>980000)
       return json({error:"Chat image too large. Choose a smaller picture."},413,origin);
@@ -1810,6 +1811,28 @@ export default { async queue(batch, env) {
       return json({error:"Choose images from the signed-in Knightfall chat."},403,origin);
     if((!message&&!hasImage)||message.length>4000)
       return json({error:"Message must be between 1 and 4000 characters, or contain one photo."},400,origin);
+    const independentPrefix=/^\s*independent\s*:\s*/i;
+    const independent=body.engine==="independent"||independentPrefix.test(message);
+    if(independent){
+      if(companionMode!=="owner")return json({error:"Independent Core preview requires verified Osiris mode."},403,origin);
+      if(hasImage)return json({error:"Independent Core does not process photos."},400,origin);
+      const question=message.replace(independentPrefix,"").trim();
+      if(!question||question.length>3000)return json({error:"Independent question must contain 1–3000 characters."},400,origin);
+      let local;try{local=await independentAnswer(env,question);}catch{return json({error:"Independent Core could not read the local evidence."},503,origin);}
+      // Same conversation ownership checks and persisted message pair as the normal chat.
+      const reply=local.answer,now=new Date().toISOString();
+      if(conversationId){const own=await env.DB.prepare("SELECT id FROM chaos_conversations WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(conversationId,user.id).first();if(!own)return json({error:"Conversation not found."},404,origin);}
+      else{conversationId=crypto.randomUUID();await env.DB.prepare("INSERT INTO chaos_conversations (id,user_id,title,mood,created_at,updated_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,message.slice(0,64),mood,now,now).run();}
+      await env.DB.batch([
+        env.DB.prepare("INSERT INTO chaos_messages (conversation_id,user_id,role,content,mood,created_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,"user",message,mood,now),
+        env.DB.prepare("INSERT INTO chaos_messages (conversation_id,user_id,role,content,mood,created_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,"assistant",reply,mood,new Date(Date.now()+1).toISOString()),
+        env.DB.prepare("UPDATE chaos_conversations SET title=CASE WHEN title='New conversation' THEN ? ELSE title END,mood=?,updated_at=? WHERE id=? AND user_id=?").bind(message.slice(0,64),mood,new Date(Date.now()+1).toISOString(),conversationId,user.id)
+      ]);
+      const inference={runtime:"miss-chaos-independent-core",engine:"independent",model:local.method,externalInference:false,fallback:false};
+      if(body.stream===true){const events="event: delta\ndata: "+JSON.stringify({text:reply})+"\n\nevent: done\ndata: "+JSON.stringify({conversation_id:conversationId,mood,inference})+"\n\n";return new Response(events,{headers:{"content-type":"text/event-stream; charset=utf-8","cache-control":"no-cache, no-transform","access-control-allow-origin":origin,"access-control-allow-credentials":"true","x-content-type-options":"nosniff"}});}
+      return json({conversation_id:conversationId,reply,mood,inference},200,origin);
+    }
+    if(!env.AI||typeof env.AI.run!=="function")return json({error:"The AI engine is not enabled yet. Use Independent Core in Osiris mode for supported technical questions."},503,origin);
     if(hasImage){
       if(!await rateLimit(env,request,"chaos-chat-vision",4,3600,user.id))
         return json({error:"Four photo questions per hour are available on the free AI service."},429,origin);
