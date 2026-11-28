@@ -1,3 +1,4 @@
+import {tableCoverage} from "./chaos-forge-table-course.mjs";
 import {controlSourceCoverage} from "./chaos-forge-control-source-course.mjs";
 import {javascriptCoverage} from "./chaos-forge-javascript-course.mjs";
 import {dataCoverage,findDataLessons} from "./chaos-forge-data-course.mjs";
@@ -52,6 +53,7 @@ export async function independentAnswer(env,question,owner=null){
  const fence=String.fromCharCode(96).repeat(3);
  const dataLessons=text.match(/^data lessons\s*:\s*(.{1,180})$/i);
  if(dataLessons){try{const r=await findDataLessons(env,dataLessons[1]);return reply(r.matches.length?JSON.stringify(r.matches,null,2)+"\n"+r.notice:"No matching verified data lessons.","order100-data-lesson-retrieval",{evidence:r});}catch(error){return reply(String(error.message).slice(0,180),"order100-data-lesson-retrieval");}}
+ if(/^table status$/i.test(text)){const r=await tableCoverage(env);return reply("Record-table learners: "+r.learners+"/100. Teachers: "+r.teachers+". Verified exchanges: "+r.exchanges+". Passed cases: "+r.passed+".","order100-record-table-course",{evidence:r});}
  if(/^control source status$/i.test(text)){const r=await controlSourceCoverage(env);return reply("Cross-language learners: "+r.learners+"/100. Teachers: "+r.teachers+". Verified exchanges: "+r.exchanges+". Passed cases: "+r.passed+".","order100-control-source-course",{evidence:r});}
  if(/^javascript status$/i.test(text)){const r=await javascriptCoverage(env);return reply("JavaScript learners: "+r.learners+"/100. Teachers: "+r.teachers+". Verified exchanges: "+r.exchanges+". Passed cases: "+r.passed+".","order100-javascript-course",{evidence:r});}
  if(/^data status$/i.test(text)){const r=await dataCoverage(env);return reply("Typed data learners: "+r.learners+"/100. Teachers: "+r.teachers+". Verified exchanges: "+r.exchanges+". Passed cases: "+r.passed+".","order100-data-course",{evidence:r});}
