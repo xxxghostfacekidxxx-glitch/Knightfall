@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - 'backend/order100-code-*.mjs'
+      - 'backend/chaos-forge-*.mjs'
+      - 'backend/chaos-independent-forge.mjs'
+      - 'scripts/chaos-independent-forge.test.mjs'
       - 'backend/src/order100-coding-practice.mjs'
       - 'backend/chaos-order100-council.mjs'
       - 'scripts/order100-code-*.mjs'
@@ -28,6 +31,10 @@ jobs:
           node-version: '22'
       - name: Execute generated source and peer practice regression tests
         run: node --test scripts/order100-code-synthesis.test.mjs
+      - name: Install pinned parser dependencies
+        run: npm ci --prefix backend --ignore-scripts
+      - name: Verify independent applet, native compiler and reverse engineering
+        run: node --test scripts/chaos-independent-forge.test.mjs
       - name: Produce independent coding competence report
         run: node scripts/run-order100-coding-benchmark.mjs coding-report.json 0
       - uses: actions/upload-artifact@v4
