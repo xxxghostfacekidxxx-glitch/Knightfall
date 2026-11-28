@@ -1,3 +1,4 @@
+import {verifyJavaScript} from "./chaos-forge-javascript.mjs";
 // Generate a genuine dependency-free Node project from validated Forge programs.
 import {verifyData,emitDataModule} from "./chaos-forge-data.mjs";
 import {verifyDataSource} from "./chaos-forge-data-source.mjs";
@@ -5,9 +6,9 @@ import {verifyLibrary} from "./chaos-forge-library.mjs";
 import {verifyLogic,runLogic} from "./chaos-forge-logic.mjs";
 import {zipProject} from "./chaos-forge-zip.mjs";
 export function buildProject(input){
- if(!input||typeof input.name!=="string"||!/^[a-z][a-z0-9-]{0,39}$/.test(input.name)||!["data","source","library","logic"].includes(input.kind)||!input.spec)throw Error("Provide a lowercase project name, kind and program specification.");
+ if(!input||typeof input.name!=="string"||!/^[a-z][a-z0-9-]{0,39}$/.test(input.name)||!["data","source","library","logic","javascript"].includes(input.kind)||!input.spec)throw Error("Provide a lowercase project name, kind and program specification.");
  const {name,kind,spec}=input;
- const report=kind==="data"?verifyData(spec):kind==="source"?verifyDataSource(spec):kind==="library"?verifyLibrary(spec):verifyLogic(spec);
+ const report=kind==="data"?verifyData(spec):kind==="source"?verifyDataSource(spec):kind==="library"?verifyLibrary(spec):kind==="javascript"?verifyJavaScript(spec):verifyLogic(spec);
  const module=kind==="logic"?runLogic.toString()+"\nconst program = "+JSON.stringify(report.program,null,2)+";\nexport function solve(...values){return runLogic(program,values);}\n":emitDataModule(report.program);
  const examples=report.tests.map(({values,expected})=>({values,expected}));
  const files=[
