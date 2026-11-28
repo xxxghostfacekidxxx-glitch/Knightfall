@@ -1,3 +1,5 @@
+import {repairNumericSource} from "./chaos-core-source-repair-adapter.mjs";
+import {translateNumericSource} from "./chaos-core-cross-translate-adapter.mjs";
 import {repair} from "./chaos-core-repair.mjs";
 import {selectProgram,selectorStatus} from "./chaos-core-program-planner.mjs";
 import {compose,discover} from "./chaos-core-composition.mjs";
@@ -52,6 +54,10 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const sourceRepair=question.match(/^(repair numeric source|build repaired source)\s*:\s*([\s\S]+)$/i);
+ if(sourceRepair){const spec=JSON.parse(sourceRepair[2]),report=repairNumericSource(spec);if(sourceRepair[1].toLowerCase()==="repair numeric source"||!report.source)return {answer:"Source repair: "+report.status+". "+report.notice,method:"independent-source-repair",report,externalInference:false};const file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-repaired-source."+(spec.language==="python"?"py":"mjs"),content:report.source});return {answer:"Compiler-checked source: "+file.downloadUrl,method:"independent-source-repair",artifact:file,report,externalInference:false};}
+ const translation=question.match(/^(translate numeric source|build translated source)\s*:\s*([\s\S]+)$/i);
+ if(translation){const report=translateNumericSource(JSON.parse(translation[2]));if(translation[1].toLowerCase()==="translate numeric source")return {answer:report.source+"\n"+report.notice,method:"independent-source-translation",report,externalInference:false};const file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-translated-source."+(report.language==="python"?"py":"mjs"),content:report.source});return {answer:"Translated compiler-checked source: "+file.downloadUrl,method:"independent-source-translation",artifact:file,report,externalInference:false};}
  const repairRequest=question.match(/^(repair composed script|build repaired script)\s*:\s*([\s\S]+)$/i);
  if(repairRequest){const spec=JSON.parse(repairRequest[2]),report=repair(spec);if(repairRequest[1].toLowerCase()==="repair composed script"||!report.steps)return {answer:"Repair status: "+report.status+". "+report.notice,method:"independent-composition-repair",report,externalInference:false};const compiled=compose({...spec,steps:report.steps}),file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-repaired."+(compiled.language==="python"?"py":"mjs"),content:compiled.source});return {answer:"Repaired and interpreter-validated script: "+file.downloadUrl,method:"independent-composition-repair",artifact:file,report,externalInference:false};}
  const planner=question.match(/^(plan numeric script|build planned script)\s*:\s*([\s\S]+)$/i);

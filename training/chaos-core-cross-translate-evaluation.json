@@ -1,0 +1,9 @@
+{
+  "scenarios": [
+    "def solve(x, y):\n    z = x + y\n    return z * z",
+    "def solve(x, y):\n    z = 0\n    if x < y:\n        z = y - x\n    else:\n        z = x - y\n    return z",
+    "def solve(x, y):\n    z = 0\n    for i in range(x):\n        z += i + y\n    return z"
+  ],
+  "checks": 1056,
+  "method": "Actual Python frontend and VM; generated JavaScript executed in isolated V8 test harness; Python output recompiled to VM. Acorn integration not run."
+}

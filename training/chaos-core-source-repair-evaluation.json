@@ -1,0 +1,548 @@
+{
+  "language": "python",
+  "compiler": "existing Forge Python frontend + formula compiler + bounded logic VM",
+  "repairs": 60,
+  "validationPassed": 120,
+  "receipts": [
+    {
+      "i": 0,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 1,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 2,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 3,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 4,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 5,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 6,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 7,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 8,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 9,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 10,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 11,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 12,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 13,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 14,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 15,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 16,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 17,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 18,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 19,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 20,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 21,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 22,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 23,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 24,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 25,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 26,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 27,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 28,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 29,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 30,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 31,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 32,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 33,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 34,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 35,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 36,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 37,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 38,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 39,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 40,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 41,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 42,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 43,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 44,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 45,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 46,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 47,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 48,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 49,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 50,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 51,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 52,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 53,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 54,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 55,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 56,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 57,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    },
+    {
+      "i": 58,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-colon",
+        "line": 1
+      },
+      "passed": 2
+    },
+    {
+      "i": 59,
+      "status": "repaired",
+      "edit": {
+        "kind": "missing-parenthesis",
+        "line": 2
+      },
+      "passed": 2
+    }
+  ]
+}

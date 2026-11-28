@@ -18,6 +18,7 @@ on:
       - 'scripts/chaos-core-control-synthesis.test.mjs'
       - 'scripts/chaos-core-composition*.test.mjs'
       - 'scripts/chaos-core-repair.test.mjs'
+      - 'scripts/chaos-core-source-compiler.test.mjs'
       - 'scripts/chaos-core-program-selector.test.mjs'
       - 'scripts/train-chaos-core-program-selector.mjs'
       - 'scripts/train-chaos-core-005.mjs'
@@ -238,3 +239,14 @@ jobs:
         run: node --test scripts/chaos-core-attention.test.mjs scripts/chaos-core-recall.test.mjs scripts/chaos-core-evidence.test.mjs scripts/chaos-core-bpe-model.test.mjs scripts/chaos-core-scalar-synthesis.test.mjs scripts/chaos-core-text-synthesis.test.mjs scripts/chaos-core-control-synthesis.test.mjs scripts/chaos-core-composition.test.mjs scripts/chaos-core-composition-discovery.test.mjs scripts/chaos-core-repair.test.mjs scripts/chaos-core-program-selector.test.mjs
 
 
+
+  chaos-core-source-compiler:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --prefix backend --no-audit --no-fund
+      - run: node --test scripts/chaos-core-source-compiler.test.mjs scripts/order100-council.test.mjs
