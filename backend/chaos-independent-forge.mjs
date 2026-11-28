@@ -1,3 +1,4 @@
+import {verifyLogic,decompileLogic,compileLogic,runLogic} from "./chaos-forge-logic.mjs";
 import {compileFunction,decompileFunction} from "./chaos-forge-functions.mjs";
 import {compileFormula,decompileFormula,evaluateFormula} from "./chaos-forge-formula.mjs";
 import {compileArtifact,decompileStack,hexBytes,inspectWasm} from "./chaos-forge-binary.mjs";
@@ -31,8 +32,14 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
- const app=question.match(/^(?:applet|(?:make|create|build) (?:an? )?applet)\s*:\s*(.+)$/i);
+ const app=question.match(/^(?:applet|(?:make|create|build) (?:an? )?applet)\s*:\s*([\s\S]+)$/i);
  if(app){const a=await buildApplet(app[1]);const file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline "+a.report.title+" applet. Download: "+file.downloadUrl+"\nSHA-256: "+file.sha256+"\nExpires in seven days. No external inference or dependencies.",method:"independent-applet-forge",artifact:file,report:a.report,externalInference:false};}
+ const logic=question.match(/^compile logic\s*:\s*([\s\S]+)$/i);
+ if(logic){const report=verifyLogic(JSON.parse(logic[1])),file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-logic.json",content:JSON.stringify(report.program,null,2)});return {answer:"Compiled and verified "+report.tests.length+" examples. Download: "+file.downloadUrl+"\n"+JSON.stringify(report.tests,null,2),method:"independent-logic-compiler",artifact:file,report,externalInference:false};}
+ const decodeLogic=question.match(/^(?:decompile|disassemble|reverse engineer) logic\s*:\s*([\s\S]+)$/i);
+ if(decodeLogic){const report=decompileLogic(JSON.parse(decodeLogic[1]));return {answer:JSON.stringify(report,null,2),method:"independent-logic-decompiler",report,externalInference:false};}
+ const executeLogic=question.match(/^run logic\s*:\s*([\s\S]+)$/i);
+ if(executeLogic){const input=JSON.parse(executeLogic[1]),program=compileLogic(decompileLogic(input.program).source),result=runLogic(program,input.values);return {answer:"Bounded VM result: "+result,method:"independent-logic-vm",report:{result},externalInference:false};}
  const native=question.match(/^compile function\s*:\s*([\s\S]+)$/i);
  if(native){const a=compileFunction(JSON.parse(native[1])),file=await saveForgeArtifact(env,owner,a);return {answer:"Compiled reusable native function. Download: "+file.downloadUrl+"\n"+JSON.stringify(a.report),method:"independent-native-function",artifact:file,report:a.report,externalInference:false};}
  const nativeDecode=question.match(/^(?:decompile|reverse engineer) function\s*:\s*([\s\S]+)$/i);
