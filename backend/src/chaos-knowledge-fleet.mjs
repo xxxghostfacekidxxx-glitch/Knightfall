@@ -428,12 +428,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "digital illustration",
       "graphic design"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-35",
@@ -444,12 +439,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "color theory",
       "image processing"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-36",
@@ -460,12 +450,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "speech synthesis",
       "audio processing"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-37",
@@ -476,12 +461,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "music theory",
       "sound design"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-38",
@@ -492,12 +472,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "creative writing",
       "interactive fiction"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-39",
@@ -508,12 +483,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "typography",
       "font rendering"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-40",
@@ -524,12 +494,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "3d modeling",
       "animation"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-41",
@@ -540,12 +505,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "vector graphics",
       "drawing software"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-42",
@@ -556,12 +516,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "lighting design",
       "photography"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-43",
@@ -572,12 +527,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "game development",
       "procedural art"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-44",
@@ -588,12 +538,7 @@ export const RESEARCH_FLEET=Object.freeze([
       "creative coding",
       "generative art"
     ],
-    "sources": [
-      "wikidata",
-      "github",
-      "npm",
-      "wikidata"
-    ]
+    "sources": ["wikidata","github","npm","gitlab"]
   },
   {
     "key": "mc-45",
