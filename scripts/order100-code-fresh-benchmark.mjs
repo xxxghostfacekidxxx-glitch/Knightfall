@@ -11,7 +11,7 @@ const cases=[
  {name:"sum of consecutive pair differences",oracle:a=>a.slice(1).reduce((n,x,i)=>n+Math.abs(x-a[i]),0)} // No pairwise operation in the grammar.
 ];
 const demos=[[],[0,0],[-7,-2,-2],[1,3,5],[-4,4,3,-3,0,2],[5,1,5,4,-5,2],[8,8,0,-6,-6],[-5,6,4,-1,3]];
-const heldout=[[],[0],[-3,3,3,0],[-9,-4,-1],[2,2,1,7,1],[10,-10,0,7,2,7],[-1,1,-1,1],[-8,-8,4,-2,9,3]];
+const heldout=[[],[0],[-3,3,3,0],[-1,-9,-4],[2,2,1,7,1],[10,-10,0,7,2,7],[-1,1,-1,1],[-8,-8,4,-2,9,3]];
 export function freshCodingBenchmark(prior=emptyPrior(),budget=512){
  const rows=cases.map((task,i)=>{
   const examples=demos.map(input=>({input,output:task.oracle(input)})),validation=heldout.map(input=>({input,output:task.oracle(input)}));
