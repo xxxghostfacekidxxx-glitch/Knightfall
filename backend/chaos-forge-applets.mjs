@@ -1,3 +1,4 @@
+import {formulaSpec,evaluateFormula} from "./chaos-forge-formula.mjs";
 // Offline single-file applets generated from bounded, original templates.
 import {parseProgram,emitProgram} from "./order100-code-synthesis.mjs";
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -19,14 +20,15 @@ export function appletSpec(request){
  return {kind,title};
 }
 export async function buildApplet(request){
- const spec=typeof request==="string"?appletSpec(request):request;
+ const spec=typeof request==="string"&&/^formula\s*:/i.test(request)?formulaSpec(JSON.parse(request.replace(/^formula\s*:\s*/i,""))):typeof request==="string"?appletSpec(request):request;
  if(!spec||typeof spec.title!=="string"||spec.title.length>80)throw Error("Invalid applet title.");
  let body,script;
- if(spec.kind==="pipeline"){body='<label for="data">Integer array (JSON)</label><textarea id="data" rows="5">[-2, 1, 4, 7]</textarea><button id="run">Run transformation</button><pre id="output" aria-live="polite"></pre>';script=emitProgram(spec.program).replace("export function solve","function solve")+'\ndocument.getElementById("run").onclick=()=>{const out=document.getElementById("output");try{out.textContent=JSON.stringify(solve(JSON.parse(document.getElementById("data").value)));}catch(e){out.textContent=e.message;}};';}
+ if(spec.kind==="formula"){body=spec.fields.map((f,i)=>'<label for="field-'+i+'">'+esc(f.label)+'</label><input id="field-'+i+'" type="number" step="any" value="'+esc(f.default)+'" required>').join("")+'<button id="run">Calculate</button><pre id="output" aria-live="polite">'+esc(spec.result)+'</pre>';script=evaluateFormula.toString()+'\nconst program='+JSON.stringify(spec.program)+';\ndocument.getElementById("run").onclick=()=>{const out=document.getElementById("output");try{const values=program.fields.map((_,i)=>{const field=document.getElementById("field-"+i);if(!field.value.trim())throw Error("Every field is required");return Number(field.value);});out.textContent=String(evaluateFormula(program,values));}catch(e){out.textContent=e.message;}};';}
+ else if(spec.kind==="pipeline"){body='<label for="data">Integer array (JSON)</label><textarea id="data" rows="5">[-2, 1, 4, 7]</textarea><button id="run">Run transformation</button><pre id="output" aria-live="polite"></pre>';script=emitProgram(spec.program).replace("export function solve","function solve")+'\ndocument.getElementById("run").onclick=()=>{const out=document.getElementById("output");try{out.textContent=JSON.stringify(solve(JSON.parse(document.getElementById("data").value)));}catch(e){out.textContent=e.message;}};';}
  else if(Object.hasOwn(templates,spec.kind)){({body,script}=templates[spec.kind]);}
  else throw Error("Unknown applet template.");
  const hash=btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.digest("SHA-256",encoder.encode(script)))));
  const title=esc(spec.title);
  const html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'sha256-'+hash+'\'; style-src \'unsafe-inline\'; base-uri \'none\'; form-action \'none\'; connect-src \'none\'"><title>'+title+'</title><style>body{font:16px system-ui,sans-serif;background:#141019;color:#f4edf8;max-width:42rem;margin:2rem auto;padding:1rem}main{background:#231c2c;border:1px solid #54435e;border-radius:1rem;padding:1.5rem}label{display:block;margin:1rem 0 .4rem}input,textarea,select,button{font:inherit;color:inherit;background:#31263c;border:1px solid #755986;border-radius:.5rem;padding:.6rem;max-width:100%;box-sizing:border-box}textarea{width:100%}button{margin:.7rem .5rem .2rem 0;cursor:pointer;background:#613a77}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #f0c0ff}li{margin:.4rem 0}li label{display:inline}pre{white-space:pre-wrap;overflow-wrap:anywhere}#output{margin:1rem 0;font-size:1.2rem}small{color:#c2b5c9}</style></head><body><main><small>MISS CHAOS · INDEPENDENT FORGE</small><h1>'+title+'</h1>'+body+'<p><small>Offline applet. No external services or account access.</small></p></main><script>'+script+'</script></body></html>';
- return {filename:"miss-chaos-"+spec.kind+".html",mime:"text/html; charset=utf-8",content:html,report:{kind:spec.kind,title:spec.title,offline:true,scriptHash:hash,program:spec.program||null,externalInference:false}};
+ return {filename:"miss-chaos-"+spec.kind+".html",mime:"text/html; charset=utf-8",content:html,report:{kind:spec.kind,title:spec.title,offline:true,scriptHash:hash,program:spec.program||null,result:spec.result??null,externalInference:false}};
 }
