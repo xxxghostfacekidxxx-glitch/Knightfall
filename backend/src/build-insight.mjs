@@ -33,7 +33,7 @@ export async function handleBuildInsight(request,env,url,user,respond,{fetcher=f
  // Caller has already verified active Osiris against the owner invitation record.
  if(request.method==="GET"&&url.pathname===base){const rows=(await env.DB.prepare("SELECT value FROM site_settings WHERE key LIKE 'build_insight:%' ORDER BY updated_at DESC LIMIT 30").all()).results||[];return respond({items:rows.map(parseRow).filter(x=>x?.artifact&&x?.id).map(summary)});}
  const match=url.pathname.match(/^\/api\/god\/eye\/tools\/build-insight\/([a-f0-9-]{36})(?:\/(approve|reject))?$/i);
- if(request.method==="GET"&&match&&!match[2]){const row=await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(PREFIX+match[1]).first();const item=row&&parseRow(row);return item?respond({item}):respond({error:"Stage not found."},404);}
+ if(request.method==="GET"&&match&&!match[2]&&ID.test(match[1])){const row=await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(PREFIX+match[1]).first();const item=row&&parseRow(row);return item?respond({item}):respond({error:"Stage not found."},404);}
  if(request.method!=="POST")return respond({error:"Unknown Build Insight operation."},404);
  if(!ORIGINS.has(request.headers.get("origin"))||!/^application\/json(?:;|$)/i.test(request.headers.get("content-type")||""))return respond({error:"Same-site JSON required."},403);
  const length=Number(request.headers.get("content-length")||0);if(length>1800)return respond({error:"Request too large."},413);
@@ -47,7 +47,7 @@ export async function handleBuildInsight(request,env,url,user,respond,{fetcher=f
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
   try{const artifact=await intakeRepository(input,{fetcher,signal:controller.signal});const item={id,state:"staged",artifact,digest:await artifactDigest(artifact),createdAt:now};const inserted=await env.DB.prepare("INSERT INTO site_settings(key,value,updated_by,updated_at) SELECT ?,?,?,? WHERE (SELECT COUNT(*) FROM site_settings WHERE key LIKE 'build_insight:%')<?").bind(key,JSON.stringify(item),user.id,now,MAX).run();if(inserted.meta?.changes!==1)return respond({error:"Stage capacity reached."},409);return respond({item});}catch{return respond({error:"Source intake failed or exceeded the public GitHub request budget."},502);}finally{clearTimeout(timer);}
  }
- if(!match||!match[2]||!ID.test(match[1])||!HEAD.test(String(input?.digest||"").slice(0,40))||! /^[a-f0-9]{64}$/.test(input.digest))return respond({error:"Exact stage digest required."},400);
+ if(!match||!match[2]||!ID.test(match[1])||typeof input?.digest!=="string"||! /^[a-f0-9]{64}$/.test(input.digest))return respond({error:"Exact stage digest required."},400);
  const key=PREFIX+match[1],row=await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(key).first(),item=row&&parseRow(row);if(!item)return respond({error:"Stage not found."},404);
  if(item.state!=="staged"||item.digest!==input.digest||await artifactDigest(item.artifact)!==input.digest)return respond({error:"Stage changed or has already been decided."},409);
  const now=new Date().toISOString(),next={...item,state:match[2]==="approve"?"approved-for-development":"rejected",approvedAt:now};
