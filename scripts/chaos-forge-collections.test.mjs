@@ -1,3 +1,4 @@
+import {tablePractice} from "../backend/chaos-forge-table-course.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {verifySourceLibrary,translateSourceLibrary} from "../backend/chaos-forge-source-library.mjs";
@@ -33,3 +34,5 @@ test("standalone typed VM rejects malformed operands and forged result types",()
  for(const mutate of [p=>p.steps[0].args.pop(),p=>p.steps[0].args[1]=["literal","1"],p=>p.steps[0].type="text"]){const p=structuredClone(program);mutate(p);assert.throws(()=>runData(p,[2]));}
  assert.ok(dataOperationCatalog().every(x=>typeof x.description==="string"&&x.description.length));
 });
+
+test("all 100 specialists validate a peer record-table program against independent oracles",()=>{const rows=Array.from({length:100},(_,i)=>tablePractice(i,0));assert.equal(new Set(rows.map(r=>r.learner)).size,100);assert.equal(new Set(rows.map(r=>r.teacher)).size,100);assert.ok(rows.every(r=>r.verified&&r.learner!==r.teacher));assert.equal(rows.reduce((n,r)=>n+r.passed,0),700);assert.equal(rows.reduce((n,r)=>n+r.holdout,0),400);});
