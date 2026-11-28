@@ -1,3 +1,5 @@
+import {repair} from "./chaos-core-repair.mjs";
+import {selectProgram,selectorStatus} from "./chaos-core-program-planner.mjs";
 import {compose,discover} from "./chaos-core-composition.mjs";
 import {synthesizeControl} from "./chaos-core-control-synthesis.mjs";
 import {selectTextPipeline} from "./chaos-core-text-synthesis.mjs";
@@ -50,6 +52,11 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const repairRequest=question.match(/^(repair composed script|build repaired script)\s*:\s*([\s\S]+)$/i);
+ if(repairRequest){const spec=JSON.parse(repairRequest[2]),report=repair(spec);if(repairRequest[1].toLowerCase()==="repair composed script"||!report.steps)return {answer:"Repair status: "+report.status+". "+report.notice,method:"independent-composition-repair",report,externalInference:false};const compiled=compose({...spec,steps:report.steps}),file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-repaired."+(compiled.language==="python"?"py":"mjs"),content:compiled.source});return {answer:"Repaired and interpreter-validated script: "+file.downloadUrl,method:"independent-composition-repair",artifact:file,report,externalInference:false};}
+ const planner=question.match(/^(plan numeric script|build planned script)\s*:\s*([\s\S]+)$/i);
+ if(planner){const spec=JSON.parse(planner[2]),report=selectProgram(spec);if(planner[1].toLowerCase()==="plan numeric script"||!report.steps)return {answer:"Program selector: "+report.status+". "+report.notice,method:"chaos-core-program-selector",report,externalInference:false};const compiled=compose({...spec,steps:report.steps}),file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-planned."+(compiled.language==="python"?"py":"mjs"),content:compiled.source});return {answer:"Selected and interpreter-validated script: "+file.downloadUrl,method:"chaos-core-program-selector",artifact:file,report,externalInference:false};}
+ if(/^program selector status$/i.test(question))return {answer:JSON.stringify(selectorStatus()),method:"chaos-core-program-selector-status",externalInference:false};
  const discovery=question.match(/^discover composed script\s*:\s*([\s\S]+)$/i);
  if(discovery){const spec=JSON.parse(discovery[1]),search=discover(spec);return {answer:JSON.stringify(search),method:"independent-composition-discovery",report:search,externalInference:false};}
  const composition=question.match(/^build composed script\s*:\s*([\s\S]+)$/i);

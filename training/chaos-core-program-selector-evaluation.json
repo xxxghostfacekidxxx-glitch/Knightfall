@@ -1,0 +1,1539 @@
+{
+  "metrics": {
+    "seed": 28007,
+    "steps": 24000,
+    "bestStep": 6000,
+    "before": {
+      "loss": 2.992189870144953,
+      "top1": 2,
+      "top3": 4,
+      "total": 40
+    },
+    "testBefore": {
+      "loss": 3.009698442955814,
+      "top1": 1,
+      "top3": 3,
+      "total": 40
+    },
+    "validation": {
+      "loss": 1.043466723725811,
+      "top1": 23,
+      "top3": 36,
+      "total": 40
+    },
+    "test": {
+      "loss": 1.147749268228729,
+      "top1": 22,
+      "top3": 36,
+      "total": 40
+    },
+    "rounds": [
+      {
+        "step": 2000,
+        "loss": 1.2888782110018946,
+        "top1": 21,
+        "top3": 33,
+        "total": 40
+      },
+      {
+        "step": 4000,
+        "loss": 1.0944541863755561,
+        "top1": 24,
+        "top3": 33,
+        "total": 40
+      },
+      {
+        "step": 6000,
+        "loss": 1.0434667245777696,
+        "top1": 23,
+        "top3": 36,
+        "total": 40
+      },
+      {
+        "step": 8000,
+        "loss": 1.0481674291247436,
+        "top1": 21,
+        "top3": 36,
+        "total": 40
+      },
+      {
+        "step": 10000,
+        "loss": 1.1726154459502625,
+        "top1": 22,
+        "top3": 36,
+        "total": 40
+      },
+      {
+        "step": 12000,
+        "loss": 1.1326901705973045,
+        "top1": 27,
+        "top3": 35,
+        "total": 40
+      },
+      {
+        "step": 14000,
+        "loss": 1.1820808413912052,
+        "top1": 23,
+        "top3": 36,
+        "total": 40
+      },
+      {
+        "step": 16000,
+        "loss": 1.365326465515639,
+        "top1": 23,
+        "top3": 37,
+        "total": 40
+      },
+      {
+        "step": 18000,
+        "loss": 1.272602054568058,
+        "top1": 22,
+        "top3": 36,
+        "total": 40
+      },
+      {
+        "step": 20000,
+        "loss": 1.3668951165962209,
+        "top1": 24,
+        "top3": 36,
+        "total": 40
+      },
+      {
+        "step": 22000,
+        "loss": 1.382487188251519,
+        "top1": 24,
+        "top3": 36,
+        "total": 40
+      },
+      {
+        "step": 24000,
+        "loss": 1.454313328559547,
+        "top1": 23,
+        "top3": 36,
+        "total": 40
+      }
+    ]
+  },
+  "test": [
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 0,
+      "ranked": [
+        {
+          "classId": 0,
+          "score": 0.6483977194254049
+        },
+        {
+          "classId": 13,
+          "score": 0.18197333643678174
+        },
+        {
+          "classId": 14,
+          "score": 0.09508805236656062
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 4,
+      "ranked": [
+        {
+          "classId": 4,
+          "score": 0.5631543082126912
+        },
+        {
+          "classId": 13,
+          "score": 0.19131627862926592
+        },
+        {
+          "classId": 0,
+          "score": 0.180305632520828
+        }
+      ],
+      "selectedRank": 3,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "sub",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 1,
+      "ranked": [
+        {
+          "classId": 1,
+          "score": 0.3886389332007325
+        },
+        {
+          "classId": 12,
+          "score": 0.20428717291783588
+        },
+        {
+          "classId": 13,
+          "score": 0.1416043609000105
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "sub",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 8,
+      "ranked": [
+        {
+          "classId": 8,
+          "score": 0.5355998320072426
+        },
+        {
+          "classId": 1,
+          "score": 0.2521051345948921
+        },
+        {
+          "classId": 0,
+          "score": 0.1041801423940914
+        }
+      ],
+      "selectedRank": 2,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 11,
+      "ranked": [
+        {
+          "classId": 11,
+          "score": 0.42902680403837956
+        },
+        {
+          "classId": 10,
+          "score": 0.23442270555798628
+        },
+        {
+          "classId": 9,
+          "score": 0.1869902102849474
+        }
+      ],
+      "selectedRank": 4,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 10,
+      "ranked": [
+        {
+          "classId": 10,
+          "score": 0.645801321011348
+        },
+        {
+          "classId": 11,
+          "score": 0.28037396862661806
+        },
+        {
+          "classId": 2,
+          "score": 0.04686133933849279
+        }
+      ],
+      "selectedRank": 3,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "min",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 0,
+      "ranked": [
+        {
+          "classId": 0,
+          "score": 0.6049409951272513
+        },
+        {
+          "classId": 14,
+          "score": 0.18146835417019266
+        },
+        {
+          "classId": 3,
+          "score": 0.17149313780743383
+        }
+      ],
+      "selectedRank": 3,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "min",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 3,
+      "ranked": [
+        {
+          "classId": 3,
+          "score": 0.9544351666446468
+        },
+        {
+          "classId": 9,
+          "score": 0.021892552249476917
+        },
+        {
+          "classId": 0,
+          "score": 0.011078948127057044
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "max",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 4,
+      "ranked": [
+        {
+          "classId": 4,
+          "score": 0.7326819837755423
+        },
+        {
+          "classId": 14,
+          "score": 0.1198431261098188
+        },
+        {
+          "classId": 0,
+          "score": 0.0963985432848768
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "max",
+          "a": 0,
+          "b": 1
+        }
+      ],
+      "predictedClass": 4,
+      "ranked": [
+        {
+          "classId": 4,
+          "score": 0.8622346320877468
+        },
+        {
+          "classId": 12,
+          "score": 0.13127769404187428
+        },
+        {
+          "classId": 19,
+          "score": 0.004272017885439822
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 2
+        }
+      ],
+      "predictedClass": 19,
+      "ranked": [
+        {
+          "classId": 19,
+          "score": 0.4946386326268417
+        },
+        {
+          "classId": 6,
+          "score": 0.214473882412413
+        },
+        {
+          "classId": 12,
+          "score": 0.06813327091385231
+        }
+      ],
+      "selectedRank": 4,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 2
+        }
+      ],
+      "predictedClass": 5,
+      "ranked": [
+        {
+          "classId": 5,
+          "score": 0.5543035745839796
+        },
+        {
+          "classId": 17,
+          "score": 0.2324077860099704
+        },
+        {
+          "classId": 19,
+          "score": 0.10605638421959072
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "sub",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 2
+        }
+      ],
+      "predictedClass": 5,
+      "ranked": [
+        {
+          "classId": 5,
+          "score": 0.4158456237335099
+        },
+        {
+          "classId": 6,
+          "score": 0.253245232168552
+        },
+        {
+          "classId": 19,
+          "score": 0.18248665048167453
+        }
+      ],
+      "selectedRank": 2,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "sub",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 2
+        }
+      ],
+      "predictedClass": 6,
+      "ranked": [
+        {
+          "classId": 6,
+          "score": 0.8089225541542691
+        },
+        {
+          "classId": 5,
+          "score": 0.10811459986821288
+        },
+        {
+          "classId": 15,
+          "score": 0.02003019673492846
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 0
+        },
+        {
+          "op": "mul",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 3
+        }
+      ],
+      "predictedClass": 6,
+      "ranked": [
+        {
+          "classId": 6,
+          "score": 0.4971679806293259
+        },
+        {
+          "classId": 19,
+          "score": 0.20160122228222616
+        },
+        {
+          "classId": 7,
+          "score": 0.18961148615827778
+        }
+      ],
+      "selectedRank": 3,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 0
+        },
+        {
+          "op": "mul",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 3
+        }
+      ],
+      "predictedClass": 19,
+      "ranked": [
+        {
+          "classId": 19,
+          "score": 0.711390539581124
+        },
+        {
+          "classId": 7,
+          "score": 0.12528729163509544
+        },
+        {
+          "classId": 17,
+          "score": 0.047653971532382045
+        }
+      ],
+      "selectedRank": 2,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 0
+        },
+        {
+          "op": "mul",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "op": "sub",
+          "a": 2,
+          "b": 3
+        }
+      ],
+      "predictedClass": 17,
+      "ranked": [
+        {
+          "classId": 17,
+          "score": 0.7122827872002188
+        },
+        {
+          "classId": 8,
+          "score": 0.2242785915515531
+        },
+        {
+          "classId": 6,
+          "score": 0.018997640799852417
+        }
+      ],
+      "selectedRank": 2,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 0
+        },
+        {
+          "op": "mul",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "op": "sub",
+          "a": 2,
+          "b": 3
+        }
+      ],
+      "predictedClass": 8,
+      "ranked": [
+        {
+          "classId": 8,
+          "score": 0.9276165303882288
+        },
+        {
+          "classId": 17,
+          "score": 0.03667857072428799
+        },
+        {
+          "classId": 16,
+          "score": 0.01870203345999716
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 10,
+      "ranked": [
+        {
+          "classId": 10,
+          "score": 0.7377306026344159
+        },
+        {
+          "classId": 11,
+          "score": 0.15239846608501822
+        },
+        {
+          "classId": 9,
+          "score": 0.0642429289616764
+        }
+      ],
+      "selectedRank": 3,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 10,
+      "ranked": [
+        {
+          "classId": 10,
+          "score": 0.6080252610978377
+        },
+        {
+          "classId": 11,
+          "score": 0.3039416213674739
+        },
+        {
+          "classId": 14,
+          "score": 0.03475243677494165
+        }
+      ],
+      "selectedRank": 8,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 1
+        }
+      ],
+      "predictedClass": 10,
+      "ranked": [
+        {
+          "classId": 10,
+          "score": 0.8671727342170804
+        },
+        {
+          "classId": 11,
+          "score": 0.0641823952119934
+        },
+        {
+          "classId": 9,
+          "score": 0.03935160569587139
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 1
+        }
+      ],
+      "predictedClass": 10,
+      "ranked": [
+        {
+          "classId": 10,
+          "score": 0.6713401131451066
+        },
+        {
+          "classId": 11,
+          "score": 0.14037473910577064
+        },
+        {
+          "classId": 2,
+          "score": 0.11270241216171457
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "sub",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 9,
+      "ranked": [
+        {
+          "classId": 9,
+          "score": 0.3588799634728629
+        },
+        {
+          "classId": 10,
+          "score": 0.24018687954686732
+        },
+        {
+          "classId": 2,
+          "score": 0.208145933929612
+        }
+      ],
+      "selectedRank": 4,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "sub",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 10,
+      "ranked": [
+        {
+          "classId": 10,
+          "score": 0.8728002383418682
+        },
+        {
+          "classId": 11,
+          "score": 0.08221530757312527
+        },
+        {
+          "classId": 2,
+          "score": 0.018055475419843776
+        }
+      ],
+      "selectedRank": 2,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "max",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "min",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "sub",
+          "a": 2,
+          "b": 3
+        }
+      ],
+      "predictedClass": 12,
+      "ranked": [
+        {
+          "classId": 12,
+          "score": 0.8076699733893532
+        },
+        {
+          "classId": 4,
+          "score": 0.08954724251654594
+        },
+        {
+          "classId": 19,
+          "score": 0.06174870996873423
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "max",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "min",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "sub",
+          "a": 2,
+          "b": 3
+        }
+      ],
+      "predictedClass": 12,
+      "ranked": [
+        {
+          "classId": 12,
+          "score": 0.7995540193758209
+        },
+        {
+          "classId": 19,
+          "score": 0.1098316936346227
+        },
+        {
+          "classId": 4,
+          "score": 0.07417963995849157
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 0
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 1
+        }
+      ],
+      "predictedClass": 13,
+      "ranked": [
+        {
+          "classId": 13,
+          "score": 0.4177251831583901
+        },
+        {
+          "classId": 14,
+          "score": 0.3449305260306377
+        },
+        {
+          "classId": 0,
+          "score": 0.21479631361409934
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 0
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 1
+        }
+      ],
+      "predictedClass": 14,
+      "ranked": [
+        {
+          "classId": 14,
+          "score": 0.4453500046111973
+        },
+        {
+          "classId": 0,
+          "score": 0.3675304325981884
+        },
+        {
+          "classId": 13,
+          "score": 0.13322707761256575
+        }
+      ],
+      "selectedRank": 3,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 14,
+      "ranked": [
+        {
+          "classId": 14,
+          "score": 0.6679666370402377
+        },
+        {
+          "classId": 0,
+          "score": 0.28556202183865453
+        },
+        {
+          "classId": 13,
+          "score": 0.028071124052759265
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "op": "add",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 14,
+      "ranked": [
+        {
+          "classId": 14,
+          "score": 0.8512549590455121
+        },
+        {
+          "classId": 0,
+          "score": 0.079075661170872
+        },
+        {
+          "classId": 3,
+          "score": 0.057199882203063365
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 0
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 15,
+      "ranked": [
+        {
+          "classId": 15,
+          "score": 0.988670715232233
+        },
+        {
+          "classId": 6,
+          "score": 0.008007900446215476
+        },
+        {
+          "classId": 8,
+          "score": 0.001979279598068624
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 0,
+          "b": 0
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 15,
+      "ranked": [
+        {
+          "classId": 15,
+          "score": 0.9981830440672529
+        },
+        {
+          "classId": 5,
+          "score": 0.0005771845246358733
+        },
+        {
+          "classId": 13,
+          "score": 0.00037161855930070703
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 1
+        }
+      ],
+      "predictedClass": 16,
+      "ranked": [
+        {
+          "classId": 16,
+          "score": 0.9694323494233763
+        },
+        {
+          "classId": 10,
+          "score": 0.019884683303745054
+        },
+        {
+          "classId": 14,
+          "score": 0.004008400340030417
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "mul",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 1
+        }
+      ],
+      "predictedClass": 16,
+      "ranked": [
+        {
+          "classId": 16,
+          "score": 0.9793640685025434
+        },
+        {
+          "classId": 14,
+          "score": 0.014430905703592596
+        },
+        {
+          "classId": 8,
+          "score": 0.003350529185853133
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 13,
+      "ranked": [
+        {
+          "classId": 13,
+          "score": 0.6834109966632425
+        },
+        {
+          "classId": 17,
+          "score": 0.24924658679899905
+        },
+        {
+          "classId": 11,
+          "score": 0.030148767847884818
+        }
+      ],
+      "selectedRank": 2,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 0
+        }
+      ],
+      "predictedClass": 11,
+      "ranked": [
+        {
+          "classId": 11,
+          "score": 0.46453695408875234
+        },
+        {
+          "classId": 17,
+          "score": 0.3855467595509678
+        },
+        {
+          "classId": 8,
+          "score": 0.04671750034443215
+        }
+      ],
+      "selectedRank": 2,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 1
+        }
+      ],
+      "predictedClass": 18,
+      "ranked": [
+        {
+          "classId": 18,
+          "score": 0.32871935401539953
+        },
+        {
+          "classId": 17,
+          "score": 0.21932073480255285
+        },
+        {
+          "classId": 11,
+          "score": 0.10601077014946515
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "add",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 1
+        }
+      ],
+      "predictedClass": 18,
+      "ranked": [
+        {
+          "classId": 18,
+          "score": 0.8931024018718733
+        },
+        {
+          "classId": 14,
+          "score": 0.03820732707484804
+        },
+        {
+          "classId": 11,
+          "score": 0.014050084026166712
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "max",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 2
+        }
+      ],
+      "predictedClass": 17,
+      "ranked": [
+        {
+          "classId": 17,
+          "score": 0.4205233512593149
+        },
+        {
+          "classId": 19,
+          "score": 0.2767281152032115
+        },
+        {
+          "classId": 5,
+          "score": 0.13670722982149253
+        }
+      ],
+      "selectedRank": 2,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    },
+    {
+      "status": "verified-template",
+      "steps": [
+        {
+          "op": "max",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "op": "mul",
+          "a": 2,
+          "b": 2
+        }
+      ],
+      "predictedClass": 19,
+      "ranked": [
+        {
+          "classId": 19,
+          "score": 0.40307767839852915
+        },
+        {
+          "classId": 6,
+          "score": 0.32234065464167355
+        },
+        {
+          "classId": 7,
+          "score": 0.12325967977301353
+        }
+      ],
+      "selectedRank": 1,
+      "trainingMatches": 1,
+      "validationPassed": 4,
+      "validationCases": 4,
+      "externalInference": false,
+      "notice": "Neural ranking of 20 known program templates; all templates tested against examples; validation gate independent of ranking. No novel program generation."
+    }
+  ]
+}

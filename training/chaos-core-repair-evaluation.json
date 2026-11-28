@@ -1,0 +1,608 @@
+{
+  "accepted": 100,
+  "ambiguous": 0,
+  "failed": 0,
+  "checks": 400,
+  "receipts": [
+    {
+      "lesson": "composition-0",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-1",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-2",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-3",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-4",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-5",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-6",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-7",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-8",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-9",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-10",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-11",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-12",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-13",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-14",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-15",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-16",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-17",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-18",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-19",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-0",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-1",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-2",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-3",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-4",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-5",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-6",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-7",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-8",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-9",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-10",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-11",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-12",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-13",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-14",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-15",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-16",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-17",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-18",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-19",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-0",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-1",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-2",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-3",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-4",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-5",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-6",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-7",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-8",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-9",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-10",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-11",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-12",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-13",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-14",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-15",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-16",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-17",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-18",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-19",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-0",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-1",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-2",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-3",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-4",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-5",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-6",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-7",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-8",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-9",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-10",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-11",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-12",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-13",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-14",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-15",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-16",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-17",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-18",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-19",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-0",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-1",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-2",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-3",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-4",
+      "status": "repaired",
+      "checked": 7,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-5",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-6",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-7",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-8",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-9",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-10",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-11",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-12",
+      "status": "repaired",
+      "checked": 25,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-13",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-14",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-15",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-16",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-17",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-18",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    },
+    {
+      "lesson": "composition-19",
+      "status": "repaired",
+      "checked": 15,
+      "validationPassed": 4
+    }
+  ]
+}
