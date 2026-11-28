@@ -143,7 +143,42 @@ $("eye-trash").addEventListener("click",trash);
    if(location.hash!=="#eye-tool-review") await browse(false);
  }catch(e){$("eye-denied").hidden=false;message(e.message)}
 })();
-})();
-async function refreshForgeFiles(){const out=$("eye-forge-files");out.replaceChildren();try{const r=await request(ROOT+"/tools/forge");for(const file of r.artifacts||[]){if(!/^[a-f0-9-]{36}$/.test(file.id))continue;const row=element("p"),link=element("a","",file.filename+" ("+file.byte_count+" bytes)");link.href="https://api.ash-fall.com/api/god/eye/tools/forge-download/"+file.id;link.target="_blank";link.rel="noopener noreferrer";const del=element("button","eye-subtle","Delete");del.type="button";del.addEventListener("click",async()=>{if(!confirm("Delete this download?"))return;try{await request(ROOT+"/tools/forge-download/"+file.id,{method:"DELETE"});await refreshForgeFiles();}catch(e){$("eye-forge-result").textContent=e.message;}});row.append(link,document.createTextNode(" · "),del);out.append(row);}if(!out.children.length)out.textContent="No active artifacts.";}catch(e){out.textContent=e.message;}}
+async function downloadForgeFile(file){
+ const r=await fetch(API+ROOT+"/tools/forge-download/"+encodeURIComponent(file.id),{credentials:"include",cache:"no-store"});
+ if(!r.ok)throw Error("Download failed ("+r.status+").");
+ const blob=await r.blob();const bytes=await blob.arrayBuffer();
+ if(file.sha256){const hash=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",bytes)),x=>x.toString(16).padStart(2,"0")).join("");if(hash!==file.sha256)throw Error("Download checksum mismatch.");}
+ const url=URL.createObjectURL(blob),a=element("a");a.href=url;a.download=file.filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+}
+async function refreshForgeFiles(){
+ const out=$("eye-forge-files");out.replaceChildren();
+ try{const r=await request(ROOT+"/tools/forge");for(const file of r.artifacts||[]){
+ if(!/^[a-f0-9-]{36}$/.test(file.id))continue;
+ const row=element("article","eye-result"),download=element("button","eye-subtle","Download"),del=element("button","eye-subtle","Delete");
+ const type=file.filename.endsWith(".html")?"Offline browser applet":file.filename.endsWith(".wasm")?"WebAssembly executable module":"Portable bytecode / report";
+ row.append(element("strong","",file.filename),element("p","",type+" · "+file.byte_count+" bytes · Expires "+time(file.expires_at)),element("small","","SHA-256: "+file.sha256));
+ download.type=del.type="button";download.addEventListener("click",async()=>{download.disabled=true;try{await downloadForgeFile(file);}catch(e){$("eye-forge-result").textContent=e.message;}finally{download.disabled=false;}});
+ del.addEventListener("click",async()=>{if(!confirm("Delete this download?"))return;try{await request(ROOT+"/tools/forge-download/"+file.id,{method:"DELETE"});await refreshForgeFiles();}catch(e){$("eye-forge-result").textContent=e.message;}});
+ row.append(download,del);out.append(row);
+ }if(!out.children.length)out.textContent="No active artifacts.";}catch(e){out.textContent=e.message;}
+}
+const forgePicker=$("eye-forge-tool"),forgeInput=$("eye-forge-input"),forgeFile=$("eye-forge-file");
+function showForgeTool(){const opt=forgePicker.selectedOptions[0];$("eye-forge-description").textContent=opt.dataset.description||"";forgeInput.value=opt.dataset.example||"";forgeFile.value="";}
+forgePicker.addEventListener("change",showForgeTool);
+$("eye-forge-example").addEventListener("click",showForgeTool);
+forgeFile.addEventListener("change",async()=>{try{
+ const file=forgeFile.files[0];if(!file)return;if(file.size>32768)throw Error("File exceeds 32 KiB.");
+ const opt=forgePicker.selectedOptions[0],prefix=opt.dataset.prefix;if(!prefix)throw Error("Select a decompiler or source analyzer first.");
+ const data=prefix.includes("wasm")||prefix.includes("function")?Array.from(new Uint8Array(await file.arrayBuffer()),b=>b.toString(16).padStart(2,"0")).join(""):await file.text();
+ if(prefix.length+data.length>65536)throw Error("Encoded command exceeds size limit.");
+ forgeInput.value=prefix+data;$("eye-forge-result").textContent="Loaded file locally. Run Forge to analyze it.";
+ }catch(e){$("eye-forge-result").textContent=e.message;}});
 $("eye-forge-refresh").addEventListener("click",refreshForgeFiles);
-$("eye-forge-form").addEventListener("submit",async e=>{e.preventDefault();const btn=$("eye-forge-run"),out=$("eye-forge-result");btn.disabled=true;out.textContent="Running independent Forge…";try{const r=await request(ROOT+"/tools/forge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:$("eye-forge-input").value})});out.textContent=r.answer;await refreshForgeFiles();}catch(error){out.textContent=error.message;}finally{btn.disabled=false;}});
+$("eye-forge-form").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=$("eye-forge-run"),out=$("eye-forge-result");btn.disabled=true;out.textContent="Running independent Forge…";$("eye-forge-latest").replaceChildren();
+ try{const r=await request(ROOT+"/tools/forge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:forgeInput.value})});out.textContent=r.answer;
+ if(r.artifact){const btn=element("button","eye-subtle","Download "+r.artifact.filename);btn.type="button";btn.addEventListener("click",async()=>{btn.disabled=true;try{await downloadForgeFile(r.artifact);}catch(error){out.textContent=error.message;}finally{btn.disabled=false;}});$("eye-forge-latest").append(btn);}
+ await refreshForgeFiles();}catch(error){out.textContent=error.message;}finally{btn.disabled=false;}
+});
+showForgeTool();
+})();
