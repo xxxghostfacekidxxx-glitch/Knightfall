@@ -71,8 +71,10 @@ async function req(path,method="GET",payload){
  if(!res.ok)throw Error(d.error||"Theme Crew request failed ("+res.status+").");
  return d;
 }
+const universal=document.createElement("button");universal.type="button";universal.id="theme-crew-publish-all";universal.className="theme-crew-action";universal.textContent="Apply to all realms";universal.hidden=true;universal.disabled=true;$("theme-crew-publish").after(universal);
 const lock=value=>{
  busy=value;
+ universal.hidden=!canPublish;universal.disabled=busy||!canPublish||!realmApiReady;
  for(const id of ["theme-crew-preview","theme-crew-copy-preview","theme-crew-publish","theme-crew-revert-preview","theme-crew-rollback","theme-crew-refresh"]){
   $(id).disabled=busy||((id==="theme-crew-publish"||id==="theme-crew-rollback")&&(!canPublish||(scope!=="site"&&!realmApiReady)));
  }
@@ -269,6 +271,30 @@ $("theme-crew-revert-preview").addEventListener("click",()=>{
  drawPresets();
  $("theme-crew-selected").textContent="LIVE THEME · "+(presets[selected]?.name||"Black Sun Temple");
  announce("Preview cleared for "+realmName()+". That realm's published theme is restored.");
+});
+universal.addEventListener("click",async()=>{
+ if(busy||!canPublish||!realmApiReady||!Object.hasOwn(presets,selected))return;
+ const target=selected,keys=["site","madhouse","arcade","chaosphere","admin"];
+ if(!confirm("Publish "+presets[target].name+" across all five realms? Existing independent presets will be replaced. Individual realm rollback remains available."))return;
+ lock(true);const completed=[];let failure=null;
+ try{
+  for(const realm of keys){
+   const state=states[realm];
+   if(!state)throw Error("Missing realm state: "+realm);
+   if(state.preset===target){completed.push(realm);continue}
+   const result=await req("/activate","POST",{realm,preset:target,expectedRevision:state.revision});
+   if(result.current?.preset!==target)throw Error("Publication not confirmed for "+realm);
+   states[realm]=result.current;completed.push(realm);
+   window.KnightfallThemeCrew?.preview?.(null,realm);
+   window.KnightfallThemeCrew?.announcePublished?.(result.current.revision,realm);
+  }
+ }catch(error){failure=error}
+ finally{
+  try{await load();await window.KnightfallThemeCrew?.refresh?.()}catch(error){failure=failure||error}
+  lock(false);
+  const verified=keys.filter(key=>states[key]?.preset===target);
+  announce(failure?"Universal publication interrupted: "+failure.message+". Matching realms: "+verified.join(", ")+". Refresh before retrying.":"Published "+presets[target].name+" across all five realms. Individual rollback remains available.");
+ }
 });
 $("theme-crew-publish").addEventListener("click",()=>publish(false));
 $("theme-crew-rollback").addEventListener("click",()=>publish(true));
