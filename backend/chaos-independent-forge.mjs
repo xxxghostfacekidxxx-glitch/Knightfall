@@ -1,3 +1,4 @@
+import {compileFunction,decompileFunction} from "./chaos-forge-functions.mjs";
 import {compileFormula,decompileFormula,evaluateFormula} from "./chaos-forge-formula.mjs";
 import {compileArtifact,decompileStack,hexBytes,inspectWasm} from "./chaos-forge-binary.mjs";
 import {buildApplet} from "./chaos-forge-applets.mjs";
@@ -32,6 +33,10 @@ export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
  const app=question.match(/^(?:applet|(?:make|create|build) (?:an? )?applet)\s*:\s*(.+)$/i);
  if(app){const a=await buildApplet(app[1]);const file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline "+a.report.title+" applet. Download: "+file.downloadUrl+"\nSHA-256: "+file.sha256+"\nExpires in seven days. No external inference or dependencies.",method:"independent-applet-forge",artifact:file,report:a.report,externalInference:false};}
+ const native=question.match(/^compile function\s*:\s*([\s\S]+)$/i);
+ if(native){const a=compileFunction(JSON.parse(native[1])),file=await saveForgeArtifact(env,owner,a);return {answer:"Compiled reusable native function. Download: "+file.downloadUrl+"\n"+JSON.stringify(a.report),method:"independent-native-function",artifact:file,report:a.report,externalInference:false};}
+ const nativeDecode=question.match(/^(?:decompile|reverse engineer) function\s*:\s*([\s\S]+)$/i);
+ if(nativeDecode){const report=decompileFunction(hexBytes(nativeDecode[1]));return {answer:JSON.stringify(report,null,2),method:"independent-native-decompiler",report,externalInference:false};}
  const formula=question.match(/^compile formula\s*:\s*([\s\S]+)$/i);
  if(formula){const input=JSON.parse(formula[1]),program=compileFormula(input.expression,input.fields),report={program,reconstructed:decompileFormula(program),exampleResult:input.values===undefined?null:evaluateFormula(program,input.values)},file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-formula.json",content:JSON.stringify(program,null,2)});return {answer:"Compiled parameterized formula bytecode. Download: "+file.downloadUrl+"\n"+JSON.stringify(report,null,2),method:"independent-formula-compiler",artifact:file,report,externalInference:false};}
  const formulaDecode=question.match(/^(?:decompile|disassemble|reverse engineer) formula\s*:\s*([\s\S]+)$/i);
