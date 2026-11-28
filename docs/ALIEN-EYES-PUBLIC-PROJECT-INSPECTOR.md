@@ -9,3 +9,6 @@ The standalone URL now hosts the owner-only software inspector interface, using 
 
 ## Reporting
 The owner software workspace exports JSON, CSV, Markdown and HTML reports, with HTML escaping and spreadsheet formula neutralization. No personal-account scanning is included.
+
+## Personal account recovery
+Owner-only workspace at /account-recovery.html, linked from Alien Eyes. Explicit own-account inventory, official Google/Proton recovery links, security checklist, 30-day review due calculation, JSON import/export. No background login monitoring or remote account discovery. No account identifiers seeded or transmitted; browser session only, explicit export to retain.

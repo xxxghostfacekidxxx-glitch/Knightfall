@@ -7,6 +7,8 @@ on:
       - 'backend/src/alien-eyes-core.mjs'
       - 'scripts/eye-tool-review.test.mjs scripts/order66-software-sharing.test.mjs'
       - 'public/alien-eyes*'
+      - 'public/account-recovery*'
+      - 'scripts/account-recovery.test.mjs'
       - 'scripts/alien-eyes.test.mjs'
       - 'scripts/alien-eyes-workspace.test.mjs'
       - 'public/miss-chaos-native-v3.mjs'
@@ -203,6 +205,6 @@ jobs:
           node --check public/alien-eyes.mjs
           node --check public/alien-eyes-workspace.js
           node --check public/miss-chaos-model-lab.mjs
-          node --test scripts/eye-tool-review.test.mjs scripts/miss-chaos-local-model.test.mjs scripts/alien-eyes.test.mjs scripts/alien-eyes-workspace.test.mjs scripts/alien-eyes-report.test.mjs scripts/miss-chaos-native-v3.test.mjs scripts/mad-court.test.mjs scripts/order66-code-lab.test.mjs
+          node --test scripts/eye-tool-review.test.mjs scripts/miss-chaos-local-model.test.mjs scripts/alien-eyes.test.mjs scripts/alien-eyes-workspace.test.mjs scripts/alien-eyes-report.test.mjs scripts/account-recovery.test.mjs scripts/miss-chaos-native-v3.test.mjs scripts/mad-court.test.mjs scripts/order66-code-lab.test.mjs
           node scripts/audit-miss-chaos-v3.mjs
 
