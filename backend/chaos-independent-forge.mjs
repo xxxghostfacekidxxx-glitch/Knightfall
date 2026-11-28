@@ -1,3 +1,4 @@
+import {verifyDataSource,emitDataSource} from "./chaos-forge-data-source.mjs";
 import {verifyData,decompileData,runData,emitDataModule} from "./chaos-forge-data.mjs";
 import {verifyLogic,decompileLogic,compileLogic,runLogic} from "./chaos-forge-logic.mjs";
 import {compileFunction,decompileFunction} from "./chaos-forge-functions.mjs";
@@ -35,6 +36,10 @@ export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
  const app=question.match(/^(?:applet|(?:make|create|build) (?:an? )?applet)\s*:\s*([\s\S]+)$/i);
  if(app){const a=await buildApplet(app[1]);const file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline "+a.report.title+" applet. Download: "+file.downloadUrl+"\nSHA-256: "+file.sha256+"\nExpires in seven days. No external inference or dependencies.",method:"independent-applet-forge",artifact:file,report:a.report,externalInference:false};}
+ const source=question.match(/^compile source(?: (module))?\s*:\s*([\s\S]+)$/i);
+ if(source){const report=verifyDataSource(JSON.parse(source[2])),module=!!source[1],file=await saveForgeArtifact(env,owner,{filename:module?"miss-chaos-source.mjs":"miss-chaos-source.json",content:module?emitDataModule(report.program):JSON.stringify(report.program,null,2)});return {answer:"Source compiled and "+report.tests.length+" examples verified. Download: "+file.downloadUrl+"\nReconstructed source:\n"+report.reconstructed,method:"independent-readable-source-compiler",artifact:file,report,externalInference:false};}
+ const sourceDecode=question.match(/^(?:decompile|disassemble|reverse engineer) source\s*:\s*([\s\S]+)$/i);
+ if(sourceDecode){const reconstructed=emitDataSource(JSON.parse(sourceDecode[1]));return {answer:reconstructed,method:"independent-readable-source-decompiler",report:{source:reconstructed,executed:false},externalInference:false};}
  const data=question.match(/^compile data(?: (module))?\s*:\s*([\s\S]+)$/i);
  if(data){const report=verifyData(JSON.parse(data[2])),module=!!data[1],file=await saveForgeArtifact(env,owner,{filename:module?"miss-chaos-data.mjs":"miss-chaos-data.json",content:module?emitDataModule(report.program):JSON.stringify(report.program,null,2)});return {answer:"Verified "+report.tests.length+" examples. Download: "+file.downloadUrl+"\n"+JSON.stringify(report.tests,null,2),method:module?"independent-data-module":"independent-data-compiler",artifact:file,report,externalInference:false};}
  const dataDecode=question.match(/^(?:decompile|disassemble|reverse engineer) data\s*:\s*([\s\S]+)$/i);
