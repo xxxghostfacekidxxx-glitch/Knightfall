@@ -1,3 +1,4 @@
+import {buildPresetTool,toolPresets} from "./chaos-forge-tool-presets.mjs";
 import {buildWebProject} from "./chaos-forge-web-project.mjs";
 import {inspectProjectArchive} from "./chaos-forge-project-inspect.mjs";
 import {buildProject} from "./chaos-forge-project.mjs";
@@ -40,6 +41,9 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const preset=question.match(/^build tool\s*:\s*([\s\S]+)$/i);
+ if(preset){const a=buildPresetTool(preset[1]),file=await saveForgeArtifact(env,owner,a);return {answer:"Built "+a.report.name+" from a verified preset. Download: "+file.downloadUrl+"\n"+a.report.notice,method:"independent-preset-tool-builder",artifact:file,report:a.report,externalInference:false};}
+ if(/^tool presets\s*:?\s*$/i.test(question)){const presets=toolPresets();return {answer:presets.map(p=>p.name+": "+p.description).join("\n"),method:"independent-tool-preset-catalog",report:{presets},externalInference:false};}
  const web=question.match(/^build web project\s*:\s*([\s\S]+)$/i);
  if(web){const a=buildWebProject(JSON.parse(web[1])),file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline browser project "+a.report.name+" with "+a.report.files.length+" files. Download: "+file.downloadUrl+"\n"+a.report.notice,method:"independent-web-project-builder",artifact:file,report:a.report,externalInference:false};}
  const projectInspect=question.match(/^inspect project\s*:\s*([\s\S]+)$/i);
