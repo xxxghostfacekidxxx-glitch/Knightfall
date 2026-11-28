@@ -1064,7 +1064,9 @@ export function assignments(time){const hour=Math.floor(Number(time)/3600000);if
 export function normalizeCandidates(payload){if(payload?.error)throw Error("source error");const results=Array.isArray(payload?.search)?payload.search:[];return results.slice(0,3).flatMap(x=>{const id=String(x.id||""),title=String(x.label||"").trim().slice(0,150),description=String(x.description||"").trim().slice(0,300);return /^Q[1-9][0-9]{0,14}$/.test(id)&&title&&description?[{id,title,description,url:"https://www.wikidata.org/wiki/"+id,license:"CC0-1.0"}]:[];});}
 async function enabled(env){const row=await env.DB.prepare("SELECT k.enabled AS enabled,e.paused AS paused FROM chaos_knowledge_66_control k JOIN eye_chaos_controls e ON e.id=1 WHERE k.id=1").first();return row!=null&&Number(row.enabled)===1&&Number(row.paused)===0;}
 async function readLimited(response){if(!response.ok)throw Object.assign(Error("source unavailable"),{sourceStatus:response.status});if(!response.body)throw Error("source empty");const r=response.body.getReader();let n=0,s="";const d=new TextDecoder();try{while(true){const {done,value}=await r.read();if(done)break;n+=value.byteLength;if(n>32000){await r.cancel();throw Error("source too large");}s+=d.decode(value,{stream:true});}try{return JSON.parse(s+d.decode());}catch{throw Error("invalid source JSON");}}finally{r.releaseLock();}}
-export async function discover(query,fetcher=fetch){const u=new URL("https://www.wikidata.org/w/api.php");for(const [k,v] of Object.entries({action:"wbsearchentities",search:query,language:"en",format:"json",limit:"3",type:"item",maxlag:"5"}))u.searchParams.set(k,v);const response=await fetcher(u.href,{redirect:"error",headers:{"accept":"application/json","user-agent":"KnightfallKnowledge/1.0 (https://ash-fall.com)","api-user-agent":"KnightfallKnowledge/1.0 (https://ash-fall.com)"},signal:AbortSignal.timeout(7000)});return normalizeCandidates(await readLimited(response));}
+const runtimeFetch=(...args)=>globalThis.fetch(...args);
+async function researchResponse(url,headers,fetcher){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),7000);try{const response=await fetcher(url,{redirect:"error",headers,signal:controller.signal});return await readLimited(response);}finally{clearTimeout(timer);}}
+export async function discover(query,fetcher=runtimeFetch){const u=new URL("https://www.wikidata.org/w/api.php");for(const [k,v] of Object.entries({action:"wbsearchentities",search:query,language:"en",format:"json",limit:"3",type:"item",maxlag:"5"}))u.searchParams.set(k,v);return normalizeCandidates(await researchResponse(u.href,{"accept":"application/json","user-agent":"KnightfallKnowledge/1.0 (https://ash-fall.com)","api-user-agent":"KnightfallKnowledge/1.0 (https://ash-fall.com)"},fetcher));}
 // Discovery metadata only. No repository cloning, arbitrary URLs, installation, shell commands or code execution.
 const safeText=(v,n)=>String(v??"").trim().slice(0,n);
 export function toolCandidates(source,payload){
@@ -1079,18 +1081,17 @@ export function toolCandidates(source,payload){
   return [{id:source+":"+id,source,title,url,license:safeText(license,100)||"unknown",version:safeText(version,100)||"unknown"}];
  });
 }
-export async function discoverTools(source,query,fetcher=fetch){
+export async function discoverTools(source,query,fetcher=runtimeFetch){
  let u;
  if(source==="github"){u=new URL("https://api.github.com/search/repositories");u.searchParams.set("q",query+" in:name,description is:public archived:false");u.searchParams.set("per_page","3");}
  else if(source==="gitlab"){u=new URL("https://gitlab.com/api/v4/projects");u.searchParams.set("search",query);u.searchParams.set("visibility","public");u.searchParams.set("simple","true");u.searchParams.set("per_page","3");}
  else if(source==="npm"){u=new URL("https://registry.npmjs.org/-/v1/search");u.searchParams.set("text",query);u.searchParams.set("size","3");}
  else throw Error("unknown source");
- const response=await fetcher(u.href,{redirect:"error",headers:{"accept":"application/json","user-agent":"KnightfallKnowledge/2.0 (https://ash-fall.com)"},signal:AbortSignal.timeout(7000)});
- return toolCandidates(source,await readLimited(response));
+ return toolCandidates(source,await researchResponse(u.href,{"accept":"application/json","user-agent":"KnightfallKnowledge/2.0 (https://ash-fall.com)"},fetcher));
 }
 // A peer lesson is an approved evidence reference, not a generated fact or neural weight update.
 export async function sharePeerEvidence(env,a,now){
- const row=await env.DB.prepare("SELECT entity_id,agent_key FROM chaos_knowledge_candidates c WHERE review_status='approved' AND agent_key LIKE 'mc-%' AND agent_key<>? AND NOT EXISTS(SELECT 1 FROM chaos_knowledge_lessons l WHERE l.learner_key=? AND l.entity_id=c.entity_id) ORDER BY CASE WHEN division=? THEN 0 ELSE 1 END,reviewed_at DESC,entity_id LIMIT 1").bind(a.key,a.key,a.division).first();
+ const row=await env.DB.prepare("SELECT c.entity_id,COALESCE((SELECT prior.learner_key FROM chaos_knowledge_lessons prior WHERE prior.entity_id=c.entity_id AND prior.learner_key<>? ORDER BY prior.received_at,prior.learner_key LIMIT 1),c.agent_key) AS agent_key FROM chaos_knowledge_candidates c WHERE review_status='approved' AND (agent_key LIKE 'mc-%' OR agent_key='manual-curation') AND agent_key<>? AND NOT EXISTS(SELECT 1 FROM chaos_knowledge_lessons l WHERE l.learner_key=? AND l.entity_id=c.entity_id) ORDER BY CASE WHEN division=? THEN 0 ELSE 1 END,reviewed_at DESC,entity_id LIMIT 1").bind(a.key,a.key,a.key,a.division).first();
  if(!row)return 0;
  const result=await env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_lessons(learner_key,entity_id,teacher_key,received_at) VALUES(?,?,?,?)").bind(a.key,row.entity_id,row.agent_key,now).run();return Number(result.meta?.changes||0);
 }
@@ -1098,18 +1099,19 @@ export function failureCode(error){
  const code=Number(error?.sourceStatus);
  if(Number.isInteger(code)&&code>=400&&code<=599)return "http_"+code;
  if(error?.name==="TimeoutError"||error?.name==="AbortError")return "timeout";
+ if(error?.name==="TypeError")return "fetch_or_runtime_type_error";
  if(error?.message==="source too large")return "response_limit";
  if(error?.message==="invalid source JSON"||error?.message==="invalid tool response"||error?.message==="source error")return "invalid_source";
  return "request_or_storage_error";
 }
-export async function collectAssignment(a,fetcher=fetch,{allowToolFallback=true}={}){
+export async function collectAssignment(a,fetcher=runtimeFetch,{allowToolFallback=true}={}){
  let source=a.source,primaryFailure=null;
  try{return {source,records:source==="wikidata"?await discover(a.query,fetcher):await discoverTools(source,a.query,fetcher),primaryFailure};}
  catch(error){primaryFailure=failureCode(error);if(!allowToolFallback||source!=="wikidata"||["http_429","http_401","http_403"].includes(primaryFailure))return {source,records:[],primaryFailure,error:primaryFailure};}
  // A distinct public software catalog can provide useful coding references if the knowledge source is temporarily unavailable.
  source="npm";try{return {source,records:await discoverTools(source,a.query,fetcher),primaryFailure};}catch(error){return {source,records:[],primaryFailure,error:failureCode(error)};}
 }
-export async function runKnowledgeResearch(env,time,{fetcher=fetch}={}){
+export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch}={}){
  if(!await enabled(env))return {reason:"paused",completed:0};
  let count=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_candidates").first())?.n||0);
  let toolCount=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_tools").first())?.n||0);
