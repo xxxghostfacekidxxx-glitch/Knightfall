@@ -1,4 +1,6 @@
 // Owner-only persisted repository staging; source is evidence, never executed.
+import {generateRepositoryCandidate} from "./chaos-repository-candidate.mjs";
+import {INTEGRATION_PATHS} from "./chaos-integration-dispatch.mjs";
 import {intakeRepository} from "../chaos-repo-intake.mjs";
 import {parseRepository} from "./alien-eyes-core.mjs";
 const PREFIX="chaos_repo_stage:";
@@ -28,13 +30,13 @@ export async function listRepositoryStages(env,ownerId){
  return rows.flatMap(row=>{try{const r=JSON.parse(row.value);return r.owner_id===Number(ownerId)?[r]:[];}catch{return [];}});
 }
 export async function handleRepositoryStages(request,env,url,{requireUser,json,origin,rateLimit}){
- if(url.pathname!=="/api/chaos/repository-stages")return null;
+ if(!["/api/chaos/repository-stages","/api/chaos/repository-stages/generate"].includes(url.pathname))return null;
  const reply=(body,status=200)=>json(body,status,origin,{"cache-control":"private, no-store"});
  const user=await requireUser(request,env);if(!user)return reply({error:"Sign in required."},401);
  if(user.role!=="god"||user.status!=="active")return reply({error:"Osiris only."},403);
- if(request.method==="GET")return reply({stages:await listRepositoryStages(env,user.id)});
+ if(request.method==="GET")return reply({stages:await listRepositoryStages(env,user.id),targets:INTEGRATION_PATHS});
  if(request.method!=="POST")return reply({error:"Method not allowed."},405);
  if(!["https://ash-fall.com","https://www.ash-fall.com"].includes(request.headers.get("origin"))||!String(request.headers.get("content-type")||"").startsWith("application/json"))return reply({error:"Knightfall origin required."},403);
  if(!await rateLimit(env,request,"chaos-repository-stage",5,60,user.id))return reply({error:"Repository intake limit reached."},429);
- try{const raw=await request.text();if(raw.length>1500)throw Error("Input too large");const input=JSON.parse(raw);return reply({stage:await stageRepository(env,input,user.id)},201);}catch(error){return reply({error:String(error.message).slice(0,180)},400);}
+ try{const raw=await request.text();if(raw.length>1500)throw Error("Input too large");const input=JSON.parse(raw);if(url.pathname.endsWith("/generate")){if(!/^[a-f0-9]{64}$/.test(input.stage_id||""))throw Error("Invalid stage ID");const row=await env.DB.prepare("SELECT value FROM site_settings WHERE key=? AND updated_by=?").bind(PREFIX+input.stage_id,user.id).first();if(!row)throw Error("Stage not found");return reply({proposal:await generateRepositoryCandidate(env,{stage:JSON.parse(row.value),target:input.target,goal:input.goal,ownerId:user.id})},201);}return reply({stage:await stageRepository(env,input,user.id)},201);}catch(error){return reply({error:String(error.message).slice(0,180)},400);}
 }
