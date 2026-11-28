@@ -1,3 +1,4 @@
+import {controlSourcePractice} from "../backend/chaos-forge-control-source-course.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {verifyPython,translatePython} from "../backend/chaos-forge-python.mjs";
@@ -30,3 +31,5 @@ test("both languages produce runnable Node and web project modules",async()=>{
   const a=builder({name:"triangle",kind,spec}),files=new Map(readProjectZip(a.bytes).map(f=>[f.path,f.content])),m=await import("data:text/javascript;base64,"+Buffer.from(files.get("src/program.mjs")).toString("base64"));assert.equal(m.solve(10),45);
  }
 });
+
+test("100 rotating peers compile both languages and pass independent oracle and holdout checks",()=>{const rows=Array.from({length:100},(_,i)=>controlSourcePractice(i,0));assert.equal(new Set(rows.map(r=>r.learner)).size,100);assert.equal(new Set(rows.map(r=>r.teacher)).size,100);assert.ok(rows.every(r=>r.learner!==r.teacher&&r.verified));assert.equal(rows.reduce((n,r)=>n+r.passed,0),1400);assert.equal(rows.reduce((n,r)=>n+r.holdout,0),800);});
