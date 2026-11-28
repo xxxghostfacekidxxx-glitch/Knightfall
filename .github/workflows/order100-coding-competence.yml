@@ -32,7 +32,7 @@ jobs:
       - name: Execute generated source and peer practice regression tests
         run: node --test scripts/order100-code-synthesis.test.mjs
       - name: Install pinned parser dependencies
-        run: npm ci --prefix backend --ignore-scripts
+        run: npm install --prefix backend --ignore-scripts --no-package-lock --no-audit --no-fund
       - name: Verify independent applet, native compiler and reverse engineering
         run: node --test scripts/chaos-independent-forge.test.mjs
       - name: Produce independent coding competence report
