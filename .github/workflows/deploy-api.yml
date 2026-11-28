@@ -96,7 +96,7 @@ jobs:
           node --check public/home-activity.js
 
       - name: Verify Osiris tool authorization and trained format checkpoint
-        run: node --test scripts/miss-chaos-local-model.test.mjs scripts/miss-chaos-specialist.test.mjs scripts/eye-tool-review.test.mjs scripts/order66-software-sharing.test.mjs scripts/alien-eyes.test.mjs backend/chaos-order66-format.test.mjs backend/src/order66-ingest.test.mjs backend/src/developer-audit-oidc.test.mjs backend/src/chaos-knowledge-fleet.test.mjs
+        run: node --test scripts/miss-chaos-local-model.test.mjs scripts/miss-chaos-specialist.test.mjs scripts/miss-chaos-original-tutor.test.mjs scripts/eye-tool-review.test.mjs scripts/order66-software-sharing.test.mjs scripts/alien-eyes.test.mjs backend/chaos-order66-format.test.mjs backend/src/order66-ingest.test.mjs backend/src/developer-audit-oidc.test.mjs backend/src/chaos-knowledge-fleet.test.mjs
 
       - name: Verify Cards Against Chaos deck counts and variety
         run: node --test scripts/chaos-deck-variety.test.mjs

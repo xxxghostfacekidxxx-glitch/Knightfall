@@ -173,3 +173,5 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 - Research efficiency: authenticated read-only preflight skips paused, already accepted and fully completed Worker slots before public-source requests. Removed pre-deployment push trigger; successful API deployment, hourly schedule and manual dispatch retained. Existing write-side replay protection remains. No paid dependencies or added source budget.
 
 - Original specialist trainer optimization: sequentially accumulate client weights into one Float64Array instead of holding 66 full model copies; typed numeric buffers and allocation-light softmax. All 66 client updates and existing summation order retained. Checkpoint format unchanged; numeric parity and workflow verification required. No paid compute.
+
+- Original curriculum tutor: deterministic BM25-style retrieval over 72 authored lessons with evidence IDs and abstention for unsupported terms. Independent of external AI and third-party libraries. Explicit Osiris-only endpoint and console; no replacement of public chat, no account-scanning functions. Test/deployment pending.
