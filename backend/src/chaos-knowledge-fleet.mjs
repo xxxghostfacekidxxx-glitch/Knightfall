@@ -1111,7 +1111,7 @@ export async function collectAssignment(a,fetcher=runtimeFetch,{allowToolFallbac
  // A distinct public software catalog can provide useful coding references if the knowledge source is temporarily unavailable.
  source="npm";try{return {source,records:await discoverTools(source,a.query,fetcher),primaryFailure};}catch(error){return {source,records:[],primaryFailure,error:failureCode(error)};}
 }
-export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch}={}){
+export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryFailed=false}={}){
  if(!await enabled(env))return {reason:"paused",completed:0};
  let count=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_candidates").first())?.n||0);
  let toolCount=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_tools").first())?.n||0);
@@ -1122,7 +1122,13 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch}={}){
   try{peerLessons+=await sharePeerEvidence(env,a,new Date().toISOString());}catch{peerFailures++;}
   if(a.source==="wikidata"?count>=LIMIT-3:toolCount>=TOOL_LIMIT-3)continue;
   const now=new Date().toISOString();
-  const claim=await env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_runs(hour,agent_key,division,query,status,started_at) VALUES(?,?,?,?,'running',?)").bind(a.hour,a.key,a.division,a.query,now).run();
+  let claim=await env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_runs(hour,agent_key,division,query,status,started_at) VALUES(?,?,?,?,'running',?)").bind(a.hour,a.key,a.division,a.query,now).run();
+  if(claim.meta?.changes!==1&&retryFailed){
+   const retryKey="order66_retry:"+a.hour+":"+a.key;
+   const prior=await env.DB.prepare("SELECT primary_failure,error_code FROM chaos_knowledge_run_diagnostics WHERE hour=? AND agent_key=?").bind(a.hour,a.key).first();
+   const reserved=await env.DB.prepare("INSERT OR IGNORE INTO site_settings(key,value,updated_at) SELECT ?,?,? WHERE EXISTS(SELECT 1 FROM chaos_knowledge_runs WHERE hour=? AND agent_key=? AND status='failed')").bind(retryKey,JSON.stringify({previous:prior||null,attempt:"runner-fallback"}),now,a.hour,a.key).run();
+   if(reserved.meta?.changes===1)claim=await env.DB.prepare("UPDATE chaos_knowledge_runs SET status='running',started_at=? WHERE hour=? AND agent_key=? AND status='failed'").bind(now,a.hour,a.key).run();
+  }
   if(claim.meta?.changes!==1)continue;
   let status="failed",found=0,source=a.source,primaryFailure=null,errorCode=null;
   try{
