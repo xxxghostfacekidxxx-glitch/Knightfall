@@ -1,3 +1,4 @@
+import {recordCodingPractice} from "./order100-coding-practice.mjs";
 import {recordPeerAssessment} from "./order100-peer-assessments.mjs";
 import {shareSoftwareReferences} from "./order66-software-sharing.mjs";
 // Scheduled, non-generative public metadata discovery. Does not browse arbitrary URLs or ingest user content.
@@ -1445,10 +1446,12 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
  if(!await enabled(env))return {reason:"paused",completed:0};
  let count=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_candidates").first())?.n||0);
  let toolCount=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_tools").first())?.n||0);
- let completed=0,failed=0,peerLessons=0,peerFailures=0,uniqueDiscoveries=0,returnedRecords=0;
+ let completed=0,failed=0,peerLessons=0,peerFailures=0,uniqueDiscoveries=0,returnedRecords=0,codingPractices=0,codingPracticeFailures=0;
  const pending=[];
  for(const a of assignments(time)){
   if(!await enabled(env))break;
+  // Local coding practice continues even when public source requests fail or the archive is full.
+  try{const practice=await recordCodingPractice(env,a);codingPractices+=practice.recorded;codingPracticeFailures+=Number(!practice.verified);}catch{codingPracticeFailures++;console.warn("order100_coding_practice_unavailable");}
   // Learning from existing reviewed evidence does not depend on successful network discovery or archive capacity.
   try{peerLessons+=await sharePeerEvidence(env,a,new Date().toISOString());}catch{peerFailures++;}
   if(a.source==="wikidata"?count>=LIMIT-3:toolCount>=TOOL_LIMIT-3)continue;
@@ -1485,7 +1488,7 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
   try{await env.DB.prepare("INSERT OR REPLACE INTO chaos_knowledge_run_diagnostics(hour,agent_key,source_requested,source_used,primary_failure,error_code) VALUES(?,?,?,?,?,?)").bind(a.hour,a.key,a.source,source,primaryFailure,errorCode).run();}catch{console.warn("chaos_knowledge_diagnostics_unavailable");}
  }
  let softwareBroadcasts=0;try{softwareBroadcasts=await shareSoftwareReferences(env);}catch{console.warn("order66_software_share_unavailable");}
- return {completed,failed,peerLessons,peerFailures,softwareBroadcasts,uniqueDiscoveries,returnedRecords,duplicates:returnedRecords-uniqueDiscoveries};
+ return {completed,failed,peerLessons,peerFailures,softwareBroadcasts,uniqueDiscoveries,returnedRecords,duplicates:returnedRecords-uniqueDiscoveries,codingPractices,codingPracticeFailures};
 }
 export async function knowledgeStatus(env){const active=await enabled(env);const totals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_candidates GROUP BY review_status").all()).results||[];const latest=(await env.DB.prepare("SELECT r.agent_key,r.division,r.query,r.status,r.found,r.started_at,d.source_requested,d.source_used,d.primary_failure,d.error_code FROM chaos_knowledge_runs r LEFT JOIN chaos_knowledge_run_diagnostics d ON d.hour=r.hour AND d.agent_key=r.agent_key ORDER BY r.hour DESC,r.agent_key LIMIT 32").all()).results||[];const candidates=(await env.DB.prepare("SELECT entity_id,title,description,source_url,license,agent_key,retrieved_at FROM chaos_knowledge_candidates WHERE review_status='pending' ORDER BY retrieved_at DESC,entity_id LIMIT 30").all()).results||[];const tools=(await env.DB.prepare("SELECT tool_id,source,title,source_url,declared_license,version_hint,agent_key,review_status FROM chaos_knowledge_tools ORDER BY retrieved_at DESC,tool_id LIMIT 30").all()).results||[];const toolTotals=(await env.DB.prepare("SELECT review_status,count(*) AS count FROM chaos_knowledge_tools GROUP BY review_status").all()).results||[];const lessons=await env.DB.prepare("SELECT count(*) AS count FROM chaos_knowledge_lessons").first();return {active,roster:RESEARCH_FLEET.length,divisions:RESEARCH_FLEET,totals,latest,candidates,tools,toolTotals,lessons:lessons?.count||0,cron:KNOWLEDGE_CRON,slotMinutes:5,batchSize:RESEARCH_BATCH_SIZE,assignmentsPerHour:RESEARCH_BATCH_SIZE*12,rotationMinutes:RESEARCH_FLEET.length/RESEARCH_BATCH_SIZE*5,peerLessonsPerAssignment:PEER_LESSONS_PER_ASSIGNMENT,training:"five-minute coding research; every specialist rotates across public software catalogs; reviewed knowledge available to owner; no automatic weight update"};}
 export async function reviewKnowledge(env,id,decision,actor){if(!/^Q[1-9][0-9]{0,14}$/.test(id)||!["approved","rejected"].includes(decision))throw Error("invalid review");const r=await env.DB.prepare("UPDATE chaos_knowledge_candidates SET review_status=?,reviewed_by=?,reviewed_at=? WHERE entity_id=? AND review_status='pending'").bind(decision,String(actor),new Date().toISOString(),id).run();return r.meta?.changes===1;}
