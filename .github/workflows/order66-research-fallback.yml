@@ -1,0 +1,31 @@
+name: Order 66 scheduled research fallback
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/order66-remote-research.mjs'
+      - '.github/workflows/order66-research-fallback.yml'
+permissions:
+  contents: read
+concurrency:
+  group: order66-research-fallback
+  cancel-in-progress: false
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run fixed public-source research and persist bounded records
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_D1_TOKEN: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/order66-remote-research.mjs
