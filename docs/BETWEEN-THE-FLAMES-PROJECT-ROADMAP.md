@@ -145,3 +145,5 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 ## November 28 — Order 66 live bootstrap and continuation
 - D1 confirmed 462 manual-curation delivery receipts (7 concepts for each of 66 agents); do not count as independent discoveries or comprehension. Teacher attribution remains original evidence source.
 - Continued 175-parameter format model from checkpoint 001 for 35,640 training steps; held-out 500-row synthetic loss 0.292457 to 0.105292, accuracy remained 100%. Checkpoint 002 integrated into owner-only advisory classification endpoint and console; general chat weights unchanged. Daily candidate continuation uses distinct run seeds and cached prior checkpoint, regression-gated, not automatically deployed.
+
+- Six pinned external engines now have isolated GitHub Actions installation and execution acceptance jobs (fixed synthetic fixtures only). Native Linux runner success is not production Worker integration. Random GGUF fixture is Apache-2.0 and checksum-pinned; no model output promoted. No private site data or deployment credentials are passed into these jobs.

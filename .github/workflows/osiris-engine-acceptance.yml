@@ -1,0 +1,85 @@
+name: Osiris external engine acceptance
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/osiris-engine-acceptance.yml'
+      - 'scripts/osiris-engine-fixtures.py'
+      - 'scripts/osiris-engine-requirements.txt'
+permissions:
+  contents: read
+concurrency:
+  group: osiris-engine-acceptance
+  cancel-in-progress: true
+jobs:
+  lightweight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [tree-sitter, pyright, tokenizers, wasmtime]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned engine
+        env:
+          ENGINE: ${{ matrix.engine }}
+        run: |
+          set -eu
+          case "$ENGINE" in
+            tree-sitter) python -m pip install tree-sitter==0.25.1 tree-sitter-python==0.25.0 ;;
+            pyright) python -m pip install pyright==1.1.408 ;;
+            tokenizers) python -m pip install tokenizers==0.22.1 ;;
+            wasmtime) python -m pip install wasmtime==38.0.0 ;;
+            *) exit 1 ;;
+          esac
+      - name: Execute actual engine on fixed fixtures
+        env:
+          ENGINE: ${{ matrix.engine }}
+        run: python scripts/osiris-engine-fixtures.py "$ENGINE"
+  llama:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ggml-org/llama.cpp
+          ref: 2d8a32502909ca065c41c4cf5f2fb1c427c047fc
+          path: llama
+          persist-credentials: false
+      - name: Build pinned CPU runtime
+        run: |
+          cmake -S llama -B llama/build -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=OFF -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF
+          cmake --build llama/build --target llama-cli -j 2
+      - name: Verify and execute public random-weight fixture
+        run: |
+          set -eu
+          curl --fail --location --max-time 90 --output fixture.gguf https://huggingface.co/amakhov/tiny-random-llama/resolve/fbf68d33cf68a9d1d4b71b3d098ae82c8c14443b/gguf/tiny-random-f16.gguf
+          echo '1010fc48b2a1880a01fa5e267eb35bf586e3e3ad5539ff5b0e025e4f63616a82  fixture.gguf' | sha256sum -c -
+          llama/build/bin/llama-cli --version
+          timeout 90 llama/build/bin/llama-cli -m fixture.gguf -p 'A fixed test prompt' -n 4 -c 128 -t 2 --single-turn </dev/null
+  evaluation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU PyTorch and pinned harness
+        run: |
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.7.1
+          python -m pip install lm-eval==0.4.9.1
+      - name: Exercise installed harness metric aggregation
+        run: python scripts/osiris-engine-fixtures.py lm-evaluation-harness
