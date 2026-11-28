@@ -1,3 +1,4 @@
+import {readPeerAssessment} from "./order100-peer-assessments.mjs";
 import {peerCurriculum,councilResearch,independentAnswer} from "../chaos-order100-council.mjs";
 import {handleBuildInsight} from "./build-insight.mjs";
 import {parseRepository,inspectRepository,inspectProjectDetails,readAlienCatalog} from "./alien-eyes-core.mjs";
@@ -32,7 +33,7 @@ export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=
   return respond(await independentAnswer(env,input.question));
  }
  const lessonMatch=url.pathname.match(/^\/api\/god\/eye\/tools\/learning\/(mc-\d{2,3})$/);
- if(lessonMatch&&request.method==="GET"){if(!RESEARCH_FLEET.some(a=>a.key===lessonMatch[1]))return respond({error:"Unknown research agent."},404);return respond({agent:lessonMatch[1],evidence:await agentEvidence(env,lessonMatch[1]),sharedReviewed:await sharedReviewedKnowledge(env),softwareReferences:await agentSoftwareReferences(env,lessonMatch[1]),curriculum:peerCurriculum(lessonMatch[1])});}
+ if(lessonMatch&&request.method==="GET"){if(!RESEARCH_FLEET.some(a=>a.key===lessonMatch[1]))return respond({error:"Unknown research agent."},404);return respond({agent:lessonMatch[1],evidence:await agentEvidence(env,lessonMatch[1]),sharedReviewed:await sharedReviewedKnowledge(env),softwareReferences:await agentSoftwareReferences(env,lessonMatch[1]),curriculum:peerCurriculum(lessonMatch[1]),peerAssessment:await readPeerAssessment(env,lessonMatch[1]).catch(()=>null)});}
  if(url.pathname===prefix+"/learning"&&request.method==="GET"){
   const [runs,lessons,control]=await Promise.all([
    env.DB.prepare("SELECT agent_key, SUM(CASE WHEN status=\'complete\' THEN 1 ELSE 0 END) AS completed, SUM(CASE WHEN status=\'failed\' THEN 1 ELSE 0 END) AS failed, SUM(found) AS discoveries, MAX(finished_at) AS last_run FROM chaos_knowledge_runs WHERE agent_key LIKE \'mc-%\' GROUP BY agent_key").all(),
