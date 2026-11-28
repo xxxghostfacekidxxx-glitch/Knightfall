@@ -4,7 +4,7 @@ import {parse} from "acorn";
 import {verifyData,emitDataModule,dataOperationCatalog} from "./chaos-forge-data.mjs";
 import {emitDataSource} from "./chaos-forge-data-source.mjs";
 const validName=n=>typeof n==="string"&&/^[a-z][a-z0-9_]{0,23}$/.test(n)&&!["true","false","null","undefined","let","const","return"].includes(n);
-const types=["number","text","numbers","texts","boolean","record"];
+const types=["number","text","numbers","texts","boolean","record","records"];
 const signatures=new Map(dataOperationCatalog().map(x=>[x.name,x]));
 export function translateJavaScript(input){
  if(!input||typeof input.source!=="string"||!input.source.trim()||new TextEncoder().encode(input.source).length>10000||!Array.isArray(input.fields)||input.fields.length<1||input.fields.length>8)throw Error("Provide source (up to 10 KB) and 1–8 typed fields.");
@@ -35,7 +35,7 @@ export function translateJavaScript(input){
    const op=n.operator==="+"?(a.type==="text"&&b.type==="text"?"concat":"add"):["===","!=="].includes(n.operator)?({text:"eq",number:"eqNumber",boolean:"eqBoolean"})[a.type]:({"-":"sub","*":"mul","/":"div",">":"gt","<":"lt","<=":"le",">=":"ge"})[n.operator];
    if(!op)fail(n,"Unsupported binary operator: "+n.operator);const result=emit(op,[a,b],n);return n.operator==="!=="?emit("notBoolean",[result],n):result;
   }
-  if(n.type==="MemberExpression"&&!n.computed&&!n.optional&&n.property.name==="length"){const a=sub(n.object),op={text:"length",texts:"countTexts",numbers:"countNumbers"}[a.type];return emit(op,[a],n);}
+  if(n.type==="MemberExpression"&&!n.computed&&!n.optional&&n.property.name==="length"){const a=sub(n.object),op={text:"length",texts:"countTexts",numbers:"countNumbers",records:"countRecords"}[a.type];return emit(op,[a],n);}
   if(n.type==="CallExpression"&&!n.optional&&n.callee.type==="MemberExpression"&&!n.callee.computed&&!n.callee.optional){
    const method=n.callee.property.name;
    if(["reduce","filter","toSorted"].includes(method)){
