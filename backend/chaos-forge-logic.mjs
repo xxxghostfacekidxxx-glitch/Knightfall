@@ -15,6 +15,7 @@ export function compileLogic(input,{earlier=null}={}){
    if(row.op==="set"){const slot=locals.indexOf(row.name);if(slot<0)throw Error("Assignment requires a declared local");return ["set",fields.length+slot,formula(row.expr)];}
    if(row.op==="if"){if(!["lt","le","eq","ne","ge","gt"].includes(row.compare))throw Error("Unknown comparison");return ["if",row.compare,formula(row.left),formula(row.right),block(row.then,depth+1),block(row.else??[],depth+1)];}
    if(row.op==="call"&&earlier instanceof Map){const slot=locals.indexOf(row.name),target=earlier.get(row.call);if(slot<0||!target||!Array.isArray(row.args)||row.args.length!==target.arity)throw Error("Call requires a local destination and earlier function with matching arity");return ["call",fields.length+slot,target.index,row.args.map(formula)];}
+   if(row.op==="while"){if(!["lt","le","eq","ne","ge","gt"].includes(row.compare))throw Error("Unknown while comparison");return ["while",row.compare,formula(row.left),formula(row.right),block(row.body,depth+1)];}
    if(row.op==="repeat")return ["repeat",formula(row.count),block(row.body,depth+1)];
    throw Error("Unknown statement: "+String(row.op));
   });
@@ -49,6 +50,7 @@ export function runLogic(program,values){
    if(op==="set"&&ins.length===3&&Number.isInteger(a)&&a>=values.length&&a<memory.length)memory[a]=expr(b);
    else if(op==="if"&&ins.length===6){const x=expr(b),y=expr(c);const cmp={lt:x<y,le:x<=y,eq:x===y,ne:x!==y,ge:x>=y,gt:x>y};if(!Object.hasOwn(cmp,a))throw Error("Invalid comparison");block(cmp[a]?d:e,depth+1);}
    else if(op==="call"&&ins.length===4&&library&&Number.isInteger(a)&&a>=values.length&&a<memory.length&&Number.isInteger(b)&&b>=0&&b<index&&Array.isArray(c)&&c.length<=12){const args=c.map(expr);memory[a]=execute(library.functions[b].program,args,b,callDepth+1);}
+   else if(op==="while"&&ins.length===5){let iterations=0;while(true){tick();const x=expr(b),y=expr(c),cmp={lt:x<y,le:x<=y,eq:x===y,ne:x!==y,ge:x>=y,gt:x>y};if(!Object.hasOwn(cmp,a))throw Error("Invalid while comparison");if(!cmp[a])break;if(++iterations>1000)throw Error("While loop iteration limit exceeded");block(d,depth+1);}}
    else if(op==="repeat"&&ins.length===3){const n=expr(a);if(!Number.isInteger(n)||n<0||n>1000)throw Error("Loop count must be 0–1000");for(let i=0;i<n;i++){tick();block(b,depth+1);}}
    else throw Error("Invalid logic instruction");
   }
@@ -66,6 +68,7 @@ export function decompileLogic(program,{earlier=null}={}){
    if(op==="set"&&ins.length===3&&Number.isInteger(a)&&a>=fields.length&&a<names.length)return {op:"set",name:names[a],expr:expr(b)};
    if(op==="if"&&ins.length===6)return {op:"if",compare:a,left:expr(b),right:expr(c),then:block(d,depth+1),else:block(e,depth+1)};
    if(op==="call"&&ins.length===4&&earlier instanceof Map&&Number.isInteger(a)&&a>=fields.length&&a<names.length&&Array.isArray(c)){const target=[...earlier].find(([,v])=>v.index===b);if(!target||c.length!==target[1].arity)throw Error("Invalid function call");return {op:"call",name:names[a],call:target[0],args:c.map(expr)};}
+   if(op==="while"&&ins.length===5)return {op:"while",compare:a,left:expr(b),right:expr(c),body:block(d,depth+1)};
    if(op==="repeat"&&ins.length===3)return {op:"repeat",count:expr(a),body:block(b,depth+1)};
    throw Error("Unknown instruction");
   });
