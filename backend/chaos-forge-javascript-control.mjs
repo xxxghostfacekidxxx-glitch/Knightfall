@@ -7,9 +7,10 @@ export function translateControlJavaScript(input,{earlier=null}={}){
  if(!input||typeof input.source!=="string"||input.source.length>10000||!Array.isArray(input.fields)||input.fields.length<1||input.fields.length>12)throw Error("Provide numeric fields and up to 10,000 source characters.");
  const ast=parse(input.source,{ecmaVersion:"latest",sourceType:"module",locations:true}),top=ast.body[0],fn=top?.type==="ExportNamedDeclaration"||top?.type==="ExportDefaultDeclaration"?top.declaration:top;
  if(ast.body.length!==1||fn?.type!=="FunctionDeclaration"||fn.async||fn.generator||fn.params.length!==input.fields.length||fn.params.some((p,i)=>p.type!=="Identifier"||p.name!==input.fields[i])||input.fields.some(n=>!nameOK(n))||new Set(input.fields).size!==input.fields.length)throw Error("Exactly one synchronous numeric function with matching parameters is required.");
+ if(earlier instanceof Map&&input.fields.some(n=>earlier.has(n)))throw Error("Parameters cannot shadow helper functions.");
  const fields=input.fields.slice(),locals=[],active=new Set(fields),counters=new Set();let nodes=0;
  const fail=(n,msg)=>{throw Error(msg+" (line "+(n?.loc?.start?.line??"?")+")");};
- function declare(n,name){if(!nameOK(name)||fields.includes(name)||locals.includes(name)||fields.length+locals.length>=12)fail(n,"Invalid, duplicate or excessive local");locals.push(name);active.add(name);}
+ function declare(n,name){if(!nameOK(name)||earlier?.has(name)||fields.includes(name)||locals.includes(name)||fields.length+locals.length>=12)fail(n,"Invalid, duplicate or excessive local");locals.push(name);active.add(name);}
  function expr(n,depth=0){
   if(!n||++nodes>512||depth>18)fail(n,"Expression limit");
   const sub=x=>expr(x,depth+1);
@@ -17,6 +18,7 @@ export function translateControlJavaScript(input,{earlier=null}={}){
   if(n.type==="Literal"&&typeof n.value==="number"&&Number.isFinite(n.value)&&!n.bigint)return String(n.value);
   if(n.type==="UnaryExpression"&&["+","-"].includes(n.operator))return "("+n.operator+sub(n.argument)+")";
   if(n.type==="BinaryExpression"&&["+","-","*","/","%","**"].includes(n.operator))return "("+sub(n.left)+(n.operator==="**"?"^":n.operator)+sub(n.right)+")";
+  if(n.type==="CallExpression"&&!n.optional&&n.callee.type==="Identifier"&&earlier instanceof Map&&earlier.has(n.callee.name)){if(n.arguments.length!==earlier.get(n.callee.name))fail(n,"Wrong function argument count");return n.callee.name+"("+n.arguments.map(sub).join(",")+")";}
   fail(n,"Unsupported numeric expression: "+n.type);
  }
  const call=(n,name)=>{if(n?.type!=="CallExpression"||n.optional||n.callee.type!=="Identifier"||!(earlier instanceof Map)||!earlier.has(n.callee.name))return null;const target=earlier.get(n.callee.name);if(n.arguments.length!==target)fail(n,"Wrong function argument count");return {op:"call",name,call:n.callee.name,args:n.arguments.map(a=>expr(a))};};
