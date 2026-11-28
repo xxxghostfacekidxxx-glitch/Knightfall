@@ -1,0 +1,1846 @@
+{
+  "round0": {
+    "round": 0,
+    "learners": 100,
+    "verified": 100,
+    "passed": 600,
+    "cases": 600,
+    "ambiguous": 0,
+    "reports": [
+      {
+        "learner": "mc-01",
+        "teacher": "mc-02",
+        "selected": "branch:<:-2:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-02",
+        "teacher": "mc-03",
+        "selected": "branch:<:-1:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-03",
+        "teacher": "mc-04",
+        "selected": "branch:<:0:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-04",
+        "teacher": "mc-05",
+        "selected": "branch:<:1:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-05",
+        "teacher": "mc-06",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-06",
+        "teacher": "mc-07",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-07",
+        "teacher": "mc-08",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-08",
+        "teacher": "mc-09",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-09",
+        "teacher": "mc-10",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-10",
+        "teacher": "mc-11",
+        "selected": "branch:<:0:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-11",
+        "teacher": "mc-12",
+        "selected": "branch:<:1:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-12",
+        "teacher": "mc-13",
+        "selected": "branch:<:2:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-13",
+        "teacher": "mc-14",
+        "selected": "branch:<:3:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-14",
+        "teacher": "mc-15",
+        "selected": "branch:<:-3:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-15",
+        "teacher": "mc-16",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-16",
+        "teacher": "mc-17",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-17",
+        "teacher": "mc-18",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-18",
+        "teacher": "mc-19",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-19",
+        "teacher": "mc-20",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-20",
+        "teacher": "mc-21",
+        "selected": "branch:<:3:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-21",
+        "teacher": "mc-22",
+        "selected": "branch:<:-3:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-22",
+        "teacher": "mc-23",
+        "selected": "branch:<:-2:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-23",
+        "teacher": "mc-24",
+        "selected": "branch:<:-1:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-24",
+        "teacher": "mc-25",
+        "selected": "branch:<:0:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-25",
+        "teacher": "mc-26",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-26",
+        "teacher": "mc-27",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-27",
+        "teacher": "mc-28",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-28",
+        "teacher": "mc-29",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-29",
+        "teacher": "mc-30",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-30",
+        "teacher": "mc-31",
+        "selected": "branch:<:-1:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-31",
+        "teacher": "mc-32",
+        "selected": "branch:<:0:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-32",
+        "teacher": "mc-33",
+        "selected": "branch:<:1:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-33",
+        "teacher": "mc-34",
+        "selected": "branch:<:2:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-34",
+        "teacher": "mc-35",
+        "selected": "branch:<:3:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-35",
+        "teacher": "mc-36",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-36",
+        "teacher": "mc-37",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-37",
+        "teacher": "mc-38",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-38",
+        "teacher": "mc-39",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-39",
+        "teacher": "mc-40",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-40",
+        "teacher": "mc-41",
+        "selected": "branch:<:2:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-41",
+        "teacher": "mc-42",
+        "selected": "branch:<:3:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-42",
+        "teacher": "mc-43",
+        "selected": "branch:<:-3:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-43",
+        "teacher": "mc-44",
+        "selected": "branch:<:-2:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-44",
+        "teacher": "mc-45",
+        "selected": "branch:<:-1:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-45",
+        "teacher": "mc-46",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-46",
+        "teacher": "mc-47",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-47",
+        "teacher": "mc-48",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-48",
+        "teacher": "mc-49",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-49",
+        "teacher": "mc-50",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-50",
+        "teacher": "mc-51",
+        "selected": "branch:<:-2:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-51",
+        "teacher": "mc-52",
+        "selected": "branch:<:-1:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-52",
+        "teacher": "mc-53",
+        "selected": "branch:<:0:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-53",
+        "teacher": "mc-54",
+        "selected": "branch:<:1:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-54",
+        "teacher": "mc-55",
+        "selected": "branch:<:2:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-55",
+        "teacher": "mc-56",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-56",
+        "teacher": "mc-57",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-57",
+        "teacher": "mc-58",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-58",
+        "teacher": "mc-59",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-59",
+        "teacher": "mc-60",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-60",
+        "teacher": "mc-61",
+        "selected": "branch:<:1:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-61",
+        "teacher": "mc-62",
+        "selected": "branch:<:2:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-62",
+        "teacher": "mc-63",
+        "selected": "branch:<:3:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-63",
+        "teacher": "mc-64",
+        "selected": "branch:<:-3:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-64",
+        "teacher": "mc-65",
+        "selected": "branch:<:-2:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-65",
+        "teacher": "mc-66",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-66",
+        "teacher": "mc-67",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-67",
+        "teacher": "mc-68",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-68",
+        "teacher": "mc-69",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-69",
+        "teacher": "mc-70",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-70",
+        "teacher": "mc-71",
+        "selected": "branch:<:-3:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-71",
+        "teacher": "mc-72",
+        "selected": "branch:<:-2:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-72",
+        "teacher": "mc-73",
+        "selected": "branch:<:-1:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-73",
+        "teacher": "mc-74",
+        "selected": "branch:<:0:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-74",
+        "teacher": "mc-75",
+        "selected": "branch:<:1:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-75",
+        "teacher": "mc-76",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-76",
+        "teacher": "mc-77",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-77",
+        "teacher": "mc-78",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-78",
+        "teacher": "mc-79",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-79",
+        "teacher": "mc-80",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-80",
+        "teacher": "mc-81",
+        "selected": "branch:<:0:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-81",
+        "teacher": "mc-82",
+        "selected": "branch:<:1:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-82",
+        "teacher": "mc-83",
+        "selected": "branch:<:2:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-83",
+        "teacher": "mc-84",
+        "selected": "branch:<:3:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-84",
+        "teacher": "mc-85",
+        "selected": "branch:<:-3:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-85",
+        "teacher": "mc-86",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-86",
+        "teacher": "mc-87",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-87",
+        "teacher": "mc-88",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-88",
+        "teacher": "mc-89",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-89",
+        "teacher": "mc-90",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-90",
+        "teacher": "mc-91",
+        "selected": "branch:<:3:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-91",
+        "teacher": "mc-92",
+        "selected": "branch:<:-3:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-92",
+        "teacher": "mc-93",
+        "selected": "branch:<:-2:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-93",
+        "teacher": "mc-94",
+        "selected": "branch:<:-1:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-94",
+        "teacher": "mc-95",
+        "selected": "branch:<:0:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-95",
+        "teacher": "mc-96",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-96",
+        "teacher": "mc-97",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-97",
+        "teacher": "mc-98",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-98",
+        "teacher": "mc-99",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-99",
+        "teacher": "mc-100",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-100",
+        "teacher": "mc-01",
+        "selected": "branch:<:-3:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      }
+    ],
+    "method": "simulated bounded interpreter benchmark; not neural training or live agent activity",
+    "externalInference": false
+  },
+  "round71": {
+    "round": 71,
+    "learners": 100,
+    "verified": 100,
+    "passed": 600,
+    "cases": 600,
+    "ambiguous": 0,
+    "reports": [
+      {
+        "learner": "mc-01",
+        "teacher": "mc-73",
+        "selected": "branch:<:-1:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-02",
+        "teacher": "mc-74",
+        "selected": "branch:<:0:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-03",
+        "teacher": "mc-75",
+        "selected": "branch:<:1:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-04",
+        "teacher": "mc-76",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-05",
+        "teacher": "mc-77",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-06",
+        "teacher": "mc-78",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-07",
+        "teacher": "mc-79",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-08",
+        "teacher": "mc-80",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-09",
+        "teacher": "mc-81",
+        "selected": "branch:<:0:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-10",
+        "teacher": "mc-82",
+        "selected": "branch:<:1:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-11",
+        "teacher": "mc-83",
+        "selected": "branch:<:2:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-12",
+        "teacher": "mc-84",
+        "selected": "branch:<:3:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-13",
+        "teacher": "mc-85",
+        "selected": "branch:<:-3:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-14",
+        "teacher": "mc-86",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-15",
+        "teacher": "mc-87",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-16",
+        "teacher": "mc-88",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-17",
+        "teacher": "mc-89",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-18",
+        "teacher": "mc-90",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-19",
+        "teacher": "mc-91",
+        "selected": "branch:<:3:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-20",
+        "teacher": "mc-92",
+        "selected": "branch:<:-3:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-21",
+        "teacher": "mc-93",
+        "selected": "branch:<:-2:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-22",
+        "teacher": "mc-94",
+        "selected": "branch:<:-1:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-23",
+        "teacher": "mc-95",
+        "selected": "branch:<:0:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-24",
+        "teacher": "mc-96",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-25",
+        "teacher": "mc-97",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-26",
+        "teacher": "mc-98",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-27",
+        "teacher": "mc-99",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-28",
+        "teacher": "mc-100",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-29",
+        "teacher": "mc-01",
+        "selected": "branch:<:-3:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-30",
+        "teacher": "mc-02",
+        "selected": "branch:<:-2:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-31",
+        "teacher": "mc-03",
+        "selected": "branch:<:-1:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-32",
+        "teacher": "mc-04",
+        "selected": "branch:<:0:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-33",
+        "teacher": "mc-05",
+        "selected": "branch:<:1:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-34",
+        "teacher": "mc-06",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-35",
+        "teacher": "mc-07",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-36",
+        "teacher": "mc-08",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-37",
+        "teacher": "mc-09",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-38",
+        "teacher": "mc-10",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-39",
+        "teacher": "mc-11",
+        "selected": "branch:<:0:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-40",
+        "teacher": "mc-12",
+        "selected": "branch:<:1:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-41",
+        "teacher": "mc-13",
+        "selected": "branch:<:2:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-42",
+        "teacher": "mc-14",
+        "selected": "branch:<:3:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-43",
+        "teacher": "mc-15",
+        "selected": "branch:<:-3:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-44",
+        "teacher": "mc-16",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-45",
+        "teacher": "mc-17",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-46",
+        "teacher": "mc-18",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-47",
+        "teacher": "mc-19",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-48",
+        "teacher": "mc-20",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-49",
+        "teacher": "mc-21",
+        "selected": "branch:<:3:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-50",
+        "teacher": "mc-22",
+        "selected": "branch:<:-3:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-51",
+        "teacher": "mc-23",
+        "selected": "branch:<:-2:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-52",
+        "teacher": "mc-24",
+        "selected": "branch:<:-1:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-53",
+        "teacher": "mc-25",
+        "selected": "branch:<:0:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-54",
+        "teacher": "mc-26",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-55",
+        "teacher": "mc-27",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-56",
+        "teacher": "mc-28",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-57",
+        "teacher": "mc-29",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-58",
+        "teacher": "mc-30",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-59",
+        "teacher": "mc-31",
+        "selected": "branch:<:-1:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-60",
+        "teacher": "mc-32",
+        "selected": "branch:<:0:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-61",
+        "teacher": "mc-33",
+        "selected": "branch:<:1:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-62",
+        "teacher": "mc-34",
+        "selected": "branch:<:2:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-63",
+        "teacher": "mc-35",
+        "selected": "branch:<:3:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-64",
+        "teacher": "mc-36",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-65",
+        "teacher": "mc-37",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-66",
+        "teacher": "mc-38",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-67",
+        "teacher": "mc-39",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-68",
+        "teacher": "mc-40",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-69",
+        "teacher": "mc-41",
+        "selected": "branch:<:2:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-70",
+        "teacher": "mc-42",
+        "selected": "branch:<:3:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-71",
+        "teacher": "mc-43",
+        "selected": "branch:<:-3:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-72",
+        "teacher": "mc-44",
+        "selected": "branch:<:-2:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-73",
+        "teacher": "mc-45",
+        "selected": "branch:<:-1:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-74",
+        "teacher": "mc-46",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-75",
+        "teacher": "mc-47",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-76",
+        "teacher": "mc-48",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-77",
+        "teacher": "mc-49",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-78",
+        "teacher": "mc-50",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-79",
+        "teacher": "mc-51",
+        "selected": "branch:<:-2:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-80",
+        "teacher": "mc-52",
+        "selected": "branch:<:-1:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-81",
+        "teacher": "mc-53",
+        "selected": "branch:<:0:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-82",
+        "teacher": "mc-54",
+        "selected": "branch:<:1:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-83",
+        "teacher": "mc-55",
+        "selected": "branch:<:2:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-84",
+        "teacher": "mc-56",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-85",
+        "teacher": "mc-57",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-86",
+        "teacher": "mc-58",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-87",
+        "teacher": "mc-59",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-88",
+        "teacher": "mc-60",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-89",
+        "teacher": "mc-61",
+        "selected": "branch:<:1:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-90",
+        "teacher": "mc-62",
+        "selected": "branch:<:2:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-91",
+        "teacher": "mc-63",
+        "selected": "branch:<:3:-x:x-y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-92",
+        "teacher": "mc-64",
+        "selected": "branch:<:-3:0:y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-93",
+        "teacher": "mc-65",
+        "selected": "branch:<:-2:x-y:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-94",
+        "teacher": "mc-66",
+        "selected": "loop:0:+:i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-95",
+        "teacher": "mc-67",
+        "selected": "loop:0:+:i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-96",
+        "teacher": "mc-68",
+        "selected": "loop:0:+:i*i",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-97",
+        "teacher": "mc-69",
+        "selected": "loop:0:+:y",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-98",
+        "teacher": "mc-70",
+        "selected": "loop:0:+:2*i+1",
+        "status": "unique-in-grammar",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-99",
+        "teacher": "mc-71",
+        "selected": "branch:<:-3:y:x",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      },
+      {
+        "learner": "mc-100",
+        "teacher": "mc-72",
+        "selected": "branch:<:-2:0:x+y",
+        "status": "equivalent-on-bounded-domain",
+        "passed": 6,
+        "cases": 6,
+        "verified": true
+      }
+    ],
+    "method": "simulated bounded interpreter benchmark; not neural training or live agent activity",
+    "externalInference": false
+  },
+  "sample": {
+    "status": "unique-in-grammar",
+    "language": "python",
+    "kind": "loop",
+    "selected": "loop:0:+:i+1",
+    "source": "def solve(x, y):\n    if any(type(v) is not int or abs(v) > 32 for v in (x,y)):\n        raise ValueError('Invalid input')\n    z = 0\n    z = 0\n    for i in range(max(0, x)):\n        z += i+1\n        if abs(z) > 9007199254740991:\n            raise ValueError('Overflow')\n    return z\n",
+    "selection": "unique-in-grammar",
+    "checked": 18,
+    "trainingMatches": 1,
+    "validationMatches": 1,
+    "validationCases": 2,
+    "validationPassed": 2,
+    "domainProbes": 0,
+    "counterexample": null,
+    "alternatives": [
+      "loop:0:+:i+1"
+    ],
+    "externalInference": false,
+    "notice": "Finite branch and loop grammar; complete bounded-domain comparison only for matching candidates when no disagreement is found. Source not executed in this request; not arbitrary program synthesis."
+  }
+}

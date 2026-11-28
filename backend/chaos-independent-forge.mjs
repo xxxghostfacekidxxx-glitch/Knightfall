@@ -1,3 +1,4 @@
+import {synthesizeControl} from "./chaos-core-control-synthesis.mjs";
 import {selectTextPipeline} from "./chaos-core-text-synthesis.mjs";
 import {synthesizeScalar} from "./chaos-core-scalar-synthesis.mjs";
 import {verifySourceLibrary} from "./chaos-forge-source-library.mjs";
@@ -48,6 +49,8 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const controlScript=question.match(/^build control script\s*:\s*([\s\S]+)$/i);
+ if(controlScript){const report=synthesizeControl(JSON.parse(controlScript[1]));if(!report.source||!report.validationCases||report.status==="ambiguous"&&report.selection!=="explicit")throw Error("Provide validation and select an ambiguous candidate explicitly");const file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-control-script."+(report.language==="python"?"py":"mjs"),content:report.source});return {answer:"Generated bounded control-flow script; "+report.validationPassed+" validation cases matched. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-control-script",artifact:file,report,externalInference:false};}
  const textScript=question.match(/^build text script\s*:\s*([\s\S]+)$/i);
  if(textScript){const report=selectTextPipeline(JSON.parse(textScript[1])),file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-text-script."+(report.language==="python"?"py":"mjs"),content:report.source});return {answer:"Generated a bounded "+report.language+" text script; "+report.validationPassed+" validation cases matched in the typed interpreter. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-text-script",artifact:file,report,externalInference:false};}
  const scalar=question.match(/^build scalar script\s*:\s*([\s\S]+)$/i);
