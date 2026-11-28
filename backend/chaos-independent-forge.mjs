@@ -1,3 +1,4 @@
+import {generateVector,imageCatalog} from "./chaos-forge-image.mjs";
 import {verifyLibrary} from "./chaos-forge-library.mjs";
 import {synthesizeData} from "./chaos-forge-data-synthesis.mjs";
 import {verifyDataSource,emitDataSource} from "./chaos-forge-data-source.mjs";
@@ -9,7 +10,7 @@ import {compileArtifact,decompileStack,hexBytes,inspectWasm} from "./chaos-forge
 import {buildApplet} from "./chaos-forge-applets.mjs";
 import {reverseSource} from "./chaos-forge-reverse.mjs";
 const enc=new TextEncoder(),ID=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
-const filePattern=/^miss-chaos-[a-z0-9-]+\.(html|wasm|json|mjs)$/;
+const filePattern=/^miss-chaos-[a-z0-9-]+\.(html|wasm|json|mjs|svg)$/;
 const to64=b=>{let out="";for(let i=0;i<b.length;i+=8192)out+=String.fromCharCode(...b.subarray(i,i+8192));return btoa(out);};
 const from64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 const digest=async b=>Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",b)),x=>x.toString(16).padStart(2,"0")).join("");
@@ -36,6 +37,9 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const image=question.match(/^image (?:vector|generate)\s*:\s*([\s\S]+)$/i);
+ if(image){const a=generateVector(JSON.parse(image[1])),file=await saveForgeArtifact(env,owner,a);return {answer:"Generated independent "+a.report.motif+" artwork. Download: "+file.downloadUrl+"\n"+a.report.description,method:"independent-vector-image",artifact:file,report:a.report,externalInference:false};}
+ if(/^image options\s*:?\s*$/i.test(question)){const report=imageCatalog();return {answer:JSON.stringify(report,null,2),method:"independent-image-options",report,externalInference:false};}
  if(/^data operations\s*:?\s*$/i.test(question)){const operations=dataOperationCatalog();return {answer:operations.map(o=>o.name+"("+o.inputs.join(", ")+") → "+o.output+": "+o.description).join("\n"),method:"independent-data-operation-catalog",report:{operations},externalInference:false};}
  const app=question.match(/^(?:applet|(?:make|create|build) (?:an? )?applet)\s*:\s*([\s\S]+)$/i);
  if(app){const a=await buildApplet(app[1]);const file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline "+a.report.title+" applet. Download: "+file.downloadUrl+"\nSHA-256: "+file.sha256+"\nExpires in seven days. No external inference or dependencies.",method:"independent-applet-forge",artifact:file,report:a.report,externalInference:false};}
