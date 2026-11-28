@@ -50,7 +50,7 @@ test("learned program prior improves bounded development benchmark without claim
 test("database practice stores only current verified course and shared prior excludes bad receipts",async()=>{
  const row={course:COURSE_VERSION,slot:20,...practicePeer(0,1)};
  const data={agent_key:row.learner,teacher_key:row.teacher,slot:20,receipt_json:JSON.stringify(row)};
- const env={DB:{prepare(sql){return {bind(...args){if(sql.startsWith("INSERT")){assert.match(sql,/e.paused=0/);assert.match(sql,/excluded.slot>/);assert.equal(args[0],"mc-01");}return this;},async all(){return{results:[data,{...data,agent_key:"mc-99"}]};},async run(){return{meta:{changes:1}};}};}}};
+ const env={DB:{prepare(sql){return {bind(...args){if(sql.startsWith("INSERT")){assert.match(sql,/e.paused=0/);if(sql.includes("chaos_coding_practice")){assert.match(sql,/excluded.slot>/);assert.equal(args[0],"mc-01");}else assert.equal(args[1],"mc-01");}return this;},async all(){return{results:[data,{...data,agent_key:"mc-99"}]};},async first(){return{exchanges:1,teachers:1};},async run(){return{meta:{changes:1}};}};}}};
  assert.equal((await recordCodingPractice(env,{key:"mc-01",hour:20})).recorded,1);
- const knowledge=await codingKnowledge(env);assert.equal(knowledge.verifiedLearners,1);assert.equal(knowledge.prior.samples,2);
+ const knowledge=await codingKnowledge(env);assert.equal(knowledge.verifiedLearners,1);assert.equal(knowledge.prior.samples,2);assert.equal(knowledge.verifiedExchanges,1);assert.equal(knowledge.distinctLearnerPrograms,1);
 });
