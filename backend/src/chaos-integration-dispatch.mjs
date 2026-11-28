@@ -1,6 +1,6 @@
 // Fixed-repository, owner-authorized workflow dispatch. Secret stays in Worker.
 const WORKFLOW="https://api.github.com/repos/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/miss-chaos-approved-integration.yml/dispatches";
-export const INTEGRATION_PATHS=Object.freeze(["public/miss-chaos-guide-core.mjs","public/chaos-visual-effects.mjs","public/chaos-review-test-kit.mjs","backend/chaos-public-tools.mjs","public/chaos-crucible-core.mjs","public/chaos-crucible-progress.mjs","public/chaos-crucible-shelf.mjs"]);
+export const INTEGRATION_PATHS=Object.freeze(["public/miss-chaos-guide-core.mjs","public/chaos-visual-effects.mjs","public/chaos-review-test-kit.mjs","backend/chaos-public-tools.mjs","public/chaos-crucible-core.mjs","public/chaos-crucible-progress.mjs","public/chaos-crucible-shelf.mjs","public/chaos-flow-core.mjs"]);
 export function validIntegrationPath(path){return INTEGRATION_PATHS.includes(path);}
 export async function dispatchApprovedCandidate(env,row,{fetcher=fetch}={}){
  if(!env.CHAOS_INTEGRATION_TOKEN)throw Error("Integration credential is not configured.");

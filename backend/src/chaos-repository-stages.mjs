@@ -6,6 +6,8 @@ import {parseRepository} from "./alien-eyes-core.mjs";
 const PREFIX="chaos_repo_stage:";
 export function repositoryRequest(message){
  const text=String(message||"").trim();
+ const implementation=text.match(/^\s*(?:implement|integrate)\s+(https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+)\/?\s+into\s+([^\s]+)\s*:\s*([\s\S]{12,1000})$/i);
+ if(implementation){try{const ref=parseRepository(implementation[1]);return {repository:ref.owner+"/"+ref.repo,target:implementation[2],goal:implementation[3]};}catch{return null;}}
  const explicit=text.match(/^\s*(?:integrate repo|inspect repo|import repo|stage repo)\s*:\s*(\S+)(?:\s+file\s+([^\s]+))?\s*$/i);
  const bare=text.match(/^https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+\/?$/i);
  const embedded=/\b(?:integrate|implement|import|stage|adopt|inspect|analyze)\b/i.test(text)?text.match(/https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+/i):null;

@@ -1,0 +1,2 @@
+import test from "node:test";import assert from "node:assert/strict";import {buildChaosFlow} from "../public/chaos-flow-core.mjs";
+test("flow retains all input steps and deterministic output",()=>{const first=buildChaosFlow("Idea -> Design -> Test");const again=buildChaosFlow("Idea -> Design -> Test");assert.deepEqual(first,again);assert.equal(first.nodes.length,3);assert.match(first.mermaid,/Idea/);assert.match(first.mermaid,/Test/);});

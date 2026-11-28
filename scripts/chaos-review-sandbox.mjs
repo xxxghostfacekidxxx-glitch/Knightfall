@@ -27,7 +27,8 @@ export const SANDBOX_TEST_RECIPES=Object.freeze({
  "backend/chaos-public-tools.mjs":Object.freeze(["scripts/miss-chaos-site-index.test.mjs"]),
  "public/chaos-crucible-core.mjs":Object.freeze(["scripts/chaos-crucible.test.mjs","scripts/chaos-crucible-progress.test.mjs"]),
  "public/chaos-crucible-progress.mjs":Object.freeze(["scripts/chaos-crucible-progress.test.mjs"]),
- "public/chaos-crucible-shelf.mjs":Object.freeze(["scripts/chaos-crucible-shelf.test.mjs"])
+ "public/chaos-crucible-shelf.mjs":Object.freeze(["scripts/chaos-crucible-shelf.test.mjs"]),
+ "public/chaos-flow-core.mjs":Object.freeze(["scripts/chaos-flow-core.test.mjs"])
 });
 export function decodeSandboxCandidate(base64){
  if(typeof base64!=="string"||base64.length<4||base64.length>7000||
