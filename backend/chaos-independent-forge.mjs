@@ -1,3 +1,4 @@
+import {synthesizeScalar} from "./chaos-core-scalar-synthesis.mjs";
 import {verifySourceLibrary} from "./chaos-forge-source-library.mjs";
 import {verifyLogicLibrary,decompileLogicLibrary} from "./chaos-forge-logic-library.mjs";
 import {verifyPython} from "./chaos-forge-python.mjs";
@@ -19,7 +20,7 @@ import {compileArtifact,decompileStack,hexBytes,inspectWasm} from "./chaos-forge
 import {buildApplet} from "./chaos-forge-applets.mjs";
 import {reverseSource} from "./chaos-forge-reverse.mjs";
 const enc=new TextEncoder(),ID=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
-const filePattern=/^miss-chaos-[a-z0-9-]+\.(html|wasm|json|mjs|svg|zip)$/;
+const filePattern=/^miss-chaos-[a-z0-9-]+\.(html|wasm|json|mjs|svg|zip|py)$/;
 const to64=b=>{let out="";for(let i=0;i<b.length;i+=8192)out+=String.fromCharCode(...b.subarray(i,i+8192));return btoa(out);};
 const from64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 const digest=async b=>Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",b)),x=>x.toString(16).padStart(2,"0")).join("");
@@ -46,6 +47,8 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ const scalar=question.match(/^build scalar script\s*:\s*([\s\S]+)$/i);
+ if(scalar){const report=synthesizeScalar(JSON.parse(scalar[1]));if(report.status!=="example-match"||!report.source||report.validationCases<1)return {answer:"No unique candidate with independent validation examples. Supply more distinct examples; no artifact created.",method:"independent-scalar-script",report,externalInference:false};const file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-scalar-script."+(report.language==="python"?"py":"mjs"),content:report.source});return {answer:"Generated a bounded "+report.language+" script; "+report.validationPassed+" validation examples matched in the typed interpreter. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-scalar-script",artifact:file,report,externalInference:false};}
  const sourceLibrary=question.match(/^compile source library(?: (module))?\s*:\s*([\s\S]+)$/i);
  if(sourceLibrary){const report=verifySourceLibrary(JSON.parse(sourceLibrary[2])),module=!!sourceLibrary[1],file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-source-library"+(module?".mjs":".json"),content:module?report.module:JSON.stringify(report.program,null,2)});return {answer:"Compiled "+report.program.functions.length+" "+report.language+" functions; "+report.tests.length+" examples passed. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-source-library",artifact:file,report:{...report,module:undefined},externalInference:false};}
  const logicLibrary=question.match(/^compile logic library(?: (module))?\s*:\s*([\s\S]+)$/i);

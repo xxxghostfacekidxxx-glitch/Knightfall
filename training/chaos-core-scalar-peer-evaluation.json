@@ -1,0 +1,2042 @@
+{
+  "round0": {
+    "round": 0,
+    "learners": 100,
+    "verified": 100,
+    "cases": 600,
+    "passed": 600,
+    "ambiguous": 4,
+    "reports": [
+      {
+        "learner": "mc-01",
+        "teacher": "mc-02",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-02",
+        "teacher": "mc-03",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-03",
+        "teacher": "mc-04",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-04",
+        "teacher": "mc-05",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-05",
+        "teacher": "mc-06",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-06",
+        "teacher": "mc-07",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-07",
+        "teacher": "mc-08",
+        "operation": "affine 3 -4",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-08",
+        "teacher": "mc-09",
+        "operation": "offset 4",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-09",
+        "teacher": "mc-10",
+        "operation": "scale -4",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-10",
+        "teacher": "mc-11",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-11",
+        "teacher": "mc-12",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-12",
+        "teacher": "mc-13",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-13",
+        "teacher": "mc-14",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-14",
+        "teacher": "mc-15",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-15",
+        "teacher": "mc-16",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-16",
+        "teacher": "mc-17",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-17",
+        "teacher": "mc-18",
+        "operation": "affine 4 -3",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-18",
+        "teacher": "mc-19",
+        "operation": "offset -4",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-19",
+        "teacher": "mc-20",
+        "operation": "scale -3",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-20",
+        "teacher": "mc-21",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-21",
+        "teacher": "mc-22",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-22",
+        "teacher": "mc-23",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-23",
+        "teacher": "mc-24",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-24",
+        "teacher": "mc-25",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-25",
+        "teacher": "mc-26",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-26",
+        "teacher": "mc-27",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-27",
+        "teacher": "mc-28",
+        "operation": "affine -4 -1",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-28",
+        "teacher": "mc-29",
+        "operation": "offset -3",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-29",
+        "teacher": "mc-30",
+        "operation": "scale -2",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-30",
+        "teacher": "mc-31",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-31",
+        "teacher": "mc-32",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-32",
+        "teacher": "mc-33",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-33",
+        "teacher": "mc-34",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-34",
+        "teacher": "mc-35",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-35",
+        "teacher": "mc-36",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-36",
+        "teacher": "mc-37",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-37",
+        "teacher": "mc-38",
+        "operation": "scale -3",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-38",
+        "teacher": "mc-39",
+        "operation": "offset -2",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-39",
+        "teacher": "mc-40",
+        "operation": "negate",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "ambiguous",
+        "verified": true
+      },
+      {
+        "learner": "mc-40",
+        "teacher": "mc-41",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-41",
+        "teacher": "mc-42",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-42",
+        "teacher": "mc-43",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-43",
+        "teacher": "mc-44",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-44",
+        "teacher": "mc-45",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-45",
+        "teacher": "mc-46",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-46",
+        "teacher": "mc-47",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-47",
+        "teacher": "mc-48",
+        "operation": "affine -2 1",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-48",
+        "teacher": "mc-49",
+        "operation": "offset -1",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-49",
+        "teacher": "mc-50",
+        "operation": "constant 0",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "ambiguous",
+        "verified": true
+      },
+      {
+        "learner": "mc-50",
+        "teacher": "mc-51",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-51",
+        "teacher": "mc-52",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-52",
+        "teacher": "mc-53",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-53",
+        "teacher": "mc-54",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-54",
+        "teacher": "mc-55",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-55",
+        "teacher": "mc-56",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-56",
+        "teacher": "mc-57",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-57",
+        "teacher": "mc-58",
+        "operation": "affine -1 2",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-58",
+        "teacher": "mc-59",
+        "operation": "x",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "ambiguous",
+        "verified": true
+      },
+      {
+        "learner": "mc-59",
+        "teacher": "mc-60",
+        "operation": "x",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "ambiguous",
+        "verified": true
+      },
+      {
+        "learner": "mc-60",
+        "teacher": "mc-61",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-61",
+        "teacher": "mc-62",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-62",
+        "teacher": "mc-63",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-63",
+        "teacher": "mc-64",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-64",
+        "teacher": "mc-65",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-65",
+        "teacher": "mc-66",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-66",
+        "teacher": "mc-67",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-67",
+        "teacher": "mc-68",
+        "operation": "constant 3",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-68",
+        "teacher": "mc-69",
+        "operation": "offset 1",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-69",
+        "teacher": "mc-70",
+        "operation": "scale 2",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-70",
+        "teacher": "mc-71",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-71",
+        "teacher": "mc-72",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-72",
+        "teacher": "mc-73",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-73",
+        "teacher": "mc-74",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-74",
+        "teacher": "mc-75",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-75",
+        "teacher": "mc-76",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-76",
+        "teacher": "mc-77",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-77",
+        "teacher": "mc-78",
+        "operation": "offset 4",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-78",
+        "teacher": "mc-79",
+        "operation": "offset 2",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-79",
+        "teacher": "mc-80",
+        "operation": "scale 3",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-80",
+        "teacher": "mc-81",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-81",
+        "teacher": "mc-82",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-82",
+        "teacher": "mc-83",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-83",
+        "teacher": "mc-84",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-84",
+        "teacher": "mc-85",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-85",
+        "teacher": "mc-86",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-86",
+        "teacher": "mc-87",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-87",
+        "teacher": "mc-88",
+        "operation": "affine 2 -4",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-88",
+        "teacher": "mc-89",
+        "operation": "offset 3",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-89",
+        "teacher": "mc-90",
+        "operation": "scale 4",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-90",
+        "teacher": "mc-91",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-91",
+        "teacher": "mc-92",
+        "operation": "subtract",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-92",
+        "teacher": "mc-93",
+        "operation": "multiply",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-93",
+        "teacher": "mc-94",
+        "operation": "minimum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-94",
+        "teacher": "mc-95",
+        "operation": "maximum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-95",
+        "teacher": "mc-96",
+        "operation": "square",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-96",
+        "teacher": "mc-97",
+        "operation": "absolute difference",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-97",
+        "teacher": "mc-98",
+        "operation": "affine 3 -3",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-98",
+        "teacher": "mc-99",
+        "operation": "offset 4",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-99",
+        "teacher": "mc-100",
+        "operation": "scale -4",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-100",
+        "teacher": "mc-01",
+        "operation": "add",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      }
+    ],
+    "externalInference": false,
+    "method": "simulated peer exercise rotation, not live agent activity or neural training"
+  },
+  "round37": {
+    "round": 37,
+    "learners": 100,
+    "verified": 100,
+    "cases": 600,
+    "passed": 600,
+    "ambiguous": 4,
+    "reports": [
+      {
+        "learner": "mc-01",
+        "teacher": "mc-39",
+        "operation": "offset -2",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-02",
+        "teacher": "mc-40",
+        "operation": "negate",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "ambiguous",
+        "verified": true
+      },
+      {
+        "learner": "mc-03",
+        "teacher": "mc-41",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-04",
+        "teacher": "mc-42",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-05",
+        "teacher": "mc-43",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-06",
+        "teacher": "mc-44",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-07",
+        "teacher": "mc-45",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-08",
+        "teacher": "mc-46",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-09",
+        "teacher": "mc-47",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-10",
+        "teacher": "mc-48",
+        "operation": "affine -2 1",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-11",
+        "teacher": "mc-49",
+        "operation": "offset -1",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-12",
+        "teacher": "mc-50",
+        "operation": "constant 0",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "ambiguous",
+        "verified": true
+      },
+      {
+        "learner": "mc-13",
+        "teacher": "mc-51",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-14",
+        "teacher": "mc-52",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-15",
+        "teacher": "mc-53",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-16",
+        "teacher": "mc-54",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-17",
+        "teacher": "mc-55",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-18",
+        "teacher": "mc-56",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-19",
+        "teacher": "mc-57",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-20",
+        "teacher": "mc-58",
+        "operation": "affine -1 2",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-21",
+        "teacher": "mc-59",
+        "operation": "x",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "ambiguous",
+        "verified": true
+      },
+      {
+        "learner": "mc-22",
+        "teacher": "mc-60",
+        "operation": "x",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "ambiguous",
+        "verified": true
+      },
+      {
+        "learner": "mc-23",
+        "teacher": "mc-61",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-24",
+        "teacher": "mc-62",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-25",
+        "teacher": "mc-63",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-26",
+        "teacher": "mc-64",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-27",
+        "teacher": "mc-65",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-28",
+        "teacher": "mc-66",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-29",
+        "teacher": "mc-67",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-30",
+        "teacher": "mc-68",
+        "operation": "constant 3",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-31",
+        "teacher": "mc-69",
+        "operation": "offset 1",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-32",
+        "teacher": "mc-70",
+        "operation": "scale 2",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-33",
+        "teacher": "mc-71",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-34",
+        "teacher": "mc-72",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-35",
+        "teacher": "mc-73",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-36",
+        "teacher": "mc-74",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-37",
+        "teacher": "mc-75",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-38",
+        "teacher": "mc-76",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-39",
+        "teacher": "mc-77",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-40",
+        "teacher": "mc-78",
+        "operation": "offset 4",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-41",
+        "teacher": "mc-79",
+        "operation": "offset 2",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-42",
+        "teacher": "mc-80",
+        "operation": "scale 3",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-43",
+        "teacher": "mc-81",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-44",
+        "teacher": "mc-82",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-45",
+        "teacher": "mc-83",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-46",
+        "teacher": "mc-84",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-47",
+        "teacher": "mc-85",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-48",
+        "teacher": "mc-86",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-49",
+        "teacher": "mc-87",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-50",
+        "teacher": "mc-88",
+        "operation": "affine 2 -4",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-51",
+        "teacher": "mc-89",
+        "operation": "offset 3",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-52",
+        "teacher": "mc-90",
+        "operation": "scale 4",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-53",
+        "teacher": "mc-91",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-54",
+        "teacher": "mc-92",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-55",
+        "teacher": "mc-93",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-56",
+        "teacher": "mc-94",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-57",
+        "teacher": "mc-95",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-58",
+        "teacher": "mc-96",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-59",
+        "teacher": "mc-97",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-60",
+        "teacher": "mc-98",
+        "operation": "affine 3 -3",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-61",
+        "teacher": "mc-99",
+        "operation": "offset 4",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-62",
+        "teacher": "mc-100",
+        "operation": "scale -4",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-63",
+        "teacher": "mc-01",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-64",
+        "teacher": "mc-02",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-65",
+        "teacher": "mc-03",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-66",
+        "teacher": "mc-04",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-67",
+        "teacher": "mc-05",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-68",
+        "teacher": "mc-06",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-69",
+        "teacher": "mc-07",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-70",
+        "teacher": "mc-08",
+        "operation": "affine 3 -4",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-71",
+        "teacher": "mc-09",
+        "operation": "offset 4",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-72",
+        "teacher": "mc-10",
+        "operation": "scale -4",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-73",
+        "teacher": "mc-11",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-74",
+        "teacher": "mc-12",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-75",
+        "teacher": "mc-13",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-76",
+        "teacher": "mc-14",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-77",
+        "teacher": "mc-15",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-78",
+        "teacher": "mc-16",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-79",
+        "teacher": "mc-17",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-80",
+        "teacher": "mc-18",
+        "operation": "affine 4 -3",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-81",
+        "teacher": "mc-19",
+        "operation": "offset -4",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-82",
+        "teacher": "mc-20",
+        "operation": "scale -3",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-83",
+        "teacher": "mc-21",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-84",
+        "teacher": "mc-22",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-85",
+        "teacher": "mc-23",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-86",
+        "teacher": "mc-24",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-87",
+        "teacher": "mc-25",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-88",
+        "teacher": "mc-26",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-89",
+        "teacher": "mc-27",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-90",
+        "teacher": "mc-28",
+        "operation": "affine -4 -1",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-91",
+        "teacher": "mc-29",
+        "operation": "offset -3",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-92",
+        "teacher": "mc-30",
+        "operation": "scale -2",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-93",
+        "teacher": "mc-31",
+        "operation": "add",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-94",
+        "teacher": "mc-32",
+        "operation": "subtract",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-95",
+        "teacher": "mc-33",
+        "operation": "multiply",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-96",
+        "teacher": "mc-34",
+        "operation": "minimum",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-97",
+        "teacher": "mc-35",
+        "operation": "maximum",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-98",
+        "teacher": "mc-36",
+        "operation": "square",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-99",
+        "teacher": "mc-37",
+        "operation": "absolute difference",
+        "language": "javascript",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      },
+      {
+        "learner": "mc-100",
+        "teacher": "mc-38",
+        "operation": "scale -3",
+        "language": "python",
+        "passed": 6,
+        "tests": 6,
+        "status": "example-match",
+        "verified": true
+      }
+    ],
+    "externalInference": false,
+    "method": "simulated peer exercise rotation, not live agent activity or neural training"
+  },
+  "sample": {
+    "status": "example-match",
+    "language": "javascript",
+    "operation": "affine 2 3",
+    "source": "export function solve(x, y = 0) {\n  if (![x, y].every(v => Number.isSafeInteger(v) && Math.abs(v) <= 1000)) throw new Error('Invalid input');\n  return x * (2) + (3);\n}\n",
+    "trainingMatches": 1,
+    "validationMatches": 1,
+    "candidates": 171,
+    "trainingCases": 3,
+    "validationCases": 1,
+    "validationPassed": 1,
+    "alternatives": [],
+    "counterexample": null,
+    "externalInference": false,
+    "notice": "Bounded scalar grammar; interpreter evaluated typed candidates against examples. Emitted source was not executed by this request. Multiple candidates may be equivalent or diverge outside tested inputs."
+  }
+}
