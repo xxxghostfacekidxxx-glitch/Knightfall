@@ -1,7 +1,7 @@
 /* Limited safe reply formatting. No model-provided HTML or arbitrary executable links. */
 (function(root){"use strict";
 const hosts=new Set(["ash-fall.com","www.ash-fall.com","openlibrary.org","www.openlibrary.org","doi.org","www.doi.org","polyhaven.com","www.polyhaven.com","www.wikidata.org","en.wikipedia.org","www.metmuseum.org"]);
-function safeUrl(value){try{const u=new URL(value);return u.protocol==="https:"&&hosts.has(u.hostname)&&!u.username&&!u.password?u.href:null;}catch{return null;}}
+function safeUrl(value){try{const u=new URL(value);return u.protocol==="https:"&&(hosts.has(u.hostname)||(u.origin==="https://api.ash-fall.com"&&/^\/api\/god\/eye\/tools\/forge-download\/[a-f0-9-]{36}$/.test(u.pathname)&&!u.search&&!u.hash))&&!u.username&&!u.password?u.href:null;}catch{return null;}}
 function blocks(value){
  const lines=String(value??"").replace(/\r\n?/g,"\n").split("\n"),out=[];let code=null,paragraph=[];
  const flush=()=>{if(paragraph.length){out.push({type:"paragraph",text:paragraph.join("\n")});paragraph=[];}};
