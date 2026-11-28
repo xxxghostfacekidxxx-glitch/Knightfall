@@ -155,7 +155,7 @@ async function refreshForgeFiles(){
  try{const r=await request(ROOT+"/tools/forge");for(const file of r.artifacts||[]){
  if(!/^[a-f0-9-]{36}$/.test(file.id))continue;
  const row=element("article","eye-result"),download=element("button","eye-subtle","Download"),del=element("button","eye-subtle","Delete");
- const type=file.filename.endsWith(".html")?"Offline browser applet":file.filename.endsWith(".wasm")?"WebAssembly executable module":"Portable bytecode / report";
+ const type=file.filename.endsWith(".html")?"Offline browser applet":file.filename.endsWith(".wasm")?"WebAssembly executable module":file.filename.endsWith(".mjs")?"Reusable JavaScript ES module":"Portable bytecode / report";
  row.append(element("strong","",file.filename),element("p","",type+" · "+file.byte_count+" bytes · Expires "+time(file.expires_at)),element("small","","SHA-256: "+file.sha256));
  download.type=del.type="button";download.addEventListener("click",async()=>{download.disabled=true;try{await downloadForgeFile(file);}catch(e){$("eye-forge-result").textContent=e.message;}finally{download.disabled=false;}});
  del.addEventListener("click",async()=>{if(!confirm("Delete this download?"))return;try{await request(ROOT+"/tools/forge-download/"+file.id,{method:"DELETE"});await refreshForgeFiles();}catch(e){$("eye-forge-result").textContent=e.message;}});
