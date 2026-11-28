@@ -1,0 +1,15 @@
+import {readFileSync,writeFileSync} from "node:fs";
+import {tokens,makeWeights,trainContext,rowsFor,evaluate} from "../training/miss-chaos-context-lm.mjs";
+import {curriculum,validation,initialTest} from "../training/miss-chaos-context-corpus.mjs";
+const [dest,rawSeed]=process.argv.slice(2);
+if(!dest)throw Error("Specify an output candidate; never replace a promoted checkpoint");
+const seed=Number(rawSeed||66128);
+if(!Number.isSafeInteger(seed)||seed<0)throw Error("Invalid seed");
+const base=JSON.parse(readFileSync("training/checkpoints/miss-chaos-local-001.json","utf8"));
+const vocab=[...new Set([...base.vocab,...curriculum.flatMap(g=>g.flatMap(tokens))])];
+const initial=makeWeights(base,vocab,seed);
+const result=trainContext(initial,vocab,curriculum,validation,seed,1,100);
+const blindBefore=evaluate(initial,vocab,rowsFor(initialTest,vocab)),blindAfter=evaluate(result.weights,vocab,rowsFor(initialTest,vocab));
+const metrics={...result.metrics,initialTestBefore:blindBefore,initialTestAfter:blindAfter,promotion:"candidate-only"};
+console.log(JSON.stringify(metrics,null,2));
+writeFileSync(dest,JSON.stringify({schema:"miss-chaos-context-v1",architecture:{kind:"eight-token positional embedding model",hidden:16,context:8,vocabulary:vocab.length,parameters:initial.length},vocab,weights:result.weights,metrics}),{flag:"wx"});
