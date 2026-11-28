@@ -1,6 +1,13 @@
 name: Order 66 original research training
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'training/order66-peer-core.mjs'
+      - 'training/checkpoints/order66-peer-002.json'
+      - 'scripts/train-order66-continued.mjs'
+      - '.github/workflows/order66-original-training.yml'
   schedule:
     - cron: '31 8 * * *'
 permissions:
@@ -19,11 +26,25 @@ jobs:
           node-version: '22'
       - name: Test synthetic peer learning
         run: node --test scripts/order66-peer.test.mjs
+      - name: Restore previous candidate (never auto-promoted)
+        uses: actions/cache/restore@v4
+        with:
+          path: order66-prior.json
+          key: order66-peer-v2-${{ github.run_id }}
+          restore-keys: order66-peer-v2-
       - name: Train isolated candidate checkpoints
         run: |
           mkdir -p candidate
           node scripts/train-order66-code.mjs candidate/code.json
-          node scripts/train-order66-peer.mjs candidate/peer.json
+          if [ ! -f order66-prior.json ]; then cp training/checkpoints/order66-peer-002.json order66-prior.json; fi
+          seed=$(( 40000000 + ${{ github.run_number }} * 100 ))
+          node scripts/train-order66-continued.mjs order66-prior.json candidate/peer.json "$seed"
+          cp candidate/peer.json order66-prior.json
+      - name: Preserve evaluated continuation for next run
+        uses: actions/cache/save@v4
+        with:
+          path: order66-prior.json
+          key: order66-peer-v2-${{ github.run_id }}
       - uses: actions/upload-artifact@v4
         with:
           name: order66-research-candidates

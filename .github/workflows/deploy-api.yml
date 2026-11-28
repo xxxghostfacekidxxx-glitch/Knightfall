@@ -7,6 +7,8 @@ on:
       - 'backend/src/**'
       - 'backend/chaos-*.mjs'
       - 'backend/chaos-*.test.mjs'
+      - 'training/order66-peer-core.mjs'
+      - 'training/checkpoints/order66-peer-002.json'
       - 'backend/package.json'
       - 'backend/migrations/**'
       - 'backend/src/profile-wall.test.mjs'
@@ -92,6 +94,9 @@ jobs:
           node --check backend/src/member-memo-mail.js
           node --check public/eye-of-horus.js
           node --check public/home-activity.js
+
+      - name: Verify Osiris tool authorization and trained format checkpoint
+        run: node --test scripts/eye-tool-review.test.mjs backend/chaos-order66-format.test.mjs
 
       - name: Verify Cards Against Chaos deck counts and variety
         run: node --test scripts/chaos-deck-variety.test.mjs

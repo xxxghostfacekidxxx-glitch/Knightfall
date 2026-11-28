@@ -1091,7 +1091,7 @@ export async function discoverTools(source,query,fetcher=runtimeFetch){
 }
 // A peer lesson is an approved evidence reference, not a generated fact or neural weight update.
 export async function sharePeerEvidence(env,a,now){
- const row=await env.DB.prepare("SELECT c.entity_id,COALESCE((SELECT prior.learner_key FROM chaos_knowledge_lessons prior WHERE prior.entity_id=c.entity_id AND prior.learner_key<>? ORDER BY prior.received_at,prior.learner_key LIMIT 1),c.agent_key) AS agent_key FROM chaos_knowledge_candidates c WHERE review_status='approved' AND (agent_key LIKE 'mc-%' OR agent_key='manual-curation') AND agent_key<>? AND NOT EXISTS(SELECT 1 FROM chaos_knowledge_lessons l WHERE l.learner_key=? AND l.entity_id=c.entity_id) ORDER BY CASE WHEN division=? THEN 0 ELSE 1 END,reviewed_at DESC,entity_id LIMIT 1").bind(a.key,a.key,a.key,a.division).first();
+ const row=await env.DB.prepare("SELECT c.entity_id,c.agent_key FROM chaos_knowledge_candidates c WHERE review_status='approved' AND (agent_key LIKE 'mc-%' OR agent_key='manual-curation') AND agent_key<>? AND NOT EXISTS(SELECT 1 FROM chaos_knowledge_lessons l WHERE l.learner_key=? AND l.entity_id=c.entity_id) ORDER BY CASE WHEN division=? THEN 0 ELSE 1 END,reviewed_at DESC,entity_id LIMIT 1").bind(a.key,a.key,a.division).first();
  if(!row)return 0;
  const result=await env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_lessons(learner_key,entity_id,teacher_key,received_at) VALUES(?,?,?,?)").bind(a.key,row.entity_id,row.agent_key,now).run();return Number(result.meta?.changes||0);
 }
