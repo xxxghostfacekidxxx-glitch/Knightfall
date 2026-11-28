@@ -43,13 +43,15 @@ async function load(){
   if(version!==loadVersion)return;
   root.innerHTML=(d.notifications||[]).map(n=>{
    const destination=noticeDestination(n),unread=!n.read_at;
+   const conversationId=n.kind==="message"&&n.target_type==="conversation"&&Number.isSafeInteger(Number(n.target_id))&&Number(n.target_id)>0?Number(n.target_id):null;
+   const reply=conversationId?`<form class="notice-reply" data-conversation="${conversationId}"><label>Quick reply <textarea required maxlength="4000" rows="2" placeholder="Write a reply…"></textarea></label><button type="submit">Send reply</button><span role="status"></span></form>`:"";
    const action=destination?'<a class="notice-link" href="'+esc(destination)+'">Open</a>':
      unread?'<button class="notice-link notice-dismiss" type="button" aria-label="Dismiss '+esc(n.title)+'">Dismiss</button>':"";
    return '<article class="notice '+(unread?"unread":"read")+'" data-notice="'+Number(n.id)+'"'+
      (destination?' data-target="'+esc(destination)+'"':"")+'><div class="notice-icon">'+
      (n.kind==="message"?"✉":n.kind==="follow"?"✦":"•")+
      '</div><div><strong>'+esc(n.title)+'</strong><p>'+esc(n.body)+'</p><small>'+esc(fmt(n.created_at))+
-     (n.actor_username?" · @"+esc(n.actor_username):"")+'</small></div>'+action+'</article>';
+     (n.actor_username?" · @"+esc(n.actor_username):"")+'</small>'+reply+'</div>'+action+'</article>';
   }).join("");
   refreshEmpty();
   unreadCount=Number(d.unread_count||0);
@@ -57,6 +59,7 @@ async function load(){
    const target=item.dataset.target;
    if(target){item.style.cursor="pointer";item.title="Open notification";}
    item.addEventListener("click",async event=>{
+    if(event.target.closest(".notice-reply"))return;
     // Acknowledge before navigating; failed acknowledgements stay visible.
     if(event.target.closest("a.notice-link"))event.preventDefault();
     if(item.dataset.reading==="true")return;
@@ -81,6 +84,24 @@ async function load(){
   status.textContent=unreadCount+" unread";
  }catch(error){if(version===loadVersion)status.textContent=error.message;}
 }
+root.addEventListener("submit",async event=>{
+ const form=event.target.closest(".notice-reply");if(!form)return;
+ event.preventDefault();const field=form.querySelector("textarea"),button=form.querySelector("button"),feedback=form.querySelector("[role=status]"),body=field.value.trim();
+ if(!body||button.disabled)return;
+ button.disabled=true;field.readOnly=true;feedback.textContent="Sending…";
+ try{
+  await api("/api/messages/conversations/"+form.dataset.conversation,{method:"POST",body:JSON.stringify({body})});
+  field.value="";feedback.textContent="Reply sent.";
+  const item=form.closest("[data-notice]");
+  if(item?.classList.contains("unread")&&!item.dataset.reading){
+   item.dataset.reading="true";
+   try{await api("/api/notifications/"+item.dataset.notice,{method:"PATCH"});item.classList.replace("unread","read");unreadCount=Math.max(0,unreadCount-1);status.textContent=unreadCount+" unread";announceReadChange();closeHandledPush({notificationId:Number(item.dataset.notice)});}
+   catch{feedback.textContent="Reply sent; alert could not be marked read.";}
+   finally{delete item.dataset.reading;}
+  }
+ }catch(error){feedback.textContent="Reply not confirmed: "+error.message;}
+ finally{button.disabled=false;field.readOnly=false;}
+});
 document.querySelector("#show-history").addEventListener("click",event=>{
  showingHistory=!showingHistory;
  event.currentTarget.textContent=showingHistory?"Show new alerts":"View past alerts";
