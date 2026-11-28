@@ -1,3 +1,4 @@
+import {logicCoverage} from "../chaos-forge-logic-course.mjs";
 import {forgeCommand,forgeDownload,listForgeArtifacts,deleteForgeArtifact} from "../chaos-independent-forge.mjs";
 import {readCodingPractice,codingKnowledge} from "./order100-coding-practice.mjs";
 import {readPeerAssessment} from "./order100-peer-assessments.mjs";
@@ -49,7 +50,7 @@ export async function handleEyeToolReview(request,env,url,user,respond,{fetcher=
   if(typeof input?.question!=="string"||!input.question.trim()||input.question.length>3000)return respond({error:"Provide a question of 1–3000 characters."},400);
   return respond(await independentAnswer(env,input.question,user.id));
  }
- if(url.pathname===prefix+"/coding-knowledge"&&request.method==="GET")return respond(await codingKnowledge(env));
+ if(url.pathname===prefix+"/coding-knowledge"&&request.method==="GET")return respond({...await codingKnowledge(env),logic:await logicCoverage(env)});
  const lessonMatch=url.pathname.match(/^\/api\/god\/eye\/tools\/learning\/(mc-\d{2,3})$/);
  if(lessonMatch&&request.method==="GET"){if(!RESEARCH_FLEET.some(a=>a.key===lessonMatch[1]))return respond({error:"Unknown research agent."},404);return respond({agent:lessonMatch[1],evidence:await agentEvidence(env,lessonMatch[1]),sharedReviewed:await sharedReviewedKnowledge(env),softwareReferences:await agentSoftwareReferences(env,lessonMatch[1]),curriculum:peerCurriculum(lessonMatch[1]),peerAssessment:await readPeerAssessment(env,lessonMatch[1]).catch(()=>null),codingPractice:await readCodingPractice(env,lessonMatch[1]).catch(()=>null)});}
  if(url.pathname===prefix+"/learning"&&request.method==="GET"){
