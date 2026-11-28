@@ -1,3 +1,4 @@
+import {recordPeerAssessment} from "./order100-peer-assessments.mjs";
 import {shareSoftwareReferences} from "./order66-software-sharing.mjs";
 // Scheduled, non-generative public metadata discovery. Does not browse arbitrary URLs or ingest user content.
 export const RESEARCH_FLEET=Object.freeze([
@@ -1475,6 +1476,7 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
     if(writes.length){const out=await env.DB.batch(writes);found=out.reduce((n,x)=>n+Number(x.meta?.changes||0),0);}
     returnedRecords+=data.records.length;uniqueDiscoveries+=found;if(source==="wikidata")count+=found;else toolCount+=found;
     status="complete";completed++;
+    try{await recordPeerAssessment(env,RESEARCH_FLEET,a,{...data,records},new Date().toISOString());}catch{console.warn("order100_peer_assessment_unavailable");}
 
    }
   }catch(error){errorCode=failureCode(error);}
