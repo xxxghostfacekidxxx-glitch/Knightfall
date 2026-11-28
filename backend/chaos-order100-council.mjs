@@ -1,3 +1,4 @@
+import {forgeCommand} from "./chaos-independent-forge.mjs";
 import {parseProgram,emitProgram,synthesize,emptyPrior} from "./order100-code-synthesis.mjs";
 import {codingKnowledge} from "./src/order100-coding-practice.mjs";
 import {localModelReply} from "./miss-chaos-local-model.mjs";
@@ -40,9 +41,10 @@ export async function councilResearch(env,goal){
  const matches=rows.map(x=>assessTool(x,goal)).filter(x=>x.evidence.relevance>0&&x.sourceUrl).sort((a,b)=>Number(b.evidence.reviewed)-Number(a.evidence.reviewed)||b.evidence.relevance-a.evidence.relevance||a.tool.localeCompare(b.tool)).slice(0,5);
  return {goal,assessed:rows.length,results:matches,roster:roster.length,externalInference:false,notice:"Shared catalog metadata; assessments are advisory and not evidence of code execution."};
 }
-export async function independentAnswer(env,question){
+export async function independentAnswer(env,question,owner=null){
  if(typeof question!=="string"||!question.trim()||question.length>3000)throw Error("Question up to 3000 characters required");
  const text=question.trim(),reply=(answer,method,extra={})=>({answer,method,externalInference:false,...extra});
+ if(owner!==null){try{const forged=await forgeCommand(env,owner,text);if(forged)return forged;}catch(error){return reply("Forge: "+String(error.message||"Request failed.").slice(0,240),"independent-forge-error");}}
  const fence=String.fromCharCode(96).repeat(3);
  if(/^coding status$/i.test(text)){const knowledge=await codingKnowledge(env);return reply("Verified coding learners: "+knowledge.verifiedLearners+"/100. Distinct teachers: "+knowledge.distinctTeachers+". Verified peer exchanges: "+knowledge.verifiedExchanges+". Distinct learner programs: "+knowledge.distinctLearnerPrograms+". Learned program samples: "+knowledge.prior.samples+".","order100-coding-knowledge",{evidence:knowledge});}
  const code=text.match(/^code\s*:\s*(.{1,180})$/i);
