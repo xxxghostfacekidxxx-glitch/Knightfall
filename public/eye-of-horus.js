@@ -49,9 +49,11 @@ async function loadRoundtable(){
 }
 
 let alienReport=null;
+async function loadLearning(){const panel=$("eye-learning"),out=$("eye-learning-status"),rows=$("eye-learning-rows"),refresh=$("eye-learning-refresh");refresh.disabled=true;out.textContent="Reading recorded agent progress…";try{const d=await request(ROOT+"/tools/learning");if(d.kind!=="recorded-peer-evidence"||!Array.isArray(d.agents))throw Error("Learning evidence unavailable.");panel.hidden=false;rows.replaceChildren();for(const a of d.agents){const row=element("tr");for(const v of [a.name,a.division,a.completed,a.failed,a.discoveries,a.learned,a.teachers,time(a.lastLesson)||"Never"])row.append(element("td","",v));rows.append(row);}const trained=d.agents.filter(a=>a.learned>0).length;out.textContent=(d.enabled?"Collector enabled":"Collector disabled")+(d.masterPaused?" · Master pause active":"")+" · "+trained+"/"+d.agents.length+" agents received reviewed lessons. Evidence retrieval, not neural weight updates.";}catch(e){rows.replaceChildren();out.textContent=e.message;}finally{refresh.disabled=false;}}
+$("eye-learning-refresh").addEventListener("click",loadLearning);
 async function loadTools(){
  const panel=$("eye-tool-review"),list=$("eye-tools-list"),notice=$("eye-tools-status");
- try{const data=await request(ROOT+"/tools");panel.hidden=false;list.replaceChildren();notice.textContent=data.publication;
+ try{const data=await request(ROOT+"/tools");panel.hidden=false;list.replaceChildren();notice.textContent=data.publication;$("eye-learning").hidden=false;void loadLearning();
  const alien=data.tools.find(t=>t.id==="alien-eyes");$("eye-alien-panel").hidden=!alien||alien.decision==="scrapped";
  for(const tool of data.tools){
  const card=element("article","eye-result"),select=element("select",""),label=element("label","","Osiris availability"),save=element("button","eye-subtle","Save decision");

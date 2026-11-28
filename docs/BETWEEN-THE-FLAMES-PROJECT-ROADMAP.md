@@ -137,3 +137,7 @@ Osiris has designated Celestial Sanctum as Samantha and her GPT's first developm
 - Miss Chaos existing code inspection: structural AST summaries, functions/classes/loops/branches/import/export counts, async signatures, regression fixtures committed; dependency-backed tests pending CI.
 - Osiris tool quarantine: six individually reviewable source candidates (Tree-sitter, Pyright, Tokenizers, llama.cpp, LM Evaluation Harness, Wasmtime). No installation or publication. Alien Eyes remains software-project inspection, not personal account correlation.
 - Research roster cadence remains three assignments per hour (72/day maximum attempted, 22 hours per rotation); live successful run rate and neural quality not verified. No live task board write.
+
+## November 28 — Osiris-only authorization and Order 66 activation
+- All seven registered tools authorized for Osiris only; prior distribution intents normalize to Osiris, and explicitly scrapped tools remain disabled. Six upstream readiness checks and owner-only per-agent evidence ledger implemented; six external engines still require installation and runtime integration.
+- Dedicated collector activation migration, peer sharing independent of successful network collection, daily synthetic training cadence. Global master pause retained. Live migration, authenticated runtime, actual learning counts and CI remain pending. See [implementation record](OSIRIS-ORDER66-2026-11-28.md).
