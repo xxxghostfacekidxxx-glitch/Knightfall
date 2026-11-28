@@ -1,0 +1,12 @@
+function bytes(s){if(typeof s!=="string")throw Error("Text required");const e=encodeURIComponent(s),out=[];for(let i=0;i<e.length;i++){if(e[i]==="%"){out.push(parseInt(e.slice(i+1,i+3),16));i+=2;}else out.push(e.charCodeAt(i));}return out;}
+
+function merge(seq,a,b,id){const out=[];for(let i=0;i<seq.length;i++){if(seq[i]===a&&seq[i+1]===b){out.push(id);i++;}else out.push(seq[i]);}return out;}
+
+function trainBpe(texts,count=128){if(!Array.isArray(texts)||texts.length<1||!Number.isSafeInteger(count)||count<0||count>512)throw Error("Invalid training input");let rows=texts.map(bytes);const merges=[];for(let step=0;step<count;step++){const freq=new Map();for(const row of rows)for(let i=1;i<row.length;i++){const key=row[i-1]+","+row[i];freq.set(key,(freq.get(key)||0)+1);}let best=null,max=1;for(const [key,n] of freq)if(n>max||(n===max&&best!==null&&key<best)){best=key;max=n;}if(best===null)break;const [a,b]=best.split(",").map(Number),id=256+merges.length;merges.push([a,b]);rows=rows.map(row=>merge(row,a,b,id));}return {schema:"chaos-core-byte-bpe-v1",vocabulary:256+merges.length,merges};}
+
+function validateBpe(model){if(model?.schema!=="chaos-core-byte-bpe-v1"||!Array.isArray(model.merges)||model.merges.length>512||model.vocabulary!==256+model.merges.length)throw Error("Invalid tokenizer");const seen=new Set();for(let i=0;i<model.merges.length;i++){const pair=model.merges[i];if(!Array.isArray(pair)||pair.length!==2||pair.some(x=>!Number.isSafeInteger(x)||x<0||x>=256+i)||seen.has(pair.join(",")))throw Error("Invalid merge");seen.add(pair.join(","));}}
+
+function encodeBpe(model,s){validateBpe(model);if(typeof s!=="string"||s.length>10000)throw Error("Text up to 10000 characters required");let seq=bytes(s);for(let i=0;i<model.merges.length;i++)seq=merge(seq,...model.merges[i],256+i);return seq;}
+
+function decodeBpe(model,ids){validateBpe(model);if(!Array.isArray(ids)||ids.length>40000||ids.some(x=>!Number.isSafeInteger(x)||x<0||x>=model.vocabulary))throw Error("Invalid token IDs");const table=Array.from({length:256},(_,i)=>[i]);for(const [a,b] of model.merges){if(table[a].length+table[b].length>100000)throw Error("Merge expansion limit");table.push([...table[a],...table[b]]);}let encoded="",size=0;for(const id of ids){size+=table[id].length;if(size>40000)throw Error("Decode output limit");for(const b of table[id])encoded+="%"+b.toString(16).padStart(2,"0");}return decodeURIComponent(encoded);}
+export {bytes,trainBpe,validateBpe,encodeBpe,decodeBpe};

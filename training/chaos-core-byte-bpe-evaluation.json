@@ -1,0 +1,42 @@
+{
+  "vocabulary": 512,
+  "corpusBytes": 9013,
+  "corpusTokens": 3760,
+  "metrics": [
+    {
+      "text": "A compiler transforms source code into another representation.",
+      "bytes": 62,
+      "tokens": 18
+    },
+    {
+      "text": "let answer = (x) => x * 2;\nconsole.log(answer(21));",
+      "bytes": 51,
+      "tokens": 37
+    },
+    {
+      "text": "こんにちは、Chaos Core! 🔥",
+      "bytes": 34,
+      "tokens": 31
+    },
+    {
+      "text": "naïve café — résumé",
+      "bytes": 25,
+      "tokens": 22
+    },
+    {
+      "text": "const π = 3.14159;",
+      "bytes": 19,
+      "tokens": 16
+    },
+    {
+      "text": "",
+      "bytes": 0,
+      "tokens": 0
+    },
+    {
+      "text": "Whitespace\t and\nnewlines.",
+      "bytes": 25,
+      "tokens": 17
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+import {documents} from "../training/chaos-core-recall-corpus.mjs";import {engineeringLessons} from "../training/chaos-core-engineering-corpus.mjs";import {evidenceAnswer} from "../training/chaos-core-evidence.mjs";const all=[...documents,...engineeringLessons];export function coreEvidence(question){return evidenceAnswer(all,question);}
