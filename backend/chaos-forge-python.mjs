@@ -10,14 +10,15 @@ export function translatePython(input,{earlier=null}={}){
  if(lines.length>100)throw Error("Source line limit");
  const header=/^def ([a-z][a-z0-9_]*)\(([^()]*)\):$/.exec(lines[0]?.text||"");
  if(!header||lines[0].indent!==0||!nameOK(header[1])||header[2].split(",").map(x=>x.trim()).join(",")!==input.fields.join(","))throw Error("Use one def with matching numeric parameters.");
+ if(earlier instanceof Map&&input.fields.some(n=>earlier.has(n)))throw Error("Parameters cannot shadow helper functions.");
  const fields=input.fields.slice(),locals=[],active=new Set(fields),counters=new Set();let pos=1,nodes=0;
  const fail=(line,msg)=>{throw Error(msg+" (line "+line.line+")");};
- function declare(line,name){if(!nameOK(name)||fields.includes(name)||locals.includes(name)||fields.length+locals.length>=12)fail(line,"Invalid, duplicate or excessive local");locals.push(name);active.add(name);}
+ function declare(line,name){if(!nameOK(name)||earlier?.has(name)||fields.includes(name)||locals.includes(name)||fields.length+locals.length>=12)fail(line,"Invalid, duplicate or excessive local");locals.push(name);active.add(name);}
  function expression(text,line){
   const tokens=[];let p=0;
-  while(p<text.length){if(/\s/.test(text[p])){p++;continue;}const m=/^(?:(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?|\.\d+(?:[eE][+-]?\d+)?|[a-z][a-z0-9_]*|\*\*|[()+\-*/])/.exec(text.slice(p));if(!m)fail(line,"Unsupported expression token");tokens.push(m[0]);p+=m[0].length;if(tokens.length>128)fail(line,"Expression token limit");}
+  while(p<text.length){if(/\s/.test(text[p])){p++;continue;}const m=/^(?:(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?|\.\d+(?:[eE][+-]?\d+)?|[a-z][a-z0-9_]*|\*\*|[(),+\-*/])/.exec(text.slice(p));if(!m)fail(line,"Unsupported expression token");tokens.push(m[0]);p+=m[0].length;if(tokens.length>128)fail(line,"Expression token limit");}
   let i=0,depth=0;const peek=()=>tokens[i],take=()=>tokens[i++],nested=fn=>{if(++depth>18||++nodes>512)fail(line,"Expression budget");try{return fn();}finally{depth--;}};
-  function atom(){const t=take();if(t==="("){const x=nested(sum);if(take()!==")")fail(line,"Expected closing parenthesis");return "("+x+")";}if(t&&/^(?:\d|\.)/.test(t)&&Number.isFinite(Number(t)))return String(Number(t));if(active.has(t))return t;fail(line,"Unknown variable or invalid numeric literal");}
+  function atom(){const t=take();if(t==="("){const x=nested(sum);if(take()!==")")fail(line,"Expected closing parenthesis");return "("+x+")";}if(t&&/^(?:\d|\.)/.test(t)&&Number.isFinite(Number(t)))return String(Number(t));if(active.has(t))return t;if(earlier instanceof Map&&earlier.has(t)&&peek()==="("){take();const args=[];for(let a=0;a<earlier.get(t);a++){if(a&&take()!==",")fail(line,"Expected comma");args.push(nested(sum));}if(take()!==")")fail(line,"Expected closing call parenthesis");return t+"("+args.join(",")+")";}fail(line,"Unknown variable or invalid numeric literal");}
   function power(){let x=atom();if(peek()==="**"){take();x="("+x+"^"+nested(unary)+")";}return x;}
   function unary(){if(peek()==="+"||peek()==="-"){const op=take();return "("+op+nested(unary)+")";}return power();}
   function product(){let x=unary();while(peek()==="*"||peek()==="/"){const op=take();x="("+x+op+unary()+")";}return x;}
@@ -47,7 +48,7 @@ export function translatePython(input,{earlier=null}={}){
    }else if(assignment){
     const [,name,op,rhs]=assignment;let invocation=null;
     const m=/^([a-z][a-z0-9_]*)\((.*)\)$/.exec(rhs);
-    if(op==="="&&m&&earlier instanceof Map&&earlier.has(m[1])){const args=[];let start=0,level=0;for(let i=0;i<m[2].length;i++){const ch=m[2][i];if(ch==="(")level++;if(ch===")")level--;if(ch===","&&level===0){args.push(m[2].slice(start,i));start=i+1;}}args.push(m[2].slice(start));if(level!==0||args.length!==earlier.get(m[1]))fail(line,"Invalid function arguments");invocation={op:"call",name,call:m[1],args:args.map(a=>expression(a,line))};}
+    if(op==="="&&m&&earlier instanceof Map&&earlier.has(m[1])&&(()=>{let d=0;for(const ch of m[2]){if(ch==="(")d++;if(ch===")"&&--d<0)return false;}return d===0;})()){const args=[];let start=0,level=0;for(let i=0;i<m[2].length;i++){const ch=m[2][i];if(ch==="(")level++;if(ch===")")level--;if(ch===","&&level===0){args.push(m[2].slice(start,i));start=i+1;}}args.push(m[2].slice(start));if(level!==0||args.length!==earlier.get(m[1]))fail(line,"Invalid function arguments");invocation={op:"call",name,call:m[1],args:args.map(a=>expression(a,line))};}
     const value=invocation?null:expression(rhs,line);
     if(!active.has(name)){if(!top||op!=="=")fail(line,"Declare locals at function level before use");declare(line,name);}
     if(fields.includes(name)||counters.has(name))fail(line,"Parameters and loop counters are immutable");
