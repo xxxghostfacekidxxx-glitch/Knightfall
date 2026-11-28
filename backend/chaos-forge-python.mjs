@@ -4,7 +4,7 @@ import {verifyLogic,runLogic} from "./chaos-forge-logic.mjs";
 const reserved=new Set(["abs","sqrt","ceil","floor","trunc","min","max","def","if","else","elif","for","in","range","return","while","import","from","class","lambda","pass","break","continue","and","or","not","is","assert","yield","raise","try","except","finally","with","as","global","nonlocal","del","async","await","match","case"]);
 const nameOK=n=>typeof n==="string"&&/^[a-z][a-z0-9_]{0,23}$/.test(n)&&!reserved.has(n);
 const compare={"<":"lt","<=":"le","==":"eq","!=":"ne",">=":"ge",">":"gt"};
-export function translatePython(input){
+export function translatePython(input,{earlier=null}={}){
  if(!input||typeof input.source!=="string"||input.source.length>10000||!input.source.trim()||!Array.isArray(input.fields)||input.fields.length<1||input.fields.length>12||input.fields.some(n=>!nameOK(n))||new Set(input.fields).size!==input.fields.length)throw Error("Provide numeric fields and up to 10,000 Python source characters.");
  const lines=input.source.split(/\r?\n/).map((raw,i)=>{if(raw.includes("\t"))throw Error("Tabs unsupported (line "+(i+1)+")");const line=raw.split("#")[0].trimEnd(),spaces=line.length-line.trimStart().length;return {text:line.trimStart(),indent:spaces,line:i+1};}).filter(x=>x.text);
  if(lines.length>100)throw Error("Source line limit");
@@ -45,10 +45,13 @@ export function translatePython(input){
     declare(line,name);counters.add(name);if(lines[pos]?.indent!==indent+4)fail(line,"Expected indented loop body");const body=block(indent+4,depth+1);if(!body.length)fail(line,"Empty loop body");counters.delete(name);active.delete(name);
     out.push({op:"set",name,expr:"0"},{op:"repeat",count:bound,body:[...body,{op:"set",name,expr:name+"+1"}]});
    }else if(assignment){
-    const [,name,op,rhs]=assignment,value=expression(rhs,line);
+    const [,name,op,rhs]=assignment;let invocation=null;
+    const m=/^([a-z][a-z0-9_]*)\((.*)\)$/.exec(rhs);
+    if(op==="="&&m&&earlier instanceof Map&&earlier.has(m[1])){const args=[];let start=0,level=0;for(let i=0;i<m[2].length;i++){const ch=m[2][i];if(ch==="(")level++;if(ch===")")level--;if(ch===","&&level===0){args.push(m[2].slice(start,i));start=i+1;}}args.push(m[2].slice(start));if(level!==0||args.length!==earlier.get(m[1]))fail(line,"Invalid function arguments");invocation={op:"call",name,call:m[1],args:args.map(a=>expression(a,line))};}
+    const value=invocation?null:expression(rhs,line);
     if(!active.has(name)){if(!top||op!=="=")fail(line,"Declare locals at function level before use");declare(line,name);}
     if(fields.includes(name)||counters.has(name))fail(line,"Parameters and loop counters are immutable");
-    out.push({op:"set",name,expr:op==="="?value:"("+name+op[0]+value+")"});
+    out.push(invocation||{op:"set",name,expr:op==="="?value:"("+name+op[0]+value+")"});
    }else fail(line,"Unsupported Python statement");
    if(pos<lines.length&&lines[pos].indent>indent)fail(lines[pos],"Unexpected indentation or nested return");
   }
