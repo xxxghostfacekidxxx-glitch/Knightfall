@@ -1,3 +1,4 @@
+import {buildPresetTool,toolPresets} from "../backend/chaos-forge-tool-presets.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {buildWebProject} from "../backend/chaos-forge-web-project.mjs";
@@ -28,4 +29,10 @@ test("browser source escapes labels and literal script-like input",()=>{
  const input={name:"escape",kind:"data",title:"<script>bad()</script>",labels:{text:"<img src=x>"},spec:{fields:[{name:"text",type:"text"}],steps:[],result:"text",examples:[{values:["</textarea><script>bad()</script>"],expected:"</textarea><script>bad()</script>"},{values:["a"],expected:"a"},{values:[""],expected:""}]}};
  const files=new Map(readProjectZip(buildWebProject(input).bytes).map(f=>[f.path,f.content]));
  assert.ok(!files.get("index.html").includes("<script>bad"));assert.match(files.get("index.html"),/&lt;img src=x&gt;/);
+});
+
+test("eight named tools build both web and Node packages with verified examples",()=>{
+ const presets=toolPresets();assert.equal(presets.length,8);
+ for(const p of presets)for(const target of ["browser","node"]){const a=buildPresetTool("a "+p.name+" as "+target+" with neon theme");assert.equal(a.report.examples,3);assert.equal(readProjectZip(a.bytes).length,target==="browser"?9:8);}
+ assert.throws(()=>buildPresetTool("an arbitrary social network"),/documented tool preset/);
 });
