@@ -1,3 +1,4 @@
+import {verifyData,decompileData,runData,emitDataModule} from "./chaos-forge-data.mjs";
 import {verifyLogic,decompileLogic,compileLogic,runLogic} from "./chaos-forge-logic.mjs";
 import {compileFunction,decompileFunction} from "./chaos-forge-functions.mjs";
 import {compileFormula,decompileFormula,evaluateFormula} from "./chaos-forge-formula.mjs";
@@ -5,7 +6,7 @@ import {compileArtifact,decompileStack,hexBytes,inspectWasm} from "./chaos-forge
 import {buildApplet} from "./chaos-forge-applets.mjs";
 import {reverseSource} from "./chaos-forge-reverse.mjs";
 const enc=new TextEncoder(),ID=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
-const filePattern=/^miss-chaos-[a-z0-9-]+\.(html|wasm|json)$/;
+const filePattern=/^miss-chaos-[a-z0-9-]+\.(html|wasm|json|mjs)$/;
 const to64=b=>{let out="";for(let i=0;i<b.length;i+=8192)out+=String.fromCharCode(...b.subarray(i,i+8192));return btoa(out);};
 const from64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 const digest=async b=>Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",b)),x=>x.toString(16).padStart(2,"0")).join("");
@@ -34,6 +35,12 @@ export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
  const app=question.match(/^(?:applet|(?:make|create|build) (?:an? )?applet)\s*:\s*([\s\S]+)$/i);
  if(app){const a=await buildApplet(app[1]);const file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline "+a.report.title+" applet. Download: "+file.downloadUrl+"\nSHA-256: "+file.sha256+"\nExpires in seven days. No external inference or dependencies.",method:"independent-applet-forge",artifact:file,report:a.report,externalInference:false};}
+ const data=question.match(/^compile data(?: (module))?\s*:\s*([\s\S]+)$/i);
+ if(data){const report=verifyData(JSON.parse(data[2])),module=!!data[1],file=await saveForgeArtifact(env,owner,{filename:module?"miss-chaos-data.mjs":"miss-chaos-data.json",content:module?emitDataModule(report.program):JSON.stringify(report.program,null,2)});return {answer:"Verified "+report.tests.length+" examples. Download: "+file.downloadUrl+"\n"+JSON.stringify(report.tests,null,2),method:module?"independent-data-module":"independent-data-compiler",artifact:file,report,externalInference:false};}
+ const dataDecode=question.match(/^(?:decompile|disassemble|reverse engineer) data\s*:\s*([\s\S]+)$/i);
+ if(dataDecode){const report=decompileData(JSON.parse(dataDecode[1]));return {answer:JSON.stringify(report.source,null,2),method:"independent-data-decompiler",report,externalInference:false};}
+ const dataRun=question.match(/^run data\s*:\s*([\s\S]+)$/i);
+ if(dataRun){const input=JSON.parse(dataRun[1]),result=runData(decompileData(input.program).program,input.values);return {answer:JSON.stringify(result,null,2),method:"independent-data-vm",report:{result},externalInference:false};}
  const logic=question.match(/^compile logic\s*:\s*([\s\S]+)$/i);
  if(logic){const report=verifyLogic(JSON.parse(logic[1])),file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-logic.json",content:JSON.stringify(report.program,null,2)});return {answer:"Compiled and verified "+report.tests.length+" examples. Download: "+file.downloadUrl+"\n"+JSON.stringify(report.tests,null,2),method:"independent-logic-compiler",artifact:file,report,externalInference:false};}
  const decodeLogic=question.match(/^(?:decompile|disassemble|reverse engineer) logic\s*:\s*([\s\S]+)$/i);
