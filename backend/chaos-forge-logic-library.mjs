@@ -1,11 +1,12 @@
 // Numeric function libraries: each call has isolated locals and a shared total VM fuel budget.
 import {compileLogic,decompileLogic,runLogic} from "./chaos-forge-logic.mjs";
-const nameOK=n=>typeof n==="string"&&/^[a-z][a-z0-9_]{0,23}$/.test(n);
+const nameOK=n=>typeof n==="string"&&/^[a-z][a-z0-9_]{0,23}$/.test(n)&&!["abs","sqrt","ceil","floor","trunc","min","max"].includes(n);
 export function compileLogicLibrary(input){
  if(!input||!Array.isArray(input.functions)||input.functions.length<1||input.functions.length>8||!nameOK(input.entry))throw Error("Provide 1–8 named numeric functions and an entry.");
  const earlier=new Map(),functions=[];
  for(const fn of input.functions){
   if(!fn||!nameOK(fn.name)||earlier.has(fn.name))throw Error("Invalid or duplicate function name.");
+  if([...fn.fields||[],...fn.locals||[]].some(n=>earlier.has(n)))throw Error("Numeric bindings cannot shadow earlier functions.");
   const program=compileLogic(fn,{earlier});
   earlier.set(fn.name,{index:functions.length,arity:program.fields.length});functions.push({name:fn.name,program});
  }
