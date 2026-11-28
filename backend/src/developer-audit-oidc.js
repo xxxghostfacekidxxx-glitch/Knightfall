@@ -7,6 +7,8 @@ const AUDIENCE = "https://api.ash-fall.com/api/internal/developer-audit";
 const REPO = "xxxghostfacekidxxx-glitch/Knightfall";
 const REPO_ID = "1301740258";
 const WORKFLOW_REF = REPO + "/.github/workflows/developer-arsenal-audit.yml@refs/heads/main";
+const RESEARCH_AUDIENCE = "https://api.ash-fall.com/api/internal/order66-research";
+const RESEARCH_WORKFLOW = REPO + "/.github/workflows/order66-research-fallback.yml@refs/heads/main";
 const SUBJECTS = new Set([
   "repo:" + REPO + ":ref:refs/heads/main",
   "repo:xxxghostfacekidxxx-glitch@252952996/Knightfall@1301740258:ref:refs/heads/main"
@@ -29,8 +31,9 @@ async function fetchGitHubKeys() {
   return response.json();
 }
 /** Returns false if a JWT or any claim is invalid. Never log or return the token. */
-export async function verifyGitHubAuditToken({token, runId, sha, now = Date.now(), keyProvider = fetchGitHubKeys}) {
-  if (typeof token !== "string" || token.length > 8192) return false;
+export async function verifyGitHubAuditToken({token, runId, sha, now = Date.now(), keyProvider = fetchGitHubKeys, purpose = 'audit'}) {
+  if (typeof token !== "string" || token.length > 8192 || !["audit","order66"].includes(purpose)) return false;
+  const audience=purpose==="order66"?RESEARCH_AUDIENCE:AUDIENCE, workflow=purpose==="order66"?RESEARCH_WORKFLOW:WORKFLOW_REF;
   try {
     const parts = token.split(".");
     if (parts.length !== 3) return false;
@@ -39,10 +42,10 @@ export async function verifyGitHubAuditToken({token, runId, sha, now = Date.now(
     const claims = tokenPart(encodedClaims);
     if (header?.alg !== "RS256" || typeof header.kid !== "string" || !header.kid) return false;
     const seconds = Math.floor(now / 1000);
-    if (claims.iss !== ISSUER || claims.aud !== AUDIENCE || !SUBJECTS.has(claims.sub)) return false;
+    if (claims.iss !== ISSUER || claims.aud !== audience || !SUBJECTS.has(claims.sub)) return false;
     if (claims.repository !== REPO || String(claims.repository_id) !== REPO_ID ||
-        claims.workflow_ref !== WORKFLOW_REF || claims.ref !== "refs/heads/main") return false;
-    if (!["push","workflow_dispatch"].includes(claims.event_name)) return false;
+        claims.workflow_ref !== workflow || claims.ref !== "refs/heads/main") return false;
+    if (!(purpose==="order66"?["push","workflow_dispatch","schedule"]:["push","workflow_dispatch"]).includes(claims.event_name)) return false;
     if (String(claims.run_id) !== String(runId) || claims.sha !== sha) return false;
     if (typeof claims.jti !== "string" || claims.jti.length < 8) return false;
     if (!Number.isInteger(claims.exp) || !Number.isInteger(claims.iat) || !Number.isInteger(claims.nbf) ||

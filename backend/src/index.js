@@ -42,6 +42,7 @@ import { handleEyeOfChaos, runEyeChaosScheduledResearch } from "./eye-of-chaos.j
 import { KNOWLEDGE_CRON, runKnowledgeResearch } from "./chaos-knowledge-fleet.mjs";
 import { ownerLearningContext } from "../chaos-order66-context.mjs";
 import {refreshAlienCatalog} from "./alien-eyes-core.mjs";
+import {ingestResearch} from "./order66-ingest.mjs";
 import {handleThemeCrew} from "./theme-crew.js";
 import {listThemeEntitlements} from "./theme-entitlements.js";
 import { handleGodTrash } from "./god-trash.js";
@@ -1676,6 +1677,13 @@ export default { async queue(batch, env) {
     if(kind==="moon")return json(moonBrief(),200,origin);
     if(kind==="shadow")return json(shadowBrief(query),200,origin);
     return json({error:"Choose Arcade, Moon or Shadow Work."},400,origin);
+  }
+  if(url.pathname==="/api/internal/order66-research"&&request.method==="POST"){
+    if(request.headers.get("origin"))return json({error:"Browser uploads not permitted."},403,origin);
+    if(Number(request.headers.get("content-length")||0)>16384)return json({error:"Payload too large."},413,origin);
+    const token=request.headers.get("authorization")?.match(/^Bearer ([A-Za-z0-9._-]+)$/)?.[1];if(!token)return json({error:"CI identity required."},401,origin);
+    const body=await request.text();if(new TextEncoder().encode(body).length>16384)return json({error:"Payload too large."},413,origin);
+    try{const result=await ingestResearch({env,body,token});return json(result.result||{error:"Research upload rejected."},result.status,origin,{"cache-control":"no-store"});}catch{return json({error:"Research storage unavailable."},503,origin);}
   }
   if(url.pathname==="/api/internal/developer-audit"&&request.method==="POST"){
     if(request.headers.get("origin"))return json({error:"Browser uploads not permitted."},403,origin);

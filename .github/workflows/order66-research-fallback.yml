@@ -10,6 +10,7 @@ on:
       - '.github/workflows/order66-research-fallback.yml'
 permissions:
   contents: read
+  id-token: write
 concurrency:
   group: order66-research-fallback
   cancel-in-progress: false
@@ -24,8 +25,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Run fixed public-source research and persist bounded records
-        env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_D1_TOKEN: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Run fixed public-source research and upload through scoped OIDC
         run: node scripts/order66-remote-research.mjs

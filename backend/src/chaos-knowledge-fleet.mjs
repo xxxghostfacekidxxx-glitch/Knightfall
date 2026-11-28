@@ -1111,7 +1111,7 @@ export async function collectAssignment(a,fetcher=runtimeFetch,{allowToolFallbac
  // A distinct public software catalog can provide useful coding references if the knowledge source is temporarily unavailable.
  source="npm";try{return {source,records:await discoverTools(source,a.query,fetcher),primaryFailure};}catch(error){return {source,records:[],primaryFailure,error:failureCode(error)};}
 }
-export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryFailed=false}={}){
+export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryFailed=false,collector=collectAssignment}={}){
  if(!await enabled(env))return {reason:"paused",completed:0};
  let count=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_candidates").first())?.n||0);
  let toolCount=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_tools").first())?.n||0);
@@ -1132,7 +1132,7 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
   if(claim.meta?.changes!==1)continue;
   let status="failed",found=0,source=a.source,primaryFailure=null,errorCode=null;
   try{
-   const data=await collectAssignment(a,fetcher,{allowToolFallback:toolCount<TOOL_LIMIT-3});source=data.source;primaryFailure=data.primaryFailure;errorCode=data.error||null;
+   const data=await collector(a,fetcher,{allowToolFallback:toolCount<TOOL_LIMIT-3});source=data.source;primaryFailure=data.primaryFailure;errorCode=data.error||null;
    if(!await enabled(env)){status="paused";}
    else if(!errorCode){
     const writes=source!=="wikidata"?data.records.map(r=>env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_tools(tool_id,source,title,source_url,declared_license,version_hint,agent_key,division,query,retrieved_at) VALUES(?,?,?,?,?,?,?,?,?,?)").bind(r.id,r.source,r.title,r.url,r.license,r.version,a.key,a.division,a.query,now)):data.records.map(r=>env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_candidates(entity_id,title,description,source_url,license,agent_key,division,query,retrieved_at) VALUES(?,?,?,?,?,?,?,?,?)").bind(r.id,r.title,r.description,r.url,r.license,a.key,a.division,a.query,now));

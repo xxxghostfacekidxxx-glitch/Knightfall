@@ -60,3 +60,5 @@ test("OIDC upload is sanitized and available only to God principal",async()=>{
   assert.equal(report.semgrep.findings,1);
   assert.doesNotMatch(JSON.stringify(report),/NOT_FOR_USER/);
 });
+
+test("research OIDC audience and workflow are isolated from developer audit",async()=>{const research=await tokenFixture({aud:"https://api.ash-fall.com/api/internal/order66-research",workflow_ref:repo+"/.github/workflows/order66-research-fallback.yml@refs/heads/main",event_name:"schedule"});const args={token:research.token,runId:400,sha,keyProvider:async()=>research.keys};assert.equal(await verifyGitHubAuditToken({...args,purpose:"order66"}),true);assert.equal(await verifyGitHubAuditToken(args),false);const audit=await tokenFixture();assert.equal(await verifyGitHubAuditToken({token:audit.token,runId:400,sha,keyProvider:async()=>audit.keys,purpose:"order66"}),false);});
