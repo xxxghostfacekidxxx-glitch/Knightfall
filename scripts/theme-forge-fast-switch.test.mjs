@@ -90,3 +90,14 @@ test("backend presets, runtime allowlist and local preview assets never drift ap
    "Missing presentation recipe for "+key);
  }
 });
+
+test("universal theme publication updates explicit realms before shared inheritance",async()=>{
+ const start=ui.indexOf('universal.addEventListener("click"'),end=ui.indexOf('\n$("theme-crew-publish")',start);
+ assert.ok(start>=0&&end>start);
+ const keys=["site","madhouse","arcade","chaosphere","admin"];
+ const states=Object.fromEntries(keys.map(k=>[k,{preset:k==="admin"?"other":"old",revision:k==="admin"?2:0,inherited:!["site","admin"].includes(k)}]));
+ let click,announcement="";const requests=[];
+ const context={universal:{addEventListener:(event,fn)=>click=fn},busy:false,canPublish:true,realmApiReady:true,presets:{next:{name:"Next"}},selected:"next",states,confirm:()=>true,lock:()=>{},req:async(path,method,v)=>{requests.push(v.realm);states[v.realm]={preset:v.preset,revision:v.expectedRevision+1};if(v.realm==="site")for(const k of keys)if(states[k].inherited)states[k]={...states[k],preset:v.preset};return {current:states[v.realm]};},window:{},load:async()=>{},announce:v=>announcement=v};
+ new Function(...Object.keys(context),ui.slice(start,end))(...Object.values(context));
+ await click();assert.deepEqual(requests,["admin","site"]);assert.ok(keys.every(k=>states[k].preset==="next"));assert.match(announcement,/across all five realms/);
+});
