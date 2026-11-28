@@ -128,6 +128,12 @@ if(panel){
        trigger.addEventListener("click",()=>void prepareManualTests(detail,contents,trigger));
        testArea.append(contents);slot.append(testArea);
      }
+     if(["pending","approved"].includes(detail.status)&&detail.can_apply){
+       const apply=make("button","Approve & push through");apply.type="button";
+       apply.disabled=!detail.integration_ready||Boolean(detail.integration);
+       slot.append(apply,make("p",detail.integration?("Integration: "+detail.integration.status):detail.integration_ready?"One click authorizes this exact candidate; isolated tests must pass before main changes.":"Integration credential not configured. Manual GitHub workflow remains available.","chaos-note"));
+       apply.addEventListener("click",async()=>{if(!window.confirm("Approve and submit this exact source revision to isolated tests and integration on main?"))return;apply.disabled=true;try{const result=await call("/"+detail.id+"/apply","POST",{revision:detail.revision,confirmation:"APPLY TO MAIN"});note("GitHub accepted integration dispatch. Check workflow for tests and commit.");await loadReviews(true);}catch(error){note(error.message,true);await loadReviews(true);}});
+     }
      if(detail.status==="pending"&&canApprove){
        const area=make("div",undefined,"chaos-dev-review-decision");
        const label=make("label","Required review note (12–600 characters)");
@@ -154,6 +160,14 @@ if(panel){
    try{
      const response=await call("?status=all");
      root.replaceChildren();
+     if(response.can_apply===true){
+       const settings=make("details"),summary=make("summary","Developer access · Osiris only by default");settings.append(summary);
+       const controls=make("div");settings.append(controls);root.append(settings);
+       try{const policy=await call("/policy");const options=["isis","admin"].map(role=>{const label=make("label"),check=make("input");check.type="checkbox";check.checked=policy.roles.includes(role);label.append(check,document.createTextNode(" Allow "+role+" to review code (not push)"));controls.append(label);return [role,check];});
+       const save=make("button","Save explicit role access");save.type="button";controls.append(save);
+       save.addEventListener("click",async()=>{save.disabled=true;try{await call("/policy","POST",{roles:options.filter(x=>x[1].checked).map(x=>x[0])});note("Developer access saved.");}catch(error){note(error.message,true);}finally{save.disabled=false;}});
+       }catch(error){controls.append(make("p",error.message));}
+     }
      const rows=Array.isArray(response.reviews)?response.reviews:[];
      if(!rows.length){
        root.append(make("p","No submitted code changes. Prepare a complete small source file in Chaos Code Studio.","chaos-empty"));

@@ -16,12 +16,13 @@ function source(p=sample(),opts={}){
    start_line:1,total_lines:p.original.split("\n").length,source_url:"https://raw.githubusercontent.com/example/sha/file",
    lines:p.original.split("\n").map((text,i)=>({number:i+1,text})),long_lines_omitted:false});
 }
-function fixture({role="god",delegated=false,ready=true,readSource=source()}={}){
+function fixture({role="god",delegated=false,policy=[],ready=true,readSource=source()}={}){
  const rows=new Map(),events=[],queries=[];
  const db={prepare(sql){
    const command={sql,args:[],bind(...args){this.args=args;return this;},
      async first(){
        queries.push({sql,args:this.args});
+       if(sql.includes("SELECT value FROM site_settings"))return {value:JSON.stringify(policy)};
        if(sql.includes("sqlite_master"))return {ready:ready?2:0};
        if(sql.includes("FROM ai_handoff_partner"))
          return delegated?{user_id:22,invited_by:1,status:"accepted"}:null;
@@ -160,7 +161,7 @@ test("staff submit immutable proposal, version review and audited GOD approval w
  assert.deepEqual(f.events.map(e=>e.action),["submitted","approved"]);
 });
 test("accepted admin Isis can sign; ordinary admin cannot, and GOD-only control stays separate",async()=>{
- const f=fixture({role:"admin",delegated:true});
+ const f=fixture({role:"admin",delegated:true,policy:["isis"]});
  const {data}=await f.call("/api/chaos/dev-reviews","POST",sample());
  assert.equal(data.status,"pending");
  const approve=await f.call("/api/chaos/dev-reviews/"+data.id+"/reject","POST",
@@ -201,3 +202,5 @@ test("UI only exposes approval to verified backend and never calls GitHub write"
  assert.doesNotMatch(ui,/\.innerHTML\s*=|eval\s*\(|github\.com\/repos\/.*\/contents/);
  assert.doesNotMatch(studio,/fetch\(.*github\.com\/repos\/.*method:"PUT"/);
 });
+
+test("accepted Isis and ordinary admin have no developer docket access by default",async()=>{for(const delegated of [true,false])assert.equal((await fixture({role:"admin",delegated}).call()).status,403);assert.equal((await fixture({role:"god"}).call("/api/chaos/dev-reviews/policy")).status,200);});

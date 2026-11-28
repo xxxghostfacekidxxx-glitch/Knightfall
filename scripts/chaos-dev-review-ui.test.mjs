@@ -43,7 +43,8 @@ test("Eye of Chaos displays only backend-authenticated approvals and raw text",(
 test("Owner and partner authority is verified by the Worker, not client-side mode flags",()=>{
  const worker=read("backend/src/chaos-dev-reviews.js");
  assert.match(worker,/canAccessEyeOfChaos\(user\)/);
- assert.match(worker,/canAccessEyeOfHorus\(user\)\|\|await acceptedAdminPartner\(env,user\)/);
+ assert.match(worker,/const owner=canAccessEyeOfHorus\(user\)/);
+ assert.match(worker,/delegation\.includes\("isis"\)&&await acceptedAdminPartner\(env,user\)/);
  assert.match(worker,/!ORIGINS\.has\(request\.headers\.get\("Origin"\)\)/);
  assert.match(worker,/validateKnightfallFileArgs/);
  assert.match(worker,/verified\.commit_sha!==p\.source_sha/);
