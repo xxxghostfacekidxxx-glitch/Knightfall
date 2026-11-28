@@ -27,3 +27,17 @@ export async function dataCoverage(env){
  const r=await env.DB.prepare("SELECT count(*) AS exchanges,count(DISTINCT learner_key) AS learners,count(DISTINCT teacher_key) AS teachers,sum(json_extract(receipt_json,'$.passed')) AS passed FROM chaos_coding_peer_history WHERE course=?").bind(DATA_COURSE).first();
  return {course:DATA_COURSE,exchanges:Number(r?.exchanges||0),learners:Number(r?.learners||0),teachers:Number(r?.teachers||0),passed:Number(r?.passed||0),method:"typed bytecode reconstruction and oracle checks; not neural training"};
 }
+
+export async function findDataLessons(env,query){
+ const terms=String(query||"").trim().split(/[ ,]+/).filter(Boolean);
+ if(!terms.length||terms.length>6||terms.some(s=>!/^[A-Za-z][A-Za-z0-9]{0,30}$/.test(s)))throw Error("Enter one to six operation names, e.g. trim lower.");
+ const rows=(await env.DB.prepare("SELECT agent_key,teacher_key,receipt_json FROM chaos_coding_practice WHERE course=? AND verified=1 ORDER BY agent_key LIMIT 100").bind(DATA_COURSE).all()).results||[];
+ const unique=new Map();
+ for(const row of rows){try{
+  const r=JSON.parse(row.receipt_json);if(r.course!==DATA_COURSE||!r.verified||r.passed!==7||r.tests!==7||r.learner!==row.agent_key||r.teacher!==row.teacher_key)continue;
+  const program=compileData(r.source),source=decompileData(program).source,ops=new Set(source.steps.map(s=>s.op.toLowerCase()));
+  const score=terms.filter(t=>ops.has(t.toLowerCase())).length;if(!score)continue;
+  const id=JSON.stringify(source);if(!unique.has(id))unique.set(id,{teacher:r.teacher,lesson:r.lesson,source,verifiedCases:r.passed,score});
+ }catch{}}
+ return {query:terms,matches:[...unique.values()].sort((a,b)=>b.score-a.score||a.lesson.localeCompare(b.lesson)).slice(0,5),examined:rows.length,externalInference:false,notice:"Verified curriculum examples, not proof of correctness for new requirements."};
+}
