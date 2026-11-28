@@ -1,7 +1,7 @@
 import {verifyLibrary} from "./chaos-forge-library.mjs";
 import {synthesizeData} from "./chaos-forge-data-synthesis.mjs";
 import {verifyDataSource,emitDataSource} from "./chaos-forge-data-source.mjs";
-import {verifyData,decompileData,runData,emitDataModule} from "./chaos-forge-data.mjs";
+import {verifyData,decompileData,runData,emitDataModule,dataOperationCatalog} from "./chaos-forge-data.mjs";
 import {verifyLogic,decompileLogic,compileLogic,runLogic} from "./chaos-forge-logic.mjs";
 import {compileFunction,decompileFunction} from "./chaos-forge-functions.mjs";
 import {compileFormula,decompileFormula,evaluateFormula} from "./chaos-forge-formula.mjs";
@@ -36,6 +36,7 @@ export async function listForgeArtifacts(env,owner){const rows=(await env.DB.pre
 export async function deleteForgeArtifact(env,owner,id){if(!ID.test(id))return false;const r=await env.DB.prepare("DELETE FROM chaos_forge_artifacts WHERE id=? AND owner_id=?").bind(id,ownerId(owner)).run();return r.meta?.changes===1;}
 export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
+ if(/^data operations\s*:?\s*$/i.test(question)){const operations=dataOperationCatalog();return {answer:operations.map(o=>o.name+"("+o.inputs.join(", ")+") → "+o.output+": "+o.description).join("\n"),method:"independent-data-operation-catalog",report:{operations},externalInference:false};}
  const app=question.match(/^(?:applet|(?:make|create|build) (?:an? )?applet)\s*:\s*([\s\S]+)$/i);
  if(app){const a=await buildApplet(app[1]);const file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline "+a.report.title+" applet. Download: "+file.downloadUrl+"\nSHA-256: "+file.sha256+"\nExpires in seven days. No external inference or dependencies.",method:"independent-applet-forge",artifact:file,report:a.report,externalInference:false};}
  const library=question.match(/^compile library\s*:\s*([\s\S]+)$/i);
