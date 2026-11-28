@@ -1,0 +1,504 @@
+{
+  "metrics": {
+    "concepts": 69,
+    "heldoutAliasQueries": 69,
+    "neuralTop1": 45,
+    "neuralAccepted": 44,
+    "hybridCorrect": 69,
+    "unsupportedQueries": 22,
+    "unsupportedRejected": 22,
+    "training": {
+      "seed": 28005,
+      "epochs": 75,
+      "examples": 590,
+      "updates": 44250,
+      "parameters": 35910
+    },
+    "limitations": "Known concepts; third alias excluded from neural training, but explicitly authored alias table contains them. Hybrid score measures lookup, not generalization."
+  },
+  "results": [
+    {
+      "q": "give me a brief definition of lexical analysis",
+      "id": "curriculum-1-1",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of parsing",
+      "id": "curriculum-1-2",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of program syntax tree",
+      "id": "curriculum-1-3",
+      "rank": "curriculum-1-3",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of compilation",
+      "id": "curriculum-1-4",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of symbol lookup table",
+      "id": "curriculum-1-5",
+      "rank": "curriculum-1-5",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of type validation",
+      "id": "curriculum-1-6",
+      "rank": "curriculum-4-9",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of compiler diagnostic",
+      "id": "curriculum-1-7",
+      "rank": "curriculum-1-7",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of test case",
+      "id": "curriculum-1-8",
+      "rank": "curriculum-1-8",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of source formatter",
+      "id": "curriculum-1-9",
+      "rank": "curriculum-1-9",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of debugging tool",
+      "id": "curriculum-1-10",
+      "rank": "curriculum-1-6",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of software build system",
+      "id": "curriculum-1-11",
+      "rank": "curriculum-1-11",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of source control",
+      "id": "curriculum-1-12",
+      "rank": "curriculum-5-2",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of software regression test",
+      "id": "curriculum-1-20",
+      "rank": "curriculum-1-20",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of number vector",
+      "id": "curriculum-2-1",
+      "rank": "curriculum-2-1",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of matrices",
+      "id": "curriculum-2-2",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of vector dot product",
+      "id": "curriculum-2-3",
+      "rank": "curriculum-2-3",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of likelihood of an event",
+      "id": "curriculum-2-4",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of average",
+      "id": "curriculum-2-5",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of middle number",
+      "id": "curriculum-2-6",
+      "rank": "curriculum-2-6",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of local gradient",
+      "id": "curriculum-2-7",
+      "rank": "curriculum-2-7",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of rate of change",
+      "id": "curriculum-2-8",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of prediction error",
+      "id": "curriculum-2-11",
+      "rank": "curriculum-6-7",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of training learning rate",
+      "id": "curriculum-2-18",
+      "rank": "curriculum-2-18",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of structured database",
+      "id": "curriculum-3-1",
+      "rank": "curriculum-3-1",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of database indexing",
+      "id": "curriculum-3-2",
+      "rank": "curriculum-3-1",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of data transaction",
+      "id": "curriculum-3-3",
+      "rank": "curriculum-3-3",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of job queue",
+      "id": "curriculum-3-4",
+      "rank": "curriculum-3-4",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of caching",
+      "id": "curriculum-3-5",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of operation timeout",
+      "id": "curriculum-3-6",
+      "rank": "curriculum-3-6",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of retry attempt",
+      "id": "curriculum-3-7",
+      "rank": "curriculum-3-7",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of unique database key",
+      "id": "curriculum-3-8",
+      "rank": "curriculum-3-8",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of data schema",
+      "id": "curriculum-3-9",
+      "rank": "curriculum-3-9",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of schema migration",
+      "id": "curriculum-3-10",
+      "rank": "curriculum-3-10",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of file checksum",
+      "id": "curriculum-3-11",
+      "rank": "curriculum-3-11",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of system log",
+      "id": "curriculum-3-12",
+      "rank": "curriculum-3-12",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of language token",
+      "id": "curriculum-4-1",
+      "rank": "curriculum-4-1",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of vector embedding",
+      "id": "curriculum-4-2",
+      "rank": "curriculum-4-2",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of token vocabulary",
+      "id": "curriculum-4-3",
+      "rank": "curriculum-4-3",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of neural net",
+      "id": "curriculum-4-4",
+      "rank": "curriculum-4-4",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of neural language model",
+      "id": "curriculum-4-5",
+      "rank": "curriculum-4-5",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of learning example",
+      "id": "curriculum-4-6",
+      "rank": "curriculum-2-18",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of neural weight",
+      "id": "curriculum-4-7",
+      "rank": "curriculum-4-7",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of parameter update",
+      "id": "curriculum-4-8",
+      "rank": "curriculum-4-8",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of validation data",
+      "id": "curriculum-4-9",
+      "rank": "curriculum-4-9",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of saved checkpoint",
+      "id": "curriculum-4-10",
+      "rank": "curriculum-4-10",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of attention layer",
+      "id": "curriculum-4-11",
+      "rank": "curriculum-4-11",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of model context",
+      "id": "curriculum-4-14",
+      "rank": "curriculum-4-14",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of overfit",
+      "id": "curriculum-4-16",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of batch of training examples",
+      "id": "curriculum-4-17",
+      "rank": "curriculum-4-17",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of study question",
+      "id": "curriculum-5-1",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of evidence source",
+      "id": "curriculum-5-2",
+      "rank": "curriculum-5-2",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of reference citation",
+      "id": "curriculum-5-3",
+      "rank": "curriculum-5-3",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of material license",
+      "id": "curriculum-5-4",
+      "rank": "curriculum-5-4",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of evaluation benchmark",
+      "id": "curriculum-5-6",
+      "rank": "curriculum-5-6",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of heldout test",
+      "id": "curriculum-5-7",
+      "rank": "curriculum-1-8",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of repeated record",
+      "id": "curriculum-5-8",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of research hypothesis",
+      "id": "curriculum-5-9",
+      "rank": "curriculum-5-9",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of reproducibility",
+      "id": "curriculum-5-10",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of measurement unit",
+      "id": "curriculum-5-11",
+      "rank": "curriculum-5-11",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of ui",
+      "id": "curriculum-6-1",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of interface label",
+      "id": "curriculum-6-2",
+      "rank": "curriculum-6-1",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of focus indicator",
+      "id": "curriculum-6-3",
+      "rank": "curriculum-6-3",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of luminance contrast",
+      "id": "curriculum-6-4",
+      "rank": "curriculum-6-4",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of adaptive layout",
+      "id": "curriculum-6-5",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of section heading",
+      "id": "curriculum-6-6",
+      "rank": "curriculum-6-6",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of failure message",
+      "id": "curriculum-6-7",
+      "rank": "curriculum-6-7",
+      "correct": true,
+      "neuralAccepted": true
+    },
+    {
+      "q": "give me a brief definition of status notice",
+      "id": "curriculum-6-8",
+      "rank": "unknown",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of alternative text",
+      "id": "curriculum-6-9",
+      "rank": "curriculum-4-5",
+      "correct": true,
+      "neuralAccepted": false
+    },
+    {
+      "q": "give me a brief definition of ui button",
+      "id": "curriculum-6-10",
+      "rank": "curriculum-6-10",
+      "correct": true,
+      "neuralAccepted": true
+    }
+  ]
+}

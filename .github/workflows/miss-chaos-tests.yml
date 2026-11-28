@@ -10,6 +10,8 @@ on:
       - 'training/chaos-core-*'
       - 'training/checkpoints/chaos-core-*'
       - 'scripts/chaos-core-attention.test.mjs'
+      - 'scripts/chaos-core-recall.test.mjs'
+      - 'scripts/train-chaos-core-recall.mjs'
       - 'scripts/train-chaos-core-004.mjs'
       - 'scripts/order100-council.test.mjs'
       - 'public/alien-eyes*'
@@ -222,6 +224,6 @@ jobs:
         with:
           node-version: '22'
       - name: Validate original attention checkpoint and analytic gradients
-        run: node --test scripts/chaos-core-attention.test.mjs
+        run: node --test scripts/chaos-core-attention.test.mjs scripts/chaos-core-recall.test.mjs
 
 
