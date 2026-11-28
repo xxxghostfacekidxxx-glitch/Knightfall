@@ -1445,6 +1445,7 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
  let count=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_candidates").first())?.n||0);
  let toolCount=Number((await env.DB.prepare("SELECT COUNT(*) AS n FROM chaos_knowledge_tools").first())?.n||0);
  let completed=0,failed=0,peerLessons=0,peerFailures=0,uniqueDiscoveries=0,returnedRecords=0;
+ const pending=[];
  for(const a of assignments(time)){
   if(!await enabled(env))break;
   // Learning from existing reviewed evidence does not depend on successful network discovery or archive capacity.
@@ -1459,12 +1460,18 @@ export async function runKnowledgeResearch(env,time,{fetcher=runtimeFetch,retryF
    if(reserved.meta?.changes===1)claim=await env.DB.prepare("UPDATE chaos_knowledge_runs SET status='running',started_at=? WHERE hour=? AND agent_key=? AND status='failed'").bind(now,a.hour,a.key).run();
   }
   if(claim.meta?.changes!==1)continue;
+  // Claim first; start bounded source requests immediately, while keeping archive writes serial.
+  const collected=Promise.resolve().then(()=>collector(a,fetcher,{allowToolFallback:toolCount<TOOL_LIMIT-3})).then(data=>({data}),error=>({error}));
+  pending.push({a,now,collected});
+ }
+ for(const {a,now,collected} of pending){
   let status="failed",found=0,source=a.source,primaryFailure=null,errorCode=null;
   try{
-   const data=await collector(a,fetcher,{allowToolFallback:toolCount<TOOL_LIMIT-3});source=data.source;primaryFailure=data.primaryFailure;errorCode=data.error||null;
+   const outcome=await collected;if(outcome.error)throw outcome.error;const data=outcome.data;source=data.source;primaryFailure=data.primaryFailure;errorCode=data.error||null;
    if(!await enabled(env)){status="paused";}
    else if(!errorCode){
-    const writes=source!=="wikidata"?data.records.map(r=>env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_tools(tool_id,source,title,source_url,declared_license,version_hint,agent_key,division,query,retrieved_at) VALUES(?,?,?,?,?,?,?,?,?,?)").bind(r.id,r.source,r.title,r.url,r.license,r.version,a.key,a.division,a.query,now)):data.records.map(r=>env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_candidates(entity_id,title,description,source_url,license,agent_key,division,query,retrieved_at) VALUES(?,?,?,?,?,?,?,?,?)").bind(r.id,r.title,r.description,r.url,r.license,a.key,a.division,a.query,now));
+    const records=data.records.slice(0,Math.max(0,Math.min(3,source==="wikidata"?LIMIT-count:TOOL_LIMIT-toolCount)));
+    const writes=source!=="wikidata"?records.map(r=>env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_tools(tool_id,source,title,source_url,declared_license,version_hint,agent_key,division,query,retrieved_at) VALUES(?,?,?,?,?,?,?,?,?,?)").bind(r.id,r.source,r.title,r.url,r.license,r.version,a.key,a.division,a.query,now)):records.map(r=>env.DB.prepare("INSERT OR IGNORE INTO chaos_knowledge_candidates(entity_id,title,description,source_url,license,agent_key,division,query,retrieved_at) VALUES(?,?,?,?,?,?,?,?,?)").bind(r.id,r.title,r.description,r.url,r.license,a.key,a.division,a.query,now));
     if(writes.length){const out=await env.DB.batch(writes);found=out.reduce((n,x)=>n+Number(x.meta?.changes||0),0);}
     returnedRecords+=data.records.length;uniqueDiscoveries+=found;if(source==="wikidata")count+=found;else toolCount+=found;
     status="complete";completed++;
