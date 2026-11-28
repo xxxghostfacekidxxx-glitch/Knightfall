@@ -197,20 +197,50 @@ $("eye-forge-form").addEventListener("submit",async e=>{
  if(r.artifact?.filename?.endsWith(".svg"))await previewVector(r.artifact);
  await refreshForgeFiles();}catch(error){out.textContent=error.message;}finally{btn.disabled=false;}
 });
+async function previewArchivedArtwork(item,target=$("eye-artwork-preview")){
+ const r=await fetch(API+ROOT+"/tools/artwork/"+encodeURIComponent(item.id),{credentials:"include",cache:"no-store"});if(!r.ok)throw Error("Artwork unavailable ("+r.status+").");
+ const bytes=await r.arrayBuffer(),hash=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",bytes)),x=>x.toString(16).padStart(2,"0")).join("");
+ if(hash!==item.sha256||bytes.byteLength!==item.byte_count)throw Error("Artwork integrity check failed.");
+ if(!["image/jpeg","image/svg+xml"].includes(item.mime))throw Error("Unsupported artwork format.");
+ imagePreview(target,new Blob([bytes],{type:item.mime}),item.filename,{png:item.mime==="image/svg+xml"});
+}
+function restoreArtworkSettings(item){
+ const s=item.settings||{};
+ if(item.mime==="image/svg+xml"){
+ for(const [field,key] of [["motif","motif"],["palette","palette"],["width","width"],["height","height"],["seed","seed"],["label","title"]])if(s[key]!==undefined)$("eye-vector-"+field).value=String(s[key]);
+ $("eye-vector-status").textContent="Settings restored. Generate to create another original.";
+ }else if(typeof s.prompt==="string"){
+ $("eye-neural-prompt").value=s.prompt;$("eye-neural-confirm").checked=false;$("eye-neural-status").textContent="Prompt restored. Confirm a new hosted request to generate again.";
+ }
+}
+async function refreshArtwork(){
+ const list=$("eye-artwork-list"),status=$("eye-artwork-status");list.replaceChildren();status.textContent="Loading private artwork history…";
+ try{const data=await request(ROOT+"/tools/artwork"),items=data.artworks||[];
+ status.textContent=items.length+" / "+data.limit+" originals · "+(items.reduce((sum,a)=>sum+a.byte_count,0)/1048576).toFixed(2)+" MiB used";
+ for(const item of items){
+ if(!/^[a-f0-9-]{36}$/.test(item.id))continue;
+ const row=element("article","eye-result");row.append(element("strong","",item.title||item.filename),element("p","",item.engine+" · "+time(item.created_at)+" · "+item.state),element("small","","SHA-256: "+item.sha256));
+ if(item.state==="ready"){const view=element("button","eye-subtle","Preview / download");view.type="button";view.addEventListener("click",async()=>{view.disabled=true;try{await previewArchivedArtwork(item);}catch(e){status.textContent=e.message;}finally{view.disabled=false;}});const reuse=element("button","eye-subtle","Reuse settings");reuse.type="button";reuse.addEventListener("click",()=>restoreArtworkSettings(item));row.append(view,reuse);}
+ const del=element("button","eye-subtle","Delete original");del.type="button";del.addEventListener("click",async()=>{if(!confirm("Permanently delete this private artwork?"))return;del.disabled=true;try{await request(ROOT+"/tools/artwork/"+encodeURIComponent(item.id),{method:"DELETE"});const preview=$("eye-artwork-preview");if(preview.dataset.previewUrl)URL.revokeObjectURL(preview.dataset.previewUrl);preview.replaceChildren();await refreshArtwork();}catch(e){status.textContent=e.message;del.disabled=false;}});row.append(del);list.append(row);
+ }if(!items.length)list.textContent="No archived originals yet.";
+ }catch(e){status.textContent=e.message;}
+}
+$("eye-artwork-refresh").addEventListener("click",refreshArtwork);
 $("eye-vector-width").value="768";$("eye-vector-height").value="768";
 $("eye-vector-random").addEventListener("click",()=>{$("eye-vector-seed").value=String(crypto.getRandomValues(new Uint32Array(1))[0]);});
 $("eye-vector-form").addEventListener("submit",async e=>{
  e.preventDefault();const btn=$("eye-vector-run"),status=$("eye-vector-status");btn.disabled=true;status.textContent="Composing artwork…";
  try{const spec={motif:$("eye-vector-motif").value,palette:$("eye-vector-palette").value,width:Number($("eye-vector-width").value),height:Number($("eye-vector-height").value),seed:Number($("eye-vector-seed").value),title:$("eye-vector-label").value};
- const r=await request(ROOT+"/tools/forge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:"Image vector: "+JSON.stringify(spec)})});if(!r.artifact)throw Error("Image artifact missing.");await previewVector(r.artifact);status.textContent="Created "+spec.width+" × "+spec.height+" artwork · seed "+spec.seed+" · saved privately for seven days.";await refreshForgeFiles();
+ if($("eye-vector-archive").checked){const r=await request(ROOT+"/tools/artwork/vector",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(spec)});if(!r.artwork)throw Error("Artwork missing.");await previewArchivedArtwork(r.artwork,$("eye-vector-preview"));status.textContent="Created "+spec.width+" × "+spec.height+" artwork · seed "+spec.seed+" · saved in private archive.";await refreshArtwork();}
+ else{const r=await request(ROOT+"/tools/forge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:"Image vector: "+JSON.stringify(spec)})});if(!r.artifact)throw Error("Image artifact missing.");await previewVector(r.artifact);status.textContent="Created "+spec.width+" × "+spec.height+" artwork · seed "+spec.seed+" · saved privately for seven days.";await refreshForgeFiles();}
  }catch(error){status.textContent=error.message;}finally{btn.disabled=false;}
 });
 $("eye-neural-form").addEventListener("submit",async e=>{
  e.preventDefault();const btn=$("eye-neural-run"),status=$("eye-neural-status"),confirmBox=$("eye-neural-confirm");if(!confirmBox.checked)return;
  btn.disabled=true;status.textContent="Generating with hosted model…";confirmBox.checked=false;
- try{const r=await request(ROOT+"/tools/image-neural",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:$("eye-neural-prompt").value,confirmProvider:true})});
+ try{const r=await request(ROOT+"/tools/image-neural",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:$("eye-neural-prompt").value,confirmProvider:true,archive:$("eye-neural-archive").checked})});
  if(r.mime!=="image/jpeg"||typeof r.image!=="string"||r.image.length>5600000)throw Error("Invalid image response.");
- const bytes=Uint8Array.from(atob(r.image),c=>c.charCodeAt(0));imagePreview($("eye-neural-preview"),new Blob([bytes],{type:"image/jpeg"}),"miss-chaos-neural.jpg");status.textContent="Generated by "+r.engine+" · "+r.attemptsToday+"/"+r.dailyLimit+" attempts today. Download to keep.";
+ const bytes=Uint8Array.from(atob(r.image),c=>c.charCodeAt(0));imagePreview($("eye-neural-preview"),new Blob([bytes],{type:"image/jpeg"}),"miss-chaos-neural.jpg");status.textContent="Generated by "+r.engine+" · "+r.attemptsToday+"/"+r.dailyLimit+" attempts today. "+(r.archiveError||r.notice);if(r.archived)await refreshArtwork();
  }catch(error){status.textContent=error.message;}finally{btn.disabled=false;}
 });
 showForgeTool();
