@@ -1,3 +1,5 @@
+import {verifyLibrary} from "./chaos-forge-library.mjs";
+import {synthesizeData} from "./chaos-forge-data-synthesis.mjs";
 import {verifyDataSource,emitDataSource} from "./chaos-forge-data-source.mjs";
 import {verifyData,decompileData,runData,emitDataModule} from "./chaos-forge-data.mjs";
 import {verifyLogic,decompileLogic,compileLogic,runLogic} from "./chaos-forge-logic.mjs";
@@ -36,6 +38,10 @@ export async function forgeCommand(env,owner,question){
  if(typeof question!=="string"||question.length>65536)throw Error("Invalid forge command.");
  const app=question.match(/^(?:applet|(?:make|create|build) (?:an? )?applet)\s*:\s*([\s\S]+)$/i);
  if(app){const a=await buildApplet(app[1]);const file=await saveForgeArtifact(env,owner,a);return {answer:"Created offline "+a.report.title+" applet. Download: "+file.downloadUrl+"\nSHA-256: "+file.sha256+"\nExpires in seven days. No external inference or dependencies.",method:"independent-applet-forge",artifact:file,report:a.report,externalInference:false};}
+ const library=question.match(/^compile library\s*:\s*([\s\S]+)$/i);
+ if(library){const report=verifyLibrary(JSON.parse(library[1])),file=await saveForgeArtifact(env,owner,{filename:"miss-chaos-library.mjs",content:report.module});return {answer:"Compiled "+report.functions+" functions into a reusable JavaScript module; "+report.tests.length+" examples passed. Download: "+file.downloadUrl+"\n"+report.notice,method:"independent-library-compiler",artifact:file,report:{...report,module:undefined},externalInference:false};}
+ const synthesis=question.match(/^synthesize data\s*:\s*([\s\S]+)$/i);
+ if(synthesis){const report=synthesizeData(JSON.parse(synthesis[1]));return {answer:(report.source||"No matching program in the searched grammar.")+"\nStatus: "+report.status+"; "+report.checked+" candidates checked; "+report.matching+" matched. "+report.notice+(report.counterexample?"\nDisambiguating input: "+JSON.stringify(report.counterexample):""),method:"independent-typed-program-synthesis",report,externalInference:false};}
  const source=question.match(/^compile source(?: (module))?\s*:\s*([\s\S]+)$/i);
  if(source){const report=verifyDataSource(JSON.parse(source[2])),module=!!source[1],file=await saveForgeArtifact(env,owner,{filename:module?"miss-chaos-source.mjs":"miss-chaos-source.json",content:module?emitDataModule(report.program):JSON.stringify(report.program,null,2)});return {answer:"Source compiled and "+report.tests.length+" examples verified. Download: "+file.downloadUrl+"\nReconstructed source:\n"+report.reconstructed,method:"independent-readable-source-compiler",artifact:file,report,externalInference:false};}
  const sourceDecode=question.match(/^(?:decompile|disassemble|reverse engineer) source\s*:\s*([\s\S]+)$/i);
