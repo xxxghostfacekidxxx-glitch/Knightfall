@@ -537,3 +537,45 @@ schemaButton.addEventListener("click",async()=>{
 
 // Diagram preview remains local and available without a signed-in account.
 byId("studio-diagram-build").click();
+
+// External source intake is independently authorized by the Worker. No browser GitHub credentials.
+const intakePanel=byId("studio-intake"),intakeRepo=byId("studio-intake-repo"),intakeFile=byId("studio-intake-file"),intakeScan=byId("studio-intake-scan"),intakeRead=byId("studio-intake-read"),intakeCopy=byId("studio-intake-copy"),intakeExport=byId("studio-intake-export"),intakeStatus=byId("studio-intake-status"),intakeOutput=byId("studio-intake-output");
+let intakeReport=null,intakeSource=null,intakeBusy=false;
+function intakeReset(){intakeReport=null;intakeSource=null;intakeFile.replaceChildren();intakeFile.disabled=true;intakeRead.disabled=true;intakeCopy.disabled=true;intakeExport.disabled=true;}
+async function showIntakeForOwner(){try{const response=await fetch(API+"/api/chaos/tools",{credentials:"include",cache:"no-store"});if(!response.ok)return;const result=await response.json();intakePanel.hidden=!result.capabilities?.includes("god.repo_intake");}catch{}}
+void showIntakeForOwner();
+intakeRepo.addEventListener("input",()=>{intakeReset();note(intakeStatus,"Repository changed. Inspect again.");});
+intakeScan.addEventListener("click",async()=>{
+ if(intakeBusy)return;intakeReset();const repository=intakeRepo.value.trim();if(!repository)return;
+ intakeBusy=true;intakeScan.disabled=true;note(intakeStatus,"Verifying repository, commit and license…");
+ try{
+  const result=await utility("god.repo_intake",{repository});
+  if(repository!==intakeRepo.value.trim())return;
+  if(!/^[a-f0-9]{40}$/i.test(result?.commit_sha||""))throw Error("No verified source revision");
+  intakeReport=result;
+  for(const f of result.files||[])intakeFile.append(new Option(f.path,f.path));
+  intakeFile.disabled=!result.license_eligible||!intakeFile.options.length;intakeRead.disabled=intakeFile.disabled;intakeExport.disabled=false;
+  note(intakeOutput,JSON.stringify({project:result.project,commit:result.commit_sha,license:result.license,manifest:result.manifest,files:result.files,next_steps:result.next_steps},null,2));
+  note(intakeStatus,result.project+" @ "+result.commit_sha.slice(0,12)+(result.license_eligible?" · preliminary license screen passed":" · license requires independent review"));
+ }catch(error){note(intakeStatus,error.message);}finally{intakeBusy=false;intakeScan.disabled=false;}
+});
+intakeFile.addEventListener("change",()=>{intakeSource=null;intakeCopy.disabled=true;});
+intakeRead.addEventListener("click",async()=>{
+ if(intakeBusy||!intakeReport||!intakeFile.value)return;const snapshot=intakeReport,path=intakeFile.value;
+ intakeBusy=true;intakeRead.disabled=true;intakeCopy.disabled=true;note(intakeStatus,"Reading exact pinned source…");
+ try{
+  const result=await utility("god.repo_intake",{repository:snapshot.project,commit_sha:snapshot.commit_sha,path});
+  if(intakeReport!==snapshot||intakeFile.value!==path)return;
+  if(result.commit_sha!==snapshot.commit_sha||result.source?.path!==path)throw Error("Pinned source mismatch");
+  intakeReport=result;intakeSource=result.source;
+  note(intakeOutput,intakeSource.text);intakeCopy.disabled=encoder.encode(intakeSource.text).length>10000;
+  note(intakeStatus,"Pinned source loaded. Inspect and adapt before integration.");
+ }catch(error){note(intakeStatus,error.message);}finally{intakeBusy=false;intakeRead.disabled=!intakeReport||!intakeReport.license_eligible;}
+});
+intakeCopy.addEventListener("click",()=>{
+ if(!intakeSource)return;if(!window.confirm("Replace the current editor draft with this external source?"))return;
+ currentRepoExcerpt=null;proposalSnapshot=null;proposeButton.disabled=true;clearReview("External source is not an existing Knightfall file.");
+ code.value=intakeSource.text;beforeFormat=null;undo.disabled=true;
+ const ext=intakeSource.path.split(".").at(-1);language.value=({json:"json",ts:"typescript",tsx:"tsx",jsx:"jsx"})[ext]||"javascript";code.focus();
+});
+intakeExport.addEventListener("click",()=>{if(intakeReport)download("knightfall-repo-intake-"+intakeReport.commit_sha.slice(0,12)+".json",JSON.stringify(intakeReport,null,2),"application/json");});
