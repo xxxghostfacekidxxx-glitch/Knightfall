@@ -32,6 +32,8 @@ export function translateControlJavaScript(input){
    }else if(n.type==="IfStatement"){
     const t=n.test;if(t.type!=="BinaryExpression"||!Object.hasOwn(comparisons,t.operator)||n.consequent.type!=="BlockStatement"||n.alternate&&n.alternate.type!=="BlockStatement")fail(n,"Use numeric comparison and braced if/else blocks");
     out.push({op:"if",compare:comparisons[t.operator],left:expr(t.left),right:expr(t.right),then:block(n.consequent.body,depth+1),else:n.alternate?block(n.alternate.body,depth+1):[]});
+   }else if(n.type==="WhileStatement"){
+    const t=n.test;if(t.type!=="BinaryExpression"||!Object.hasOwn(comparisons,t.operator)||n.body.type!=="BlockStatement")fail(n,"Use numeric comparison and braced while body");out.push({op:"while",compare:comparisons[t.operator],left:expr(t.left),right:expr(t.right),body:block(n.body.body,depth+1)});
    }else if(n.type==="ForStatement"){
     const d=n.init?.type==="VariableDeclaration"&&n.init.kind==="let"&&n.init.declarations.length===1?n.init.declarations[0]:null,name=d?.id?.name,t=n.test,u=n.update;
     if(!d||d.id.type!=="Identifier"||d.init?.type!=="Literal"||d.init.value!==0||t?.type!=="BinaryExpression"||t.operator!=="<"||t.left.type!=="Identifier"||t.left.name!==name||!(t.right.type==="Identifier"&&fields.includes(t.right.name)||t.right.type==="Literal"&&Number.isInteger(t.right.value)&&t.right.value>=0&&t.right.value<=1000)||u?.type!=="UpdateExpression"||u.operator!=="++"||u.argument.type!=="Identifier"||u.argument.name!==name||n.body.type!=="BlockStatement")fail(n,"Use for (let i=0; i<parameter; i++) with a braced body and integer bound");
@@ -46,5 +48,5 @@ export function translateControlJavaScript(input){
 }
 export function verifyControlJavaScript(input){
  const translated=translateControlJavaScript(input),r=verifyLogic({...translated,examples:input.examples});
- return {...r,translated,module:runLogic.toString()+"\nconst program="+JSON.stringify(r.program)+";\nexport function solve(...values){return runLogic(program,values);}\n",notice:"Bounded finite numeric JavaScript subset; loops require immutable nonnegative integer bounds (0–1000). Submitted code never executed."};
+ return {...r,translated,module:runLogic.toString()+"\nconst program="+JSON.stringify(r.program)+";\nexport function solve(...values){return runLogic(program,values);}\n",notice:"Bounded finite numeric JavaScript subset; counted loops require immutable nonnegative integer bounds (0–1000); while loops capped at 1000 iterations and shared VM fuel. Submitted code never executed."};
 }
