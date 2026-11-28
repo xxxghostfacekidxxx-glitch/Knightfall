@@ -218,7 +218,7 @@
       if(!raw)continue;
       let parsed;
       try{parsed=new URL(raw);}catch{continue;}
-      if(parsed.protocol!=="https:"||!allowed.has(parsed.hostname))continue;
+      if(parsed.protocol!=="https:"||!(allowed.has(parsed.hostname)||(parsed.origin==="https://api.ash-fall.com"&&/^\/api\/god\/eye\/tools\/forge-download\/[a-f0-9-]{36}$/.test(parsed.pathname)&&!parsed.search&&!parsed.hash)))continue;
       const link=document.createElement("a");
       link.href=parsed.href;
       link.textContent=raw;
